@@ -9,6 +9,37 @@
     <script src="lib/jquery/jquery_3.3.1.js"></script>
 </head>
 
+<style>
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 600px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+    }
+    .avatar {
+        width: 28px;
+        height: 28px;
+        display: block;
+    }
+    .font{
+        font-size: 14px;
+        line-height: 3;
+        color: #409EFF;
+    }
+</style>
+
 <body>
 <el-container id="app">
 
@@ -37,34 +68,45 @@
         <el-header>
             <el-col :span="6" align="center">
                 <el-dropdown>
-      <span class="el-dropdown-link">
+      <span class="font">
         团队<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-for="team in teamArr">{{team}}</el-dropdown-item>
-                        <el-dropdown-item><i class="el-icon-plus"></i>添加团队</el-dropdown-item>
+                        <el-dropdown-item class="font" v-for="team in teamArr">{{team}}</el-dropdown-item>
+                        <el-dropdown-item class="font"><i class="el-icon-plus"></i>添加团队</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
             <el-col :span="6">
                 <el-dropdown>
-      <span class="el-dropdown-link">
+      <span class="font">
         数据中心<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-for="data in dataArr">{{data}}</el-dropdown-item>
+                        <el-dropdown-item class="font" v-for="data in dataArr">{{data}}</el-dropdown-item>
                         <el-dropdown-item><i class="el-icon-plus"></i>选择数据中心</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
-            <el-col :span="8" align="right">
-                <el-badge :value="messagenum" :max="99" class="item">
+            <el-col :span="8" align="right" style="font-size: 20px; color: #409EFF ;line-height: 1;">
+                <el-badge :value="messagenum" :max="99">
                     <i class="el-icon-bell"></i>
                 </el-badge>
             </el-col>
-            <el-col :span="4" align="right">
+            <el-col :span="2" align="right">
+                <el-upload
+                        class="avatar-uploader"
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-col>
+            <el-col :span="2" align="left">
                 <el-dropdown>
-                    <span class="el-dropdown">{{username}}</span>
+                    <span style="font-size: 16px; color: #409EFF ;line-height: 2;">{{username}}</span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>退出登录</el-dropdown-item>
                     </el-dropdown-menu>
@@ -80,7 +122,8 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            username: '11',
+            imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530095202459&di=d5628439c3c75918ea048a835a92ec34&imgtype=0&src=http%3A%2F%2Fimages.missyuan.com%2Fattachments%2Fday_140910%2F20140910_ddc05dd96d2ed9238ab2v4i79I985zi4.jpg',
+            username: 'zwp',
             isCollapse: false,
             pageArr: ['test1.html', 'test2.html'],
             messagenum: 199,
