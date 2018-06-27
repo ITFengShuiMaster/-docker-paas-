@@ -7,6 +7,15 @@
     <script src="lib/vue/vue.js"></script>
     <script src="lib/element/index.js"></script>
     <script src="lib/jquery/jquery_3.3.1.js"></script>
+    <style>
+        html, body {
+            font-family: sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #f0f2f5 !important;
+            color: rgba(0, 0, 0, .65);
+        }
+    </style>
 </head>
 
 <body>
@@ -50,13 +59,13 @@
         data: {
             username: '',
             isCollapse: false,
-            pageArr: ['test1.html', 'test2.html']
+            pageArr: ['./pages/home.html', 'test2.html']
         },
         methods: {
             // 选择页面
             selectPage(index, indexPath) {
                 console.log(this.pageArr[index - 1]);
-                // 主要就是通过jquery的load方法，加内容加载到元素上
+                // 主··要就是通过jquery的load方法，加内容加载到元素上
                 $('#content').load(this.pageArr[index - 1], function (response, status, xhr) {
                 });
             },
