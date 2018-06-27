@@ -35,7 +35,7 @@
     }
     .font{
         font-size: 14px;
-        line-height: 3;
+        line-height: 4;
         color: #409EFF;
     }
 </style>
@@ -88,12 +88,12 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
-            <el-col :span="8" align="right" style="font-size: 20px; color: #409EFF ;line-height: 1;">
+            <el-col :span="8" align="right" style="font-size: 20px; color: #409EFF; margin-top: 10px">
                 <el-badge :value="messagenum" :max="99">
                     <i class="el-icon-bell"></i>
                 </el-badge>
             </el-col>
-            <el-col :span="2" align="right">
+            <el-col :span="2" align="right" style="margin-top: 10px">
                 <el-upload
                         class="avatar-uploader"
                         action="https://jsonplaceholder.typicode.com/posts/"
@@ -106,7 +106,7 @@
             </el-col>
             <el-col :span="2" align="left">
                 <el-dropdown>
-                    <span style="font-size: 16px; color: #409EFF ;line-height: 2;">{{username}}</span>
+                    <span style="font-size: 16px; color: #409EFF ;line-height: 3;">{{username}}</span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>退出登录</el-dropdown-item>
                     </el-dropdown-menu>
