@@ -1,0 +1,83 @@
+<div id="app1" style="width: 95%; margin-left: 2%">
+
+    <el-breadcrumb separator="/">
+        <el-breadcrumb-item>首页</el-breadcrumb-item>
+        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+    </el-breadcrumb>
+
+    <div style="margin-top: 2%; margin-left: 6%">
+
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane v-for="item in classify" :key="item.id" :label="item.name" :name="item.id" >
+            <div style="font-size: 4px ;width: 90% ">
+                <img v-if="imageUrl" :src="imageUrl" style="width: 50%">
+            </div>
+            <div class="block">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[10, 20, 30, 40]"
+                        :page-size="10"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="pagenum">
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+    </el-tabs>
+    </div>
+
+
+</div>
+
+
+<script>
+    var app1 = new Vue({
+        el: '#app1',
+        data: {
+            imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530095202459&di=d5628439c3c75918ea048a835a92ec34&imgtype=0&src=http%3A%2F%2Fimages.missyuan.com%2Fattachments%2Fday_140910%2F20140910_ddc05dd96d2ed9238ab2v4i79I985zi4.jpg',
+            currentPage: 1,
+            pagenum : 100,
+            activeName: 'first',
+            classify: [
+                {
+                    id: 'first',
+                    name: '全部',
+                },
+                {
+                    id: 'second',
+                    name: '云市',
+                },
+                {
+                    id: 'third',
+                    name :'本公司',
+                },
+                {
+                    id: 'fourth',
+                    name: '本团队',
+                }
+            ],
+        },
+        methods: {
+            onSubmit() {
+            },
+            handleClick(tab, event) {
+                console.log(tab, event);
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+            }
+        },
+//
+        created() {
+        },
+
+
+    })
+
+</script>
