@@ -44,4 +44,8 @@ public class TInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
 
     }
+
+    public static void main(String[] args) {
+        System.out.println("tset");
+    }
 }
