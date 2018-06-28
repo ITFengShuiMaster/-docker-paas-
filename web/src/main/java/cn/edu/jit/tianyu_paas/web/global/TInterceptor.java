@@ -19,6 +19,10 @@ public class TInterceptor implements HandlerInterceptor {
 
     private Logger logger = LoggerFactory.getLogger(TInterceptor.class);
 
+    public static void main(String[] args) {
+        System.out.println("tset");
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) {
         logger.debug(httpServletRequest.getRequestURI());
@@ -43,9 +47,5 @@ public class TInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
 
-    }
-
-    public static void main(String[] args) {
-        System.out.println("tset");
     }
 }
