@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.edu.jit.tianyu_paas</groupId>
+    <artifactId>web</artifactId>
+    <version>1.0</version>
+    <packaging>war</packaging>
+
+    <name>web</name>
+    <description>普通用户使用的paas平台</description>
+
+    <parent>
+        <groupId>cn.edu.jit</groupId>
+        <artifactId>tianyu_paas</artifactId>
+        <version>1.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+</project>
