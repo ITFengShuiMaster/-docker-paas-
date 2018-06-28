@@ -1,4 +1,4 @@
-package cn.edu.jit.tianyu_paas.shared.entity.util;
+package cn.edu.jit.tianyu_paas.shared.util;
 
 public class TResult {
 

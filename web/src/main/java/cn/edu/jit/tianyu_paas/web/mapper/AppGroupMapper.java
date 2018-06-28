@@ -1,16 +1,16 @@
 package cn.edu.jit.tianyu_paas.web.mapper;
 
-import cn.edu.jit.tianyu_paas.shared.entity.User;
+import cn.edu.jit.tianyu_paas.shared.entity.AppGroup;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author 汪继友
  * @since 2018-06-28
  */
-public interface UserMapper extends BaseMapper<User> {
+public interface AppGroupMapper extends BaseMapper<AppGroup> {
 
 }
