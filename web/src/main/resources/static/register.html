@@ -23,7 +23,8 @@
         <div class="loginForm">
             <div class="line">欢迎使用平台</div>
             <hr align="center" width="100%" size="1px" color="#E8E8E8"/>
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm" label-position="right" label-width="80px" :model="formLabelAlign">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm" label-position="right"
+                     label-width="80px" :model="formLabelAlign">
                 <el-form-item label="企业名称" prop="company_name">
                     <el-input placeholder="请填写企业名称" v-model="ruleForm.company_name"></el-input>
                 </el-form-item>
@@ -40,29 +41,33 @@
 
 </body>
 <style>
-    .el-header{
+    .el-header {
         padding: 0px 0px;
     }
-    .register_text_button{
+
+    .register_text_button {
         text-decoration: none;
         color: #64C36A;
         font-size: 16px;
     }
-    .line{
+
+    .line {
         margin-bottom: 2%;
         margin-top: 2%;
         margin-left: 5%;
         font-size: 14px;
         color: #262626;
     }
-    .register{
+
+    .register {
         margin-left: 10%;
         margin-top: -3%;
         font-size: 16px;
         display: inline-block;
         color: #848684;
     }
-    .loginForm{
+
+    .loginForm {
         width: 50%;
         height: 50%;
         position: absolute;
@@ -70,23 +75,26 @@
         top: 30%;
         border: solid #E8E8E8 1px;
     }
-    .el-form-item{
+
+    .el-form-item {
         width: 60%;
         margin-left: 20%;
         margin-top: 4%;
         height: 30px;
     }
-    .el-input__inner{
+
+    .el-input__inner {
         height: 30px;
     }
-    .text-button{
+
+    .text-button {
         text-decoration: none;
         color: #64C36A;
         font-size: 14px;
         margin-left: 70%;
     }
 
-    .el-button{
+    .el-button {
         margin-top: 1%;
         width: 60%;
         margin-left: 20%;
