@@ -38,6 +38,13 @@
         line-height: 4;
         color: #409EFF;
     }
+    .pic{
+        border: 1px dashed #d9d9d9;
+        border-radius: 600px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
 </style>
 
 <body>
@@ -72,7 +79,7 @@
         团队<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item class="font" v-for="team in teamArr">{{team}}</el-dropdown-item>
+                        <el-dropdown-item class="font" v-for="team in teamArr" :key="team">{{team}}</el-dropdown-item>
                         <el-dropdown-item class="font"><i class="el-icon-plus"></i>添加团队</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -83,7 +90,7 @@
         数据中心<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item class="font" v-for="data in dataArr">{{data}}</el-dropdown-item>
+                        <el-dropdown-item class="font" v-for="data in dataArr" :key="data">{{data}}</el-dropdown-item>
                         <el-dropdown-item><i class="el-icon-plus"></i>选择数据中心</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -125,7 +132,7 @@
             imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530095202459&di=d5628439c3c75918ea048a835a92ec34&imgtype=0&src=http%3A%2F%2Fimages.missyuan.com%2Fattachments%2Fday_140910%2F20140910_ddc05dd96d2ed9238ab2v4i79I985zi4.jpg',
             username: 'zwp',
             isCollapse: false,
-            pageArr: ['test1.html', 'test2.html'],
+            pageArr: ['pages/install.html', 'test2.html'],
             messagenum: 199,
             teamArr: ['团队一', '团队二'],
             dataArr: ['假数据中心', '真数据中心']
@@ -146,6 +153,12 @@
             },
             handleClose(key, keyPath) {
                 console.log(key, keyPath);
+            },
+            handleAvatarSuccess(){
+
+            },
+            beforeAvatarUpload() {
+
             }
         },
         mounted() {
