@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="lib/element/index.css"/>
+    <script src="lib/vue/vue.js"></script>
+    <script src="lib/element/index.js"></script>
+    <script src="lib/jquery/jquery_3.3.1.js"></script>
+</head>
+<body>
+<el-container id="app">
+    <el-header style="height: 50px">
+        <el-col span="6">
+            <div>logo</div>
+        </el-col>
+        <el-col span="4" offset="20">
+            <div class="register">没有账号？立即<a href="" class="register_text_button">注册</a></div>
+        </el-col>
+    </el-header>
+    <hr align="center" width="100%" size="1px" color="#E8E8E8"/>
+    <el-main>
+        <div class="loginForm">
+            <div class="line">欢迎使用平台</div>
+            <hr align="center" width="100%" size="1px" color="#E8E8E8"/>
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm" label-position="right" label-width="80px" :model="formLabelAlign">
+                <el-form-item label="企业名称" prop="company_name">
+                    <el-input placeholder="请填写企业名称" v-model="ruleForm.company_name"></el-input>
+                </el-form-item>
+                <el-form-item label="姓名" prop="name">
+                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.name"></el-input>
+                </el-form-item>
+            </el-form>
+            <a href="" class="text-button">忘记密码?</a>
+            <el-button type="success">登陆</el-button>
+        </div>
+    </el-main>
+</el-container>
+
+
+</body>
+<style>
+    .el-header{
+        padding: 0px 0px;
+    }
+    .register_text_button{
+        text-decoration: none;
+        color: #64C36A;
+        font-size: 16px;
+    }
+    .line{
+        margin-bottom: 2%;
+        margin-top: 2%;
+        margin-left: 5%;
+        font-size: 14px;
+        color: #262626;
+    }
+    .register{
+        margin-left: 10%;
+        margin-top: -3%;
+        font-size: 16px;
+        display: inline-block;
+        color: #848684;
+    }
+    .loginForm{
+        width: 50%;
+        height: 50%;
+        position: absolute;
+        left: 25%;
+        top: 30%;
+        border: solid #E8E8E8 1px;
+    }
+    .el-form-item{
+        width: 60%;
+        margin-left: 20%;
+        margin-top: 4%;
+        height: 30px;
+    }
+    .el-input__inner{
+        height: 30px;
+    }
+    .text-button{
+        text-decoration: none;
+        color: #64C36A;
+        font-size: 14px;
+        margin-left: 70%;
+    }
+
+    .el-button{
+        margin-top: 1%;
+        width: 60%;
+        margin-left: 20%;
+        border: 0px;
+        background: #64C36A;
+        color: white;
+        height: 30px;
+        padding: 0px 10px;
+        display: block;
+    }
+
+
+</style>
+<script>
+    var app = new Vue({
+        el: '#app',
+        methods: {
+            onSubmit() {
+                console.log('submit!');
+            }
+        },
+        data() {
+            return {
+                ruleForm: {
+                    company_name: '',
+                    name: '',
+                },
+                rules: {
+                    company_name: [
+                        {required: true, message: '请输入登录名', trigger: 'blur'},
+                        // {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+                    ],
+                    name: [
+                        {required: true, message: '请输入密码', trigger: 'change'}
+                    ],
+                }
+            };
+        },
+        created() {
+        }
+    })
+</script>
+</html>
