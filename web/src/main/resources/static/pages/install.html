@@ -144,8 +144,10 @@
                         this.options4 = this.list.filter(item => {
                             return item.label.toLowerCase()
                                 .indexOf(query.toLowerCase()) > -1;
-                        });
-                    }, 200);
+                })
+                },
+                    200;
+                )
                 } else {
                     this.options4 = [];
                 }
@@ -154,7 +156,7 @@
         mounted() {
             this.list = this.states.map(item => {
                 return {value: item, label: item};
-            });
+        })
         },
 //
         created() {

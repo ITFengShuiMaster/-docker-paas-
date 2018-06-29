@@ -19,7 +19,7 @@ import java.util.Date;
  * @author 汪继友
  * @since 2018-06-28
  */
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class App implements Serializable {
 
     private static final long serialVersionUID = 1L;

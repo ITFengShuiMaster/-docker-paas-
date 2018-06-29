@@ -39,15 +39,15 @@ public class AppGroupController {
     @PostMapping("create")
     public TResult GroupCreate(AppGroup appGroup) {
         if (appGroup == null) {
-            return TResult.failure( TResultCode.PARAM_IS_BLANK );
+            return TResult.failure(TResultCode.PARAM_IS_BLANK);
         }
-        appGroup.setUserId( (Long) session.getAttribute( Constants.SESSION_KEY_USER_ID ) );
-        appGroup.setGmtCreate( new Date() );
+        appGroup.setUserId((Long) session.getAttribute(Constants.SESSION_KEY_USER_ID));
+        appGroup.setGmtCreate(new Date());
 
-        boolean flag = appGroupService.insert( appGroup );
+        boolean flag = appGroupService.insert(appGroup);
         if (!flag) {
-            return TResult.failure( TResultCode.FAILURE );
+            return TResult.failure(TResultCode.FAILURE);
         }
-        return TResult.success( appGroup.getAppGroupId() );
+        return TResult.success(appGroup.getAppGroupId());
     }
 }
