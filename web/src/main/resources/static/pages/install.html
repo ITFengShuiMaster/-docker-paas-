@@ -1,4 +1,4 @@
-<div id="app1" style="width: 95%; margin-left: 2%">
+<div id="app1" style="width: 95%; margin-left: 2%; min-height: 630px">
 
     <div style="width: 70% ;">
         <el-breadcrumb separator="/">
@@ -34,15 +34,15 @@
         <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane v-for="item in classify" :key="item.id" :label="item.name" :name="item.id">
                 <el-row>
-                    <el-col :span="7" v-for="item in test">
+                    <el-col :span="7" v-for="item in test" :key="item">
                         <div style="font-size: 4px;height: 170px;">
                             <div style="width: 80% ;">
                                 <div>
                                     <img v-if="imageUrl" :src="imageUrl" style="width: 50%; float: left; height: 115px;">
                                 </div>
                                 <div style="float:right; width: 50% ;float: right;background-color: #ffffff; height: 115px">
-                                    <h style="font-size: 18px">我的软件</h> <br>
-                                    <h style="font-size: 20px"> 简介xxxxxxxxxxx</h>
+                                    <span style="font-size: 18px">我的软件</span> <br>
+                                    <span style="font-size: 20px"> 简介xxxxxxxxxxx</span>
                                 </div>
                             </div>
                             <div>
