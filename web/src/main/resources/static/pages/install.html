@@ -1,13 +1,14 @@
 <div id="app1" style="width: 95%; margin-left: 2%">
 
-    <el-col :span="18">
+    <div style="width: 70% ;">
         <el-breadcrumb separator="/">
             <el-breadcrumb-item>首页</el-breadcrumb-item>
             <el-breadcrumb-item>活动管理</el-breadcrumb-item>
             <el-breadcrumb-item>活动列表</el-breadcrumb-item>
             <el-breadcrumb-item>活动详情</el-breadcrumb-item>
         </el-breadcrumb>
-    </el-col>
+    </div>
+    <div style="width: 25%; float: right">
         <template>
             <el-select
                     v-model="value9"
@@ -25,9 +26,9 @@
                 </el-option>
             </el-select>
         </template>
+    </div>
 
-
-    <div style="margin-top: 2%; margin-left: 6%">
+    <div style="margin-top: 4%; margin-left: 6%">
 
         <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane v-for="item in classify" :key="item.id" :label="item.name" :name="item.id">
