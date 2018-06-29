@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -33,10 +34,12 @@ public class User implements Serializable {
     /**
      * 邮箱地址
      */
+    @Pattern(regexp = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$", message = "邮箱不合法")
     private String email;
     /**
      * 密码
      */
+    @NotNull(message = "密码不能为空")
     private String pwd;
     /**
      * 用户头像,base64编码

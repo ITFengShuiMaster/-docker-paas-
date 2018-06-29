@@ -9,14 +9,16 @@ import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import cn.edu.jit.tianyu_paas.web.service.AppService;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 倪龙康，卢越
@@ -165,6 +167,27 @@ public class AppController {
         // TODO 生成应用
         appGroupService.insert(appGroup);
         return TResult.success();
+    }
+
+    /**
+     * 总览页面应用接口，包含分页，根据名字查询，根据状态查询
+     *
+     * @author 卢越
+     * @date 2018/6/29 16:30
+     */
+    @GetMapping("/info")
+    public TResult info(@RequestParam(required = false, defaultValue = "") String name, Integer status,
+                        @RequestParam(value = "current", defaultValue = "1") Integer current,
+                        @RequestParam(value = "size", defaultValue = "3") Integer size){
+
+        App app = new App();
+        app.setName(name);
+        app.setStatus(status);
+        // TODO 6为测试数据，实际应该改为session.getAttribute(Constants.SESSION_KEY_USER_ID)
+        app.setUserId(Long.parseLong("6"));
+        Page page = appService.selectAppListPage(app, current, size);
+
+        return TResult.success(page);
     }
 
     @PostMapping("market")
