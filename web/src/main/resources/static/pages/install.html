@@ -7,6 +7,7 @@
             <el-breadcrumb-item>活动列表</el-breadcrumb-item>
             <el-breadcrumb-item>活动详情</el-breadcrumb-item>
         </el-breadcrumb>
+
     </div>
     <div style="width: 25%; float: right">
         <template>
@@ -27,6 +28,7 @@
             </el-select>
         </template>
     </div>
+
 
     <div style="margin-top: 4%; margin-left: 6%">
 
@@ -131,7 +133,7 @@
         },
         mounted() {
             this.list = this.states.map(item => {
-                return { value: item, label: item };
+                return {value: item, label: item};
             });
         },
 //

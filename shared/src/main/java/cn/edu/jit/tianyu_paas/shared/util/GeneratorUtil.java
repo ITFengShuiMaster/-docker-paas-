@@ -1,4 +1,4 @@
-package cn.edu.jit.tianyu_paas.shared.entity.util;
+package cn.edu.jit.tianyu_paas.shared.util;
 
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
@@ -23,9 +23,11 @@ public class GeneratorUtil {
     private static String driverClassName;
 
     public static void main(String[] args) {
-        String packageName = "cn.edu.jit.tianyu_paas";
+        String packageName = "cn.edu.jit.tianyu_paas.shared";
         initDataSource();
-        generateByTables(packageName, "user");
+        generateByTables(packageName, "action", "action_detail", "admin", "app", "app_by_custom", "app_by_demo", "app_by_docker_image",
+                "app_by_docker_run", "app_by_market", "app_dependency", "app_feature", "app_group", "app_log", "app_port", "app_var", "demo"
+                , "feature", "user", "user_dynamic");
     }
 
     private static void initDataSource() {

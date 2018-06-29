@@ -1,6 +1,5 @@
-package cn.edu.jit.tianyu_paas.shared.entity.util;
+package cn.edu.jit.tianyu_paas.shared.util;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ public class SpringBeanFactoryUtil implements ApplicationContextAware {
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) {
         if (SpringBeanFactoryUtil.applicationContext == null) {
             SpringBeanFactoryUtil.applicationContext = applicationContext;
         }

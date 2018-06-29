@@ -7,6 +7,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * <p>
+ *
+ * </p>
+ *
  * @author 汪继友
  * @since 2018-06-28
  */
@@ -17,21 +21,21 @@ public class User implements Serializable {
     @TableId(value = "user_id", type = IdType.AUTO)
     private Long userId;
     /**
+     * 姓名或昵称
+     */
+    private String name;
+    /**
      * 手机号
      */
     private String phone;
     /**
-     * 邮箱地址（用户名）
+     * 邮箱地址
      */
     private String email;
     /**
      * 密码
      */
     private String pwd;
-    /**
-     * 真实姓名
-     */
-    private String realName;
     /**
      * 用户头像,base64编码
      */
@@ -49,6 +53,14 @@ public class User implements Serializable {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhone() {
@@ -73,14 +85,6 @@ public class User implements Serializable {
 
     public void setPwd(String pwd) {
         this.pwd = pwd;
-    }
-
-    public String getRealName() {
-        return realName;
-    }
-
-    public void setRealName(String realName) {
-        this.realName = realName;
     }
 
     public String getHeadImg() {
@@ -111,10 +115,10 @@ public class User implements Serializable {
     public String toString() {
         return "User{" +
                 ", userId=" + userId +
+                ", name=" + name +
                 ", phone=" + phone +
                 ", email=" + email +
                 ", pwd=" + pwd +
-                ", realName=" + realName +
                 ", headImg=" + headImg +
                 ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +
