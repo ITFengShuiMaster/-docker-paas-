@@ -1,14 +1,14 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
 
-import cn.edu.jit.tianyu_paas.shared.entity.App;
-import cn.edu.jit.tianyu_paas.shared.entity.AppGroup;
-import cn.edu.jit.tianyu_paas.shared.entity.Demo;
+import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.enums.AppCreateMethodEnum;
 import cn.edu.jit.tianyu_paas.shared.enums.AppStatusEnum;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
+import cn.edu.jit.tianyu_paas.web.service.*;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import cn.edu.jit.tianyu_paas.web.service.AppService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 倪龙康，卢越
@@ -177,7 +178,7 @@ public class AppController {
     @GetMapping("/info")
     public TResult info(@RequestParam(required = false, defaultValue = "") String name, Integer status,
                         @RequestParam(value = "current", defaultValue = "1") Integer current,
-                        @RequestParam(value = "size", defaultValue = "3") Integer size) {
+                        @RequestParam(value = "size", defaultValue = "3") Integer size){
 
         App app = new App();
         app.setName(name);

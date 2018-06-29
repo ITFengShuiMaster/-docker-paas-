@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 /**
@@ -10,7 +11,7 @@ import java.io.Serializable;
  * @author 汪继友
  * @since 2018-06-28
  */
-public class AppByDockerRun implements Serializable {
+public class AppInfoByDockerRun implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -18,6 +19,7 @@ public class AppByDockerRun implements Serializable {
     /**
      * 创建docker的命令
      */
+    @NotEmpty
     private String cmd;
 
 
@@ -39,7 +41,7 @@ public class AppByDockerRun implements Serializable {
 
     @Override
     public String toString() {
-        return "AppByDockerRun{" +
+        return "AppInfoByDockerRun{" +
                 ", appId=" + appId +
                 ", cmd=" + cmd +
                 "}";

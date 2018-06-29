@@ -3,6 +3,7 @@ package cn.edu.jit.tianyu_paas.shared.entity;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -28,10 +29,12 @@ public class AppGroup implements Serializable {
     /**
      * 应用组名字
      */
+    @NotEmpty
     private String groupName;
     /**
      * 从compose创建应用组的内容
      */
+    @NotEmpty
     private String compose;
     /**
      * 创建时间

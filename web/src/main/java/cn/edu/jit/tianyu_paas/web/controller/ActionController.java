@@ -26,7 +26,7 @@ public class ActionController {
     }
 
     @GetMapping("/info")
-    public TResult info() {
+    public TResult info(){
         // TODO 6为测试数据，实际应该改为session.getAttribute(Constants.SESSION_KEY_USER_ID)
         List<Action> lists = actionService.selectList(new EntityWrapper<Action>().eq("user_id", 6).orderBy("gmt_create", false));
         List<String> actions = new ArrayList<>();

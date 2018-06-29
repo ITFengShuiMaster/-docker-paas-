@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 /**
@@ -10,7 +11,7 @@ import java.io.Serializable;
  * @author 汪继友
  * @since 2018-06-28
  */
-public class AppByCustom implements Serializable {
+public class AppInfoByCustom implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -18,10 +19,12 @@ public class AppByCustom implements Serializable {
     /**
      * git仓库地址
      */
+    @NotEmpty
     private String repositoryUrl;
     /**
      * 代码分支
      */
+    @NotEmpty
     private String branch;
 
 
@@ -51,7 +54,7 @@ public class AppByCustom implements Serializable {
 
     @Override
     public String toString() {
-        return "AppByCustom{" +
+        return "AppInfoByCustom{" +
                 ", appId=" + appId +
                 ", repositoryUrl=" + repositoryUrl +
                 ", branch=" + branch +

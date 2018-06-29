@@ -35,11 +35,11 @@ public class UserController {
     }
 
     /**
+     * @author 卢越
+     * @since 2018-06-29
      * @param account
      * @param pwd
      * @return
-     * @author 卢越
-     * @since 2018-06-29
      */
     @PostMapping("/login")
     public TResult login(String account, String pwd) {
@@ -68,10 +68,10 @@ public class UserController {
     }
 
     /**
-     * @param user
-     * @return
      * @author 卢越
      * @since 2018-06-29
+     * @param user
+     * @return
      */
     @PostMapping("/register")
     public TResult register(@Valid User user, BindingResult bindingResult) {
@@ -112,13 +112,11 @@ public class UserController {
         return TResult.success();
     }
 
-    /**
-     * 返回用户个人信息
-     *
-     * @param userId
-     * @return
+    /**返回用户个人信息
      * @author 卢越
      * @since 2018-06-29
+     * @param userId
+     * @return
      */
     @GetMapping("/info/{userId}")
     public TResult info(@PathVariable String userId) {
@@ -130,13 +128,11 @@ public class UserController {
         return TResult.success(user);
     }
 
-    /**
-     * 返回用户个人的动态：如余额，内存使用情况等
-     *
-     * @param userId
-     * @return
+    /**返回用户个人的动态：如余额，内存使用情况等
      * @author 卢越
      * @since 2018-06-29
+     * @param userId
+     * @return
      */
     @GetMapping("/dynamic/{userId}")
     public TResult dynamic(@PathVariable String userId) {

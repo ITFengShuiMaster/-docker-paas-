@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 
 /**
@@ -10,16 +11,13 @@ import java.io.Serializable;
  * @author 汪继友
  * @since 2018-06-28
  */
-public class AppByMarket implements Serializable {
+public class AppInfoByDemo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long appId;
-    /**
-     * 应用市场的docker id
-     */
-    private Long marketDockerId;
-
+    @Min(1)
+    private Long demoId;
 
     public Long getAppId() {
         return appId;
@@ -29,19 +27,19 @@ public class AppByMarket implements Serializable {
         this.appId = appId;
     }
 
-    public Long getMarketDockerId() {
-        return marketDockerId;
+    public Long getDemoId() {
+        return demoId;
     }
 
-    public void setMarketDockerId(Long marketDockerId) {
-        this.marketDockerId = marketDockerId;
+    public void setDemoId(Long demoId) {
+        this.demoId = demoId;
     }
 
     @Override
     public String toString() {
-        return "AppByMarket{" +
+        return "AppInfoByDemo{" +
                 ", appId=" + appId +
-                ", marketDockerId=" + marketDockerId +
+                ", demoId=" + demoId +
                 "}";
     }
 }
