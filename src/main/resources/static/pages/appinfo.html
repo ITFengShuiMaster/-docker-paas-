@@ -2,9 +2,242 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Index</title>
+    <link rel="stylesheet" href="../lib/element/index.css"/>
+    <script src="../lib/vue/vue.js"></script>
+    <script src="../lib/element/index.js"></script>
+    <script src="../lib/jquery/jquery_3.3.1.js"></script>
+    <style>
+        .homeTop {
+            background: #ffffff;
+            padding: 16px 32px 0;
+            border: 1px solid #e8e8e8;
+            margin-bottom: 15px;
+            min-height: 100px;
+            min-width: 100px;
+        }
+
+        .homeMiddle {
+            padding: 20px;
+            margin: 10px;
+            background: #fff;
+            min-height: 150px;
+        }
+
+        .homeBottom {
+            padding: 20px;
+            margin: 10px;
+            background: #fff;
+            min-height: 150px;
+        }
+
+        .makeInfo {
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .appInfo {
+            float: left;
+            min-width: 200px;
+        }
+
+        .appInfo i, h3 {
+            display: inline-block;
+        }
+
+        .appButton {
+            float: right;
+            min-width: 400px;
+        }
+
+        .appButton .buttonGroup, button {
+            display: inline-block;
+        }
+
+        .tabs {
+            float: left;
+            /*display: inline-block;*/
+        }
+
+        .a {
+            /*display: inline-block;*/
+            margin: 10px;
+            min-height: 170px;
+            border: 1px solid #e8e8e8;
+            padding: 16px 32px 0;
+
+        }
+
+        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+            padding: 40px 0 40px 0;
+            margin: 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .text {
+            text-align: center;
+        }
+
+        .infos {
+            padding: 20px;
+        }
+
+        .infos div {
+            float: left;
+            padding: 20px;
+        }
+
+        .infoinfos {
+            border: 1px solid #e8e8e8;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            min-width: 500px;
+            margin-left: 100px;
+        }
+
+        .buttonGroup button {
+            margin: 0 -15px;
+        }
+
+        /*.tab-pane {*/
+        /*margin:0 32px 0 0;*/
+        /*padding:12px 16px;*/
+        /*text-decoration: none;*/
+        /*}*/
+    </style>
 </head>
-<body>
-$END$
-</body>
-</html>
+
+<div id="home">
+    <div class="homeTop">
+        <div>
+            <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <div class="appInfo">
+            <h3>MySQL</h3>
+            <!--<i class="el-icon-edit" @click="dialogFormVisible = true"></i>-->
+            <el-button type="text" @click="dialogFormVisible = true"><i class="el-icon-edit"></i></el-button>
+            <el-dialog title="修改应用名称" :visible.sync="dialogFormVisible">
+                <el-form :model="nameForm">
+                    <el-form-item>
+                        <el-input v-model="nameForm.name" auto-complete="off"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                </div>
+            </el-dialog>
+
+        </div>
+        <div class="appButton">
+            <div class="buttonGroup">
+                <el-tooltip class="item" effect="dark" content="跳转到应用对外访问端口对应的域名地址" placement="top">
+                    <el-button>访问</el-button>
+                </el-tooltip>
+                <el-button>关闭</el-button>
+                <el-button>重启</el-button>
+                <el-button>管理容器</el-button>
+            </div>
+            <el-button type="primary">重新部署</el-button>
+        </div>
+        <div class="tabs">
+            <el-tabs>
+                <el-tab-pane label="总览" name="first" class="tab-pane"></el-tab-pane>
+                <el-tab-pane label="监控" name="second" class="tab-pane"></el-tab-pane>
+                <el-tab-pane label="日志" name="third" class="tab-pane"></el-tab-pane>
+                <el-tab-pane label="伸缩" name="fourth" class="tab-pane"></el-tab-pane>
+                <el-tab-pane label="依赖" name="fifth" class="tab-pane"></el-tab-pane>
+                <el-tab-pane label="存储" name="sixth" class="tab-pane"></el-tab-pane>
+                <el-tab-pane label="端口" name="seventh" class="tab-pane"></el-tab-pane>
+                <el-tab-pane label="扩展" name="eighth" class="tab-pane"></el-tab-pane>
+                <el-tab-pane label="设置" name="ninth" class="tab-pane"></el-tab-pane>
+
+            </el-tabs>
+        </div>
+    </div>
+    <div class="homeMiddle">
+        <el-row :gutter="20">
+            <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
+                <div class="first a">
+                    <span>应用状态</span>
+                    <div class="statusFirst" v-loading="loading"></div>
+                    <div class="text">
+                        <span>运行中</span>
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
+                <div class="second a">
+                    <span>平均响应时间(ms)</span>
+                    <div class="timeSecond">
+
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
+                <div class="third a">
+                    <span>吞吐率(dps)</span>
+                    <div class="dpsThird">
+
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
+                <div class="fourth a">
+                    <span>资源使用</span>
+                    <div class="resoureFourth">
+
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+
+    <!--<div class="homeMiddle">-->
+
+
+    <!--</div>-->
+    <div class="homeBottom">
+        <div class="makeInfo">
+            <span>操作日志</span>
+        </div>
+        <div class="infos">
+            <div class="timeinfos">14:32:19</div>
+            <div class="infoinfos">部署完成@陈秋凡</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var home = new Vue({
+        el: '#home',
+        data: {
+            dialogTableVisible: false,
+            dialogFormVisible: false,
+            form: {
+                name: '',
+                region: ''
+            },
+            tableData: [{
+                name: 'MySql',
+                group: '2',
+                memory: '512MB',
+                status: '运行中'
+            }, {
+                name: 'Spring',
+                group: '3',
+                memory: '200MB',
+                status: '运行中'
+            }],
+            nameForm: {
+                name: ''
+            },
+            loading: true,
+        }
+
+    })
+</script>
