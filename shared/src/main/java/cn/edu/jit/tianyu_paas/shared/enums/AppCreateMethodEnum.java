@@ -8,25 +8,39 @@ public enum AppCreateMethodEnum {
     /**
      * 自定义源码创建（git地址）
      */
-    CUSTOM,
+    CUSTOM(0),
     /**
      * 从官方demo创建
      */
-    DEMO,
+    DEMO(1),
     /**
      * 从github创建（要先绑定github）
      */
-    GITHUB,
+    GITHUB(2),
     /**
      * 从docker镜像创建
      */
-    DOCKER_IMAGE,
+    DOCKER_IMAGE(3),
     /**
      * 从docker run创建
      */
-    DOCKER_RUN,
+    DOCKER_RUN(4),
     /**
      * 从应用市场创建
      */
-    MARKET
+    MARKET(5),
+    /**
+     * 从docker compose创建
+     */
+    DOCKER_COMPOSE(6);
+
+    int code;
+
+    AppCreateMethodEnum(int code) {
+        this.code = code;
+    }
+
+    public int getCode() {
+        return code;
+    }
 }

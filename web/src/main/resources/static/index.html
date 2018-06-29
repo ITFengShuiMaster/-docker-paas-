@@ -79,7 +79,7 @@
         </el-header>
         <el-menu
                 default-active="1"
-                class="el-menu-vertical-demo"
+                class="el-menu-vertical-marketApp"
                 @open="handleOpen"
                 @close="handleClose"
                 background-color="#545c64"
@@ -190,7 +190,7 @@
             selectPage(index, indexPath) {
                 console.log(this.pageArr[index - 1]);
                 // 主要就是通过jquery的load方法，加内容加载到元素上
-                $('#content').load(this.pageArr[index - 1], function (response, status, xhr) {
+                $('#content').load(this.pageArr[index - 1], function (response, message, xhr) {
                 });
             },
             logout() {
