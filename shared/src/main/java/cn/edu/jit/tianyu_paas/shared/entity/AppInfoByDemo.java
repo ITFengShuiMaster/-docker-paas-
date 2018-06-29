@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 
 /**
@@ -10,16 +11,13 @@ import java.io.Serializable;
  * @author 汪继友
  * @since 2018-06-28
  */
-public class AppDockerRunInfo implements Serializable {
+public class AppInfoByDemo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long appId;
-    /**
-     * 创建docker的命令
-     */
-    private String cmd;
-
+    @Min(1)
+    private Long demoId;
 
     public Long getAppId() {
         return appId;
@@ -29,19 +27,19 @@ public class AppDockerRunInfo implements Serializable {
         this.appId = appId;
     }
 
-    public String getCmd() {
-        return cmd;
+    public Long getDemoId() {
+        return demoId;
     }
 
-    public void setCmd(String cmd) {
-        this.cmd = cmd;
+    public void setDemoId(Long demoId) {
+        this.demoId = demoId;
     }
 
     @Override
     public String toString() {
-        return "AppDockerRunInfo{" +
+        return "AppInfoByDemo{" +
                 ", appId=" + appId +
-                ", cmd=" + cmd +
+                ", demoId=" + demoId +
                 "}";
     }
 }
