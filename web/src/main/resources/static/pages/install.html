@@ -34,23 +34,26 @@
         <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane v-for="item in classify" :key="item.id" :label="item.name" :name="item.id">
                 <el-row>
-                    <el-col :span="8" v-for="item in test">
-                        <div style="font-size: 4px;height: 170px">
-                            <div style="width: 50% ;">
+                    <el-col :span="7" v-for="item in test">
+                        <div style="font-size: 4px;height: 170px;">
+                            <div style="width: 80% ;">
                                 <div>
-                                    <img v-if="imageUrl" :src="imageUrl" style="width: 50%; float: left">
+                                    <img v-if="imageUrl" :src="imageUrl" style="width: 50%; float: left; height: 115px;">
                                 </div>
-                                <div style="float:right; width: 50% ;float: right">
-                                    <h style="font-size: 20px">我的软件</h> <br>
+                                <div style="float:right; width: 50% ;float: right;background-color: #ffffff; height: 115px">
+                                    <h style="font-size: 18px">我的软件</h> <br>
                                     <h style="font-size: 20px"> 简介xxxxxxxxxxx</h>
                                 </div>
                             </div>
                             <div>
-                                <el-button size="mini" plain style="width: 50%; ">
+                                <el-button size="mini" plain style="width: 80%; ">
                                     安装
                                 </el-button>
                             </div>
                         </div>
+                    </el-col>
+                    <el-col :span="1">
+
                     </el-col>
                 </el-row>
                 <div class="block">
