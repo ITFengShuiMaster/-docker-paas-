@@ -20,6 +20,11 @@ public class AppGroup implements Serializable {
 
     @TableId(value = "app_group_id", type = IdType.AUTO)
     private Long appGroupId;
+
+    /**
+     * 创建者id
+     */
+    private Long userId;
     /**
      * 应用组名字
      */
@@ -33,6 +38,13 @@ public class AppGroup implements Serializable {
      */
     private Date gmtCreate;
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public Long getAppGroupId() {
         return appGroupId;

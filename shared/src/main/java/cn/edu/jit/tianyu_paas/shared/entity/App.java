@@ -28,6 +28,10 @@ public class App implements Serializable {
      */
     private Long userId;
     /**
+     * 应用名称
+     */
+    private String name;
+    /**
      * 应用使用的内存量，以MB为单位
      */
     private Integer memoryUsed;
@@ -48,6 +52,13 @@ public class App implements Serializable {
      */
     private Date gmtCreate;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Long getAppId() {
         return appId;
