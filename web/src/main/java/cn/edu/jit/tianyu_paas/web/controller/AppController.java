@@ -2,11 +2,14 @@ package cn.edu.jit.tianyu_paas.web.controller;
 
 
 import cn.edu.jit.tianyu_paas.shared.entity.App;
+import cn.edu.jit.tianyu_paas.shared.entity.AppCustomInfo;
+import cn.edu.jit.tianyu_paas.shared.util.StringUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +23,7 @@ import java.util.Date;
  */
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/apps")
 public class AppController {
 
     private AppService appService;
@@ -33,27 +36,27 @@ public class AppController {
     }
 
     /**
-     * 创建应用
+     * 从自定义源码创建应用（git仓库）
      *
-     * @param app
-     * @return
+     * @author 汪继友
+     * @date 2018/6/29 11:11
      */
-    @PostMapping("create")
-    public TResult AppCreate(App app) {
-        if (app == null) {
-            return TResult.failure( TResultCode.PARAM_IS_BLANK );
+    @PostMapping("custom")
+    public TResult createApp(@Validated App app, AppCustomInfo custom) {
+        if (StringUtil.isAnyEmpty(app.getName())) {
+            return TResult.failure(TResultCode.PARAM_IS_BLANK);
+        }
+        if (app.getAppGroupId() == 0) {
+            return TResult.failure(TResultCode.PARAM_IS_INVALID);
         }
 
-        app.setUserId( (Long) session.getAttribute( Constants.SESSION_KEY_USER_ID ) );
-        app.setGmtCreate( new Date() );
+        long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        app.setUserId(userId);
+        app.setGmtCreate(new Date());
 
-        boolean flag = appService.insert( app );
-        if (!flag) {
-            return TResult.failure( TResultCode.FAILURE );
-        }
+        // TODO 检测仓库，并给应用设置memory, disk等
+        app.setCreateMethod(0);
 
         return TResult.success();
     }
-
-
 }

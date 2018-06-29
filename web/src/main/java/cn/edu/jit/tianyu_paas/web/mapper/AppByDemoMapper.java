@@ -1,6 +1,6 @@
 package cn.edu.jit.tianyu_paas.web.mapper;
 
-import cn.edu.jit.tianyu_paas.shared.entity.AppByDemo;
+import cn.edu.jit.tianyu_paas.shared.entity.AppDemoInfo;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @author 汪继友
  * @since 2018-06-28
  */
-public interface AppByDemoMapper extends BaseMapper<AppByDemo> {
+public interface AppByDemoMapper extends BaseMapper<AppDemoInfo> {
 
 }

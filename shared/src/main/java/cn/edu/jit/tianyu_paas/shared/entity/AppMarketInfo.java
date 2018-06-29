@@ -10,15 +10,15 @@ import java.io.Serializable;
  * @author 汪继友
  * @since 2018-06-28
  */
-public class AppByDockerRun implements Serializable {
+public class AppMarketInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long appId;
     /**
-     * 创建docker的命令
+     * 应用市场的docker id
      */
-    private String cmd;
+    private Long marketDockerId;
 
 
     public Long getAppId() {
@@ -29,19 +29,19 @@ public class AppByDockerRun implements Serializable {
         this.appId = appId;
     }
 
-    public String getCmd() {
-        return cmd;
+    public Long getMarketDockerId() {
+        return marketDockerId;
     }
 
-    public void setCmd(String cmd) {
-        this.cmd = cmd;
+    public void setMarketDockerId(Long marketDockerId) {
+        this.marketDockerId = marketDockerId;
     }
 
     @Override
     public String toString() {
-        return "AppByDockerRun{" +
+        return "AppMarketInfo{" +
                 ", appId=" + appId +
-                ", cmd=" + cmd +
+                ", marketDockerId=" + marketDockerId +
                 "}";
     }
 }

@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author 汪继友
  * @since 2018-06-28
  */
-public class AppByDemo implements Serializable {
+public class AppDemoInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ public class AppByDemo implements Serializable {
 
     @Override
     public String toString() {
-        return "AppByDemo{" +
+        return "AppDemoInfo{" +
                 ", appId=" + appId +
                 ", demoId=" + demoId +
                 "}";

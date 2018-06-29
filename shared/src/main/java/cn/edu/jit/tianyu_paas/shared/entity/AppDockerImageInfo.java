@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author 汪继友
  * @since 2018-06-28
  */
-public class AppByDockerImage implements Serializable {
+public class AppDockerImageInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,7 @@ public class AppByDockerImage implements Serializable {
 
     @Override
     public String toString() {
-        return "AppByDockerImage{" +
+        return "AppDockerImageInfo{" +
                 ", appId=" + appId +
                 ", image=" + image +
                 "}";
