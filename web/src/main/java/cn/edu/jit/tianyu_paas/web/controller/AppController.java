@@ -10,6 +10,7 @@ import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -172,19 +173,15 @@ public class AppController {
      * @author 卢越
      * @date 2018/6/29 16:30
      */
-    @GetMapping("/info")
-    public TResult info(@RequestParam(required = false, defaultValue = "") String name, Integer status,
-                        @RequestParam(value = "current", defaultValue = "1") Integer current,
-                        @RequestParam(value = "size", defaultValue = "3") Integer size) {
-
+    @GetMapping
+    public TResult listAppByNameAndStatus(@RequestParam(required = false, defaultValue = "") String name, Integer status, Pagination page) {
         App app = new App();
         app.setName(name);
         app.setStatus(status);
-        // TODO 6为测试数据，实际应该改为session.getAttribute(Constants.SESSION_KEY_USER_ID)
-        app.setUserId(Long.parseLong("6"));
-        Page page = appService.selectAppListPage(app, current, size);
+        app.setUserId((Long) session.getAttribute(Constants.SESSION_KEY_USER_ID));
+        Page<App> appPages = appService.listAppsByNameAndStatus(app, page);
 
-        return TResult.success(page);
+        return TResult.success(appPages);
     }
 
     @PostMapping("market")

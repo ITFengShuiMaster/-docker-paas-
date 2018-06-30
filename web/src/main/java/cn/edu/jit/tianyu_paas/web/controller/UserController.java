@@ -120,7 +120,9 @@ public class UserController {
      */
     @GetMapping("/info/{userId}")
     public TResult info(@PathVariable String userId) {
-        User user = userService.selectOne(new EntityWrapper<User>().eq("user_id", userId));
+        EntityWrapper<User> entityWrapper = new EntityWrapper<>();
+        entityWrapper.setSqlSelect("user_id,name,phone,email,head_img").eq("user_id", userId);
+        User user = userService.selectOne(entityWrapper);
         if (user == null) {
             return TResult.failure(TResultCode.USER_NOT_EXIST);
         }

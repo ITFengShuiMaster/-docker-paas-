@@ -18,6 +18,8 @@ public class Action implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final Integer STATUS = 1;
+
     @TableId(value = "action_id", type = IdType.AUTO)
     private Long actionId;
     /**
