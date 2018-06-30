@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义源码</title>
+    <link rel="stylesheet" href="../lib/element/index.css"/>
+    <script src="../lib/vue/vue.js"></script>
+    <script src="../lib/element/index.js"></script>
+    <script src="../lib/jquery/jquery_3.3.1.js"></script>
+    <link rel="stylesheet" href="../lib/css/editormd.css"/>
+
+</head>
+<body>
+<div id="form">
+
+    <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" class="form">
+        <el-form-item label="应用名称:">
+            <el-input v-model="formLabelAlign.name" placeholder="请为创建的应用起名"></el-input>
+        </el-form-item>
+        <el-form-item label="应用组:">
+            <el-select class="select-group" v-model="formLabelAlign.group" placeholder="选择应用组">
+                <el-option v-for="item in labelArr" :key="item.label" :label="item.label"
+                           :value="item.value"></el-option>
+            </el-select>
+            <el-button @click="dialogFormVisible = true" class="add-group-button">新建</el-button>
+            <el-dialog title="新建应用组" :visible.sync="dialogFormVisible">
+                <el-form :model="ruleForm" staus-icon :rules="rules" ref="ruleForm" class="demo-ruleForm"
+                         label-position="right" label-width="80px" :model="formLabelAlign">
+                    <el-form-item label="组名称" prop="name">
+                        <el-input placeholder="请填写组名称" v-model="ruleForm.name"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                </div>
+            </el-dialog>
+        </el-form-item>
+        <el-form-item label="仓库地址:">
+            <el-input placeholder="请输入仓库地址" v-model="formLabelAlign.address" class="input-with-select">
+                <el-select class="select-git" v-model="select" slot="prepend" placeholder="git">
+                    <el-option label="git" value="1"></el-option>
+                </el-select>
+            </el-input>
+        </el-form-item>
+        <el-form-item label="代码分支:">
+            <el-input v-model="formLabelAlign.branch" id="branch-input"></el-input>
+        </el-form-item>
+        <el-button type="primary" class="add-button">新建应用</el-button>
+    </el-form>
+</div>
+<script>
+    var vue = new Vue({
+        el: '#form',
+        data() {
+            return {
+                labelPosition: 'right',
+                formLabelAlign: {
+                    name: '',
+                    group: '',
+                    address: '',
+                    branch: '',
+                },
+                select: '',
+                labelArr: [
+                    {label: '未分组', value: 'shanghai'},
+                    {label: '分组一', value: 'beijing'}
+                ],
+                dialogFormVisible: false,
+                ruleForm: {
+                    name: '',
+                },
+                formLabelWidth: '60px',
+                rules: {
+                    name: [
+                        {required: true, message: '请输入组名称', trigger: 'blur'}
+                    ]
+                },
+                activeIndex: '1',
+            };
+        }
+    });
+    $("#branch-input").val("master");
+</script>
+</body>
+<style>
+    .form {
+        background: white;
+        padding: 3% 20%;
+    }
+
+    .el-input__inner {
+        height: 35px;
+
+    }
+
+    .el-dialog {
+        width: 40%;
+    }
+
+    .select-group {
+        width: 88%;
+    }
+
+    .add-group-button {
+        height: 35px;
+        padding: 8px 20px;
+    }
+
+    .add-button {
+        margin-left: 10%;
+    }
+
+    .select-git {
+        width: 130px;
+    }
+
+</style>
+</html>
