@@ -8,12 +8,16 @@
     }
 </style>
 
-<div id="app1" style="width: 95%; margin-left: 2%">
-    <div style="width: 90% ;">
-        <el-breadcrumb separator="/">
-            <el-breadcrumb-item>首页</el-breadcrumb-item>
-            <el-breadcrumb-item>财务中心</el-breadcrumb-item>
-        </el-breadcrumb>
+<div id="app1">
+    <el-row style="width: 100%; margin: -18px">
+        <el-col :span="22">
+        <div style="background: #ffffff; height: 50px">
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item>首页</el-breadcrumb-item>
+                <el-breadcrumb-item>财务中心</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        </el-col>
         <div style="margin-top: 5%; margin-left: 5%">
             <el-row :gutter="10">
                 <el-col :span="8">
@@ -94,7 +98,7 @@
                 </template>
             </div>
         </div>
-    </div>
+    </el-row>
 </div>
 <script>
     var app1 = new Vue({
