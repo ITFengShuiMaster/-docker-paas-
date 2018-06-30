@@ -1,7 +1,10 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
 import cn.edu.jit.tianyu_paas.shared.entity.Action;
+import cn.edu.jit.tianyu_paas.shared.enums.ActionEnum;
+import cn.edu.jit.tianyu_paas.shared.util.DateUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
+import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.ActionService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/actions")
@@ -31,33 +36,20 @@ public class ActionController {
      * @author 卢越
      * @date 2018/6/29 16:30
      */
-    @GetMapping("/info")
+    @GetMapping
     public TResult info() {
-        // TODO 6为测试数据，实际应该改为session.getAttribute(Constants.SESSION_KEY_USER_ID)
-        List<Action> lists = actionService.selectList(new EntityWrapper<Action>().eq("user_id", 6).orderBy("gmt_create", false));
-        List<String> actions = new ArrayList<>();
+        List<Action> lists = actionService.selectList(new EntityWrapper<Action>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)).orderBy("gmt_create", false).last("LIMIT 6"));
+        List<Map<String, Object>> actions = new ArrayList<>();
         for (Action action : lists) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(action.getUserName());
-            switch (action.getAction()) {
-                case 0:
-                    sb.append("水平升级");
-                    break;
-                case 1:
-                    sb.append("启动");
-                    break;
-                case 2:
-                    sb.append("重启");
-                    break;
-                case 3:
-                    sb.append("部署");
-                    break;
-                default:
-                    break;
-            }
-            sb.append(action.getAppName() + "应用");
-            sb.append(action.getStatus() == 1 ? "完成" : "失败");
-            actions.add(sb.toString());
+            Map<String, Object> map = new HashMap<>(16);
+            map.put("userId", action.getUserId());
+            map.put("userName", action.getUserName());
+            map.put("action", ActionEnum.getMessageBycode(action.getAction()));
+            map.put("appId", action.getAppId());
+            map.put("appName", action.getAppName());
+            map.put("status", Action.STATUS.equals(action.getStatus()) ? "完成" : "失败");
+            map.put("date", DateUtil.getSimpleDate(action.getGmtCreate()));
+            actions.add(map);
         }
 
         return TResult.success(actions);

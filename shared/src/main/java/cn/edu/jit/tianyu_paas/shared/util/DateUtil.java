@@ -1,5 +1,7 @@
 package cn.edu.jit.tianyu_paas.shared.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -58,8 +60,9 @@ public class DateUtil {
         // java中sunday是第一天，所以要减1
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         // 如果是sunday，减1变成0。
-        if (dayOfWeek == 0)
+        if (dayOfWeek == 0) {
             dayOfWeek = 7;
+        }
         return dayOfWeek;
     }
 
@@ -74,7 +77,20 @@ public class DateUtil {
         return (int) (Math.abs(date1.getTime() - date2.getTime()) / 1000 / 60 / 60 / 24 / 30);
     }
 
-    public static void main(String[] args) {
+    /**
+     * 日期格式转换
+     *
+     * @param date
+     * @Auther:卢越
+     * @Date:2018/6/30 9:51
+     */
+    public static String getSimpleDate(Date date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(date);
+    }
+
+    public static void main(String[] args) throws ParseException {
         System.out.println(getDayOfWeekOfToday());
+        System.out.println(new Date());
     }
 }
