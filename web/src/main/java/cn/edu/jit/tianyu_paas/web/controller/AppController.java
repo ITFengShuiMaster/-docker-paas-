@@ -10,19 +10,13 @@ import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-<<<<<<< HEAD
-=======
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
->>>>>>> 8e5818586744669ee2134e5084cb24ce992643f6
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.List;
+
 
 /**
  * @author 倪龙康，卢越
