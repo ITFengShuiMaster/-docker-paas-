@@ -28,5 +28,5 @@ public interface AppMapper extends BaseMapper<App> {
             "AND a.status = #{app.status}",
             "</if>",
             "</script>"})
-    List<App> selectListAppPage(Pagination page, @Param("app") App app);
+    List<App> selectListAppPage(@Param("app") App app, Pagination page);
 }
