@@ -33,7 +33,7 @@
             <el-tab-pane v-for="item in classify" :key="item.id" :label="item.name" :name="item.id">
                 <div style="margin-left:0%">
                 <el-row >
-                    <el-col :span="6" v-for="(o, index) in 6" :key="o" :offset="index > -1 ? 2 : 0" style="height: 170px">
+                    <el-col :span="6" v-for="(o, index) in 6" :key="o" :offset="index > -1 ? 1 : 0" style="height: 170px">
                         <el-card :body-style="{ padding: '0px' }">
                             <img :src="imageUrl"  style="width: 28%; float: left;">
                             <div style="padding: 20px;">

@@ -144,9 +144,23 @@
                 </el-dropdown>
             </el-col>
             <el-col :span="8" align="right" style="font-size: 20px; color: #409EFF; margin-top: 0px">
-                <el-badge :value="messagenum" :max="99">
-                    <i class="el-icon-bell"></i>
-                </el-badge>
+                <el-popover
+                        placement="bottom"
+                        title="标题"
+                        width="200"
+                        trigger="click"
+                        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                    <el-button slot="reference" type="text"><el-badge :value="messagenum" :max="99">
+                        <i class="el-icon-bell"></i>
+                    </el-badge></el-button>
+                    <template>
+                        <el-tabs v-model="activeName" @tab-click="handleClick">
+                            <el-tab-pane label="公共" name="first">公共</el-tab-pane>
+                            <el-tab-pane label="消息" name="second">消息</el-tab-pane>
+                            <el-tab-pane label="提醒" name="third">提醒</el-tab-pane>
+                        </el-tabs>
+                    </template>
+                </el-popover>
             </el-col>
             <el-col :span="2" align="right" style="margin-top: 0px">
                 <el-upload
@@ -181,12 +195,16 @@
             imageUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530095202459&di=d5628439c3c75918ea048a835a92ec34&imgtype=0&src=http%3A%2F%2Fimages.missyuan.com%2Fattachments%2Fday_140910%2F20140910_ddc05dd96d2ed9238ab2v4i79I985zi4.jpg',
             username: 'zwp',
             isCollapse: false,
-            pageArr: ['pages/financialcenter.html', 'test2.html'],
+            pageArr: ['pages/install.html', 'test2.html'],
             messagenum: 199,
             teamArr: ['团队一', '团队二'],
-            dataArr: ['假数据中心', '真数据中心']
+            dataArr: ['假数据中心', '真数据中心'],
+            activeName: 'second',
         },
         methods: {
+            handleClick(tab, event) {
+                console.log(tab, event);
+            },
             // 选择页面
             selectPage(index, indexPath) {
                 console.log(this.pageArr[index - 1]);

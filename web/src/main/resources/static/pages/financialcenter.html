@@ -9,16 +9,16 @@
 </style>
 
 <div id="app1">
-    <el-row style="width: 100%; margin: -18px">
+    <el-row style="width: 92%; margin: -18px">
         <el-col :span="22">
-        <div style="background: #ffffff; height: 50px">
-            <el-breadcrumb separator="/">
+        <div style="background: #ffffff;width: 120%; margin-top: 1%;height: 40px">
+            <el-breadcrumb separator="/" style="font-size: 14px">
                 <el-breadcrumb-item>首页</el-breadcrumb-item>
                 <el-breadcrumb-item>财务中心</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         </el-col>
-        <div style="margin-top: 5%; margin-left: 5%">
+        <div style="margin-top: 5%;width: 110%;">
             <el-row :gutter="10">
                 <el-col :span="8">
                     <div class="grid-content bg-purple" style="text-align: center; ">账户余额<br>
@@ -39,12 +39,14 @@
                 </el-col>
             </el-row>
         </div>
-        <div style="margin-left: 70%;margin-top: 4%">
+        <div style="background: #ffffff; width: 110%">
+        <div style="margin-left: 70%;margin-top: 1%; background: #ffffff">
             <el-button size="mini" plain>购买资源</el-button>
             <el-button size="mini" plain>账户充值</el-button>
             <el-button size="mini" plain>更多</el-button>
         </div>
-        <div style="margin-top: 2%; background: #ffffff; min-height: 400px">
+        </div>
+        <div style="margin-top: 1%; background: #ffffff; min-height: 400px; width: 110%">
             <el-row>
                 <el-col :span="10">
                     <div style="float: left ; margin-left: 10%; margin-top: 5%">
@@ -63,12 +65,12 @@
                     </div>
                 </el-col>
             </el-row>
-            <div style=" margin-left: 5% ;margin-top: 2%">
+            <div style=" margin-left: 1% ;margin-top: 2%">
                 <template>
                     <el-table
                             :data="tableData3"
                             height="250"
-                            border
+                            stripe
                             style="width: 100%">
                         <el-table-column
                                 prop="date"
@@ -92,7 +94,8 @@
                         </el-table-column>
                         <el-table-column
                                 prop="allcost"
-                                label="总费用">
+                                label="总费用"
+                                width="200">
                         </el-table-column>
                     </el-table>
                 </template>
