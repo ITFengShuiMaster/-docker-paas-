@@ -63,8 +63,8 @@ public class VarController {
      * @param varName
      * @return
      */
-    @DeleteMapping("{var_name}")
-    public TResult deleteVar(@PathVariable("var_name") String varName){
+    @DeleteMapping("{varName}")
+    public TResult deleteVar(@PathVariable String varName){
         if(!appVarService.delete(new EntityWrapper<AppVar>().eq("var_name",varName)))
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         return TResult.success();
@@ -75,8 +75,8 @@ public class VarController {
      * @param appId
      * @return
      */
-    @GetMapping("{app_id}")
-    public TResult getVarInfo(@PathVariable("app_id") Long appId){
+    @GetMapping("{appId}")
+    public TResult getVarInfo(@PathVariable Long appId){
         List<AppVar> appVars = appVarService.selectList(new EntityWrapper<AppVar>().eq("app_id",appId));
         if(appVars == null)
             return TResult.failure(TResultCode.RESULE_DATA_NONE);

@@ -95,8 +95,8 @@ public class GroupController {
      * @param appGroupId
      * @return
      */
-    @DeleteMapping("{app_group_id}")
-    public TResult deleteGroup(@PathVariable("app_group_id") Long appGroupId){
+    @DeleteMapping("{appGroupId}")
+    public TResult deleteGroup(@PathVariable Long appGroupId){
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         if(!appGroupService.delete(new EntityWrapper<AppGroup>().eq("app_group_id",appGroupId).eq("user_id",userId)))
             return TResult.failure(TResultCode.BUSINESS_ERROR);
