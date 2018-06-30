@@ -11,10 +11,10 @@
 <body>
 <el-container id="app">
     <el-header style="height: 50px">
-        <el-col span="6">
+        <el-col :span="6">
             <div>logo</div>
         </el-col>
-        <el-col span="4" offset="20">
+        <el-col :span="4" :offset="20">
             <div class="register">没有账号？立即<a href="" class="register_text_button">注册</a></div>
         </el-col>
     </el-header>
@@ -79,11 +79,7 @@
         width: 60%;
         margin-left: 20%;
         margin-top: 4%;
-        height: 30px;
-    }
-
-    .el-input__inner {
-        height: 30px;
+        height: 10%;
     }
 
     .text-button {
@@ -100,7 +96,7 @@
         border: 0px;
         background: #64C36A;
         color: white;
-        height: 30px;
+        height: 12%;
         padding: 0px 10px;
         display: block;
     }

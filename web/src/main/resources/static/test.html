@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义源码</title>
+    <link rel="stylesheet" href="lib/css/editormd.css">
+</head>
+<body>
+<div id="test-editormd">
+    <textarea style="display:none;"></textarea>
+</div>
+<script type="text/javascript" src="lib/jquery/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="lib/jquery/editormd.js"></script>
+<script>
+    $(function () {
+        var editor = editormd("test-editormd", {
+            path: "editor/",
+            height: "400px",
+            width: "500px",
+        });
+    });
+</script>
+</body>
+</html>

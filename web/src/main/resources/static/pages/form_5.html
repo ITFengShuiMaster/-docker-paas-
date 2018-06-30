@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DockerCompose</title>
+    <link rel="stylesheet" href="../lib/element/index.css"/>
+    <link rel="stylesheet" href="../lib/css/editormd.css">
+    <script src="../lib/vue/vue.js"></script>
+    <script src="../lib/element/index.js"></script>
+    <script src="../lib/jquery/jquery_3.3.1.js"></script>
+    <script type="text/javascript" src="../lib/jquery/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../lib/jquery/editormd.js"></script>
+</head>
+<body>
+<div class="form">
+    <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" id="form">
+        <el-form-item label="应用名称:">
+            <el-input v-model="formLabelAlign.name" placeholder="请为创建的应用起名"></el-input>
+        </el-form-item>
+        <el-form-item label="compose:">
+            <div id="test-editormd" class="editormd editormd-vertical" style="width: 628px;height: 430px;">
+                <textarea style="display:none;"></textarea>
+            </div>
+        </el-form-item>
+        <el-button type="primary" class="add-button">新建应用</el-button>
+
+    </el-form>
+
+</div>
+<script>
+    var vue = new Vue({
+        el: '#form',
+        data() {
+            return {
+                labelPosition: 'right',
+                formLabelAlign: {
+                    name: '',
+                },
+                message: ''
+            }
+        }
+    });
+    $(function () {
+        var editor = editormd("test-editormd", {
+            path: "editor/",
+            height: "300px",
+            width: "100%",
+            editorTheme: "pastel-on-dark",
+            toolbar: false,
+            watch: false,
+            placeholder: "composing code here"
+        });
+    });
+</script>
+</body>
+<style>
+    .form {
+        padding: 5% 20%;
+    }
+
+    .el-input__inner {
+        height: 35px;
+    }
+
+    .add-button {
+        margin-left: 10%;
+    }
+
+    .test-editormd {
+        width: 666px;
+    }
+</style>
+</html>
