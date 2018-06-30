@@ -15,13 +15,13 @@ import java.util.Date;
  * @since 2018-06-30
  */
 @RestController
-@RequestMapping("/ports")
-public class PortController {
+@RequestMapping("/app-ports")
+public class AppPortController {
 
     private final AppPortService appPortService;
 
     @Autowired
-    public PortController(AppPortService appPortService) {
+    public AppPortController(AppPortService appPortService) {
         this.appPortService = appPortService;
     }
 

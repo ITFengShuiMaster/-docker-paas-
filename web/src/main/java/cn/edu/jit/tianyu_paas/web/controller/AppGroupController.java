@@ -21,16 +21,16 @@ import java.util.Map;
  * @author 倪龙康
  * @since 2018-06-29
  */
-@RequestMapping("/groups")
+@RequestMapping("/app-groups")
 @RestController
-public class GroupController {
+public class AppGroupController {
 
     private AppGroupService appGroupService;
     private AppService appService;
     private HttpSession session;
 
     @Autowired
-    public GroupController(AppGroupService appGroupService, AppService appService, HttpSession session) {
+    public AppGroupController(AppGroupService appGroupService, AppService appService, HttpSession session) {
         this.appGroupService = appGroupService;
         this.appService = appService;
         this.session = session;

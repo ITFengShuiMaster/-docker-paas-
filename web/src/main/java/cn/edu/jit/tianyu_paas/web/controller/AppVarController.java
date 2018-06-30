@@ -17,13 +17,13 @@ import java.util.List;
  * @since 2018-06-30
  */
 @RestController
-@RequestMapping("/vars")
-public class VarController {
+@RequestMapping("/app-vars")
+public class AppVarController {
 
     private final AppVarService appVarService;
     private final HttpSession session;
     @Autowired
-    public VarController(AppVarService appVarService, HttpSession session) {
+    public AppVarController(AppVarService appVarService, HttpSession session) {
         this.appVarService = appVarService;
         this.session = session;
     }
