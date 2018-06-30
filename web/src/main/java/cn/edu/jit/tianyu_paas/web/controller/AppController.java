@@ -11,12 +11,14 @@ import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-
 
 /**
  * @author 倪龙康，卢越
@@ -37,13 +39,15 @@ public class AppController {
     private final AppInfoByMarketService appInfoByMarketService;
     private final AppGroupService appGroupService;
     private final MarketAppService marketAppService;
-
+    private final Logger logger = LoggerFactory.getLogger(AppController.class);
+    private AppVarService appVarService;
+    private AppPortService appPortService;
 
     @Autowired
-    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService) {
+    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService) {
         this.appService = appService;
-        this.session = session;
         this.appInfoByCustomService = appInfoByCustomService;
+        this.session = session;
         this.appInfoByDemoService = appInfoByDemoService;
         this.demoService = demoService;
         this.appInfoByDockerImageService = appInfoByDockerImageService;
@@ -51,6 +55,8 @@ public class AppController {
         this.appInfoByMarketService = appInfoByMarketService;
         this.appGroupService = appGroupService;
         this.marketAppService = marketAppService;
+        this.appVarService = appVarService;
+        this.appPortService = appPortService;
     }
 
     /**
@@ -59,10 +65,10 @@ public class AppController {
      * @param appId
      * @return
      */
-    @GetMapping("{app_id}")
-    public TResult getAppInfo(@PathVariable("app_id") Long appId){
+    @GetMapping("{appId}")
+    public TResult getAppInfo(@PathVariable Long appId) {
         App app = appService.selectById(appId);
-        return TResult.success(app.toString());
+        return TResult.success(app);
     }
 
     private void initApp(App app, AppCreateMethodEnum createMethodEnum) {
@@ -204,8 +210,4 @@ public class AppController {
         }
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
-
-
-
-
 }

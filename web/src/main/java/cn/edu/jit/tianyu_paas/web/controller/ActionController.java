@@ -9,6 +9,7 @@ import cn.edu.jit.tianyu_paas.web.service.ActionService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,5 +54,32 @@ public class ActionController {
         }
 
         return TResult.success(actions);
+    }
+
+    /**
+     * 获取应用的操作日志
+     *
+     * @author 汪继友
+     * @date 2018/6/30 14:14
+     */
+    @GetMapping("{appId}")
+    public TResult listAppAction(@PathVariable long appId) {
+        long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        return TResult.success(actionService.listAppActionByUserId(userId, appId));
+    }
+
+    /**
+     * 获取应用操作日志的详细日志（info,debug,error)
+     *
+     * @author 汪继友
+     * @date 2018/6/30 14:27
+     */
+    @GetMapping("detail")
+    public TResult listAppInfoLog(long appId, long actionId, int level) {
+        long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        if (actionService.isActionIdExist(userId, appId, actionId)) {
+
+        }
+        return null;
     }
 }

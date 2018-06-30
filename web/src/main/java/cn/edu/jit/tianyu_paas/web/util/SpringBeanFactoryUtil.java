@@ -1,4 +1,4 @@
-package cn.edu.jit.tianyu_paas.shared.util;
+package cn.edu.jit.tianyu_paas.web.util;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -9,7 +9,9 @@ public class SpringBeanFactoryUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
-    //获取applicationContext
+    /**
+     * 获取applicationContext
+     */
     public static ApplicationContext getApplicationContext() {
         return applicationContext;
     }
@@ -21,7 +23,12 @@ public class SpringBeanFactoryUtil implements ApplicationContextAware {
         }
     }
 
-    //通过name获取 Bean.
+    /**
+     * 通过name获取 Bean.
+     *
+     * @param name
+     * @return
+     */
     public static Object getBean(String name) {
         return getApplicationContext().getBean(name);
     }

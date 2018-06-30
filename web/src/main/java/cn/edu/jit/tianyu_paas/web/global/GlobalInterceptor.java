@@ -10,18 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class TInterceptor implements HandlerInterceptor {
+public class GlobalInterceptor implements HandlerInterceptor {
 
     @Value("${web.runtime}")
     private boolean runtime;
     @Value("${web.test-user-id}")
     private long testUserId;
 
-    private Logger logger = LoggerFactory.getLogger(TInterceptor.class);
-
-    public static void main(String[] args) {
-        System.out.println("tset");
-    }
+    private Logger logger = LoggerFactory.getLogger(GlobalInterceptor.class);
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) {
