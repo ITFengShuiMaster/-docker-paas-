@@ -27,7 +27,7 @@ public class TInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) {
         logger.debug(httpServletRequest.getRequestURI());
         HttpSession session = httpServletRequest.getSession();
-        logger.debug("weixin runtime: " + runtime);
+        logger.debug("paas web runtime: " + runtime);
         if (!runtime) {
             logger.debug("debug mode test user: " + testUserId);
             session.setAttribute(Constants.SESSION_KEY_USER_ID, testUserId);
