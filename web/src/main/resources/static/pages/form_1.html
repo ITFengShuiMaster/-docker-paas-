@@ -7,12 +7,13 @@
     <script src="../lib/vue/vue.js"></script>
     <script src="../lib/element/index.js"></script>
     <script src="../lib/jquery/jquery_3.3.1.js"></script>
-    <link rel="stylesheet" href="../lib/css/editormd.css">
+    <link rel="stylesheet" href="../lib/css/editormd.css"/>
 
 </head>
 <body>
-<div class="form">
-    <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" id="form">
+<div id="form">
+
+    <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" class="form">
         <el-form-item label="应用名称:">
             <el-input v-model="formLabelAlign.name" placeholder="请为创建的应用起名"></el-input>
         </el-form-item>
@@ -74,7 +75,8 @@
                     name: [
                         {required: true, message: '请输入组名称', trigger: 'blur'}
                     ]
-                }
+                },
+                activeIndex: '1',
             };
         }
     });
@@ -83,7 +85,8 @@
 </body>
 <style>
     .form {
-        padding: 5% 20%;
+        background: white;
+        padding: 3% 20%;
     }
 
     .el-input__inner {
@@ -96,7 +99,7 @@
     }
 
     .select-group {
-        width: 89%;
+        width: 88%;
     }
 
     .add-group-button {

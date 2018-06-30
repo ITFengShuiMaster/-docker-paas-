@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>由源码创建应用</title>
+
+    <link rel="stylesheet" href="../lib/element/index.css"/>
+    <script src="../lib/vue/vue.js"></script>
+    <script src="../lib/element/index.js"></script>
+    <script src="../lib/jquery/jquery_3.3.1.js"></script>
+    <link rel="stylesheet" href="../lib/css/editormd.css"/>
+
+</head>
+<body>
+<div id="app">
+    <div id="info">
+        <el-breadcrumb separator="/">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>创建应用</el-breadcrumb-item>
+            <el-breadcrumb-item>从源码创建</el-breadcrumb-item>
+        </el-breadcrumb>
+
+        <p class="big-text">由源码创建应用</p>
+        <p class="normal-text">从指定源码仓库中获取源码，基于源码信息创建新应用</p>
+
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="selectForm">
+            <el-menu-item index="1">自定义源码</el-menu-item>
+            <el-menu-item index="2">官方DEMO</el-menu-item>
+        </el-menu>
+    </div>
+
+    <div id="form_content" style="background: #F0F2F5; padding: 20px 20px"></div>
+
+</div>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data() {
+            return {
+                activeIndex: '1',
+                formArr: ['form_1.html', 'form_2.html'],
+            };
+        },
+        methods: {
+            selectForm(index, indexPath) {
+                console.log(this.formArr[index - 1]);
+                // 主要就是通过jquery的load方法，加内容加载到元素上
+                $('#form_content').load(this.formArr[index - 1], function (response, status, xhr) {
+                });
+            },
+            logout() {
+
+            },
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleAvatarSuccess() {
+
+            },
+            beforeAvatarUpload() {
+
+            }
+        },
+        mounted() {
+            this.selectForm(1, '');
+        }
+    })
+</script>
+</body>
+<style>
+    .el-breadcrumb__inner a, .el-breadcrumb__inner.is-link {
+        color: #909399;
+        font-weight: normal;
+    }
+
+    .el-breadcrumb__inner {
+        color: #909399;
+    }
+
+    .el-breadcrumb__item:last-child .el-breadcrumb__inner, .el-breadcrumb__item:last-child .el-breadcrumb__inner a, .el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover, .el-breadcrumb__item:last-child .el-breadcrumb__inner:hover {
+        color: #6f7180;
+    }
+
+    #info {
+        padding: 10px 20px;
+    }
+
+    .big-text {
+        color: #303133;
+        font-size: 20px;
+    }
+
+    .normal-text {
+        color: #606266;
+        font-size: 14px;
+    }
+</style>
+</html>
