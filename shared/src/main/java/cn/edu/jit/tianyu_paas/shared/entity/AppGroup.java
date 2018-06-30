@@ -2,6 +2,7 @@ package cn.edu.jit.tianyu_paas.shared.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
+import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.Date;
  * @author 汪继友
  * @since 2018-06-28
  */
+@Data
 public class AppGroup implements Serializable {
 
     private static final long serialVersionUID = 1L;

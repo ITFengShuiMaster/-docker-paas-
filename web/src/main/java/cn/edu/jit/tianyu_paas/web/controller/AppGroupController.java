@@ -38,10 +38,11 @@ public class AppGroupController {
 
     /**
      * 创建应用组
-     * @author 倪龙康
+     *
      * @param group_name
      * @param compose
      * @return
+     * @author 倪龙康
      */
     @PostMapping
     public TResult groupCreate(String group_name, String compose) {
@@ -55,33 +56,35 @@ public class AppGroupController {
         if (!appGroupService.insert(appGroup)) {
             return TResult.failure(TResultCode.FAILURE);
         }
-        return TResult.success( appGroup.getAppGroupId() );
+        return TResult.success(appGroup.getAppGroupId());
     }
 
     /**
      * 修改组名
-     * @author 倪龙康
+     *
      * @param appGroup
      * @return
+     * @author 倪龙康
      */
     @PutMapping
-    public TResult updateGroup(AppGroup appGroup){
-        if(!appGroupService.updateById(appGroup))
+    public TResult updateGroup(AppGroup appGroup) {
+        if (!appGroupService.updateById(appGroup))
             return TResult.failure(TResultCode.FAILURE);
         return TResult.success();
     }
 
     /**
      * 获取用户所有用户组以及用户组中的所有应用
-     * @author 倪龙康
+     *
      * @return
+     * @author 倪龙康
      */
     @GetMapping("{user_id}")
-    public TResult showGroupInfo(@PathVariable("user_id") Long user_id){
+    public TResult showGroupInfo(@PathVariable("user_id") Long user_id) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         Map<AppGroup, List<App>> maps = new HashMap<>();
         List<AppGroup> groups = appGroupService.selectList(new EntityWrapper<AppGroup>().eq("user_id", user_id));
-        for(AppGroup group: groups) {
+        for (AppGroup group : groups) {
             List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_id", group.getAppGroupId()));
             maps.put(group, apps);
         }
@@ -90,14 +93,15 @@ public class AppGroupController {
 
     /**
      * 删除应用组
-     * @author 倪龙康
+     *
      * @param app_group_id
      * @return
+     * @author 倪龙康
      */
     @DeleteMapping("{app_group_id}")
-    public TResult deleteGroup(@PathVariable("app_group_id") Long app_group_id){
+    public TResult deleteGroup(@PathVariable("app_group_id") Long app_group_id) {
         System.out.println(app_group_id);
-        if(!appGroupService.deleteById(app_group_id))
+        if (!appGroupService.deleteById(app_group_id))
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         return TResult.success();
     }
