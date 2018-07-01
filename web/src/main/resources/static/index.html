@@ -58,7 +58,7 @@
     </el-aside>
 
     <el-container>
-        <el-header style=" margin:0;padding:0;">
+        <el-header style=" margin-top:-7px;padding:0px;width: 100%">
             <el-card shadow="always">
             <el-col :span="6" align="center">
                 <el-dropdown>
@@ -133,8 +133,10 @@
     var vm = new Vue({
         el: '#app',
         data: {
+            id: 1,
+            url: "http://localhost:8080/tianyu-paas/users/info/",
             imageUrl: '',
-            username: 'zwp',
+            username: '',
             isCollapse: false,
             pageArr: ['', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/install.html', 'pages/appinfo.html', '', '', 'pages/financialcenter.html'],
             messagenum: 199,
@@ -143,6 +145,25 @@
             activeName: 'second',
         },
         methods: {
+            init(){
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8080/tianyu-paas/users/info/'+ this.id,
+                    data: {
+
+                    },
+                    success : function (result) {
+                        if(result.code) {
+                            console.log(result);
+                            vm.username = result.username;
+                        } else {
+                        }
+                    },
+                    error :function () {
+                        console.log("失败")
+                    }
+                })
+            },
             handleClick(tab, event) {
                 console.log(tab, event);
             },
@@ -171,6 +192,7 @@
         },
         mounted() {
             // this.selectLeft(1, '');
+            this.init();
         }
     });
 </script>
