@@ -64,9 +64,7 @@ public class ActionController {
     @GetMapping("detail")
     public TResult listAppInfoLog(long appId, long actionId, int level) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        if (actionService.isActionIdExist(userId, appId, actionId)) {
 
-        }
         return null;
     }
 }
