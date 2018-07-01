@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <link rel="stylesheet" href="../lib/element/index.css"/>
+    <script src="../lib/vue/vue.js"></script>
+    <script src="../lib/element/index.js"></script>
+    <script src="../lib/jquery/jquery_3.3.1.js"></script>
+    <style>
+        html, body {
+            font-family: sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #f0f2f5 !important;
+            color: rgba(0, 0, 0, .65);
+        }
+
+        .a {
+            /*display: inline-block;*/
+            margin: 10px;
+            min-height: 170px;
+            border: 1px solid #e8e8e8;
+            padding: 16px 32px 0;
+            background-color: #fff;
+
+        }
+
+        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+            padding: 40px 0 40px 0;
+            margin: 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .text {
+            text-align: center;
+        }
+
+        .infos div {
+            float: left;
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .infoinfos {
+            border: 1px solid #e8e8e8;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            min-width: 800px;
+            margin-left: 100px;
+        }
+
+        .bottom {
+            padding: 15px;
+            margin: 10px;
+            background: #fff;
+            min-height: 150px;
+        }
+
+        .makeInfo {
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            margin-bottom: 10px;
+        }
+
+        .button {
+            text-align: right;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="storage">
+    <div class="cunchu">
+        <div class="homeMiddle">
+            <el-row :gutter="20">
+                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                    <div class="first a">
+                        <div class="makeInfo">
+                            <span>持久化设置</span>
+                        </div>
+                        <div>
+                            <el-table
+                                    :data="lastingSet"
+                                    style="width: 100%;">
+                                <el-table-column
+                                        prop="name"
+                                        label="持久化名称"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="list"
+                                        label="持久化目录"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="type"
+                                        label="持久化类型"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        label="操作">
+                                    <el-button type="text" size="small">删除</el-button>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                        <div class="button">
+                            <el-button><i class="el-icon-plus"></i>添加持久化</el-button>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+
+        <div class="homeBottom">
+            <el-row :gutter="20">
+                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                    <div class="first a">
+                        <div class="makeInfo">
+                            <span>应用连接信息</span>
+                        </div>
+                        <div>
+                            <el-table
+                                    :data="fileStorage"
+                                    style="width: 100%;">
+                                <el-table-column
+                                        prop="localList"
+                                        label="本地持久化目录"
+                                        width="150">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="targetName"
+                                        label="目标持久化名称"
+                                        width="150">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="targetList"
+                                        label="目标持久化目录"
+                                        width="150">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="targetType"
+                                        label="目标持久化类型"
+                                        width="150">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="targetApp"
+                                        label="目标持久化目录"
+                                        width="150">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="targetGroup"
+                                        label="目标持久化目录"
+                                        width="150">
+                                </el-table-column>
+                                <el-table-column
+                                        label="操作">
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                        <div class="button">
+                            <el-button><i class="el-icon-plus"></i>挂载目录</el-button>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+
+</div>
+<script>
+    var storage = new Vue({
+        el: '#storage',
+        data: {
+            lastingSet: [{
+                name: 'ba464ae',
+                list: '/data',
+                type: 'share-file'
+            }],
+        }
+    });
+</script>
+</body>
+</html>

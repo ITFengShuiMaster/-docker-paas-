@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../lib/echarts/echarts.js"></script>
+</head>
+<body>
+<div id="main" style="width: 600px;height:400px;"></div>
+</body>
+<script>
+    var myChart = echarts.init(document.getElementById('main'));
+    var option = {
+        title: {
+            text: ''
+        },
+        tooltip: {
+            formatter: function (params, ticket, callback) {
+
+            }
+        },
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+            {
+                type: 'graph',
+                layout: 'none',
+                symbolSize: 50,
+                roam: true,
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                edgeSymbol: ['circle', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    normal: {
+                        textStyle: {
+                            fontSize: 20
+                        }
+                    }
+                },
+                data: [{
+                    name: 'The Internet',
+                    x: 550,
+                    y: 50
+                }, {
+                    name: 'WordPress',
+                    x: 450,
+                    y: 150
+                }, {
+                    name: 'stackedit',
+                    x: 550,
+                    y: 150
+                }, {
+                    name: 'ghost',
+                    x: 650,
+                    y: 150
+                }],
+                // links: [],
+                links: [
+
+                    {
+                        source: 'The Internet',
+                        target: 'WordPress',
+
+                    }, {
+                        source: 'The Internet',
+                        target: 'stackedit'
+                    }, {
+                        source: 'The Internet',
+                        target: 'ghost'
+                    }],
+                lineStyle: {
+                    normal: {
+                        opacity: 0.9,
+                        width: 2,
+                        curveness: 0
+                    }
+                }
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+</html>

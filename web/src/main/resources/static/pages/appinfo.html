@@ -55,10 +55,6 @@
             display: inline-block;
         }
 
-        .tabs {
-            float: left;
-            /*display: inline-block;*/
-        }
 
         .a {
             /*display: inline-block;*/
@@ -101,23 +97,12 @@
             margin: 0 -15px;
         }
 
-        .logs {
-            background: #000;
-            min-height: 300px;
-            padding: 15px;
-            max-height: 600px;
-            overflow: auto;
-        }
 
         .logs p {
             margin-bottom: 0;
             color: #999;
         }
-        /*.tab-pane {*/
-        /*margin:0 32px 0 0;*/
-        /*padding:12px 16px;*/
-        /*text-decoration: none;*/
-        /*}*/
+
     </style>
 </head>
 
@@ -157,547 +142,31 @@
             <el-button type="primary">重新部署</el-button>
         </div>
         <div class="tabs">
-            <el-tabs>
-                <el-tab-pane label="总览" name="first" class="tab-pane" @tab-click="changeshow(showOne)"></el-tab-pane>
-                <el-tab-pane label="监控" name="second" class="tab-pane" @tab-click="changeshow(showTwo)"></el-tab-pane>
-                <el-tab-pane label="日志" name="third" class="tab-pane" @tab-click="changeshow(showThree)"></el-tab-pane>
-                <el-tab-pane label="伸缩" name="fourth" class="tab-pane" @tab-click="changeshow(showFour)"></el-tab-pane>
-                <el-tab-pane label="依赖" name="fifth" class="tab-pane" @tab-click="changeshow(showFive)"></el-tab-pane>
-                <el-tab-pane label="存储" name="sixth" class="tab-pane" @tab-click="changeshow(showSix)"></el-tab-pane>
-                <el-tab-pane label="端口" name="seventh" class="tab-pane"
-                             @tab-click="changeshow(showSeven)"></el-tab-pane>
-                <el-tab-pane label="扩展" name="eighth" class="tab-pane" @tab-click="changeshow(showEight)"></el-tab-pane>
-                <el-tab-pane label="设置" name="ninth" class="tab-pane" @tab-click="changeshow(showNine)"></el-tab-pane>
-            </el-tabs>
-        </div>
-    </div>
-    <div class="zong" v-if="showList.showOne">
-        <div class="homeMiddle">
-            <el-row :gutter="20">
-                <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
-                    <div class="first a">
-                        <span>应用状态</span>
-                        <div class="statusFirst" v-loading="loading"></div>
-                        <div class="text">
-                            <span>运行中</span>
-                        </div>
-                    </div>
-                </el-col>
-                <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
-                    <div class="second a">
-                        <span>平均响应时间(ms)</span>
-                        <div class="timeSecond">
-
-                        </div>
-                    </div>
-                </el-col>
-                <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
-                    <div class="third a">
-                        <span>吞吐率(dps)</span>
-                        <div class="dpsThird">
-
-                        </div>
-                    </div>
-                </el-col>
-                <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
-                    <div class="fourth a">
-                        <span>资源使用</span>
-                        <div class="resoureFourth">
-
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-
-
-        <div class="homeBottom">
-            <div class="makeInfo">
-                <span>操作日志</span>
-            </div>
-            <div class="infos">
-                <div class="timeinfos">14:32:19</div>
-                <div class="infoinfos">部署完成@陈秋凡</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="jk" v-if="showList.showTwo">
-        <div class="homeMiddle">
-            <el-row :gutter="20">
+            <el-row>
                 <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="text">
-                            <span>尚未开通性能分析插件</span>
-                        </div>
-                        <div class="text">
-                            <span>去开通</span>
-                        </div>
-                    </div>
-                </el-col>
+                    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="selectPage1">
+                        <el-menu-item index="1">总览</el-menu-item>
+                        <el-menu-item index="2">监控</el-menu-item>
+                        <el-menu-item index="3">日志</el-menu-item>
+                        <el-menu-item index="4">伸缩</el-menu-item>
+                        <el-menu-item index="5">依赖</el-menu-item>
+                        <el-menu-item index="6">存储</el-menu-item>
+                        <el-menu-item index="7">端口</el-menu-item>
+                        <el-menu-item index="8">扩展</el-menu-item>
+                        <el-menu-item index="9">设置</el-menu-item>
+                    </el-menu>
 
+                </el-col>
             </el-row>
+
         </div>
     </div>
-
-    <div class="rizhi" v-if="showList.showThree">
-        <div class="homeMiddle">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="rizhiTop">
-                            <div class="rizhiLeft">
-                                <el-button>暂停推送</el-button>
-                            </div>
-                            <div class="rizhiRight">
-                                <el-button type="text">历史日志下载</el-button>
-                                <el-button type="text">最近1000条日志</el-button>
-                            </div>
-
-                        </div>
-                        <div class="logs">
-                            <p>539b9c229678:Version: '5.5.46-37.5-log' socket: '/tmp/mysql.sock' port: 3306 Percona
-                                Server (GPL), Release 37.5, Revision 684ce54</p>
-                            <p>539b9c229678:180628 16:26:49 [Note] mysqld: ready for connections.</p>
-                        </div>
-                    </div>
-                </el-col>
-
-            </el-row>
-        </div>
+    <div class="content" id="con">
 
     </div>
 
-    <div class="shensuo" v-if="showList.showFour">
-        <div class="homeMiddle">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="shensuoTop">
-                            <el-row>
-                                <el-col :span="12" :sm="24" :xs="12" :md="12" :lg="12">
-                                    <div class="shensuoLeft">
-                                        <label>内存：</label>
-                                        <el-select v-model="value">
-                                            <el-option
-                                                    v-for="item in option1"
-                                                    :key="item.value"
-                                                    :label="item.label"
-                                                    :value="item.value">
-                                            </el-option>
-                                        </el-select>
-                                    </div>
-                                </el-col>
-                                <el-col :span="12" :sm="24" :xs="12" :md="12" :lg="12">
-                                    <div class="shensuoRight">
-                                        <label>实际数量：</label>
-                                        <el-select v-model="value">
-                                            <el-option
-                                                    v-for="item in option2"
-                                                    :key="item.value"
-                                                    :label="item.label"
-                                                    :value="item.value">
-                                            </el-option>
-                                        </el-select>
-                                    </div>
-                                </el-col>
-                            </el-row>
-
-
-                        </div>
-
-                    </div>
-                </el-col>
-
-            </el-row>
-        </div>
-    </div>
-
-    <div class="yilai" v-if="showList.showFive">
-        <div class="homeMiddle">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="makeInfo">
-                            <span>应用连接信息</span>
-                        </div>
-                        <div>
-                            <el-table
-                                    :data="connectInfo"
-                                    style="width: 100%;">
-                                <el-table-column
-                                        prop="name"
-                                        label="变量名"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="val"
-                                        label="变量值"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="des"
-                                        label="说明"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="opera"
-                                        label="操作">
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                        <div>
-                            <el-button><i class="el-icon-plus"></i>添加变量</el-button>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-
-        <div class="homeBottom">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="makeInfo">
-                            <span>应用连接信息</span>
-                        </div>
-                        <div>
-                            <el-table
-                                    :data="appInfo"
-                                    style="width: 100%;">
-                                <el-table-column
-                                        prop="name"
-                                        label="应用名"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="group"
-                                        label="所属组"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="des"
-                                        label="应用说明"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="opera"
-                                        label="操作">
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                        <div>
-                            <el-button><i class="el-icon-plus"></i>添加依赖</el-button>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-    </div>
-
-    <div class="cunchu" v-if="showList.showSix">
-        <div class="homeMiddle">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="makeInfo">
-                            <span>持久化设置</span>
-                        </div>
-                        <div>
-                            <el-table
-                                    :data="lastingSet"
-                                    style="width: 100%;">
-                                <el-table-column
-                                        prop="name"
-                                        label="持久化名称"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="list"
-                                        label="持久化目录"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="type"
-                                        label="持久化类型"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        label="操作">
-                                    <el-button type="text" size="small">删除</el-button>
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                        <div>
-                            <el-button><i class="el-icon-plus"></i>添加持久化</el-button>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-
-        <div class="homeBottom">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="makeInfo">
-                            <span>应用连接信息</span>
-                        </div>
-                        <div>
-                            <el-table
-                                    :data="fileStorage"
-                                    style="width: 100%;">
-                                <el-table-column
-                                        prop="localList"
-                                        label="本地持久化目录"
-                                        width="120">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="targetName"
-                                        label="目标持久化名称"
-                                        width="120">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="targetList"
-                                        label="目标持久化目录"
-                                        width="120">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="targetType"
-                                        label="目标持久化类型"
-                                        width="120">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="targetApp"
-                                        label="目标持久化目录"
-                                        width="120">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="targetGroup"
-                                        label="目标持久化目录"
-                                        width="120">
-                                </el-table-column>
-                                <el-table-column
-                                        label="操作">
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                        <div>
-                            <el-button><i class="el-icon-plus"></i>挂载目录</el-button>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-    </div>
-
-    <div class="duankou" v-if="showList.showSeven">
-        <div class="homeMiddle">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div>
-                            <el-table
-                                    :data="portInfo"
-                                    style="width: 100%;">
-                                <el-table-column
-                                        prop="num"
-                                        label="端口号"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="protocol"
-                                        label="端口协议"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="serviceinfo"
-                                        label="服务信息"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="domain"
-                                        label="绑定域名"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        label="操作">
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                        <div>
-                            <el-button><i class="el-icon-plus"></i>设置成员应用权限</el-button>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-
-    </div>
-
-    <div class="kuozhan" v-if="showList.showEight">
-        <div class="homeMiddle">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="kuozhanLeft">
-                            <el-button>已开通</el-button>
-                            <el-button>未开通</el-button>
-                        </div>
-                        <div class="kuozhanRight">
-                            <el-button>全部</el-button>
-                            <el-button>性能分析类</el-button>
-                            <el-button>网络治理类</el-button>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-
-    </div>
-
-    <div class="shezhi" v-if="showList.showNine">
-        <div class="homeBottom">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="makeinfo">
-                            <span>基础信息</span>
-                        </div>
-                        <div class="baseInfo">
-                            <div class="time">
-                                <span>创建时间:2018-06-27 14:32:18</span>
-                            </div>
-                            <div class="way">
-                                <span>创建方式:云市</span>
-                            </div>
-                            <div class="features">
-                                <div>
-                                    <span>应用特性:</span>
-                                </div>
-                                <div>
-                                    <el-buttton size="small">添加特性</el-buttton>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-
-        <div class="homeMiddle">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="makeInfo">
-                            <span>自定义环境变量</span>
-                        </div>
-                        <div>
-                            <el-table
-                                    :data="pathInfo"
-                                    style="width: 100%;">
-                                <el-table-column
-                                        prop="name"
-                                        label="变量名"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="val"
-                                        label="变量值"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="des"
-                                        label="说明"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="opera"
-                                        label="操作">
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                        <div>
-                            <el-button><i class="el-icon-plus"></i>添加变量</el-button>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-
-        <div class="homeMiddle">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="makeInfo">
-                            <span>健康监测</span>
-                        </div>
-                        <div>
-                            <el-table
-                                    :data="monitorInfo"
-                                    style="width: 100%;">
-                                <el-table-column
-                                        prop="type"
-                                        label="监测类型"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="status"
-                                        label="状态"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        label="操作">
-                                    <el-button type="text" size="small">设置</el-button>
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-
-        <div class="homeMiddle">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="makeInfo">
-                            <span>成员应用权限</span>
-                        </div>
-                        <div>
-                            <el-table
-                                    :data="powerInfo"
-                                    style="width: 100%;">
-                                <el-table-column
-                                        prop="name"
-                                        label="用户名"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="mail"
-                                        label="邮箱"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="des"
-                                        label="操作权限"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        label="操作">
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                        <div>
-                            <el-button><i class="el-icon-plus"></i>设置成员应用权限</el-button>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-    </div>
 </div>
-
+</html>
 <script>
     var home = new Vue({
         el: '#home',
@@ -761,6 +230,10 @@
                 name: 'ba464ae',
                 list: '/data',
                 type: 'share-file'
+            }], lastingSet: [{
+                name: 'ba464ae',
+                list: '/data',
+                type: 'share-file'
             }],
             fileStorage: [{
                 localList: '',
@@ -804,18 +277,20 @@
                 value: '2',
                 label: '2'
             }],
+            activeIndex: '1',
+            pageArr: ['pages/overview.html', 'pages/monitor.html', 'pages/log.html', 'pages/flex.html', 'pages/extend.html', 'pages/storage.html', 'pages/port.html', 'pages/rely.html', 'pages/setting.html'],
         },
         methods: {
-            changeShow(id) {
-                that = this;
-                for (i in that.showList) {
-                    if (id !== i) {
-                        that.showList[i] = false
-                    }
-                }
-                this.showList[id] = true;
-                console.log(id)
-            }
+            selectPage1(index, indexPath) {
+                console.log(this.pageArr[index - 1]);
+                // 主要就是通过jquery的load方法，加内容加载到元素上
+                $('#con').load(this.pageArr[index - 1], function (response, status, xhr) {
+                });
+            },
+
+        },
+        mounted() {
+            this.selectPage1(1, '');
         }
 
     })
