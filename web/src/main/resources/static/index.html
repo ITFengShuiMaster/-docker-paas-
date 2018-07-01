@@ -7,6 +7,18 @@
     <script src="lib/vue/vue.js"></script>
     <script src="lib/element/index.js"></script>
     <script src="lib/jquery/jquery_3.3.1.js"></script>
+    <style>
+        html {
+            font-family: sans-serif;
+        }
+
+        body {
+            background: #f0f2f5 !important;
+            font-family: Monospace Number, Chinese Quote, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 
 <body>
@@ -58,7 +70,7 @@
     </el-aside>
 
     <el-container>
-        <el-header style=" margin:0;padding:0;">
+        <el-header style=" margin-top:-7px;padding:0px;width: 100%">
             <el-card shadow="always">
             <el-col :span="6" align="center">
                 <el-dropdown>
@@ -133,16 +145,37 @@
     var vm = new Vue({
         el: '#app',
         data: {
+            id: 1,
+            url: "http://localhost:8080/tianyu-paas/users/info/",
             imageUrl: '',
-            username: 'zwp',
+            username: '',
             isCollapse: false,
-            pageArr: ['', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/install.html', 'pages/appinfo.html', '', '', 'pages/financialcenter.html'],
+            pageArr: ['pages/home.html', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/install.html', 'pages/appinfo.html', '', '', 'pages/financialcenter.html'],
             messagenum: 199,
             teamArr: ['团队一', '团队二'],
             dataArr: ['假数据中心', '真数据中心'],
             activeName: 'second',
         },
         methods: {
+            init(){
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8080/tianyu-paas/users/info/'+ this.id,
+                    data: {
+
+                    },
+                    success : function (result) {
+                        if(result.code) {
+                            console.log(result);
+                            vm.username = result.username;
+                        } else {
+                        }
+                    },
+                    error :function () {
+                        console.log("失败")
+                    }
+                })
+            },
             handleClick(tab, event) {
                 console.log(tab, event);
             },
@@ -167,10 +200,30 @@
             },
             beforeAvatarUpload() {
 
+            },
+            init() {
+                $.ajax({
+                    type: '',
+                    url: '/actions/1',
+                    data: '',
+                    success: function (data) {
+
+
+                    },
+                    error: function (data) {
+
+                    }
+
+                })
             }
         },
         mounted() {
             // this.selectLeft(1, '');
+<<<<<<< HEAD
+            this.init()
+=======
+            this.init();
+>>>>>>> 8f59749aaa407b7a73054421a7c955c92f68eebc
         }
     });
 </script>

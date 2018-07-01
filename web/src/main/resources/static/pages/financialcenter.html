@@ -4,7 +4,7 @@
     }
 
     .bg-purple {
-        background: #ffffff;
+        background: #d3dce6;
     }
 </style>
 
@@ -43,13 +43,13 @@
             </el-row>
         </div>
         <el-row style="background: #ffffff; width: 110%;margin-top: 2%;">
-            <div style="margin-left: 70%; background: #ffffff">
-                <div>
+            <el-col style="margin-left: 0%; background: #d3dce6; height: 45px">
+                <div style="margin-top: 1%; margin-left: 70%">
                     <el-button size="mini" plain>购买资源</el-button>
                     <el-button size="mini" plain>账户充值</el-button>
                     <el-button size="mini" plain>更多</el-button>
                 </div>
-            </div>
+            </el-col>
             <el-row/>
             <div style="margin-top: 1%; background: #ffffff; min-height: 400px; width: 100%">
                 <el-row>
@@ -107,6 +107,7 @@
                 </div>
             </div>
         </el-row>
+    </el-row>
 </div>
 <script>
     var financialcenter = new Vue({
