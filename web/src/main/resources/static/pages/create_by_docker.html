@@ -1,31 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>由源码创建应用</title>
-
-    <link rel="stylesheet" href="../lib/element/index.css"/>
-    <script src="../lib/vue/vue.js"></script>
-    <script src="../lib/element/index.js"></script>
-    <script src="../lib/jquery/jquery_3.3.1.js"></script>
-    <link rel="stylesheet" href="../lib/css/editormd.css"/>
-
-</head>
-<body>
-<div id="app">
+<div id="create_by_docker">
     <div id="info">
         <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>创建应用</el-breadcrumb-item>
-            <el-breadcrumb-item>从源码创建</el-breadcrumb-item>
+            <el-breadcrumb-item>从Docker镜像创建应用</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <p class="big-text">由源码创建应用</p>
-        <p class="normal-text">从指定源码仓库中获取源码，基于源码信息创建新应用</p>
+        <p class="big-text">从Docker镜像创建应用</p>
+        <p class="normal-text">支持从单一镜像、Docker命令、Docker-Compose配置创建应用 </p>
 
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="selectForm">
-            <el-menu-item index="1">自定义源码</el-menu-item>
-            <el-menu-item index="2">官方DEMO</el-menu-item>
+            <el-menu-item index="1">指定镜像</el-menu-item>
+            <el-menu-item index="2">DockerRun命令</el-menu-item>
+            <el-menu-item index="3">DockerCompose</el-menu-item>
         </el-menu>
     </div>
 
@@ -33,12 +20,12 @@
 
 </div>
 <script>
-    var vue = new Vue({
-        el: '#app',
+    var create_by_docker = new Vue({
+        el: '#create_by_docker',
         data() {
             return {
                 activeIndex: '1',
-                formArr: ['form_1.html', 'form_2.html'],
+                formArr: ['pages/docker/specify_docker_image.html', 'pages/docker/docker_run.html', 'pages/docker/docker_compose.html'],
             };
         },
         methods: {
@@ -69,7 +56,7 @@
         }
     })
 </script>
-</body>
+
 <style>
     .el-breadcrumb__inner a, .el-breadcrumb__inner.is-link {
         color: #909399;
@@ -85,7 +72,8 @@
     }
 
     #info {
-        padding: 10px 20px;
+        padding-top: 10px;
+        padding-left: 20px;
     }
 
     .big-text {
@@ -98,4 +86,4 @@
         font-size: 14px;
     }
 </style>
-</html>
+
