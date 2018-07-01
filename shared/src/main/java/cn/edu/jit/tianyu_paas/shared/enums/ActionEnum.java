@@ -19,18 +19,12 @@ public enum ActionEnum {
     }
 
     public static String getMessageBycode(int code) {
-        switch (code) {
-            case 0:
-                return ActionEnum.LEVELUPGRADE.getMessage();
-            case 1:
-                return ActionEnum.STARTUP.getMessage();
-            case 2:
-                return ActionEnum.REBOOT.getMessage();
-            case 3:
-                return ActionEnum.DEPLOY.getMessage();
-            default:
-                return ActionEnum.LEVELUPGRADE.getMessage();
+        for (ActionEnum actionEnum : ActionEnum.values()) {
+            if (actionEnum.getCode() == code) {
+                return actionEnum.getMessage();
+            }
         }
+        return "";
     }
 
     public int getCode() {
