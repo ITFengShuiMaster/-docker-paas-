@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>制定镜像</title>
-    <link rel="stylesheet" href="../lib/element/index.css"/>
-    <script src="../lib/vue/vue.js"></script>
-    <script src="../lib/element/index.js"></script>
-    <script src="../lib/jquery/jquery_3.3.1.js"></script>
-</head>
-<body>
+
 <div class="form">
-    <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" id="form">
+    <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" id="form_4">
         <el-form-item label="应用名称:">
             <el-input v-model="formLabelAlign.name" placeholder="请为创建的应用起名"></el-input>
         </el-form-item>
@@ -33,8 +23,9 @@
                 </div>
             </el-dialog>
         </el-form-item>
-        <el-form-item label="镜像地址:">
-            <el-input v-model="formLabelAlign.address" placeholder="请输入镜像名称"></el-input>
+        <el-form-item label="命令:">
+            <el-input id="order-input" v-model="formLabelAlign.order"
+                      placeholder="例如 : docker run -d -p 8080:8080 -e PWD= 1qa2ws&#10; --name=tomcat_demo tomcat"></el-input>
         </el-form-item>
 
         <el-button type="primary" class="add-button">新建应用</el-button>
@@ -42,15 +33,15 @@
     </el-form>
 </div>
 <script>
-    var vue = new Vue({
-        el: '#form',
+    var form_4 = new Vue({
+        el: '#form_4',
         data() {
             return {
                 labelPosition: 'right',
                 formLabelAlign: {
                     name: '',
                     group: '',
-                    address: ''
+                    order: '',
                 },
                 labelArr: [
                     {label: '未分组', value: 'shanghai'},
@@ -71,7 +62,7 @@
     });
     $("#branch-input").val("master");
 </script>
-</body>
+
 <style>
     .form {
         background: white;
@@ -104,6 +95,8 @@
         margin-left: 10%;
     }
 
+    #order-input {
+        height: 60px;
+    }
 
 </style>
-</html>
