@@ -31,7 +31,7 @@ public class WebApplication implements WebMvcConfigurer {
         registry.addInterceptor(appInterceptor())
                 .addPathPatterns("/apps/info")
                 .addPathPatterns("/actions/**")
-                .excludePathPatterns("/actions/");
+                .excludePathPatterns("/actions/info");
     }
 
     /**
