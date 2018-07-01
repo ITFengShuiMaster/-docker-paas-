@@ -1,4 +1,4 @@
-package cn.edu.jit.tianyu_paas.shared.util;
+package cn.edu.jit.tianyu_paas.shared.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
@@ -8,7 +8,7 @@ import java.util.Date;
 
 /**
  * <p>
- * <p>
+ * 
  * </p>
  *
  * @author 汪继友
