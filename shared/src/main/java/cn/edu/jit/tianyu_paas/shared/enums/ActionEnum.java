@@ -20,8 +20,9 @@ public enum ActionEnum {
 
     public static String getMessageBycode(int code) {
         for (ActionEnum actionEnum : ActionEnum.values()) {
-            if (actionEnum.getCode() == code)
+            if (actionEnum.getCode() == code) {
                 return actionEnum.getMessage();
+            }
         }
         return "";
     }
