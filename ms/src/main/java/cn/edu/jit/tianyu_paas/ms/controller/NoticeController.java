@@ -35,55 +35,59 @@ public class NoticeController {
 
     /**
      * 创建公告
-     * @author 倪龙康
+     *
      * @param notice
      * @return
+     * @author 倪龙康
      */
     @PostMapping
-    public TResult noticeCreate(Notice notice){
+    public TResult noticeCreate(Notice notice) {
         Long adminId = (Long) session.getAttribute(Constants.SESSION_KEY_ADMIN_ID);
         notice.setAdminId(adminId);
         notice.setGmtCreate(new Date());
-        if(!noticeService.insert(notice))
+        if (!noticeService.insert(notice))
             return TResult.failure(TResultCode.FAILURE);
         return TResult.success();
     }
 
     /**
      * 获取公告
-     * @author 倪龙康
+     *
      * @param page
      * @return
+     * @author 倪龙康
      */
     @GetMapping
-    public TResult getNotice(Pagination page){
-        Page<Notice> notices = noticeService.selectPage( new Page<>(page.getCurrent(),page.getSize()),
-                new EntityWrapper<Notice>().orderBy("gmt_create",false));
+    public TResult getNotice(Pagination page) {
+        Page<Notice> notices = noticeService.selectPage(new Page<>(page.getCurrent(), page.getSize()),
+                new EntityWrapper<Notice>().orderBy("gmt_create", false));
         return TResult.success(notices);
     }
 
     /**
      * 更新公告
-     * @author 倪龙康
+     *
      * @param notice
      * @return
+     * @author 倪龙康
      */
     @PutMapping
-    public TResult updateNotice(Notice notice){
-        if(!noticeService.update(notice,new EntityWrapper<Notice>().eq("notice_id",notice.getNoticeId())))
+    public TResult updateNotice(Notice notice) {
+        if (!noticeService.update(notice, new EntityWrapper<Notice>().eq("notice_id", notice.getNoticeId())))
             return TResult.failure(TResultCode.FAILURE);
         return TResult.success();
     }
 
     /**
      * 删除公告
-     * @author 倪龙康
+     *
      * @param noticeId
      * @return
+     * @author 倪龙康
      */
     @DeleteMapping("{noticeId}")
-    public TResult deleteNotice(@PathVariable Long noticeId){
-        if(!noticeService.deleteById(noticeId))
+    public TResult deleteNotice(@PathVariable Long noticeId) {
+        if (!noticeService.deleteById(noticeId))
             return TResult.failure(TResultCode.FAILURE);
         return TResult.success();
     }
