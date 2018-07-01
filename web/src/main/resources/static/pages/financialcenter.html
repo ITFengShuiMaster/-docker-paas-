@@ -12,13 +12,16 @@
     <el-row style="width: 92%; margin: -18px">
         <el-col :span="22">
         <div style="background: #ffffff;width: 120%; margin-top: 1%;height: 40px">
-            <el-breadcrumb separator="/" style="font-size: 14px">
+            <el-col style="margin-left: 1%">
+            <el-breadcrumb separator="/" style="font-size: 14px;">
+                <br>
                 <el-breadcrumb-item>首页</el-breadcrumb-item>
                 <el-breadcrumb-item>财务中心</el-breadcrumb-item>
             </el-breadcrumb>
+            </el-col>
         </div>
         </el-col>
-        <div style="margin-top: 5%;width: 110%;">
+        <div style="margin-top: 6%;width: 110%;">
             <el-row :gutter="10">
                 <el-col :span="8">
                     <div class="grid-content bg-purple" style="text-align: center; ">账户余额<br>
@@ -39,14 +42,16 @@
                 </el-col>
             </el-row>
         </div>
-        <div style="background: #ffffff; width: 110%">
-        <div style="margin-left: 70%;margin-top: 1%; background: #ffffff">
+        <el-row style="background: #ffffff; width: 110%;margin-top: 2%;">
+            <el-col style="margin-left: 70%; background: #ffffff">
+        <div >
             <el-button size="mini" plain>购买资源</el-button>
             <el-button size="mini" plain>账户充值</el-button>
             <el-button size="mini" plain>更多</el-button>
         </div>
-        </div>
-        <div style="margin-top: 1%; background: #ffffff; min-height: 400px; width: 110%">
+
+        <el-row/>
+        <div style="margin-top: 1%; background: #ffffff; min-height: 400px; width: 100%">
             <el-row>
                 <el-col :span="10">
                     <div style="float: left ; margin-left: 10%; margin-top: 5%">
@@ -65,7 +70,7 @@
                     </div>
                 </el-col>
             </el-row>
-            <div style=" margin-left: 1% ;margin-top: 2%">
+            <div style=" margin-left: 10% ;margin-top: 2%">
                 <template>
                     <el-table
                             :data="tableData3"
