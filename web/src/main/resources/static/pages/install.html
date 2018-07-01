@@ -32,23 +32,26 @@
         <el-tabs v-model="activeName" @tab-click="handleClick" style="text-align: center">
             <el-tab-pane v-for="item in classify" :key="item.id" :label="item.name" :name="item.id">
                 <div style="margin-left:0%">
-                <el-row >
-                    <el-col :span="6" v-for="(o, index) in 6" :key="o" :offset="index > -1 ? 1 : 0" style="height: 170px">
-                        <el-card :body-style="{ padding: '0px' }">
-                            <img :src="imageUrl"  style="width: 28%; float: left;">
-                            <div style="padding: 20px;">
-                               简介<br>
-                                <span style="font-size: 3px">
+                    <el-row>
+                        <el-col :span="6" v-for="(o, index) in 6" :key="o" :offset="index > -1 ? 1 : 0"
+                                style="height: 170px">
+                            <el-card :body-style="{ padding: '0px' }">
+                                <img :src="imageUrl" style="width: 28%; float: left;">
+                                <div style="padding: 20px;">
+                                    简介<br>
+                                    <span style="font-size: 3px">
                                     xxx<br>
                                     xxx<br>
                                 </span>
-                                <div class="bottom clearfix">
-                                    <el-button  class="button" type="text" style="margin-left: -10%; width: 120%; background: #d3dce6">安装</el-button>
+                                    <div class="bottom clearfix">
+                                        <el-button class="button" type="text" @click="outerVisible = true"
+                                                   style="margin-left: -10%; width: 120%; background: #d3dce6">安装
+                                        </el-button>
+                                    </div>
                                 </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                </el-row>
+                            </el-card>
+                        </el-col>
+                    </el-row>
                 </div>
                 <div class="block">
                     <el-pagination
@@ -63,30 +66,45 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
-    </div>
 
+    </div>
+    <el-dialog :visible.sync="outerVisible">
+        <el-form :model="form">
+            <el-form-item label="活动名称" :label-width="formLabelWidth" style="width: 63%">
+                <el-input v-model="form.name" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="活动区域" :label-width="formLabelWidth">
+                <el-select v-model="form.region" placeholder="请选择活动区域">
+                    <el-option label="区域一" value="shanghai"></el-option>
+                    <el-option label="区域二" value="beijing"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="outerVisible = false">取 消</el-button>
+            <el-button type="primary" @click="outerVisible = false">安装</el-button>
+        </div>
+    </el-dialog>
 
 </div>
 
 
 <script>
-    $.ajax({
-        type: "GET",
-        url: "localhost:8080//tianyu-paas/",
-        data: {
-
-        },
-        success : function (result) {
-            if(result.success) {
-
-            } else {
-
-            }
-        }
-    })
     var install = new Vue({
         el: '#install',
         data: {
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            formLabelWidth: '120px',
+            outerVisible: false,
             input10: '',
             imageUrl: 'https://static.goodrain.com/07a1d55ff418440aa764ff05d71d4a15.png',
             currentPage: 1,
@@ -117,6 +135,20 @@
             ],
         },
         methods: {
+            init() {
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8080/tianyu-paas/apps/lists",
+                    data: {},
+                    success: function (result) {
+                        if (result.success) {
+
+                        } else {
+
+                        }
+                    }
+                })
+            },
             onSubmit() {
             },
             handleClick(tab, event) {
@@ -130,8 +162,12 @@
             },
         },
 
+        mounted() {
+            this.init();
+        },
 //
         created() {
+
         },
 
 
