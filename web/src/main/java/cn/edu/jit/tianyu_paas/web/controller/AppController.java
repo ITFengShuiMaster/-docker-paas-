@@ -26,7 +26,7 @@ import java.util.Date;
  */
 
 @RestController
-@RequestMapping("/apps")
+@RequestMapping("/apps/")
 public class AppController {
 
     private final AppService appService;

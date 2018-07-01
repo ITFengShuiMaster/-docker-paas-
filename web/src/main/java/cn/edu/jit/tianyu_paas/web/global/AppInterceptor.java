@@ -32,14 +32,8 @@ public class AppInterceptor implements HandlerInterceptor {
         HttpSession session = httpServletRequest.getSession();
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
 
-        // 如果不包含?，说明是restfui api请求一个app的信息，需要进行截取
-        String appId;
-        if (!requestURI.contains("?")) {
-            appId = requestURI.substring(requestURI.lastIndexOf('/') + 1);
-        } else {
-            Map<String, String[]> parameterMap = httpServletRequest.getParameterMap();
-            appId = parameterMap.get("appId")[0];
-        }
+        Map<String, String[]> parameterMap = httpServletRequest.getParameterMap();
+        String appId = parameterMap.get("appId")[0];
 
         // 根据userid和appid取出对应记录，如果记录小于等于0，则拦截
         int count = appService.selectCount(new EntityWrapper<App>().eq("user_id", userId).eq("app_id", appId));

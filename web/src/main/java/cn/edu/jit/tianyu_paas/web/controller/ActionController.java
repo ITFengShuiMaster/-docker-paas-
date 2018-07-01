@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
-@RequestMapping("/actions")
+@RequestMapping("/actions/")
 public class ActionController {
     private ActionService actionService;
     private HttpSession session;
