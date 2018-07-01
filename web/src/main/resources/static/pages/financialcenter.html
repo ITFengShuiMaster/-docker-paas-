@@ -11,14 +11,17 @@
 <div id="financialcenter">
     <el-row style="width: 92%; margin: -18px">
         <el-col :span="22">
-        <div style="background: #ffffff;width: 120%; margin-top: 1%;height: 40px">
-            <el-breadcrumb separator="/" style="font-size: 14px">
-                <el-breadcrumb-item>首页</el-breadcrumb-item>
-                <el-breadcrumb-item>财务中心</el-breadcrumb-item>
-            </el-breadcrumb>
-        </div>
+            <div style="background: #ffffff;width: 120%; margin-top: 1%;height: 40px">
+                <el-col style="margin-left: 1%">
+                    <el-breadcrumb separator="/" style="font-size: 14px;">
+                        <br>
+                        <el-breadcrumb-item>首页</el-breadcrumb-item>
+                        <el-breadcrumb-item>财务中心</el-breadcrumb-item>
+                    </el-breadcrumb>
+                </el-col>
+            </div>
         </el-col>
-        <div style="margin-top: 5%;width: 110%;">
+        <div style="margin-top: 6%;width: 110%;">
             <el-row :gutter="10">
                 <el-col :span="8">
                     <div class="grid-content bg-purple" style="text-align: center; ">账户余额<br>
@@ -39,69 +42,71 @@
                 </el-col>
             </el-row>
         </div>
-        <div style="background: #ffffff; width: 110%">
-        <div style="margin-left: 70%;margin-top: 1%; background: #ffffff">
-            <el-button size="mini" plain>购买资源</el-button>
-            <el-button size="mini" plain>账户充值</el-button>
-            <el-button size="mini" plain>更多</el-button>
-        </div>
-        </div>
-        <div style="margin-top: 1%; background: #ffffff; min-height: 400px; width: 110%">
-            <el-row>
-                <el-col :span="10">
-                    <div style="float: left ; margin-left: 10%; margin-top: 5%">
-                        <span>当前数据中心每小时费用</span>
-                    </div>
-                </el-col>
-                <el-col :span="8">
-                    <div class="block" style="margin-left: 75%; margin-top: 5%;">
-                        <el-date-picker
-                                v-model="value"
-                                align="right"
-                                type="date"
-                                placeholder="2015-01-01"
-                                :picker-options="pickerOptions1">
-                        </el-date-picker>
-                    </div>
-                </el-col>
-            </el-row>
-            <div style=" margin-left: 1% ;margin-top: 2%">
-                <template>
-                    <el-table
-                            :data="tableData3"
-                            height="250"
-                            stripe
-                            style="width: 100%">
-                        <el-table-column
-                                prop="date"
-                                label="时间"
-                                width="180">
-                        </el-table-column>
-                        <el-table-column
-                                prop="name"
-                                label="内存费用"
-                                width="180">
-                        </el-table-column>
-                        <el-table-column
-                                prop="address"
-                                label="磁盘费用"
-                                width="180">
-                        </el-table-column>
-                        <el-table-column
-                                prop="cost"
-                                label="流量费用"
-                                width="180">
-                        </el-table-column>
-                        <el-table-column
-                                prop="allcost"
-                                label="总费用"
-                                width="200">
-                        </el-table-column>
-                    </el-table>
-                </template>
+        <el-row style="background: #ffffff; width: 110%;margin-top: 2%;">
+            <div style="margin-left: 70%; background: #ffffff">
+                <div>
+                    <el-button size="mini" plain>购买资源</el-button>
+                    <el-button size="mini" plain>账户充值</el-button>
+                    <el-button size="mini" plain>更多</el-button>
+                </div>
             </div>
-        </div>
-    </el-row>
+            <el-row/>
+            <div style="margin-top: 1%; background: #ffffff; min-height: 400px; width: 100%">
+                <el-row>
+                    <el-col :span="10">
+                        <div style="float: left ; margin-left: 10%; margin-top: 5%">
+                            <span>当前数据中心每小时费用</span>
+                        </div>
+                    </el-col>
+                    <el-col :span="8">
+                        <div class="block" style="margin-left: 75%; margin-top: 5%;">
+                            <el-date-picker
+                                    v-model="value"
+                                    align="right"
+                                    type="date"
+                                    placeholder="2015-01-01"
+                                    :picker-options="pickerOptions1">
+                            </el-date-picker>
+                        </div>
+                    </el-col>
+                </el-row>
+                <div style=" margin-left: 10% ;margin-top: 2%">
+                    <template>
+                        <el-table
+                                :data="tableData3"
+                                height="250"
+                                stripe
+                                style="width: 100%">
+                            <el-table-column
+                                    prop="date"
+                                    label="时间"
+                                    width="180">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="name"
+                                    label="内存费用"
+                                    width="180">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="address"
+                                    label="磁盘费用"
+                                    width="180">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="cost"
+                                    label="流量费用"
+                                    width="180">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="allcost"
+                                    label="总费用"
+                                    width="200">
+                            </el-table-column>
+                        </el-table>
+                    </template>
+                </div>
+            </div>
+        </el-row>
 </div>
 <script>
     var financialcenter = new Vue({
