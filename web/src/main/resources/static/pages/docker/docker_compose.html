@@ -1,19 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>DockerCompose</title>
-    <link rel="stylesheet" href="../lib/css/editormd.css"/>
-    <link rel="stylesheet" href="../lib/element/index.css"/>
-    <script src="../lib/vue/vue.js"></script>
-    <script src="../lib/element/index.js"></script>
-    <script src="../lib/jquery/jquery_3.3.1.js"></script>
-    <script type="text/javascript" src="../lib/jquery/jquery-3.2.1.js"></script>
-    <script type="text/javascript" src="../lib/jquery/editormd.js"></script>
-</head>
-<body>
+
+<link rel="stylesheet" href="lib/css/editormd.css"/>
+
+<script type="text/javascript" src="lib/jquery/editormd.js"></script>
+
 <div class="form">
-    <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" id="form">
+    <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" id="form_5">
         <el-form-item label="应用名称:">
             <el-input v-model="formLabelAlign.name" placeholder="请为创建的应用起名"></el-input>
         </el-form-item>
@@ -28,8 +20,8 @@
 
 </div>
 <script>
-    var vue = new Vue({
-        el: '#form',
+    var form_5 = new Vue({
+        el: '#form_5',
         data() {
             return {
                 labelPosition: 'right',
@@ -42,7 +34,7 @@
     });
     $(function () {
         var editor = editormd("test-editormd", {
-            path: "../editor/",
+            path: "editor/",
             height: "200px",
             width: "100%",
             editorTheme: "pastel-on-dark",
@@ -52,7 +44,7 @@
         });
     });
 </script>
-</body>
+
 <style>
     .form {
         background: white;
@@ -71,4 +63,3 @@
         width: 666px;
     }
 </style>
-</html>
