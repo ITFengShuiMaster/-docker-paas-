@@ -2,7 +2,10 @@ package cn.edu.jit.tianyu_paas.shared.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,6 +17,7 @@ import java.util.Date;
  * @author 汪继友
  * @since 2018-06-28
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -23,6 +27,7 @@ public class User implements Serializable {
     /**
      * 姓名或昵称
      */
+    @NotNull(message = "用户名不能为空")
     private String name;
     /**
      * 手机号
@@ -31,10 +36,12 @@ public class User implements Serializable {
     /**
      * 邮箱地址
      */
+    @Pattern(regexp = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$", message = "邮箱不合法")
     private String email;
     /**
      * 密码
      */
+    @NotNull(message = "密码不能为空")
     private String pwd;
     /**
      * 用户头像,base64编码

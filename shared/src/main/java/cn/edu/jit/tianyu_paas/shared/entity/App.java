@@ -1,8 +1,13 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,6 +19,7 @@ import java.util.Date;
  * @author 汪继友
  * @since 2018-06-28
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class App implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,6 +33,11 @@ public class App implements Serializable {
      * 创建应用的用户id
      */
     private Long userId;
+    /**
+     * 应用名称
+     */
+    @NotNull
+    private String name;
     /**
      * 应用使用的内存量，以MB为单位
      */
@@ -42,12 +53,26 @@ public class App implements Serializable {
     /**
      * 属于哪个应用组
      */
+    @NotEmpty
+    @Min(1)
     private Long appGroupId;
+    /**
+     * 应用组的名称，非表中字段
+     */
+    @TableField(exist = false)
+    private String groupName;
     /**
      * 创建时间
      */
     private Date gmtCreate;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Long getAppId() {
         return appId;
@@ -103,6 +128,14 @@ public class App implements Serializable {
 
     public void setGmtCreate(Date gmtCreate) {
         this.gmtCreate = gmtCreate;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     @Override

@@ -11,10 +11,10 @@
 <body>
 <el-container id="app">
     <el-header style="height: 50px">
-        <el-col span="6">
+        <el-col :span="6">
             <div>logo</div>
         </el-col>
-        <el-col span="4" offset="20">
+        <el-col :span="4" :offset="20">
             <div class="register">没有账号？立即<a href="" class="register_text_button">注册</a></div>
         </el-col>
     </el-header>
@@ -23,7 +23,7 @@
         <div class="loginForm">
             <div class="line">欢迎使用平台</div>
             <hr align="center" width="100%" size="1px" color="#E8E8E8"/>
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="marketApp-ruleForm">
                 <el-form-item prop="id">
                     <el-input placeholder="用户名 /手机号 /邮箱" v-model="ruleForm.id"></el-input>
                 </el-form-item>
@@ -79,11 +79,7 @@
         width: 60%;
         margin-left: 20%;
         margin-top: 4%;
-        height: 30px;
-    }
-
-    .el-input__inner {
-        height: 30px;
+        height: 10%;
     }
 
     .text-button {
@@ -100,7 +96,7 @@
         border: 0px;
         background: #64C36A;
         color: white;
-        height: 30px;
+        height: 12%;
         padding: 0px 10px;
         display: block;
     }

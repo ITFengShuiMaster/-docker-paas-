@@ -2,7 +2,9 @@ package cn.edu.jit.tianyu_paas.shared.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
+import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,25 +16,40 @@ import java.util.Date;
  * @author 汪继友
  * @since 2018-06-28
  */
+@Data
 public class AppGroup implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "app_group_id", type = IdType.AUTO)
     private Long appGroupId;
+
+    /**
+     * 创建者id
+     */
+    private Long userId;
     /**
      * 应用组名字
      */
+    @NotEmpty
     private String groupName;
     /**
      * 从compose创建应用组的内容
      */
+    @NotEmpty
     private String compose;
     /**
      * 创建时间
      */
     private Date gmtCreate;
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public Long getAppGroupId() {
         return appGroupId;

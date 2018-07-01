@@ -48,7 +48,6 @@
 
     .font {
         font-size: 14px;
-        line-height: 4;
         color: #409EFF;
     }
 
@@ -79,7 +78,7 @@
         </el-header>
         <el-menu
                 default-active="1"
-                class="el-menu-vertical-demo"
+                class="el-menu-vertical-marketApp"
                 @open="handleOpen"
                 @close="handleClose"
                 background-color="#545c64"
@@ -120,7 +119,8 @@
         </el-menu>
     </el-aside>
     <el-container>
-        <el-header>
+        <el-header style=" margin:0;padding:0;">
+            <el-card shadow="always">
             <el-col :span="6" align="center">
                 <el-dropdown>
       <span class="font">
@@ -143,12 +143,26 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
-            <el-col :span="8" align="right" style="font-size: 20px; color: #409EFF; margin-top: 10px">
-                <el-badge :value="messagenum" :max="99">
-                    <i class="el-icon-bell"></i>
-                </el-badge>
+            <el-col :span="8" align="right" style="font-size: 20px; color: #409EFF; margin-top: 0px">
+                <el-popover
+                        placement="bottom"
+                        title="标题"
+                        width="200"
+                        trigger="click"
+                        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                    <el-button slot="reference" type="text"><el-badge :value="messagenum" :max="99">
+                        <i class="el-icon-bell"></i>
+                    </el-badge></el-button>
+                    <template>
+                        <el-tabs v-model="activeName" @tab-click="handleClick">
+                            <el-tab-pane label="公共" name="first">公共</el-tab-pane>
+                            <el-tab-pane label="消息" name="second">消息</el-tab-pane>
+                            <el-tab-pane label="提醒" name="third">提醒</el-tab-pane>
+                        </el-tabs>
+                    </template>
+                </el-popover>
             </el-col>
-            <el-col :span="2" align="right" style="margin-top: 10px">
+            <el-col :span="2" align="right" style="margin-top: 0px">
                 <el-upload
                         class="avatar-uploader"
                         action="https://jsonplaceholder.typicode.com/posts/"
@@ -161,12 +175,13 @@
             </el-col>
             <el-col :span="2" align="left">
                 <el-dropdown>
-                    <span style="font-size: 16px; color: #409EFF ;line-height: 3;">{{username}}</span>
+                    <span style="font-size: 16px; color: #409EFF;">{{username}}</span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
+            </el-card>
         </el-header>
         <el-main id="content">
 
@@ -183,14 +198,18 @@
             pageArr: ['pages/appinfo.html', 'test2.html'],
             messagenum: 199,
             teamArr: ['团队一', '团队二'],
-            dataArr: ['假数据中心', '真数据中心']
+            dataArr: ['假数据中心', '真数据中心'],
+            activeName: 'second',
         },
         methods: {
+            handleClick(tab, event) {
+                console.log(tab, event);
+            },
             // 选择页面
             selectPage(index, indexPath) {
                 console.log(this.pageArr[index - 1]);
                 // 主要就是通过jquery的load方法，加内容加载到元素上
-                $('#content').load(this.pageArr[index - 1], function (response, status, xhr) {
+                $('#content').load(this.pageArr[index - 1], function (response, message, xhr) {
                 });
             },
             logout() {

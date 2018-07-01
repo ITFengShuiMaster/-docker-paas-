@@ -1,6 +1,7 @@
 package cn.edu.jit.tianyu_paas.web;
 
-import cn.edu.jit.tianyu_paas.web.global.TInterceptor;
+import cn.edu.jit.tianyu_paas.web.global.AppInterceptor;
+import cn.edu.jit.tianyu_paas.web.global.GlobalInterceptor;
 import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -19,12 +20,13 @@ public class WebApplication implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(tInterceptor())
+        registry.addInterceptor(globalInterceptor())
                 .addPathPatterns("/**")
-                // 不拦截用户登录，注册
                 .excludePathPatterns("/user/login", "/user/register")
-                //这一条要加上，因为拦截器拦截请求时会定向到这里，如果不加则会返回200
                 .excludePathPatterns("/error");
+
+        registry.addInterceptor(appInterceptor())
+                .addPathPatterns("/apps/**");
     }
 
     /**
@@ -40,7 +42,12 @@ public class WebApplication implements WebMvcConfigurer {
      * 另外addInterceptors方法中需要使用这个Bean。不能new
      */
     @Bean
-    public TInterceptor tInterceptor() {
-        return new TInterceptor();
+    public GlobalInterceptor globalInterceptor() {
+        return new GlobalInterceptor();
+    }
+
+    @Bean
+    public AppInterceptor appInterceptor() {
+        return new AppInterceptor();
     }
 }
