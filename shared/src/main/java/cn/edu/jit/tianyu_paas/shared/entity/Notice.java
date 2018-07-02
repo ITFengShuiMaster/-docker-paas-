@@ -11,8 +11,8 @@ import java.util.Date;
  * 
  * </p>
  *
- * @author 汪继友
- * @since 2018-07-01
+ * @author 倪龙康
+ * @since 2018-07-02
  */
 public class Notice implements Serializable {
 
@@ -20,6 +20,10 @@ public class Notice implements Serializable {
 
     @TableId(value = "notice_id", type = IdType.AUTO)
     private Long noticeId;
+    /**
+     * 标题
+     */
+    private String title;
     /**
      * 公告内容
      */
@@ -37,6 +41,14 @@ public class Notice implements Serializable {
 
     public void setNoticeId(Long noticeId) {
         this.noticeId = noticeId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
@@ -67,6 +79,7 @@ public class Notice implements Serializable {
     public String toString() {
         return "Notice{" +
                 ", noticeId=" + noticeId +
+                ", title=" + title +
                 ", content=" + content +
                 ", adminId=" + adminId +
                 ", gmtCreate=" + gmtCreate +

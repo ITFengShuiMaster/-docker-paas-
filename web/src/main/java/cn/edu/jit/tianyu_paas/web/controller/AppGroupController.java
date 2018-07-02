@@ -46,8 +46,10 @@ public class AppGroupController {
      */
     @PostMapping
     public TResult groupCreate(String groupName, String compose) {
-        AppGroup appGroup = new AppGroup();
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        if (appGroupService.selectOne(new EntityWrapper<AppGroup>().eq("group_name", groupName).eq("user_id", userId)) != null)
+            return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
+        AppGroup appGroup = new AppGroup();
         appGroup.setUserId(userId);
         appGroup.setGmtCreate(new Date());
         appGroup.setGroupName(groupName);

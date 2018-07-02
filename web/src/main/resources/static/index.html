@@ -7,6 +7,18 @@
     <script src="lib/vue/vue.js"></script>
     <script src="lib/element/index.js"></script>
     <script src="lib/jquery/jquery_3.3.1.js"></script>
+    <style>
+        html {
+            font-family: sans-serif;
+        }
+
+        body {
+            background: #f0f2f5 !important;
+            font-family: Monospace Number, Chinese Quote, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 
 <body>
@@ -179,6 +191,21 @@
             },
             beforeAvatarUpload() {
 
+            },
+            init() {
+                $.ajax({
+                    type: '',
+                    url: '/actions/1',
+                    data: '',
+                    success: function (data) {
+
+
+                    },
+                    error: function (data) {
+
+                    }
+
+                })
             }
         },
         mounted() {

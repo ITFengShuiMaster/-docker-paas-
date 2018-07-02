@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
-    <link rel="stylesheet" href="../lib/element/index.css"/>
-    <script src="../lib/vue/vue.js"></script>
-    <script src="../lib/element/index.js"></script>
-    <script src="../lib/jquery/jquery_3.3.1.js"></script>
+    <link rel="stylesheet" href="../../lib/element/index.css"/>
+    <script src="../../lib/vue/vue.js"></script>
+    <script src="../../lib/element/index.js"></script>
+    <script src="../../lib/jquery/jquery_3.3.1.js"></script>
     <style>
         html, body {
             font-family: sans-serif;
@@ -63,35 +63,56 @@
             background: #fff;
             border-bottom: 1px solid #e8e8e8;
         }
+
+        .kuozhanLeft {
+            display: inline-block;
+            float: left;
+        }
+
+        .kuozhanRight {
+            display: inline-block;
+            float: right;
+        }
     </style>
 </head>
 
 <body>
-<div id="monitor">
-    <div class="jk">
+<div id="extend">
+    <div class="kuozhan">
         <div class="homeMiddle">
             <el-row :gutter="20">
                 <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
                     <div class="first a">
-                        <div class="text">
-                            <span>尚未开通性能分析插件</span>
+                        <div class="kuozhanLeft">
+                            <el-radio-group v-model="yn">
+                                <el-radio-button label="已开通"></el-radio-button>
+                                <el-radio-button label="未开通"></el-radio-button>
+                            </el-radio-group>
+
                         </div>
-                        <div class="text">
-                            <a href="monitor.html">去开通</a>
+                        <div class="kuozhanRight">
+                            <el-radio-group v-model="type">
+                                <el-radio-button label="全部"></el-radio-button>
+                                <el-radio-button label="性能分析类"></el-radio-button>
+                                <el-radio-button label="网络治理类"></el-radio-button>
+                            </el-radio-group>
                         </div>
                     </div>
                 </el-col>
-
             </el-row>
         </div>
+
     </div>
 
 
 </div>
 <script>
-    var monitor = new Vue({
-        el: '#monitor',
-
+    var extend = new Vue({
+        el: '#extend',
+        data: {
+            yn: '已开通',
+            type: '全部',
+        }
     });
 </script>
 </body>

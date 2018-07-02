@@ -29,7 +29,8 @@
             padding: 20px;
             margin: 10px;
             background: #fff;
-
+            min-height: 200px;
+            min-width: 600px;
         }
 
         .homeRight span {
@@ -41,7 +42,26 @@
         }
 
         .userTeamInfo {
-            float: left;
+            float: right;
+        }
+
+        .titleInfo {
+            padding: 0 24px;
+        }
+
+        .appNum, .memberNum, .balanceNum, .memoryNum, .diskNum {
+            display: inline-block;
+        }
+
+        .appNum, .memberNum, .balanceNum, .memoryNum, .diskNum {
+            text-align: right;
+        }
+
+        .appNumNum, .memberNumNum, .balanceNumNum, .memoryNumNum, .diskNumNum {
+            color: rgba(0, 0, 0, .85);
+            font-size: 28px;
+            line-height: 30px;
+            margin: 0px;
         }
     </style>
 </head>
@@ -53,11 +73,63 @@
                 <el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class="userInfo">
+        <el-row>
 
+        </el-row>
+        <div class="userInfo">
+            <div class="img">
+                <img src="" class="image">
+            </div>
+            <div class="imginfo">
+                <div class="name">
+
+                </div>
+                <div class="createtTime">
+
+                </div>
+            </div>
         </div>
         <div class="userTeamInfo">
-
+            <div class="appNum titleInfo">
+                <div class="appNumName">
+                    <span>应用数</span>
+                </div>
+                <div class="appNumNum ">
+                    <span>{{appNum}}</span>
+                </div>
+            </div>
+            <div class="memberNum titleInfo">
+                <div class="memberNumName">
+                    <span>团队成员</span>
+                </div>
+                <div class="memberNumNum">
+                    <span>{{memberNum}}</span>
+                </div>
+            </div>
+            <div class="balanceNum titleInfo">
+                <div class="balanceNumName">
+                    <span>账户余额</span>
+                </div>
+                <div class="balanceNumNum">
+                    <span>{{balance}}元</span>
+                </div>
+            </div>
+            <div class="memoryNum titleInfo">
+                <div class="memoryNumName ">
+                    <span>已使用内存</span>
+                </div>
+                <div class="memoryNumNum ">
+                    <span>{{usedMemory}}</span>
+                </div>
+            </div>
+            <div class="diskNum titleInfo">
+                <div class="diskNumName">
+                    <span>已使用磁盘</span>
+                </div>
+                <div class="diskNumNum">
+                    <span>{{usedDisk}}</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -109,6 +181,7 @@
             <div class="dynamicTitle">
                 <span>动态</span>
             </div>
+
         </div>
     </div>
 </div>
@@ -131,7 +204,34 @@
                 group: '3',
                 memory: '200MB',
                 message: '运行中'
-            }]
+            }],
+            userName: '',
+            appNum: '1',
+            memberNum: '1',
+            balance: '1',
+            usedMemory: '1',
+            usedDisk: '1',
+
+        },
+        methods: {
+            overviewInit() {
+                $.ajax({
+                    type: 'get',
+                    url: 'http://localhost:8080/tianyu_pass/actions',
+                    data: {},
+                    success: function (data) {
+
+                    },
+                    error: function (data) {
+
+                    }
+
+
+                })
+            }
+        },
+        mounted() {
+//            this.overviewInit()
         }
 
     })

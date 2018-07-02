@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
-    <link rel="stylesheet" href="../lib/element/index.css"/>
-    <script src="../lib/vue/vue.js"></script>
-    <script src="../lib/element/index.js"></script>
-    <script src="../lib/jquery/jquery_3.3.1.js"></script>
+    <link rel="stylesheet" href="../../lib/element/index.css"/>
+    <script src="../../lib/vue/vue.js"></script>
+    <script src="../../lib/element/index.js"></script>
+    <script src="../../lib/jquery/jquery_3.3.1.js"></script>
     <style>
         html, body {
             font-family: sans-serif;
@@ -52,7 +52,7 @@
         }
 
         .bottom {
-            padding: 20px;
+            padding: 15px;
             margin: 10px;
             background: #fff;
             min-height: 150px;
@@ -62,6 +62,7 @@
             padding: 20px;
             background: #fff;
             border-bottom: 1px solid #e8e8e8;
+            margin-bottom: 10px;
         }
 
         .button {
@@ -73,42 +74,42 @@
 </head>
 
 <body>
-<div id="rely">
-    <div class="yilai">
+<div id="storage">
+    <div class="cunchu">
         <div class="homeMiddle">
             <el-row :gutter="20">
                 <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
                     <div class="first a">
                         <div class="makeInfo">
-                            <span>应用连接信息</span>
+                            <span>持久化设置</span>
                         </div>
                         <div>
                             <el-table
-                                    :data="connectInfo"
+                                    :data="lastingSet"
                                     style="width: 100%;">
                                 <el-table-column
                                         prop="name"
-                                        label="变量名"
+                                        label="持久化名称"
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="val"
-                                        label="变量值"
+                                        prop="list"
+                                        label="持久化目录"
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="des"
-                                        label="说明"
+                                        prop="type"
+                                        label="持久化类型"
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="opera"
                                         label="操作">
+                                    <el-button type="text" size="small">删除</el-button>
                                 </el-table-column>
                             </el-table>
                         </div>
                         <div class="button">
-                            <el-button><i class="el-icon-plus"></i>添加变量</el-button>
+                            <el-button><i class="el-icon-plus"></i>添加持久化</el-button>
                         </div>
                     </div>
                 </el-col>
@@ -120,35 +121,49 @@
                 <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
                     <div class="first a">
                         <div class="makeInfo">
-                            <span>依赖应用信息</span>
+                            <span>应用连接信息</span>
                         </div>
                         <div>
                             <el-table
-                                    :data="appInfo"
+                                    :data="fileStorage"
                                     style="width: 100%;">
                                 <el-table-column
-                                        prop="name"
-                                        label="应用名"
-                                        width="180">
+                                        prop="localList"
+                                        label="本地持久化目录"
+                                        width="150">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="group"
-                                        label="所属组"
-                                        width="180">
+                                        prop="targetName"
+                                        label="目标持久化名称"
+                                        width="150">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="des"
-                                        label="应用说明"
-                                        width="180">
+                                        prop="targetList"
+                                        label="目标持久化目录"
+                                        width="150">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="opera"
+                                        prop="targetType"
+                                        label="目标持久化类型"
+                                        width="150">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="targetApp"
+                                        label="目标持久化目录"
+                                        width="150">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="targetGroup"
+                                        label="目标持久化目录"
+                                        width="150">
+                                </el-table-column>
+                                <el-table-column
                                         label="操作">
                                 </el-table-column>
                             </el-table>
                         </div>
                         <div class="button">
-                            <el-button><i class="el-icon-plus"></i>添加依赖</el-button>
+                            <el-button><i class="el-icon-plus"></i>挂载目录</el-button>
                         </div>
                     </div>
                 </el-col>
@@ -156,32 +171,15 @@
         </div>
     </div>
 
-
 </div>
 <script>
-    var rely = new Vue({
-        el: '#rely',
+    var storage = new Vue({
+        el: '#storage',
         data: {
-            connectInfo: [{
-                name: 'MYSQL_USER',
-                val: 'admin',
-                des: '用户名',
-                opera: ''
-            }, {
-                name: 'MYSQL_PASS',
-                val: '2d849696',
-                des: '密码',
-                opera: ''
-            }, {
-                name: 'MYSQL_HOST',
-                val: '127.0.0.1',
-                des: '连接地址	',
-                opera: ''
-            }, {
-                name: 'MYSQL_PORT',
-                val: '3306',
-                des: '端口',
-                opera: ''
+            lastingSet: [{
+                name: 'ba464ae',
+                list: '/data',
+                type: 'share-file'
             }],
         }
     });

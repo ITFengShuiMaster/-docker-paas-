@@ -65,7 +65,7 @@
             "is_function", "is_integer", "is_list", "is_number", "is_pid",
             "is_port", "is_record", "is_reference", "is_tuple",
             "atom", "binary", "bitstring", "boolean", "function", "integer", "list",
-            "number", "pid", "port", "record", "reference", "tuple"];
+            "number", "pid", "static.pages.application.port", "record", "reference", "tuple"];
 
         var bifWords = [
             "abs", "adler32", "adler32_combine", "alive", "apply", "atom_to_binary",
