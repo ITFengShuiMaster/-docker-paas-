@@ -26,7 +26,7 @@ import java.util.Date;
  */
 
 @RestController
-@RequestMapping("/apps")
+@RequestMapping("/apps/")
 public class AppController {
 
     private final AppService appService;
@@ -185,7 +185,7 @@ public class AppController {
      * @author 卢越
      * @date 2018/6/29 16:30
      */
-    @GetMapping
+    @GetMapping("lists")
     public TResult listAppByNameAndStatus(@RequestParam(required = false, defaultValue = "") String name, Integer status, Pagination page) {
         App app = new App();
         app.setName(name);

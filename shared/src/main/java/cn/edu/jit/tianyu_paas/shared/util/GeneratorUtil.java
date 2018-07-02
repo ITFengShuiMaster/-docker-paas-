@@ -25,9 +25,7 @@ public class GeneratorUtil {
     public static void main(String[] args) {
         String packageName = "cn.edu.jit.tianyu_paas.shared";
         initDataSource();
-        generateByTables(packageName, "action", "action_detail", "admin", "app", "app_by_custom", "app_by_demo", "app_by_docker_image",
-                "app_by_docker_run", "app_by_market", "app_dependency", "app_feature", "app_group", "app_log", "app_port", "app_var", "demo"
-                , "feature", "user", "user_dynamic");
+        generateByTables(packageName, "message", "user_message");
     }
 
     private static void initDataSource() {
@@ -57,9 +55,9 @@ public class GeneratorUtil {
                 .setInclude(tableNames);
         config.setActiveRecord(false)
                 .setEnableCache(false)
-                .setAuthor("汪继友")
+                .setAuthor("倪龙康")
                 .setBaseResultMap(true)
-                .setOutputDir("E:/codeGen")
+                .setOutputDir("D:/codeGen")
                 .setFileOverride(true);
         new AutoGenerator().setGlobalConfig(config)
                 .setDataSource(dataSourceConfig)

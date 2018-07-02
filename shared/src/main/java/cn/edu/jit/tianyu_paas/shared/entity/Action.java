@@ -1,7 +1,9 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,6 +16,7 @@ import java.util.Date;
  * @author 汪继友
  * @since 2018-06-28
  */
+@Data
 public class Action implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,6 +38,11 @@ public class Action implements Serializable {
      */
     private Integer action;
     /**
+     * 行为名称
+     */
+    @TableField(exist = false)
+    private String actionName;
+    /**
      * 所操作的应用id
      */
     private Long appId;
@@ -48,6 +56,13 @@ public class Action implements Serializable {
     private Integer status;
     private Date gmtCreate;
 
+    public String getActionName() {
+        return actionName;
+    }
+
+    public void setActionName(String actionName) {
+        this.actionName = actionName;
+    }
 
     public Long getActionId() {
         return actionId;

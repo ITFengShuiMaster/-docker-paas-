@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 倪龙康
@@ -45,8 +43,10 @@ public class AppGroupController {
      */
     @PostMapping
     public TResult groupCreate(String groupName, String compose) {
-        AppGroup appGroup = new AppGroup();
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        if (appGroupService.selectOne(new EntityWrapper<AppGroup>().eq("group_name", groupName).eq("user_id", userId)) != null)
+            return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
+        AppGroup appGroup = new AppGroup();
         appGroup.setUserId(userId);
         appGroup.setGmtCreate(new Date());
         appGroup.setGroupName(groupName);
@@ -73,20 +73,30 @@ public class AppGroupController {
     }
 
     /**
-     * 获取用户所有用户组以及用户组中的所有应用
-     * @author 倪龙康
+     * 获取所有组的信息
      * @return
      */
     @GetMapping
-    public TResult showGroupInfo(){
+    public TResult listGruopsInfo() {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        Map<AppGroup, List<App>> maps = new HashMap<>();
+        return TResult.success(appGroupService.selectList(new EntityWrapper<AppGroup>().eq("user_id", userId)));
+    }
+
+    /**
+     * 获取用户所有用户组以及用户组中的所有应用
+     *
+     * @return
+     * @author 倪龙康
+     */
+    @GetMapping("groups-apps")
+    public TResult showGroupAndAppInfo() {
+        Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         List<AppGroup> groups = appGroupService.selectList(new EntityWrapper<AppGroup>().eq("user_id", userId));
         for(AppGroup group: groups) {
             List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_id", group.getAppGroupId()));
-            maps.put(group, apps);
+            group.setApps(apps);
         }
-        return TResult.success(maps);
+        return TResult.success(groups);
     }
 
     /**

@@ -55,10 +55,6 @@
             display: inline-block;
         }
 
-        .tabs {
-            float: left;
-            /*display: inline-block;*/
-        }
 
         .a {
             /*display: inline-block;*/
@@ -101,11 +97,11 @@
             margin: 0 -15px;
         }
 
-        /*.tab-pane {*/
-        /*margin:0 32px 0 0;*/
-        /*padding:12px 16px;*/
-        /*text-decoration: none;*/
-        /*}*/
+        .logs p {
+            margin-bottom: 0;
+            color: #999;
+        }
+
     </style>
 </head>
 
@@ -145,77 +141,46 @@
             <el-button type="primary">重新部署</el-button>
         </div>
         <div class="tabs">
-            <el-tabs>
-                <el-tab-pane label="总览" name="first" class="tab-pane"></el-tab-pane>
-                <el-tab-pane label="监控" name="second" class="tab-pane"></el-tab-pane>
-                <el-tab-pane label="日志" name="third" class="tab-pane"></el-tab-pane>
-                <el-tab-pane label="伸缩" name="fourth" class="tab-pane"></el-tab-pane>
-                <el-tab-pane label="依赖" name="fifth" class="tab-pane"></el-tab-pane>
-                <el-tab-pane label="存储" name="sixth" class="tab-pane"></el-tab-pane>
-                <el-tab-pane label="端口" name="seventh" class="tab-pane"></el-tab-pane>
-                <el-tab-pane label="扩展" name="eighth" class="tab-pane"></el-tab-pane>
-                <el-tab-pane label="设置" name="ninth" class="tab-pane"></el-tab-pane>
+            <el-row>
+                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="selectPage1">
+                        <el-menu-item index="1">总览</el-menu-item>
+                        <el-menu-item index="2">监控</el-menu-item>
+                        <el-menu-item index="3">日志</el-menu-item>
+                        <el-menu-item index="4">伸缩</el-menu-item>
+                        <el-menu-item index="5">依赖</el-menu-item>
+                        <el-menu-item index="6">存储</el-menu-item>
+                        <el-menu-item index="7">端口</el-menu-item>
+                        <el-menu-item index="8">扩展</el-menu-item>
+                        <el-menu-item index="9">设置</el-menu-item>
+                    </el-menu>
 
-            </el-tabs>
+                </el-col>
+            </el-row>
+
         </div>
     </div>
-    <div class="homeMiddle">
-        <el-row :gutter="20">
-            <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
-                <div class="first a">
-                    <span>应用状态</span>
-                    <div class="statusFirst" v-loading="loading"></div>
-                    <div class="text">
-                        <span>运行中</span>
-                    </div>
-                </div>
-            </el-col>
-            <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
-                <div class="second a">
-                    <span>平均响应时间(ms)</span>
-                    <div class="timeSecond">
+    <div class="content" id="con">
 
-                    </div>
-                </div>
-            </el-col>
-            <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
-                <div class="third a">
-                    <span>吞吐率(dps)</span>
-                    <div class="dpsThird">
-
-                    </div>
-                </div>
-            </el-col>
-            <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
-                <div class="fourth a">
-                    <span>资源使用</span>
-                    <div class="resoureFourth">
-
-                    </div>
-                </div>
-            </el-col>
-        </el-row>
     </div>
 
-    <!--<div class="homeMiddle">-->
-
-
-    <!--</div>-->
-    <div class="homeBottom">
-        <div class="makeInfo">
-            <span>操作日志</span>
-        </div>
-        <div class="infos">
-            <div class="timeinfos">14:32:19</div>
-            <div class="infoinfos">部署完成@陈秋凡</div>
-        </div>
-    </div>
 </div>
-
+</html>
 <script>
     var home = new Vue({
         el: '#home',
         data: {
+            showList: {
+                showOne: true,
+                showTwo: false,
+                showThree: false,
+                showFour: false,
+                showFive: false,
+                showSix: false,
+                showSeven: false,
+                showEight: false,
+                showNine: false
+            },
             dialogTableVisible: false,
             dialogFormVisible: false,
             form: {
@@ -233,10 +198,98 @@
                 memory: '200MB',
                 message: '运行中'
             }],
+            connectInfo: [{
+                name: 'MYSQL_USER',
+                val: 'admin',
+                des: '用户名',
+                opera: ''
+            }, {
+                name: 'MYSQL_PASS',
+                val: '2d849696',
+                des: '密码',
+                opera: ''
+            }, {
+                name: 'MYSQL_HOST',
+                val: '127.0.0.1',
+                des: '连接地址	',
+                opera: ''
+            }, {
+                name: 'MYSQL_PORT',
+                val: '3306',
+                des: '端口',
+                opera: ''
+            }],
+            appInfo: [{
+                name: '',
+                group: '',
+                des: '',
+                opera: ''
+            }],
+            lastingSet: [{
+                name: 'ba464ae',
+                list: '/data',
+                type: 'share-file'
+            }], lastingSet: [{
+                name: 'ba464ae',
+                list: '/data',
+                type: 'share-file'
+            }],
+            fileStorage: [{
+                localList: '',
+                targetName: '',
+                targetList: '',
+                targetType: '',
+                targetApp: '',
+                targetGroup: ''
+            }],
+            monitorInfo: [{
+                type: '启动时检测',
+                status: '已启用'
+            }, {
+                type: '运行时检测',
+                status: '未设置'
+            }],
+            powerInfo: [{
+                name: '',
+                mail: '',
+                power: ''
+            }],
+            portInfo: [{}],
             nameForm: {
                 name: ''
             },
             loading: true,
+            option1: [{
+                value: '256MB',
+                label: '256'
+            }, {
+                value: '512MB',
+                label: '512MB'
+            }, {
+                value: '1GB',
+                label: '1GB'
+            }],
+            option2: [{
+                value: '1',
+                label: '1'
+            }, {
+                value: '2',
+                label: '2'
+            }],
+            activeIndex: '1',
+            pageArr: ['pages/application/app_overview.html', 'pages/application/app_monitor.html', 'pages/application/app_log.html', 'pages/application/app_flex.html', 'pages/application/app_extend.html', 'pages/application/app_storage.html', 'pages/application/app_port.html', 'pages/application/app_rely.html', 'pages/application/app_setting.html'],
+        },
+        methods: {
+            selectPage1(index, indexPath) {
+                console.log(this.pageArr[index - 1]);
+                // 主要就是通过jquery的load方法，加内容加载到元素上
+                $('#con').load(this.pageArr[index - 1], function (response, status, xhr) {
+                });
+            },
+
+        },
+        mounted() {
+            this.selectPage1(1, '');
         }
 
     })

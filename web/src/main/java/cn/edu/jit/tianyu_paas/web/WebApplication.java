@@ -9,9 +9,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 @SpringBootApplication
 @MapperScan("cn.edu.jit.tianyu_paas.web.mapper")
+@EnableWebSocket
 public class WebApplication implements WebMvcConfigurer {
 
     public static void main(String[] args) {
@@ -26,7 +29,9 @@ public class WebApplication implements WebMvcConfigurer {
                 .excludePathPatterns("/error");
 
         registry.addInterceptor(appInterceptor())
-                .addPathPatterns("/apps/**");
+                .addPathPatterns("/apps/info")
+                .addPathPatterns("/actions/**")
+                .excludePathPatterns("/actions/info");
     }
 
     /**
@@ -39,7 +44,6 @@ public class WebApplication implements WebMvcConfigurer {
 
     /**
      * 加上这个，拦截器才会被spring管理，才可以获取配置文件的属性
-     * 另外addInterceptors方法中需要使用这个Bean。不能new
      */
     @Bean
     public GlobalInterceptor globalInterceptor() {
@@ -49,5 +53,13 @@ public class WebApplication implements WebMvcConfigurer {
     @Bean
     public AppInterceptor appInterceptor() {
         return new AppInterceptor();
+    }
+
+    /**
+     * websocket需要使用
+     */
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+        return new ServerEndpointExporter();
     }
 }

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <link rel="stylesheet" href="../../lib/element/index.css"/>
+    <script src="../../lib/vue/vue.js"></script>
+    <script src="../../lib/element/index.js"></script>
+    <script src="../../lib/jquery/jquery_3.3.1.js"></script>
+    <style>
+        html, body {
+            font-family: sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #f0f2f5 !important;
+            color: rgba(0, 0, 0, .65);
+        }
+
+        .a {
+            /*display: inline-block;*/
+            margin: 10px;
+            min-height: 170px;
+            border: 1px solid #e8e8e8;
+            padding: 16px 32px 0;
+            background-color: #fff;
+
+        }
+
+        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+            padding: 40px 0 40px 0;
+            margin: 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .text {
+            text-align: center;
+        }
+
+        .infos div {
+            float: left;
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .infoinfos {
+            border: 1px solid #e8e8e8;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            min-width: 800px;
+            margin-left: 100px;
+        }
+
+        .bottom {
+            padding: 20px;
+            margin: 10px;
+            background: #fff;
+            min-height: 150px;
+        }
+
+        .makeInfo {
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            margin-bottom: 15px;
+        }
+
+        .baseInfo span {
+            line-height: 1.8;
+            margin: 10px;
+        }
+
+        .baseInfo div {
+            margin: 20px;
+        }
+
+        .button {
+            text-align: right;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="setting">
+    <div class="shezhi">
+        <div class="homeBottom">
+            <el-row :gutter="20">
+                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                    <div class="first a">
+                        <div class="makeInfo">
+                            <span>基础信息</span>
+                        </div>
+                        <div class="baseInfo">
+                            <div class="time">
+                                <span>创建时间:2018-06-27 14:32:18</span>
+                            </div>
+                            <div class="way">
+                                <span>创建方式:云市</span>
+                            </div>
+                            <div class="features">
+                                <span>应用特性:</span>
+                                <el-button size="small" type="text"><i class="el-icon-plus"></i>添加特性</el-button>
+
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+
+        <div class="homeMiddle">
+            <el-row :gutter="20">
+                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                    <div class="first a">
+                        <div class="makeInfo">
+                            <span>自定义环境变量</span>
+                        </div>
+                        <div>
+                            <el-table
+                                    :data="pathInfo"
+                                    style="width: 100%;">
+                                <el-table-column
+                                        prop="name"
+                                        label="变量名"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="val"
+                                        label="变量值"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="des"
+                                        label="说明"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="opera"
+                                        label="操作">
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                        <div class="button">
+                            <el-button><i class="el-icon-plus"></i>添加变量</el-button>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+
+        <div class="homeMiddle">
+            <el-row :gutter="20">
+                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                    <div class="first a">
+                        <div class="makeInfo">
+                            <span>健康监测</span>
+                        </div>
+                        <div>
+                            <el-table
+                                    :data="monitorInfo"
+                                    style="width: 100%;">
+                                <el-table-column
+                                        prop="type"
+                                        label="监测类型"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="status"
+                                        label="状态"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        label="操作">
+                                    <el-button type="text" size="small">设置</el-button>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+
+        <div class="homeMiddle">
+            <el-row :gutter="20">
+                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                    <div class="first a">
+                        <div class="makeInfo">
+                            <span>成员应用权限</span>
+                        </div>
+                        <div>
+                            <el-table
+                                    :data="powerInfo"
+                                    style="width: 100%;">
+                                <el-table-column
+                                        prop="name"
+                                        label="用户名"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="mail"
+                                        label="邮箱"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="des"
+                                        label="操作权限"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        label="操作">
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                        <div class="button">
+                            <el-button><i class="el-icon-plus"></i>设置成员应用权限</el-button>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+
+</div>
+<script>
+    var setting = new Vue({
+        el: '#setting',
+        data: {
+            monitorInfo: [{
+                type: '启动时检测',
+                status: '已启用'
+            }, {
+                type: '运行时检测',
+                status: '未设置'
+            }],
+            powerInfo: '',
+            pathInfo: '',
+        }
+    });
+</script>
+</body>
+</html>

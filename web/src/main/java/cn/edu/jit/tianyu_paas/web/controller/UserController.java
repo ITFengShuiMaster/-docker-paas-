@@ -5,6 +5,7 @@ import cn.edu.jit.tianyu_paas.shared.entity.UserDynamic;
 import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.UserDynamicService;
+import cn.edu.jit.tianyu_paas.web.service.UserLoginLogService;
 import cn.edu.jit.tianyu_paas.web.service.UserService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,15 @@ public class UserController {
 
     private final UserService userService;
     private final UserDynamicService userDynamicService;
+    private final UserLoginLogService userLoginLogService;
     private HttpSession session;
 
     @Autowired
-    public UserController(UserService userService, UserDynamicService userDynamicService, HttpSession session) {
+    public UserController(UserService userService, UserDynamicService userDynamicService, HttpSession session, UserLoginLogService userLoginLogService) {
         this.userService = userService;
         this.session = session;
         this.userDynamicService = userDynamicService;
+        this.userLoginLogService = userLoginLogService;
     }
 
     /**
@@ -61,9 +64,15 @@ public class UserController {
         }
 
         if (!user.getPwd().equals(PassUtil.getMD5(pwd))) {
+            //用户登录失败，将登录失败信息插入数据表
+            userLoginLogService.insert(UserLoginLogUtil.getUserLoginLog(user.getUserId(), 0));
             return TResult.failure(TResultCode.USER_LOGIN_ERROR);
         }
+
         session.setAttribute(Constants.SESSION_KEY_USER_ID, user.getUserId());
+        //用户登录成功，将登录成功信息插入数据表
+        userLoginLogService.insert(UserLoginLogUtil.getUserLoginLog(user.getUserId(), 1));
+
         return TResult.success();
     }
 

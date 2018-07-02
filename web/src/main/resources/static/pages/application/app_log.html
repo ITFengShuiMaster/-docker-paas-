@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <link rel="stylesheet" href="../../lib/element/index.css"/>
+    <script src="../../lib/vue/vue.js"></script>
+    <script src="../../lib/element/index.js"></script>
+    <script src="../../lib/jquery/jquery_3.3.1.js"></script>
+    <style>
+        html, body {
+            font-family: sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #f0f2f5 !important;
+            color: rgba(0, 0, 0, .65);
+        }
+
+        .a {
+            /*display: inline-block;*/
+            margin: 10px;
+            min-height: 170px;
+            border: 1px solid #e8e8e8;
+            padding: 16px 32px 0;
+            background-color: #fff;
+
+        }
+
+        .infos div {
+            float: left;
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .logs {
+            background: #000;
+            min-height: 300px;
+            padding: 15px;
+            max-height: 600px;
+            overflow: auto;
+            margin: 10px;
+        }
+
+        .logs p {
+            margin-bottom: 0;
+            margin-top: 0;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+<div id="log">
+    <div class="rizhi">
+        <div class="homeMiddle">
+            <el-row :gutter="20">
+                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                    <div class="first a">
+                        <div class="rizhiTop">
+                            <div class="rizhiLeft">
+                                <el-button>暂停推送</el-button>
+                            </div>
+                            <div class="rizhiRight">
+                                <el-button type="text">历史日志下载</el-button>
+                                <el-button type="text">最近1000条日志</el-button>
+                            </div>
+
+                        </div>
+                        <div class="logs">
+                            <p>539b9c229678:Version: '5.5.46-37.5-log' socket: '/tmp/mysql.sock' port: 3306 Percona
+                                Server (GPL), Release 37.5, Revision 684ce54</p>
+                            <p>539b9c229678:180628 16:26:49 [Note] mysqld: ready for connections.</p>
+                        </div>
+                    </div>
+                </el-col>
+
+            </el-row>
+        </div>
+
+    </div>
+
+
+</div>
+<script>
+    var log = new Vue({
+        el: '#log',
+
+    });
+</script>
+</body>
+</html>

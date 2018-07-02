@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <!--<link rel="stylesheet" href="../../lib/element/index.css"/>-->
+    <!--<script src="../../lib/vue/vue.js"></script>-->
+    <!--<script src="../../lib/element/index.js"></script>-->
+    <!--<script src="../../lib/jquery/jquery_3.3.1.js"></script>-->
+    <style>
+        html, body {
+            font-family: sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #f0f2f5 !important;
+            color: rgba(0, 0, 0, .65);
+        }
+
+        .a {
+            /*display: inline-block;*/
+            margin: 10px;
+            min-height: 170px;
+            border: 1px solid #e8e8e8;
+            padding: 16px 32px 0;
+            background-color: #fff;
+
+        }
+
+        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+            padding: 40px 0 40px 0;
+            margin: 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .text {
+            text-align: center;
+        }
+
+        .infos div {
+            float: left;
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .infoinfos {
+            border: 1px solid #e8e8e8;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            min-width: 800px;
+            margin-left: 100px;
+        }
+
+        .bottom {
+            padding: 20px;
+            margin: 10px;
+            background: #fff;
+            min-height: 150px;
+        }
+
+        .makeInfo {
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+        }
+    </style>
+</head>
+
+<body>
+<div id="overview">
+    <div class="top">
+        <el-row>
+            <el-row :gutter="20">
+                <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
+                    <div class="first a">
+                        <span>应用状态</span>
+                        <div class="statusFirst" v-loading="loading"></div>
+                        <div class="text">
+                            <span>运行中</span>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
+                    <div class="second a">
+                        <span>平均响应时间(ms)</span>
+                        <div class="timeSecond">
+
+                        </div>
+                    </div>
+                </el-col>
+                <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
+                    <div class="third a">
+                        <span>吞吐率(dps)</span>
+                        <div class="dpsThird">
+
+                        </div>
+                    </div>
+                </el-col>
+                <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
+                    <div class="fourth a">
+                        <span>资源使用</span>
+                        <div class="resoureFourth">
+
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </el-row>
+    </div>
+    <div class="bottom">
+        <el-row>
+            <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                <div class="makeInfo">
+                    <span>操作日志</span>
+                </div>
+                <div class="infos">
+                    <div class="timeinfos">14:32:19</div>
+                    <div class="infoinfos">
+                        <span>部署完成@陈秋凡</span>
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+
+</div>
+<script>
+    var overview = new Vue({
+        el: '#overview',
+        data: {},
+        methods: {
+            overviewInit() {
+                $.ajax({
+                    type: 'get',
+                    url: '/tianyu_pass/actions',
+                    success: function (data) {
+                        alert(1)
+                    },
+                    error: function (data) {
+
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.overviewInit()
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <link rel="stylesheet" href="../../lib/element/index.css"/>
+    <script src="../../lib/vue/vue.js"></script>
+    <script src="../../lib/element/index.js"></script>
+    <script src="../../lib/jquery/jquery_3.3.1.js"></script>
+    <style>
+        html, body {
+            font-family: sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #f0f2f5 !important;
+            color: rgba(0, 0, 0, .65);
+        }
+
+        .a {
+            /*display: inline-block;*/
+            margin: 10px;
+            min-height: 170px;
+            border: 1px solid #e8e8e8;
+            padding: 16px 32px 0;
+            background-color: #fff;
+
+        }
+
+        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+            padding: 40px 0 40px 0;
+            margin: 20px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .text {
+            text-align: center;
+        }
+
+        .infos div {
+            float: left;
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .infoinfos {
+            border: 1px solid #e8e8e8;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            min-width: 800px;
+            margin-left: 100px;
+        }
+
+        .bottom {
+            padding: 20px;
+            margin: 10px;
+            background: #fff;
+            min-height: 150px;
+        }
+
+        .makeInfo {
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .button {
+            text-align: right;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="rely">
+    <div class="yilai">
+        <div class="homeMiddle">
+            <el-row :gutter="20">
+                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                    <div class="first a">
+                        <div class="makeInfo">
+                            <span>应用连接信息</span>
+                        </div>
+                        <div>
+                            <el-table
+                                    :data="connectInfo"
+                                    style="width: 100%;">
+                                <el-table-column
+                                        prop="name"
+                                        label="变量名"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="val"
+                                        label="变量值"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="des"
+                                        label="说明"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="opera"
+                                        label="操作">
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                        <div class="button">
+                            <el-button><i class="el-icon-plus"></i>添加变量</el-button>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+
+        <div class="homeBottom">
+            <el-row :gutter="20">
+                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
+                    <div class="first a">
+                        <div class="makeInfo">
+                            <span>依赖应用信息</span>
+                        </div>
+                        <div>
+                            <el-table
+                                    :data="appInfo"
+                                    style="width: 100%;">
+                                <el-table-column
+                                        prop="name"
+                                        label="应用名"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="group"
+                                        label="所属组"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="des"
+                                        label="应用说明"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="opera"
+                                        label="操作">
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                        <div class="button">
+                            <el-button><i class="el-icon-plus"></i>添加依赖</el-button>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+
+
+</div>
+<script>
+    var rely = new Vue({
+        el: '#rely',
+        data: {
+            connectInfo: [{
+                name: 'MYSQL_USER',
+                val: 'admin',
+                des: '用户名',
+                opera: ''
+            }, {
+                name: 'MYSQL_PASS',
+                val: '2d849696',
+                des: '密码',
+                opera: ''
+            }, {
+                name: 'MYSQL_HOST',
+                val: '127.0.0.1',
+                des: '连接地址	',
+                opera: ''
+            }, {
+                name: 'MYSQL_PORT',
+                val: '3306',
+                des: '端口',
+                opera: ''
+            }],
+        }
+    });
+</script>
+</body>
+</html>

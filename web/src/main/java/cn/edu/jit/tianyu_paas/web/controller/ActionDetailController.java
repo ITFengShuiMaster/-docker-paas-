@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/action-details")
+@RequestMapping("/action-details/")
 public class ActionDetailController {
     private final ActionDetailService actionDetailService;
     private ActionService actionService;
