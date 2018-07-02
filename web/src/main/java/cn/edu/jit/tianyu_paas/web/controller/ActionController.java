@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/actions")
 public class ActionController {
-    private ActionService actionService;
+    private final ActionService actionService;
     private HttpSession session;
 
     @Autowired
