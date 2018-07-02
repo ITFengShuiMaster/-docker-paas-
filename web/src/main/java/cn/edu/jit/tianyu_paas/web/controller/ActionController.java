@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/actions")
 public class ActionController {
-    private ActionService actionService;
+    private final ActionService actionService;
     private HttpSession session;
     private final AppLogService appLogService;
     private final ActionDetailService actionDetailService;
