@@ -55,9 +55,9 @@ public class GeneratorUtil {
                 .setInclude(tableNames);
         config.setActiveRecord(false)
                 .setEnableCache(false)
-                .setAuthor("汪继友")
+                .setAuthor("倪龙康")
                 .setBaseResultMap(true)
-                .setOutputDir("E:/codeGen")
+                .setOutputDir("D:/codeGen")
                 .setFileOverride(true);
         new AutoGenerator().setGlobalConfig(config)
                 .setDataSource(dataSourceConfig)
