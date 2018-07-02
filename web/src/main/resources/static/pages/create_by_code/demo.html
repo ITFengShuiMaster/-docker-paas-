@@ -13,13 +13,14 @@
             <el-dialog title="新建应用组" :visible.sync="dialogFormVisible">
                 <el-form :model="ruleForm" staus-icon :rules="rules" ref="ruleForm" class="demo-ruleForm"
                          label-position="right" label-width="80px" :model="formLabelAlign">
-                    <el-form-item label="组名称" prop="name">
-                        <el-input placeholder="请填写组名称" v-model="ruleForm.name"></el-input>
+                    <el-form-item label="组名称" prop="group_name">
+                        <el-input placeholder="请填写组名称" v-model="ruleForm.group_name"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="AddGroup">确 定
+                    </el-button>
                 </div>
             </el-dialog>
         </el-form-item>
@@ -54,15 +55,39 @@
                 ],
                 dialogFormVisible: false,
                 ruleForm: {
-                    name: '',
+                    group_name: '',
                 },
                 formLabelWidth: '60px',
                 rules: {
-                    name: [
+                    group_name: [
                         {required: true, message: '请输入组名称', trigger: 'blur'}
                     ]
                 }
             };
+        },
+        methods: {
+            AddGroup() {
+                console.log("ajax");
+                $.ajax({
+                    type: "post",
+                    url: 'app-groups',
+                    data: {
+                        groupName: this.ruleForm.group_name,
+                    },
+                    success: function (TResultCode) {
+                        console.log("the result is " + TResultCode.code);
+                        if (TResultCode.code == 1) {
+                            alert("新建组成功")
+                        }
+                        else {
+                            alert(TResultCode.message)
+                        }
+                    },
+                    error: function () {
+                        console.log("fail")
+                    }
+                })
+            }
         }
     });
     $("#branch-input").val("master");
@@ -83,7 +108,7 @@
     }
 
     .select-group {
-        width: 88%;
+        width: 80%;
     }
 
     .select-demo {
@@ -96,6 +121,6 @@
     }
 
     .add-button {
-        margin-left: 10%;
+        margin-left: 15%;
     }
 </style>

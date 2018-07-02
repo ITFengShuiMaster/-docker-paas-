@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class UserLoginLogUtil {
 
-    public static UserLoginLog getUserLoginLog(Long userId, Integer result){
+    public static UserLoginLog getUserLoginLog(Long userId, Integer result) {
         UserLoginLog userLoginLog = new UserLoginLog();
         userLoginLog.setUserId(userId);
         userLoginLog.setResult(result);

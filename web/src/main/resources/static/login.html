@@ -2,134 +2,131 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="lib/element/index.css"/>
+    <title>登录</title>
+    <link rel="stylesheet" href="lib/element/index.css">
+    <link rel="stylesheet" href="lib/fonts/font-awesome.css">
     <script src="lib/vue/vue.js"></script>
     <script src="lib/element/index.js"></script>
     <script src="lib/jquery/jquery_3.3.1.js"></script>
+    <style>
+        .login-page-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: url("img/login.jpg");
+        }
+
+        .demo-login {
+            background-color: white;
+            margin: 0 auto;
+            width: 350px;
+            height: 400px;
+            position: relative;
+            top: 30%;
+            transform: translateY(-30%);
+            border-radius: 5px;
+        }
+
+        .login-form {
+            position: relative;
+            top: 25%;
+            transform: translateY(-25%);
+        }
+
+        .login-container {
+            width: 70%;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<el-container id="app">
-    <el-header style="height: 50px">
-        <el-col :span="6">
-            <div>logo</div>
-        </el-col>
-        <el-col :span="4" :offset="20">
-            <div class="register">没有账号？立即<a href="" class="register_text_button">注册</a></div>
-        </el-col>
-    </el-header>
-    <hr align="center" width="100%" size="1px" color="#E8E8E8"/>
-    <el-main>
-        <div class="loginForm">
-            <div class="line">欢迎使用平台</div>
-            <hr align="center" width="100%" size="1px" color="#E8E8E8"/>
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="marketApp-ruleForm">
-                <el-form-item prop="id">
-                    <el-input placeholder="用户名 /手机号 /邮箱" v-model="ruleForm.id"></el-input>
-                </el-form-item>
-                <el-form-item prop="password">
-                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password"></el-input>
-                </el-form-item>
-            </el-form>
-            <a href="" class="text-button">忘记密码?</a>
-            <el-button type="success">登陆</el-button>
+<div id="app">
+    <div class="login-page-container">
+        <div class="demo-login">
+            <div class="login-form">
+                <el-form ref="User" status-icon :rules="Rules" :model="User" class="login-container">
+                    <p style="font-size: 17px">登 录</p>
+                    <el-form-item prop="name">
+                        <el-input id="name" type="text" v-model="User.name" auto-complete="off" placeholder="请输入账号"
+                                  prefix-icon="fa fa-user fa-lg"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="pass">
+                        <el-input id="password" type="password" v-model="User.pass" auto-complete="off"
+                                  placeholder="请输入密码" prefix-icon="fa fa-lock fa-lg"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" style="width:100%" :loading="loading" @click="login">登录</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
-    </el-main>
-</el-container>
-
-
-</body>
-<style>
-    .el-header {
-        padding: 0px 0px;
-    }
-
-    .register_text_button {
-        text-decoration: none;
-        color: #64C36A;
-        font-size: 16px;
-    }
-
-    .line {
-        margin-bottom: 2%;
-        margin-top: 2%;
-        margin-left: 5%;
-        font-size: 14px;
-        color: #262626;
-    }
-
-    .register {
-        margin-left: 10%;
-        margin-top: -3%;
-        font-size: 16px;
-        display: inline-block;
-        color: #848684;
-    }
-
-    .loginForm {
-        width: 50%;
-        height: 50%;
-        position: absolute;
-        left: 25%;
-        top: 30%;
-        border: solid #E8E8E8 1px;
-    }
-
-    .el-form-item {
-        width: 60%;
-        margin-left: 20%;
-        margin-top: 4%;
-        height: 10%;
-    }
-
-    .text-button {
-        text-decoration: none;
-        color: #64C36A;
-        font-size: 14px;
-        margin-left: 70%;
-    }
-
-    .el-button {
-        margin-top: 1%;
-        width: 60%;
-        margin-left: 20%;
-        border: 0px;
-        background: #64C36A;
-        color: white;
-        height: 12%;
-        padding: 0px 10px;
-        display: block;
-    }
-
-
-</style>
+    </div>
+</div>
 <script>
-    var app = new Vue({
-        el: '#app',
-        methods: {
-            onSubmit() {
-                console.log('submit!');
-            }
-        },
-        data() {
-            return {
-                ruleForm: {
-                    id: '',
-                    password: '',
-                },
-                rules: {
-                    id: [
-                        {required: true, message: '请输入登录名', trigger: 'blur'},
-                        // {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
-                    ],
-                    password: [
-                        {required: true, message: '请输入密码', trigger: 'change'}
-                    ],
-                }
-            };
-        },
-        created() {
+    var validateUser = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('账号不能为空'));
+        } else {
+            callback();
         }
+    };
+    var validatePass = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('密码不能为空'));
+        } else if (vm.test) {
+            callback(new Error('密码错误'));
+        } else {
+            callback();
+        }
+    };
+    const vm = new Vue({
+        el: '#app',
+        data: {
+            User: {
+                name: '',
+                pass: '',
+            },
+            Rules: {
+                name: [
+                    {validator: validateUser, trigger: 'blur'}
+                ],
+                pass: [
+                    {validator: validatePass, trigger: 'blur'}
+                ]
+            },
+            loading: false,
+            test: false
+        },
+        methods: {
+            login() {
+                $.ajax({
+                    type: "post",
+                    url: 'users/login',
+                    data: {
+                        account: this.User.name,
+                        pwd: this.User.pass
+                    },
+                    success: function (TResultCode) {
+                        console.log("the result is " + TResultCode.code);
+                        if (TResultCode.code == 1) {
+                            location.href = 'index.html'
+
+                        }
+                        else {
+                            alert(TResultCode.message)
+                        }
+                    },
+                    error: function () {
+                        console.log("fail")
+                    }
+                })
+            },
+        },
+
     })
 </script>
+</body>
 </html>

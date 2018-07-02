@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 
-<link rel="stylesheet" href="lib/css/editormd.css"/>
-
-<script type="text/javascript" src="lib/jquery/editormd.js"></script>
+<link rel="stylesheet" href="lib/editor.md-master/css/editormd.css"/>
+<script type="text/javascript" src="lib/editor.md-master/editormd.js"></script>
 
 <div class="form">
     <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" id="form_5">
@@ -34,7 +33,7 @@
     });
     $(function () {
         var editor = editormd("test-editormd", {
-            path: "editor/",
+            path: "lib/editor.md-master/lib/",
             height: "200px",
             width: "100%",
             editorTheme: "pastel-on-dark",
@@ -56,7 +55,7 @@
     }
 
     .add-button {
-        margin-left: 10%;
+        margin-left: 15%;
     }
 
     .test-editormd {

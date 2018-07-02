@@ -10,7 +10,7 @@ import java.util.Date;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author 汪继友
@@ -74,11 +74,11 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         return "Message{" +
-        ", messageId=" + messageId +
-        ", adminId=" + adminId +
-        ", content=" + content +
-        ", gmtCreate=" + gmtCreate +
-        ", gmtModified=" + gmtModified +
-        "}";
+                ", messageId=" + messageId +
+                ", adminId=" + adminId +
+                ", content=" + content +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                "}";
     }
 }
