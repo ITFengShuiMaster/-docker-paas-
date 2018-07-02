@@ -30,10 +30,10 @@
     if (typeof ($) === "undefined") {
         return;
     }
-
+    
     /**
      * editormd
-     *
+     * 
      * @param   {String} id           编辑器的ID
      * @param   {Object} options      配置选项 Key/Value
      * @returns {Object} editormd     返回editormd对象
@@ -47,12 +47,12 @@
     editormd.version = "1.5.0";
     editormd.homePage = "https://pandao.github.io/editor.md/";
     editormd.classPrefix = "editormd-";
-
+    
     editormd.toolbarModes = {
         full: [
             "undo", "redo", "|",
             "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
-            "h1", "h2", "h3", "h4", "h5", "h6", "|",
+            "h1", "h2", "h3", "h4", "h5", "h6", "|", 
             "list-ul", "list-ol", "hr", "|",
             "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime", "emoji", "html-entities", "pagebreak", "|",
             "goto-line", "watch", "preview", "fullscreen", "clear", "search", "|",
@@ -61,7 +61,7 @@
         simple: [
             "undo", "redo", "|",
             "bold", "del", "italic", "quote", "uppercase", "lowercase", "|",
-            "h1", "h2", "h3", "h4", "h5", "h6", "|",
+            "h1", "h2", "h3", "h4", "h5", "h6", "|", 
             "list-ul", "list-ol", "hr", "|",
             "watch", "preview", "fullscreen", "|",
             "help", "info"
@@ -342,7 +342,7 @@
         /**
          * 构造函数/实例初始化
          * Constructor / instance initialization
-         *
+         * 
          * @param   {String}   id            编辑器的ID
          * @param   {Object}   [options={}]  配置选项 Key/Value
          * @returns {editormd}               返回editormd的实例对象
@@ -374,8 +374,8 @@
                 }
             };
 
-            settings.pluginPath = (settings.pluginPath === "") ? settings.path + "../plugins/" : settings.pluginPath;
-
+            settings.pluginPath = (settings.pluginPath === "") ? settings.path + "../plugins/" : settings.pluginPath; 
+            
             this.state.watching = (settings.watch) ? true : false;
 
             if (!editor.hasClass("editormd")) {
@@ -469,7 +469,7 @@
         /**
          * 所需组件加载队列
          * Required components loading queue
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -519,7 +519,7 @@
                 else {
                     _this.loadedDisplay();
                 }
-            };
+            }; 
 
             editormd.loadCSS(loadPath + "codemirror/codemirror.min");
 
@@ -529,7 +529,7 @@
             }
 
             if (settings.codeFold) {
-                editormd.loadCSS(loadPath + "codemirror/addon/fold/foldgutter");
+                editormd.loadCSS(loadPath + "codemirror/addon/fold/foldgutter");            
             }
 
             editormd.loadScript(loadPath + "codemirror/codemirror.min", function () {
@@ -538,7 +538,7 @@
                 editormd.loadScript(loadPath + "codemirror/modes.min", function () {
 
                     editormd.loadScript(loadPath + "codemirror/addons.min", function () {
-
+                        
                         _this.setCodeMirror();
 
                         if (settings.mode !== "gfm" && settings.mode !== "markdown") {
@@ -575,7 +575,7 @@
         /**
          * 设置 Editor.md 的整体主题，主要是工具栏
          * Setting Editor.md theme
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -594,7 +594,7 @@
         /**
          * 设置 CodeMirror（编辑区）的主题
          * Setting CodeMirror (Editor area) theme
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -614,7 +614,7 @@
         /**
          * setEditorTheme() 的别名
          * setEditorTheme() alias
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -627,7 +627,7 @@
         /**
          * 设置 Editor.md 的主题
          * Setting Editor.md theme
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -646,7 +646,7 @@
         /**
          * 配置和初始化CodeMirror组件
          * CodeMirror initialization
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -712,7 +712,7 @@
         /**
          * 获取CodeMirror的配置选项
          * Get CodeMirror setting options
-         *
+         * 
          * @returns {Mixed}                  return CodeMirror setting option value
          */
 
@@ -723,12 +723,12 @@
         /**
          * 配置和重配置CodeMirror的选项
          * CodeMirror setting options / resettings
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
         setCodeMirrorOption: function (key, value) {
-
+            
             this.cm.setOption(key, value);
 
             return this;
@@ -737,7 +737,7 @@
         /**
          * 添加 CodeMirror 键盘快捷键
          * Add CodeMirror keyboard shortcuts key map
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -750,7 +750,7 @@
         /**
          * 移除 CodeMirror 键盘快捷键
          * Remove CodeMirror keyboard shortcuts key map
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -763,13 +763,13 @@
         /**
          * 跳转到指定的行
          * Goto CodeMirror line
-         *
+         * 
          * @param   {String|Intiger}   line      line number or "first"|"last"
          * @returns {editormd}                   返回editormd的实例对象
          */
 
         gotoLine: function (line) {
-
+            
             var settings = this.settings;
 
             if (!settings.gotoLine) {
@@ -809,7 +809,7 @@
             var scrollInfo = cm.getScrollInfo();
             var clientHeight = scrollInfo.clientHeight;
             var coords = cm.charCoords({line: line, ch: 0}, "local");
-
+            
             cm.scrollTo(null, (coords.top + coords.bottom - clientHeight) / 2);
 
             if (settings.watch) {
@@ -837,7 +837,7 @@
         /**
          * 扩展当前实例对象，可同时设置多个或者只设置一个
          * Extend editormd instance object, can mutil setting.
-         *
+         * 
          * @returns {editormd}                  this(editormd instance object.)
          */
 
@@ -860,7 +860,7 @@
         /**
          * 设置或扩展当前实例对象，单个设置
          * Extend editormd instance object, one by one
-         *
+         * 
          * @param   {String|Object}   key       option key
          * @param   {String|Object}   value     option value
          * @returns {editormd}                  this(editormd instance object.)
@@ -880,7 +880,7 @@
         /**
          * 重新配置
          * Resetting editor options
-         *
+         * 
          * @param   {String|Object}   key       option key
          * @param   {String|Object}   value     option value
          * @returns {editormd}                  this(editormd instance object.)
@@ -906,7 +906,7 @@
         /**
          * 注册事件处理方法
          * Bind editor event handle
-         *
+         * 
          * @param   {String}     eventType      event type
          * @param   {Function}   callback       回调函数
          * @returns {editormd}                  this(editormd instance object.)
@@ -916,7 +916,7 @@
             var settings = this.settings;
 
             if (typeof settings["on" + eventType] !== "undefined") {
-                settings["on" + eventType] = $.proxy(callback, this);
+                settings["on" + eventType] = $.proxy(callback, this);      
             }
 
             return this;
@@ -925,7 +925,7 @@
         /**
          * 解除事件处理方法
          * Unbind editor event handle
-         *
+         * 
          * @param   {String}   eventType          event type
          * @returns {editormd}                    this(editormd instance object.)
          */
@@ -944,7 +944,7 @@
         /**
          * 显示工具栏
          * Display toolbar
-         *
+         * 
          * @param   {Function} [callback=function(){}] 回调函数
          * @returns {editormd}  返回editormd的实例对象
          */
@@ -960,8 +960,8 @@
                 this.setToolbar();
             }
 
-            settings.toolbar = true;
-
+            settings.toolbar = true; 
+            
             this.toolbar.show();
             this.resize();
 
@@ -974,7 +974,7 @@
         /**
          * 隐藏工具栏
          * Hide toolbar
-         *
+         * 
          * @param   {Function} [callback=function(){}] 回调函数
          * @returns {editormd}                         this(editormd instance object.)
          */
@@ -982,7 +982,7 @@
         hideToolbar: function (callback) {
             var settings = this.settings;
 
-            settings.toolbar = false;
+            settings.toolbar = false;  
             this.toolbar.hide();
             this.resize();
 
@@ -995,7 +995,7 @@
         /**
          * 页面滚动时工具栏的固定定位
          * Set toolbar in window scroll auto fixed position
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -1044,7 +1044,7 @@
         /**
          * 配置和初始化工具栏
          * Set toolbar and Initialization
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -1078,7 +1078,7 @@
 
             var icons = (typeof settings.toolbarIcons === "function") ? settings.toolbarIcons()
                 : ((typeof settings.toolbarIcons === "string") ? editormd.toolbarModes[settings.toolbarIcons] : settings.toolbarIcons);
-
+            
             var toolbarMenu = toolbar.find("." + this.classPrefix + "menu"), menu = "";
             var pullRight = false;
 
@@ -1094,7 +1094,7 @@
                 else {
                     var isHeader = (/h(\d)/.test(name));
                     var index = name;
-
+                    
                     if (name === "watch" && !settings.watch) {
                         index = "unwatch";
                     }
@@ -1138,7 +1138,7 @@
         /**
          * 工具栏图标事件处理对象序列
          * Get toolbar icons event handlers
-         *
+         * 
          * @param   {Object}   cm    CodeMirror的实例对象
          * @param   {String}   name  要获取的事件处理器名称
          * @returns {Object}         返回处理对象序列
@@ -1165,14 +1165,14 @@
         /**
          * 工具栏图标事件处理器
          * Bind toolbar icons event handle
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
         setToolbarHandler: function () {
             var _this = this;
             var settings = this.settings;
-
+            
             if (!settings.toolbar || settings.readOnly) {
                 return this;
             }
@@ -1220,7 +1220,7 @@
         /**
          * 动态创建对话框
          * Creating custom dialogs
-         *
+         * 
          * @param   {Object} options  配置项键值对 Key/Value
          * @returns {dialog}          返回创建的dialog的jQuery实例对象
          */
@@ -1232,7 +1232,7 @@
         /**
          * 创建关于Editor.md的对话框
          * Create about Editor.md dialog
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -1240,7 +1240,7 @@
             var _this = this;
             var editor = this.editor;
             var classPrefix = this.classPrefix;
-
+            
             var infoDialogHTML = [
                 "<div class=\"" + classPrefix + "dialog " + classPrefix + "dialog-info\" style=\"\">",
                 "<div class=\"" + classPrefix + "dialog-container\">",
@@ -1271,7 +1271,7 @@
         /**
          * 关于Editor.md对话居中定位
          * Editor.md dialog position handle
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -1288,14 +1288,14 @@
             _infoDialogPosition();
 
             $(window).resize(_infoDialogPosition);
-
+            
             return this;
         },
 
         /**
          * 显示关于Editor.md
          * Display about Editor.md dialog
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -1329,7 +1329,7 @@
         /**
          * 隐藏关于Editor.md
          * Hide about Editor.md dialog
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -1345,7 +1345,7 @@
         /**
          * 锁屏
          * lock screen
-         *
+         * 
          * @param   {Boolean}    lock    Boolean 布尔值，是否锁屏
          * @returns {editormd}           返回editormd的实例对象
          */
@@ -1360,7 +1360,7 @@
         /**
          * 编辑器界面重建，用于动态语言包或模块加载等
          * Recreate editor
-         *
+         * 
          * @returns {editormd}  返回editormd的实例对象
          */
 
@@ -1368,7 +1368,7 @@
             var _this = this;
             var editor = this.editor;
             var settings = this.settings;
-
+            
             this.codeMirror.remove();
 
             this.setCodeMirror();
@@ -1379,7 +1379,7 @@
                 }
 
                 if (settings.toolbar) {
-                    this.getToolbarHandles();
+                    this.getToolbarHandles();                  
                     this.setToolbar();
                 }
             }
@@ -1392,7 +1392,7 @@
         /**
          * 高亮预览HTML的pre代码部分
          * highlight of preview codes
-         *
+         * 
          * @returns {editormd}             返回editormd的实例对象
          */
 
@@ -1414,7 +1414,7 @@
         /**
          * 解析TeX(KaTeX)科学公式
          * TeX(KaTeX) Renderer
-         *
+         * 
          * @returns {editormd}             返回editormd的实例对象
          */
 
@@ -1429,7 +1429,7 @@
                 editormd.$katex.render(tex.text(), tex[0]);
 
                 tex.find(".katex").css("font-size", "1.6em");
-            });
+            });   
 
             return this;
         },
@@ -1437,7 +1437,7 @@
         /**
          * 解析和渲染流程图及时序图
          * FlowChart and SequenceDiagram Renderer
-         *
+         * 
          * @returns {editormd}             返回editormd的实例对象
          */
 
@@ -1455,7 +1455,7 @@
                     return this;
                 }
 
-                previewContainer.find(".flowchart").flowChart();
+                previewContainer.find(".flowchart").flowChart(); 
             }
 
             if (settings.sequenceDiagram) {
@@ -1475,7 +1475,7 @@
                 tocHeight += $(this).height();
             });
 
-            var tocMenuHeight = preview.find(".editormd-toc-menu").height();
+            var tocMenuHeight = preview.find(".editormd-toc-menu").height(); 
             tocMenuHeight = (!tocMenuHeight) ? 0 : tocMenuHeight;
 
             if (scrollTop === 0) {
@@ -1494,7 +1494,7 @@
         /**
          * 注册键盘快捷键处理
          * Register CodeMirror keyMaps (keyboard shortcuts).
-         *
+         * 
          * @param   {Object}    keyMap      KeyMap key/value {"(Ctrl/Shift/Alt)-Key" : function(){}}
          * @returns {editormd}              return this
          */
@@ -1533,7 +1533,7 @@
                 }
 
                 $(window).keydown(function (event) {
-
+                    
                     var keymaps = {
                         "120": "F9",
                         "121": "F10",
@@ -1569,7 +1569,7 @@
 
         /**
          * 绑定同步滚动
-         *
+         * 
          * @returns {editormd} return this
          */
 
@@ -1580,7 +1580,7 @@
             var settings = this.settings;
             var codeMirror = this.codeMirror;
             var mouseOrTouch = editormd.mouseOrTouch;
-
+            
             if (!settings.syncScrolling) {
                 return this;
             }
@@ -1590,7 +1590,7 @@
                     var height = $(this).height();
                     var scrollTop = $(this).scrollTop();
                     var percent = (scrollTop / $(this)[0].scrollHeight);
-
+                    
                     var tocHeight = 0;
 
                     preview.find(".markdown-toc-list").each(function () {
@@ -1630,7 +1630,7 @@
                         codeView.scrollTop(0);
                     }
                     else if (scrollTop + height >= $(this)[0].scrollHeight) {
-                        codeView.scrollTop(codeView[0].scrollHeight);
+                        codeView.scrollTop(codeView[0].scrollHeight);                        
                     }
                     else {
                         codeView.scrollTop(codeView[0].scrollHeight * percent);
@@ -1651,7 +1651,7 @@
                 touchstart: cmBindScroll,
                 touchend: cmUnbindScroll
             });
-
+            
             if (settings.syncScrolling === "single") {
                 return this;
             }
@@ -1671,7 +1671,7 @@
             var _this = this;
             var cm = this.cm;
             var settings = this.settings;
-
+            
             if (!settings.syncScrolling) {
                 return this;
             }
@@ -1695,7 +1695,7 @@
         /**
          * 加载队列完成之后的显示处理
          * Display handle of the module queues loaded after.
-         *
+         * 
          * @param   {Boolean}   recreate   是否为重建编辑器
          * @returns {editormd}             返回editormd的实例对象
          */
@@ -1708,7 +1708,7 @@
             var editor = this.editor;
             var preview = this.preview;
             var settings = this.settings;
-
+            
             this.containerMask.hide();
 
             this.save();
@@ -1740,7 +1740,7 @@
         /**
          * 设置编辑器的宽度
          * Set editor width
-         *
+         * 
          * @param   {Number|String} width  编辑器宽度值
          * @returns {editormd}             返回editormd的实例对象
          */
@@ -1756,7 +1756,7 @@
         /**
          * 设置编辑器的高度
          * Set editor height
-         *
+         * 
          * @param   {Number|String} height  编辑器高度值
          * @returns {editormd}              返回editormd的实例对象
          */
@@ -1772,7 +1772,7 @@
         /**
          * 调整编辑器的尺寸和布局
          * Resize editor layout
-         *
+         * 
          * @param   {Number|String} [width=null]  编辑器宽度值
          * @param   {Number|String} [height=null] 编辑器高度值
          * @returns {editormd}                    返回editormd的实例对象
@@ -1852,7 +1852,7 @@
         /**
          * 解析和保存Markdown代码
          * Parse & Saving Markdown source code
-         *
+         * 
          * @returns {editormd}     返回editormd的实例对象
          */
 
@@ -1929,7 +1929,7 @@
                 if (settings.toc) {
                     var tocContainer = (settings.tocContainer === "") ? previewContainer : $(settings.tocContainer);
                     var tocMenu = tocContainer.find("." + this.classPrefix + "toc-menu");
-
+                    
                     tocContainer.attr("previewContainer", (settings.tocContainer === "") ? "true" : "false");
 
                     if (settings.tocContainer !== "" && tocMenu.length > 0) {
@@ -1980,7 +1980,7 @@
         /**
          * 聚焦光标位置
          * Focusing the cursor position
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -1993,7 +1993,7 @@
         /**
          * 设置光标的位置
          * Set cursor position
-         *
+         * 
          * @param   {Object}    cursor 要设置的光标位置键值对象，例：{line:1, ch:0}
          * @returns {editormd}         返回editormd的实例对象
          */
@@ -2007,7 +2007,7 @@
         /**
          * 获取当前光标的位置
          * Get the current position of the cursor
-         *
+         * 
          * @returns {Cursor}         返回一个光标Cursor对象
          */
 
@@ -2018,14 +2018,14 @@
         /**
          * 设置光标选中的范围
          * Set cursor selected ranges
-         *
+         * 
          * @param   {Object}    from   开始位置的光标键值对象，例：{line:1, ch:0}
          * @param   {Object}    to     结束位置的光标键值对象，例：{line:1, ch:0}
          * @returns {editormd}         返回editormd的实例对象
          */
 
         setSelection: function (from, to) {
-
+        
             this.cm.setSelection(from, to);
 
             return this;
@@ -2034,7 +2034,7 @@
         /**
          * 获取光标选中的文本
          * Get the texts from cursor selected
-         *
+         * 
          * @returns {String}         返回选中文本的字符串形式
          */
 
@@ -2045,7 +2045,7 @@
         /**
          * 设置光标选中的文本范围
          * Set the cursor selection ranges
-         *
+         * 
          * @param   {Array}    ranges  cursor selection ranges array
          * @returns {Array}            return this
          */
@@ -2059,7 +2059,7 @@
         /**
          * 获取光标选中的文本范围
          * Get the cursor selection ranges
-         *
+         * 
          * @returns {Array}         return selection ranges array
          */
 
@@ -2070,7 +2070,7 @@
         /**
          * 替换当前光标选中的文本或在当前光标处插入新字符
          * Replace the text at the current cursor selected or insert a new character at the current cursor position
-         *
+         * 
          * @param   {String}    value  要插入的字符值
          * @returns {editormd}         返回editormd的实例对象
          */
@@ -2087,7 +2087,7 @@
          *
          * 同replaceSelection()方法
          * With the replaceSelection() method
-         *
+         * 
          * @param   {String}    value  要插入的字符值
          * @returns {editormd}         返回editormd的实例对象
          */
@@ -2101,7 +2101,7 @@
         /**
          * 追加markdown
          * append Markdown to editor
-         *
+         * 
          * @param   {String}    md     要追加的markdown源文档
          * @returns {editormd}         返回editormd的实例对象
          */
@@ -2109,7 +2109,7 @@
         appendMarkdown: function (md) {
             var settings = this.settings;
             var cm = this.cm;
-
+            
             cm.setValue(cm.getValue() + md);
 
             return this;
@@ -2118,7 +2118,7 @@
         /**
          * 设置和传入编辑器的markdown源文档
          * Set Markdown source document
-         *
+         * 
          * @param   {String}    md     要传入的markdown源文档
          * @returns {editormd}         返回editormd的实例对象
          */
@@ -2132,7 +2132,7 @@
         /**
          * 获取编辑器的markdown源文档
          * Set Editor.md markdown/CodeMirror value
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -2143,7 +2143,7 @@
         /**
          * 获取编辑器的源文档
          * Get CodeMirror value
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -2154,7 +2154,7 @@
         /**
          * 设置编辑器的源文档
          * Set CodeMirror value
-         *
+         * 
          * @param   {String}     value   set code/value/string/text
          * @returns {editormd}           返回editormd的实例对象
          */
@@ -2168,7 +2168,7 @@
         /**
          * 清空编辑器
          * Empty CodeMirror editor container
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -2181,7 +2181,7 @@
         /**
          * 获取解析后存放在Textarea的HTML源码
          * Get parsed html code from Textarea
-         *
+         * 
          * @returns {String}               返回HTML源码
          */
 
@@ -2198,7 +2198,7 @@
         /**
          * getHTML()的别名
          * getHTML (alias)
-         *
+         * 
          * @returns {String}           Return html code 返回HTML源码
          */
 
@@ -2209,7 +2209,7 @@
         /**
          * 获取预览窗口的HTML源码
          * Get html from preview container
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -2226,7 +2226,7 @@
         /**
          * 开启实时预览
          * Enable real-time watching
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -2249,8 +2249,8 @@
                 icon.removeClass(unWatchIcon).addClass(watchIcon);
             }
 
-            this.codeMirror.css("border-right", "1px solid #ddd").width(this.editor.width() / 2);
-
+            this.codeMirror.css("border-right", "1px solid #ddd").width(this.editor.width() / 2); 
+            
             timer = 0;
 
             this.save().resize();
@@ -2268,7 +2268,7 @@
         /**
          * 关闭实时预览
          * Disable real-time watching
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -2303,7 +2303,7 @@
         /**
          * 显示编辑器
          * Show editor
-         *
+         * 
          * @param   {Function} [callback=function()] 回调函数
          * @returns {editormd}                       返回editormd的实例对象
          */
@@ -2311,7 +2311,7 @@
         show: function (callback) {
             callback = callback || function () {
             };
-
+            
             var _this = this;
             this.editor.show(0, function () {
                 $.proxy(callback, _this)();
@@ -2323,7 +2323,7 @@
         /**
          * 隐藏编辑器
          * Hide editor
-         *
+         * 
          * @param   {Function} [callback=function()] 回调函数
          * @returns {editormd}                       返回editormd的实例对象
          */
@@ -2331,7 +2331,7 @@
         hide: function (callback) {
             callback = callback || function () {
             };
-
+            
             var _this = this;
             this.editor.hide(0, function () {
                 $.proxy(callback, _this)();
@@ -2343,7 +2343,7 @@
         /**
          * 隐藏编辑器部分，只预览HTML
          * Enter preview html state
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -2417,7 +2417,7 @@
         /**
          * 显示编辑器部分，退出只预览HTML
          * Exit preview html state
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -2431,7 +2431,7 @@
             var previewCloseBtn = editor.find("." + this.classPrefix + "preview-close-btn");
 
             this.state.preview = false;
-
+            
             this.codeMirror.show();
 
             if (settings.toolbar) {
@@ -2466,7 +2466,7 @@
         /**
          * 编辑器全屏显示
          * Fullscreen show
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -2479,9 +2479,9 @@
             var toolbar = this.toolbar;
             var settings = this.settings;
             var fullscreenClass = this.classPrefix + "fullscreen";
-
+            
             if (toolbar) {
-                toolbar.find(".fa[name=fullscreen]").parent().toggleClass("active");
+                toolbar.find(".fa[name=fullscreen]").parent().toggleClass("active"); 
             }
 
             var escHandle = function (event) {
@@ -2509,7 +2509,7 @@
                 $(window).bind("keyup", escHandle);
             }
             else {
-                $(window).unbind("keyup", escHandle);
+                $(window).unbind("keyup", escHandle); 
                 this.fullscreenExit();
             }
 
@@ -2519,7 +2519,7 @@
         /**
          * 编辑器退出全屏显示
          * Exit fullscreen state
-         *
+         * 
          * @returns {editormd}         返回editormd的实例对象
          */
 
@@ -2529,11 +2529,11 @@
             var settings = this.settings;
             var toolbar = this.toolbar;
             var fullscreenClass = this.classPrefix + "fullscreen";
-
+            
             this.state.fullscreen = false;
 
             if (toolbar) {
-                toolbar.find(".fa[name=fullscreen]").parent().removeClass("active");
+                toolbar.find(".fa[name=fullscreen]").parent().removeClass("active"); 
             }
 
             $("html,body").css("overflow", "");
@@ -2553,7 +2553,7 @@
         /**
          * 加载并执行插件
          * Load and execute the plugin
-         *
+         * 
          * @param   {String}     name    plugin name / function name
          * @param   {String}     path    plugin load path
          * @returns {editormd}           返回editormd的实例对象
@@ -2595,7 +2595,7 @@
         /**
          * 搜索替换
          * Search & replace
-         *
+         * 
          * @param   {String}     command    CodeMirror serach commands, "find, fintNext, fintPrev, clearSearch, replace, replaceAll"
          * @returns {editormd}              return this
          */
@@ -2628,12 +2628,12 @@
         }
     };
 
-    editormd.fn.init.prototype = editormd.fn;
-
+    editormd.fn.init.prototype = editormd.fn; 
+   
     /**
      * 锁屏
      * lock screen when dialog opening
-     *
+     * 
      * @returns {void}
      */
 
@@ -2649,7 +2649,7 @@
     /**
      * 显示透明背景层
      * Display mask layer when dialog opening
-     *
+     * 
      * @param   {Object}     dialog    dialog jQuery object
      * @returns {void}
      */
@@ -2657,7 +2657,7 @@
     editormd.dialogShowMask = function (dialog) {
         var editor = this.editor;
         var settings = this.settings || {dialogShowMask: true};
-
+        
         dialog.css({
             top: ($(window).height() - dialog.height()) / 2 + "px",
             left: ($(window).width() - dialog.width()) / 2 + "px"
@@ -2958,7 +2958,7 @@
         },
 
         "code-block": function () {
-            this.executePlugin("codeBlockDialog", "code-block-dialog/code-block-dialog");
+            this.executePlugin("codeBlockDialog", "code-block-dialog/code-block-dialog");            
         },
 
         "preformatted-text": function () {
@@ -2966,7 +2966,7 @@
         },
 
         table: function () {
-            this.executePlugin("tableDialog", "table-dialog/table-dialog");
+            this.executePlugin("tableDialog", "table-dialog/table-dialog");         
         },
 
         datetime: function () {
@@ -3100,7 +3100,7 @@
 
             if (selection === "") {
                 cm.setCursor(cursor.line, cursor.ch + 3);
-            }
+            } 
         },
 
         ["Shift-" + key + "-Alt-C"]: "code-block",
@@ -3140,9 +3140,9 @@
     /**
      * 清除字符串两边的空格
      * Clear the space of strings both sides.
-     *
+     * 
      * @param   {String}    str            string
-     * @returns {String}                   trimed string
+     * @returns {String}                   trimed string    
      */
 
     var trim = function (str) {
@@ -3154,7 +3154,7 @@
     /**
      * 所有单词首字母大写
      * Words first to uppercase
-     *
+     * 
      * @param   {String}    str            string
      * @returns {String}                   string
      */
@@ -3170,7 +3170,7 @@
     /**
      * 字符串首字母大写
      * Only string first char to uppercase
-     *
+     * 
      * @param   {String}    str            string
      * @returns {String}                   string
      */
@@ -3216,7 +3216,7 @@
     /**
      * 自定义marked的解析器
      * Custom Marked renderer rules
-     *
+     * 
      * @param   {Array}    markdownToC     传入用于接收TOC的数组
      * @returns {Renderer} markedRenderer  返回marked的Renderer自定义对象
      */
@@ -3458,7 +3458,7 @@
         markedRenderer.tablecell = function (content, flags) {
             var type = (flags.header) ? "th" : "td";
             var tag = (flags.align) ? "<" + type + " style=\"text-align:" + flags.align + "\">" : "<" + type + ">";
-
+            
             return tag + this.atLink(this.emoji(content)) + "</" + type + ">\n";
         };
 
@@ -3481,7 +3481,7 @@
      *
      * 生成TOC(Table of Contents)
      * Creating ToC (Table of Contents)
-     *
+     * 
      * @param   {Array}    toc             从marked获取的TOC数组列表
      * @param   {Element}  container       插入TOC的容器元素
      * @param   {Integer}  startLevel      Hx 起始层级
@@ -3543,7 +3543,7 @@
      *
      * 生成TOC下拉菜单
      * Creating ToC dropdown menu
-     *
+     * 
      * @param   {Object}   container       插入TOC的容器jQuery对象元素
      * @param   {String}   tocTitle        ToC title
      * @returns {Object}                   return toc-menu object
@@ -3563,7 +3563,7 @@
             var btn = "<a href=\"javascript:;\" class=\"toc-menu-btn\">" + icon + tocTitle + "</a>";
             var menu = toc.children("ul");
             var list = menu.find("li");
-
+            
             toc.append(btn);
 
             list.first().before("<li><h1>" + tocTitle + " " + icon + "</h1></li>");
@@ -3597,22 +3597,22 @@
             }).mouseleave(function () {
                 menu.hide();
             });
-        });
-
+        });       
+        
         return tocMenus;
     };
 
     /**
      * 简单地过滤指定的HTML标签
      * Filter custom html tags
-     *
+     * 
      * @param   {String}   html          要过滤HTML
      * @param   {String}   filters       要过滤的标签
      * @returns {String}   html          返回过滤的HTML
      */
 
     editormd.filterHTMLTags = function (html, filters) {
-
+        
         if (typeof html !== "string") {
             html = String(html);
         }
@@ -3639,7 +3639,7 @@
             if (attrs === "*") {
                 html = html.replace(htmlTagRegex, function ($1, $2, $3, $4, $5) {
                     return "<" + $2 + ">" + $4 + "</" + $5 + ">";
-                });
+                });         
             }
             else if (attrs === "on*") {
                 html = html.replace(htmlTagRegex, function ($1, $2, $3, $4, $5) {
@@ -3685,7 +3685,7 @@
     /**
      * 将Markdown文档解析为HTML用于前台显示
      * Parse Markdown to HTML for Font-end preview.
-     *
+     * 
      * @param   {String}   id            用于显示HTML的对象ID
      * @param   {Object}   [options={}]  配置选项，可选
      * @returns {Object}   div           返回jQuery对象元素
@@ -3756,7 +3756,7 @@
         };
 
         markdownDoc = String(markdownDoc);
-
+        
         var markdownParsed = marked(markdownDoc, markedOptions);
 
         markdownParsed = editormd.filterHTMLTags(markdownParsed, settings.htmlDecode);
@@ -3794,7 +3794,7 @@
 
         if (!editormd.isIE8) {
             if (settings.flowChart) {
-                div.find(".flowchart").flowChart();
+                div.find(".flowchart").flowChart(); 
             }
 
             if (settings.sequenceDiagram) {
@@ -3806,7 +3806,7 @@
             var katexHandle = function () {
                 div.find("." + editormd.classNames.tex).each(function () {
                     var tex = $(this);
-                    katex.render(tex.html().replace(/&lt;/g, "<").replace(/&gt;/g, ">"), tex[0]);
+                    katex.render(tex.html().replace(/&lt;/g, "<").replace(/&gt;/g, ">"), tex[0]);                    
                     tex.find(".katex").css("font-size", "1.6em");
                 });
             };
@@ -3833,7 +3833,7 @@
     // Editor.md themes, change toolbar themes etc.
     // added @1.5.0
     editormd.themes = ["default", "dark"];
-
+    
     // Preview area themes
     // added @1.5.0
     editormd.previewThemes = ["default", "dark"];
@@ -3868,7 +3868,7 @@
     /**
      * 动态加载Editor.md插件，但不立即执行
      * Load editor.md plugins
-     *
+     * 
      * @param {String}   fileName              插件文件路径
      * @param {Function} [callback=function()] 加载成功后执行的回调函数
      * @param {String}   [into="head"]         嵌入页面的位置
@@ -3887,7 +3887,7 @@
     /**
      * 动态加载CSS文件的方法
      * Load css file method
-     *
+     * 
      * @param {String}   fileName              CSS文件名
      * @param {Function} [callback=function()] 加载成功后执行的回调函数
      * @param {String}   [into="head"]         嵌入页面的位置
@@ -3921,7 +3921,7 @@
     /**
      * 动态加载JS文件的方法
      * Load javascript file method
-     *
+     * 
      * @param {String}   fileName              JS文件名
      * @param {Function} [callback=function()] 加载成功后执行的回调函数
      * @param {String}   [into="head"]         嵌入页面的位置
@@ -3943,11 +3943,11 @@
             script.onreadystatechange = function () {
                 if (script.readyState) {
                     if (script.readyState === "loaded" || script.readyState === "complete") {
-                        script.onreadystatechange = null;
+                        script.onreadystatechange = null; 
                         editormd.loadFiles.js.push(fileName);
                         callback();
                     }
-                }
+                } 
             };
         }
         else {
@@ -3976,7 +3976,7 @@
     /**
      * 加载KaTeX文件
      * load KaTeX files
-     *
+     * 
      * @param {Function} [callback=function()]  加载成功后执行的回调函数
      */
 
@@ -3990,7 +3990,7 @@
     /**
      * 锁屏
      * lock screen
-     *
+     * 
      * @param   {Boolean}   lock   Boolean 布尔值，是否锁屏
      * @returns {void}
      */
@@ -4002,7 +4002,7 @@
     /**
      * 动态创建对话框
      * Creating custom dialogs
-     *
+     * 
      * @param   {Object} options 配置项键值对 Key/Value
      * @returns {dialog} 返回创建的dialog的jQuery实例对象
      */
@@ -4147,7 +4147,7 @@
                 posX = e.clientX - parseInt(dialog[0].style.left);
                 posY = e.clientY - parseInt(dialog[0].style.top);
 
-                document.onmousemove = moveAction;
+                document.onmousemove = moveAction;                   
             });
 
             var userCanSelect = function (obj) {
@@ -4168,7 +4168,7 @@
                 if (nowLeft >= 0) {
                     if (nowLeft + dialog.width() <= $(window).width()) {
                         left = e.clientX - posX;
-                    } else {
+                    } else {	
                         left = $(window).width() - dialog.width();
                         document.onmousemove = null;
                     }
@@ -4199,7 +4199,7 @@
                 userCanSelect($("body"));
                 userCanSelect(dialog);
 
-                document.onselectstart = null;
+                document.onselectstart = null;         
                 document.onmousemove = null;
             };
 
@@ -4239,7 +4239,7 @@
     /**
      * 鼠标和触摸事件的判断/选择方法
      * MouseEvent or TouchEvent type switch
-     *
+     * 
      * @param   {String} [mouseEventType="click"]    供选择的鼠标事件
      * @param   {String} [touchEventType="touchend"] 供选择的触摸事件
      * @returns {String} EventType                   返回事件类型名称
@@ -4263,7 +4263,7 @@
     /**
      * 日期时间的格式化方法
      * Datetime format method
-     *
+     * 
      * @param   {String}   [format=""]  日期时间的格式，类似PHP的格式
      * @returns {String}   datefmt      返回格式化后的日期时间字符串
      */
@@ -4298,11 +4298,11 @@
 
             case "UTC" :
                 datefmt = date.toUTCString();
-                break;
+                break;	
 
             case "yy" :
                 datefmt = year2;
-                break;
+                break;	
 
             case "year" :
             case "yyyy" :
@@ -4312,7 +4312,7 @@
             case "month" :
             case "mm" :
                 datefmt = month;
-                break;
+                break;                        
 
             case "cn-week-day" :
             case "cn-wd" :

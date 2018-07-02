@@ -79,13 +79,11 @@ http://ethanschoonover.com/solarized/img/solarized-palette.png
     color-profile: sRGB;
     rendering-intent: auto;
 }
-
 .cm-s-solarized.cm-s-dark {
     color: #839496;
     background-color: #002b36;
     text-shadow: #002b36 0 1px;
 }
-
 .cm-s-solarized.cm-s-light {
     background-color: #fdf6e3;
     color: #657b83;
@@ -184,7 +182,6 @@ http://ethanschoonover.com/solarized/img/solarized-palette.png
 .cm-s-solarized .cm-quote {
     color: #93a1a1;
 }
-
 .cm-s-solarized .cm-hr {
     color: transparent;
     border-top: 1px solid #586e75;
@@ -199,7 +196,6 @@ http://ethanschoonover.com/solarized/img/solarized-palette.png
 .cm-s-solarized .cm-special {
     color: #6c71c4;
 }
-
 .cm-s-solarized .cm-em {
     color: #999;
     text-decoration: underline;
@@ -209,7 +205,6 @@ http://ethanschoonover.com/solarized/img/solarized-palette.png
 .cm-s-solarized .cm-strong {
     color: #eee;
 }
-
 .cm-s-solarized .cm-error,
 .cm-s-solarized .cm-invalidchar {
     color: #586e75;
@@ -305,7 +300,6 @@ view-port
 .cm-s-solarized.cm-s-dark .CodeMirror-activeline-background {
     background: rgba(255, 255, 255, 0.10);
 }
-
 .cm-s-solarized.cm-s-light .CodeMirror-activeline-background {
     background: rgba(0, 0, 0, 0.10);
 }

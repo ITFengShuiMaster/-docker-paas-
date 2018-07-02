@@ -107,7 +107,6 @@
 .cm-s-pastel-on-dark span.cm-qualifier, .cm-s-pastel-on-dark span.cm-builtin {
     color: #C1C144;
 }
-
 .cm-s-pastel-on-dark span.cm-error {
     background: #757aD8;
     color: #f8f8f0;
@@ -116,7 +115,6 @@
 .cm-s-pastel-on-dark .CodeMirror-activeline-background {
     background: rgba(255, 255, 255, 0.031) !important;
 }
-
 .cm-s-pastel-on-dark .CodeMirror-matchingbracket {
     border: 1px solid rgba(255, 255, 255, 0.25);
     color: #8F938F !important;

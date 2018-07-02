@@ -64,7 +64,7 @@
                 $.get(path + "help.md", function (text) {
                     var md = exports.$marked(text);
                     helpContent.html(md);
-
+                    
                     helpContent.find("a").attr("target", "_blank");
                 });
             }

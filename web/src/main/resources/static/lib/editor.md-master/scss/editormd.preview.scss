@@ -3,9 +3,11 @@
 @import "lib/variables";
 @import "lib/prefixes";
 @import "font-awesome";
+
 @import "editormd.logo";
+
 // github-markdown.css
-@import "github-markdown";
+@import "github-markdown";  
 
 #{$prefix}preview-container, #{$prefix}html-preview {
   text-align: left;
@@ -132,7 +134,7 @@
       }
     }
   }
-}
+}    
 
 #{$prefix}preview-container, #{$prefix}html-preview {
 

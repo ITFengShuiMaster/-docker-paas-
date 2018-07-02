@@ -36,7 +36,7 @@ var headerComment = ["/*",
 var headerMiniComment = "/*! <%= pkg.name %> v<%= pkg.version %> | <%= fileName(file) %> | <%= pkg.description %> | MIT License | By: <%= pkg.author %> | <%= pkg.homepage %> | <%=pkg.today('Y-m-d') %> */\r\n";
 
 var scssTask = function (fileName, path) {
-
+    
     path = path || "scss/";
 
     var distPath = "css";
@@ -103,7 +103,7 @@ gulp.task("js", function () {
 gulp.task("amd", function () {
     var replaceText1 = [
         'var cmModePath  = "codemirror/mode/";',
-        '            var cmAddonPath = "codemirror/addon/";',
+        '            var cmAddonPath = "codemirror/addon/";', 
         '',
         '            var codeMirrorModules = [',
         '                "jquery", "marked", "prettify",',
@@ -112,40 +112,40 @@ gulp.task("amd", function () {
         '                "codemirror/lib/codemirror",',
         '                cmModePath + "css/css",',
         '                cmModePath + "sass/sass",',
-        '                cmModePath + "shell/shell",',
+        '                cmModePath + "shell/shell",', 
         '                cmModePath + "sql/sql",',
         '                cmModePath + "clike/clike",',
         '                cmModePath + "php/php",',
         '                cmModePath + "xml/xml",',
-        '                cmModePath + "markdown/markdown",',
+        '                cmModePath + "markdown/markdown",', 
         '                cmModePath + "javascript/javascript",',
         '                cmModePath + "htmlmixed/htmlmixed",',
         '                cmModePath + "gfm/gfm",',
         '                cmModePath + "http/http",',
         '                cmModePath + "go/go",',
-        '                cmModePath + "dart/dart",',
+        '                cmModePath + "dart/dart",', 
         '                cmModePath + "coffeescript/coffeescript",',
         '                cmModePath + "nginx/nginx",',
-        '                cmModePath + "python/python",',
+        '                cmModePath + "python/python",', 
         '                cmModePath + "perl/perl",',
-        '                cmModePath + "lua/lua",',
+        '                cmModePath + "lua/lua",', 
         '                cmModePath + "r/r", ',
         '                cmModePath + "ruby/ruby", ',
         '                cmModePath + "rst/rst",',
-        '                cmModePath + "smartymixed/smartymixed",',
+        '                cmModePath + "smartymixed/smartymixed",', 
         '                cmModePath + "vb/vb",',
-        '                cmModePath + "vbscript/vbscript",',
+        '                cmModePath + "vbscript/vbscript",', 
         '                cmModePath + "velocity/velocity",',
         '                cmModePath + "xquery/xquery",',
         '                cmModePath + "yaml/yaml",',
-        '                cmModePath + "erlang/erlang",',
+        '                cmModePath + "erlang/erlang",', 
         '                cmModePath + "jade/jade",',
         '',
         '                cmAddonPath + "edit/trailingspace", ',
         '                cmAddonPath + "dialog/dialog", ',
         '                cmAddonPath + "search/searchcursor", ',
         '                cmAddonPath + "search/search", ',
-        '                cmAddonPath + "scroll/annotatescrollbar", ',
+        '                cmAddonPath + "scroll/annotatescrollbar", ', 
         '                cmAddonPath + "search/matchesonscrollbar", ',
         '                cmAddonPath + "display/placeholder", ',
         '                cmAddonPath + "edit/closetag", ',
@@ -204,7 +204,7 @@ gulp.task("amd", function () {
         }))
         .pipe(gulp.dest("./"))
         .pipe(notify({message: "amd version task complete"}));
-});
+}); 
 
 
 var codeMirror = {
@@ -236,7 +236,7 @@ var codeMirror = {
         "perl",
         "lua",
         "r",
-        "ruby",
+        "ruby", 
         "rst",
         "smartymixed",
         "vb",
@@ -251,29 +251,29 @@ var codeMirror = {
     addons: [
         "edit/trailingspace",
         "dialog/dialog",
-        "search/searchcursor",
+        "search/searchcursor", 
         "search/search",
         "scroll/annotatescrollbar",
         "search/matchesonscrollbar",
         "display/placeholder",
-        "edit/closetag",
+        "edit/closetag", 
         "fold/foldcode",
         "fold/foldgutter",
         "fold/indent-fold",
         "fold/brace-fold",
-        "fold/xml-fold",
+        "fold/xml-fold", 
         "fold/markdown-fold",
         "fold/comment-fold",
         "mode/overlay",
         "selection/active-line",
         "edit/closebrackets",
-        "display/fullscreen",
+        "display/fullscreen", 
         "search/match-highlighter"
     ]
 };
 
 gulp.task("cm-mode", function () {
-
+    
     var modes = [
         codeMirror.path.src.mode + "/meta.js"
     ];
@@ -299,7 +299,7 @@ gulp.task("cm-mode", function () {
 });
 
 gulp.task("cm-addon", function () {
-
+    
     var addons = [];
 
     for (var i in codeMirror.addons) {
@@ -320,7 +320,7 @@ gulp.task("cm-addon", function () {
         }))
         .pipe(gulp.dest(codeMirror.path.dist))
         .pipe(notify({message: "codemirror-addon.js task complete"}));
-});
+}); 
 /*
 gulp.task("jsdoc", function(){
     return gulp.src(["./src/editormd.js", "README.md"])

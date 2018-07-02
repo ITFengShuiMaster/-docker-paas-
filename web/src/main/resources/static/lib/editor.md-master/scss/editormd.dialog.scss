@@ -52,8 +52,8 @@
   &:hover {
     color: #999;
   }
-}
-
+} 
+            
 #{$prefix}dialog-header {
   padding: 11px 20px;
   border-bottom: 1px solid #eee;
@@ -67,7 +67,7 @@
 #{$prefix}dialog-title {
   font-size: 14px;
 }
-
+            
 #{$prefix}dialog-footer {
   padding: 10px 0 0 0;
   text-align: right;
@@ -137,7 +137,7 @@
   z-index: 99998;
 }
 
-#{$prefix}container-mask,
+#{$prefix}container-mask, 
 #{$prefix}dialog-mask-con {
   background: url(../images/loading.gif) no-repeat center center;
   @include background-size(32px 32px);
@@ -163,7 +163,7 @@
   }
 }
 
-#{$prefix}code-block-dialog,
+#{$prefix}code-block-dialog, 
 #{$prefix}preformatted-text-dialog {
   textarea {
     width: 100%;

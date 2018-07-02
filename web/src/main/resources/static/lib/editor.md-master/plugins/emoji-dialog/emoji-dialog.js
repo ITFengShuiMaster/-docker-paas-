@@ -214,7 +214,7 @@
                                 }
                             }
                             else {
-                                row += "<a href=\"javascript:;\" value=\"\"></a>";
+                                row += "<a href=\"javascript:;\" value=\"\"></a>";                        
                             }
                         }
 
