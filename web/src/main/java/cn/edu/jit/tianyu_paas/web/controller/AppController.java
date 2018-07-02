@@ -26,7 +26,7 @@ import java.util.Date;
  */
 
 @RestController
-@RequestMapping("/apps/")
+@RequestMapping("/apps")
 public class AppController {
 
     private final AppService appService;
@@ -65,7 +65,7 @@ public class AppController {
      * @param appId
      * @return
      */
-    @GetMapping("{appId}")
+    @GetMapping("/{appId}")
     public TResult getAppInfo(@PathVariable Long appId) {
         App app = appService.selectById(appId);
         return TResult.success(app);
@@ -86,7 +86,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
-    @PostMapping("custom")
+    @PostMapping("/custom")
     public TResult createAppByCustom(@Validated App app, @Validated AppInfoByCustom custom) {
         initApp(app, AppCreateMethodEnum.CUSTOM);
 
@@ -106,7 +106,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
-    @PostMapping("demo")
+    @PostMapping("/demo")
     public TResult createAppByDemo(@Validated App app, @Validated AppInfoByDemo infoByDemo) {
         Demo demo = demoService.selectById(infoByDemo.getDemoId());
         // 没有找到demo应用
@@ -129,7 +129,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
-    @PostMapping("docker-image")
+    @PostMapping("/docker-image")
     public TResult createAppByDockerImage(@Validated App app, @Validated AppInfoByDockerImage dockerImage) {
         initApp(app, AppCreateMethodEnum.DOCKER_IMAGE);
 
@@ -147,7 +147,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 14:41
      */
-    @PostMapping("docker-run")
+    @PostMapping("/docker-run")
     public TResult createAppByDockerRun(@Validated App app, @Validated AppInfoByDockerRun dockerRun) {
         initApp(app, AppCreateMethodEnum.DOCKER_RUN);
 
@@ -165,7 +165,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 14:58
      */
-    @PostMapping("docker-compose")
+    @PostMapping("/docker-compose")
     public TResult createAppByDockerCompose(@Validated AppGroup appGroup) {
         long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         AppGroup dbGroup = appGroupService.selectOne(new EntityWrapper<AppGroup>().eq("group_name", appGroup.getGroupName()));
@@ -185,7 +185,7 @@ public class AppController {
      * @author 卢越
      * @date 2018/6/29 16:30
      */
-    @GetMapping("lists")
+    @GetMapping("/lists")
     public TResult listAppByNameAndStatus(@RequestParam(required = false, defaultValue = "") String name, Integer status, Pagination page) {
         App app = new App();
         app.setName(name);
@@ -196,7 +196,7 @@ public class AppController {
         return TResult.success(appPages);
     }
 
-    @PostMapping("market")
+    @PostMapping("/market")
     public TResult createAppByMarket(@Validated App app, @Validated AppInfoByMarket market) {
         MarketApp marketApp = marketAppService.selectById(market.getMarketAppId());
         if (marketApp == null) {
