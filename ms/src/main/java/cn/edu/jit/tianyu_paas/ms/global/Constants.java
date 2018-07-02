@@ -4,6 +4,4 @@ public class Constants {
 
     public static final String SESSION_KEY_ADMIN_ID = "admin";
     public static final String TOKEN = "TOKEN";
-
-    public static final String SESSION_KEY_USER_ID = "user";
 }
