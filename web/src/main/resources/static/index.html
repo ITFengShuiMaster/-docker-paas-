@@ -101,16 +101,8 @@
                     </template>
                 </el-popover>
             </el-col>
-            <el-col :span="2" align="right" style="margin-top: 0px">
-                <el-upload
-                        class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :show-file-list="false"
-                        :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload">
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
+            <el-col :span="2" align="right" >
+                <img src="">
             </el-col>
             <el-col :span="2" align="left">
                 <el-dropdown>
@@ -133,29 +125,28 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            id: 1,
-            url: "http://localhost:8080/tianyu-paas/users/info/",
+            id: 7,
             imageUrl: '',
             username: '',
             isCollapse: false,
-            pageArr: ['', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/install.html', 'pages/appinfo.html', '', '', 'pages/financialcenter.html'],
+            pageArr: ['', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/create_by_market.html', 'pages/appinfo.html', '', '', 'pages/financialcenter.html'],
             messagenum: 199,
             teamArr: ['团队一', '团队二'],
             dataArr: ['假数据中心', '真数据中心'],
             activeName: 'second',
         },
         methods: {
-            init(){
+            init_usrInf(){
                 $.ajax({
                     type: "get",
-                    url: 'http://localhost:8080/tianyu-paas/users/info/'+ this.id,
+                    url: 'http://localhost:8080/tianyu-paas/users/info/' + this.id,
                     data: {
 
                     },
                     success : function (result) {
                         if(result.code) {
                             console.log(result);
-                            vm.username = result.username;
+                            vm.username = result.data.name;
                         } else {
                         }
                     },
@@ -192,7 +183,7 @@
         },
         mounted() {
             // this.selectLeft(1, '');
-            this.init();
+            this.init_usrInf();
         }
     });
 </script>
