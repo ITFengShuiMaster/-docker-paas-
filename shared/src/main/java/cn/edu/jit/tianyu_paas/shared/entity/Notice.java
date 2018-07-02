@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 
@@ -33,6 +34,19 @@ public class Notice implements Serializable {
      */
     private Long adminId;
     private Date gmtCreate;
+
+
+
+    @TableField(exist = false)
+
+    private UserNotice userNotice;
+
+    public UserNotice getUserNotice() {
+        return userNotice;
+    }
+    public void setUserNotice(UserNotice userNotice) {
+        this.userNotice = userNotice;
+    }
 
 
     public Long getNoticeId() {
