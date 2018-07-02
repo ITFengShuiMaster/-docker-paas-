@@ -1,49 +1,46 @@
 <style>
-    .grid-content {
-        min-height: 80px;
-    }
-
-    .bg-purple {
-        background: #d3dce6;
+    #info {
+        padding-top: 10px;
+        padding-left: 20px;
     }
 </style>
 
 <div id="financialcenter">
-    <el-row style="width: 92%; margin: -18px">
+    <el-row>
         <el-col :span="22">
-            <div style="background: #ffffff;width: 120%; margin-top: 1%;height: 40px">
-                <el-col style="margin-left: 1%">
-                    <el-breadcrumb separator="/" style="font-size: 14px;">
+            <div>
+                <el-col>
+                    <el-breadcrumb separator="/" id="info">
                         <br>
-                        <el-breadcrumb-item>首页</el-breadcrumb-item>
+                        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
                         <el-breadcrumb-item>财务中心</el-breadcrumb-item>
                     </el-breadcrumb>
                 </el-col>
             </div>
         </el-col>
-        <div style="margin-top: 6%;width: 110%;">
+        <div style="margin-top: 8%; border: 1px dotted rgb(211,220,230);">
             <el-row :gutter="10">
                 <el-col :span="8">
-                    <div class="grid-content bg-purple" style="text-align: center; ">账户余额<br>
+                    <div class="" style="text-align: center; ">账户余额<br>
                         <div style="margin-top: 5%">
-                            {{money}}元
+                            {{balance}}元
                         </div>
                     </div>
                 </el-col>
                 <el-col :span="8">
-                    <div class="grid-content bg-purple" style="text-align: center">数据中心内存 (已使用/总资源)<br>
-                        <div style="margin-top: 5%">{{money}}/{{money}}</div>
+                    <div class="" style="text-align: center">数据中心内存 (已使用/总资源)<br>
+                        <div style="margin-top: 5%">{{memoryUsed}}/{{memoryTotal}}</div>
                     </div>
                 </el-col>
                 <el-col :span="8">
-                    <div class="grid-content bg-purple" style="text-align: center">数据中心内存 (已使用/总资源)<br>
-                        <div style="margin-top: 5%">{{money}}/{{money}}</div>
+                    <div class="" style="text-align: center">数据中心磁盘 (已使用/总资源)<br>
+                        <div style="margin-top: 5%">{{diskUsed}}/{{diskTotal}}</div>
                     </div>
                 </el-col>
             </el-row>
         </div>
-        <el-row style="background: #ffffff; width: 110%;margin-top: 2%;">
-            <el-col style="margin-left: 0%; background: #d3dce6; height: 45px">
+        <el-row style="background: #ffffff; width: 100%;margin-top: 2%;">
+            <el-col style="margin-left: 0%; background: #ffffff; height: 45px">
                 <div style="margin-top: 1%; margin-left: 70%">
                     <el-button size="mini" plain>购买资源</el-button>
                     <el-button size="mini" plain>账户充值</el-button>
@@ -112,11 +109,29 @@
 <script>
     var financialcenter = new Vue({
         el: '#financialcenter',
+
         methods: {
             onSubmit() {
                 console.log('submit!');
-            }
+            },
+            init_data(){
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8080/tianyu-paas/users/dynamic/"+this.userId,
+                    data: {},
+                    success: function (result) {
+                        if (result.code) {
+                            financialcenter.balance=result.data.balance;
+                            financialcenter.memoryUsed=result.data.memoryUsed;
+                            financialcenter.memoryTotal=result.data.memoryTotal;
+                            financialcenter.diskUsed=result.data.diskUsed;
+                            financialcenter.diskTotal=result.data.diskTotal;
+                        } else {
 
+                        }
+                    }
+                })
+            }
         },
         data() {
             return {
@@ -146,7 +161,12 @@
                     }]
                 },
                 value: '',
-                money: 1,
+                balance: 99,
+                diskTotal: 99,
+                diskUsed: 99,
+                memoryTotal: 99,
+                memoryUsed: 99,
+                userId: 7,
                 tableData3: [{
                     date: '2016-05-03',
                     name: '王小虎',
@@ -179,7 +199,10 @@
             }
         },
         created() {
-        }
+            this.init_data();
+        },
+        mounted() {
+        },
     })
 
 </script>
