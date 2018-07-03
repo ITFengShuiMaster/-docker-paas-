@@ -49,7 +49,7 @@ public class UserMessageController {
      * @return
      */
     @GetMapping
-    public TResult listUserMessages(){
+    public TResult listUserMessages() {
         List<UserMessage> lists = userMessageService.selectList(new EntityWrapper<UserMessage>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)));
         List<Message> messages = new ArrayList<>();
 
@@ -73,8 +73,8 @@ public class UserMessageController {
      * @return
      */
     @PutMapping
-    public TResult updateUserMessageStatus(UserMessage userMessage){
-        if (!userMessageService.update(userMessage, new EntityWrapper<UserMessage>().setSqlSelect("status").eq("message_id", userMessage.getMessageId()).and().eq("user_id", userMessage.getUserId()))){
+    public TResult updateUserMessageStatus(UserMessage userMessage) {
+        if (!userMessageService.update(userMessage, new EntityWrapper<UserMessage>().setSqlSelect("status").eq("message_id", userMessage.getMessageId()).and().eq("user_id", userMessage.getUserId()))) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
         return TResult.success();
