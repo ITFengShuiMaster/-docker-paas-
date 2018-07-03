@@ -45,6 +45,7 @@
                 default-active="0"
                 class="el-menu-vertical-marketApp"
                 @select="selectPage"
+                @open="handleOpen"
                 background-color="#545c64"
                 text-color="#fff"
                 active-text-color="#ffd04b">
@@ -63,16 +64,17 @@
             </el-submenu>
 
             <el-submenu index="10002">
-                <template>
+                <template slot="title">
                     <i class="el-icon-menu"></i>
                     <span slot="title">我的应用</span>
                 </template>
-                <el-submenu v-for="(group,index) in groups" index="2000+index" @click="click">
-                    <template>
+                <el-submenu v-for="(group,index) in groups_apps" :index="'300'+index">
+                    <template slot="title">
                         <i class="el-icon-plus"></i>
-                        <span>{{group.name}}</span>
+                        <span>{{group.groupName}}</span>
                     </template>
-                    <el-menu-item v-for="app in group.apps" index="3000+index" @click="click">
+                    <el-menu-item v-for="(app,appIndex) in group.apps" :index="(index+1)*1000+appIndex+''"
+                                  @click="clickApp(app.appId)">
                         {{app.name}}
                     </el-menu-item>
                 </el-submenu>
@@ -177,6 +179,8 @@
     var vm = new Vue({
         el: '#app',
         data: {
+            // 左侧导航栏的应用组和组里的app
+            groups_apps: [],
             dialogVisible: false,
             id: 1,
             imageUrl: '',
@@ -187,8 +191,8 @@
             teamArr: ['团队一', '团队二'],
             dataArr: ['假数据中心', '真数据中心'],
             activeName: 'second',
-            appList:[],
-            appListo:{},
+            appList: [],
+            appListo: {},
             messagerecord: [],
             noticerecord: [],
         },
@@ -267,10 +271,10 @@
                 console.log(order);
                 $.ajax({
                     type: "get",
-                    url: 'http://localhost:8080/tianyu-paas/user-notices/'+ order.noticeId,
+                    url: 'http://localhost:8080/tianyu-paas/user-notices/' + order.noticeId,
 
                     success: function (result) {
-                        if (result.code===1) {
+                        if (result.code === 1) {
 
                         } else {
 
@@ -322,10 +326,10 @@
             selectPage(index, indexPath) {
                 // 主要就是通过jquery的load方法，加内容加载到元素上
                 console.log(index);
-                if(index>999){
-                    $('#content').load("pages/appinfo.html?appId="+(index-999));
+                if (index > 999) {
+                    $('#content').load("pages/appinfo.html?appId=" + (index - 999));
                 }
-                else{
+                else {
                     $('#content').load(this.pageArr[index], function (response, message, xhr) {
                     });
                 }
@@ -335,6 +339,11 @@
             },
             handleOpen(key, keyPath) {
                 console.log(key, keyPath);
+                // 打开我的应用选项卡
+                if (key >= 3000 && key < 4000) {
+                    var id = this.groups_apps[key - 3000].appGroupId;
+                    console.log(id);
+                }
             },
             handleClose(key, keyPath) {
                 console.log(key, keyPath);
@@ -344,6 +353,18 @@
             },
             beforeAvatarUpload() {
 
+            },
+            init_gruops() {
+                $.get({
+                    url: '/tianyu-paas/app-groups/groups-apps',
+                    success: function (res) {
+                        vm.groups_apps = res.data;
+                        console.log(vm.groups_apps);
+                    }
+                })
+            },
+            clickApp(appId) {
+                console.log(appId + 'appId');
             }
         },
         created() {
@@ -351,6 +372,7 @@
             this.init_usrInf();
             this.getMessage();
             this.getNotice();
+            this.init_gruops();
         }
     });
 </script>

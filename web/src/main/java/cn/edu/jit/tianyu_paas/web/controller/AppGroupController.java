@@ -15,12 +15,13 @@ import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
+
 /**
  * @author 倪龙康
  * @since 2018-06-29
  */
-@RequestMapping("/app-groups")
 @RestController
+@RequestMapping("/app-groups")
 public class AppGroupController {
 
     private AppGroupService appGroupService;
