@@ -92,7 +92,7 @@
                 <el-form :model="form">
                     <el-form-item label="选择分组" :label-width="formLabelWidth">
                         <el-select v-model="form.region" placeholder="请选择分组">
-                            <el-option :label="item" value="shanghai" v-for="item in groupNames"
+                            <el-option :label="item.id" :value="item" v-for="item in groupNames"
                                        :key="item.id"></el-option>
                         </el-select>
                     </el-form-item>
@@ -187,7 +187,6 @@
                     data: {},
                     success: function (result) {
                         if (result.code) {
-                            console.log(typeof(result.data));
                             for (i in result.data) {
                                 install.groupNames.push(result.data[i].groupName)
                             }
