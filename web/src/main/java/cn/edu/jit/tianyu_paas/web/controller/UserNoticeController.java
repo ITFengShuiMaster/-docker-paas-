@@ -56,7 +56,7 @@ public class UserNoticeController {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         for (Notice notice : notices) {
             UserNotice userNotice = userNoticeService.selectOne(new EntityWrapper<UserNotice>().eq("user_id", userId).eq("notice_id", notice.getNoticeId()));
-            notice.setUserNotice(userNotice);
+            notice.setStatus(userNotice.getStatus());
         }
         return TResult.success(notices);
     }
@@ -77,10 +77,10 @@ public class UserNoticeController {
         UserNotice userNotice = userNoticeService.selectOne(new EntityWrapper<UserNotice>().eq("user_id", userId).eq("notice_id", noticeId));
         if (userNotice == null)
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
-        userNotice.setStatus(1);
+        userNotice.setStatus(UserNotice.STATUS_READ);
         if (!userNoticeService.update(userNotice, new EntityWrapper<UserNotice>().eq("user_id", userId).eq("notice_id", noticeId)))
             return TResult.failure(TResultCode.FAILURE);
-        notice.setUserNotice(userNotice);
+        notice.setStatus(userNotice.getStatus());
         return TResult.success(notice);
     }
 

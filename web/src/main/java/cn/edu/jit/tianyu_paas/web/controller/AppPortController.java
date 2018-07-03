@@ -27,32 +27,34 @@ public class AppPortController {
 
     /**
      * 获取端口号信息
-     * @author 倪龙康
+     *
      * @param appId
      * @return
+     * @author 倪龙康
      */
     @GetMapping("/{appId}")
-    public TResult getPortInfo(@PathVariable Long appId){
-        AppPort appPort = appPortService.selectOne(new EntityWrapper<AppPort>().eq("app_id",appId));
-        if(appPort == null)
+    public TResult getPortInfo(@PathVariable Long appId) {
+        AppPort appPort = appPortService.selectOne(new EntityWrapper<AppPort>().eq("app_id", appId));
+        if (appPort == null)
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
-        return TResult.success(appPort.toString());
+        return TResult.success(appPort);
     }
 
     /**
      * 新增端口
-     * @author 倪龙康
+     *
      * @param appPort
      * @return
+     * @author 倪龙康
      */
     @PostMapping
-    public TResult addPort(AppPort appPort){
-        if (appPortService.selectCount(new EntityWrapper<AppPort>().eq("port",appPort.getPort()))!=0) {
+    public TResult addPort(AppPort appPort) {
+        if (appPortService.selectCount(new EntityWrapper<AppPort>().eq("port", appPort.getPort())) != 0) {
             return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
         }
         appPort.setGmtModified(new Date());
         appPort.setGmtCreate(new Date());
-        if(!appPortService.insert(appPort))
+        if (!appPortService.insert(appPort))
             return TResult.failure(TResultCode.FAILURE);
         return TResult.success();
     }
@@ -60,23 +62,25 @@ public class AppPortController {
 
     /**
      * 更新端口相关信息
-     * @author 倪龙康
+     *
      * @param appPort
      * @return
+     * @author 倪龙康
      */
     @PutMapping
-    public TResult updatePort(AppPort appPort){
+    public TResult updatePort(AppPort appPort) {
         appPort.setGmtModified(new Date());
-        if(!appPortService.update(appPort, new EntityWrapper<AppPort>().eq("app_id", appPort.getAppId()).and().eq("port", appPort.getPort())))
+        if (!appPortService.update(appPort, new EntityWrapper<AppPort>().eq("app_id", appPort.getAppId()).and().eq("port", appPort.getPort())))
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         return TResult.success();
     }
 
     /**
      * 删除端口
-     * @author 倪龙康
+     *
      * @param port
      * @return
+     * @author 倪龙康
      */
     @DeleteMapping("/{port}")
     public TResult deletePort(@PathVariable Integer port) {

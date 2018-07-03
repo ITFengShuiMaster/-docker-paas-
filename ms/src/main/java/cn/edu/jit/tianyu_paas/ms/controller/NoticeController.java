@@ -60,7 +60,7 @@ public class NoticeController {
         for (User user : users) {
             UserNotice userNotice = new UserNotice();
             userNotice.setNoticeId(notice.getNoticeId());
-            userNotice.setStatus(0);
+            userNotice.setStatus(UserNotice.STATUS_UNREAD);
             userNotice.setUserId(user.getUserId());
             if (!userNoticeService.insert(userNotice))
                 return TResult.failure(TResultCode.FAILURE);
@@ -103,7 +103,7 @@ public class NoticeController {
      * @return
      * @author 倪龙康
      */
-    @DeleteMapping("{noticeId}")
+    @DeleteMapping("/{noticeId}")
     public TResult deleteNotice(@PathVariable Long noticeId) {
         if (!noticeService.deleteById(noticeId))
             return TResult.failure(TResultCode.FAILURE);

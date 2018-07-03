@@ -74,7 +74,7 @@ public class AppController {
      * @return
      * @author 倪龙康
      */
-    @DeleteMapping("{appId}")
+    @DeleteMapping("/{appId}")
     public TResult deleteApp(@PathVariable Long appId) {
         if (!appService.deleteById(appId))
             return TResult.failure(TResultCode.FAILURE);
