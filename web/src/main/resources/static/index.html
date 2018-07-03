@@ -50,10 +50,14 @@
                 <el-menu-item index="3">从应用市场安装</el-menu-item>
             </el-submenu>
 
-            <el-menu-item index="4">
-                <i class="el-icon-menu"></i>
-                <span slot="title">我的应用</span>
-            </el-menu-item>
+            <el-submenu>
+                <template slot="title">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">我的应用</span>
+                </template>
+                <el-menu-item v-for="(item,index) in appList" :key="index" :index="index+999">{{item.userName}}</el-menu-item>
+                <!--<el-menu-item index="4">123</el-menu-item>-->
+            </el-submenu>
             <el-menu-item index="5">
                 <i class="el-icon-star-off"></i>
                 <span slot="title">我的插件</span>
@@ -70,7 +74,7 @@
     </el-aside>
 
     <el-container>
-        <el-header style=" margin:0;padding:0;">
+        <el-header style=" margin-top:-7px;padding:0px;width: 100%">
             <el-card shadow="always">
             <el-col :span="6" align="center">
                 <el-dropdown>
@@ -145,16 +149,57 @@
     var vm = new Vue({
         el: '#app',
         data: {
+            id: 1,
+            url: "http://localhost:8080/tianyu-paas/users/info/",
             imageUrl: '',
-            username: 'zwp',
+            username: '',
             isCollapse: false,
             pageArr: ['pages/home.html', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/install.html', 'pages/appinfo.html', '', '', 'pages/financialcenter.html'],
             messagenum: 199,
             teamArr: ['团队一', '团队二'],
             dataArr: ['假数据中心', '真数据中心'],
             activeName: 'second',
+            appList:[],
+            appListo:{}
         },
         methods: {
+            init(){
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8080/tianyu-paas/users/info/'+ this.id,
+                    data: {
+
+                    },
+                    success : function (result) {
+                        if(result.code) {
+                            console.log(result);
+                            vm.username = result.username;
+                        } else {
+                        }
+                    },
+                    error :function () {
+                        console.log("失败")
+                    }
+                })
+            },
+            myAppList(){
+                var that = this
+                $.ajax({
+                    type:'get',
+                    url:'/tianyu-paas/actions/info',
+                    success:function (data) {
+                        if(data.code === 1) {
+                            that.appList = data.data
+                        }
+                        else {
+                            console.log(data.message)
+                        }
+                    },
+                    error:function () {
+                        console.log("error")
+                    }
+                })
+            },
             handleClick(tab, event) {
                 console.log(tab, event);
             },
@@ -162,8 +207,13 @@
             selectPage(index, indexPath) {
                 // 主要就是通过jquery的load方法，加内容加载到元素上
                 console.log(index);
-                $('#content').load(this.pageArr[index], function (response, message, xhr) {
-                });
+                if(index>999){
+                    $('#content').load("pages/appinfo.html?appId="+(index-999));
+                }
+                else{
+                    $('#content').load(this.pageArr[index], function (response, message, xhr) {
+                    });
+                }
             },
             logout() {
 
@@ -179,26 +229,13 @@
             },
             beforeAvatarUpload() {
 
-            },
-            init() {
-                $.ajax({
-                    type: '',
-                    url: '/actions/1',
-                    data: '',
-                    success: function (data) {
-
-
-                    },
-                    error: function (data) {
-
-                    }
-
-                })
             }
         },
-        mounted() {
+        created() {
             // this.selectLeft(1, '');
+
             this.init()
+            this.myAppList()
         }
     });
 </script>
