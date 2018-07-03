@@ -106,7 +106,12 @@
                     </el-badge></el-button>
                     <template>
                         <el-tabs v-model="activeName" @tab-click="handleClick">
-                            <el-tab-pane label="公共" name="first">公共</el-tab-pane>
+                            <el-tab-pane label="公共" name="first">
+                                <div>
+                                    <span style="font-size: 12px">1</span>
+                                    <span style="font-size: 8px">11</span>
+                                </div>
+                            </el-tab-pane>
                             <el-tab-pane label="消息" name="second">消息</el-tab-pane>
                             <el-tab-pane label="提醒" name="third">提醒</el-tab-pane>
                         </el-tabs>
@@ -117,10 +122,10 @@
                 <img src="">
             </el-col>
             <el-col :span="2" align="left">
-                <el-dropdown>
+                <el-dropdown  @command="handleCommand">
                     <span style="font-size: 16px; color: #409EFF;">{{username}}</span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>退出登录</el-dropdown-item>
+                        <el-dropdown-item command="1">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
@@ -146,8 +151,13 @@
             teamArr: ['团队一', '团队二'],
             dataArr: ['假数据中心', '真数据中心'],
             activeName: 'second',
+            messagerecond:[],
+            noticerecond:[],
         },
         methods: {
+            handleCommand(command) {
+                this.$message("退出");
+            },
             init_usrInf(){
                 $.ajax({
                     type: "get",
@@ -157,7 +167,6 @@
                     },
                     success : function (result) {
                         if(result.code) {
-                            console.log(result);
                             vm.username = result.data.name;
                         } else {
                         }
@@ -167,6 +176,45 @@
                     }
                 })
             },
+            getNotice(){
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8080/tianyu-paas/user-notices',
+                    data: {
+
+                    },
+                    success : function (result) {
+                        if(result.code) {
+                            app.noticerecond=result.data.records
+                        } else {
+                        }
+                    },
+                    error :function () {
+                        console.log("失败")
+                    }
+                })
+            }
+            ,
+            getMessage(){
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8080/tianyu-paas/userMessages',
+                    data: {
+
+                    },
+                    success : function (result) {
+                        if(result.code) {
+//                            app.messagerecond.push(result.records);
+                            console.log(result.data);
+                        } else {
+                        }
+                    },
+                    error :function () {
+                        console.log("失败")
+                    }
+                })
+            }
+            ,
             handleClick(tab, event) {
                 console.log(tab, event);
             },
@@ -192,25 +240,12 @@
             beforeAvatarUpload() {
 
             },
-            init() {
-                $.ajax({
-                    type: '',
-                    url: '/actions/1',
-                    data: '',
-                    success: function (data) {
-
-
-                    },
-                    error: function (data) {
-
-                    }
-
-                })
-            }
         },
         mounted() {
             // this.selectLeft(1, '');
             this.init_usrInf();
+            this.getNotice();
+            this.getMessage();
         }
     });
 </script>
