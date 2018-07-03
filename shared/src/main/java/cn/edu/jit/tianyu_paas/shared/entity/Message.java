@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 
@@ -29,6 +30,9 @@ public class Message implements Serializable {
 
     private Date gmtCreate;
     private Date gmtModified;
+
+    @TableField(exist = false)
+    private Integer status;
 
 
     public Long getMessageId() {
@@ -69,6 +73,14 @@ public class Message implements Serializable {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override
