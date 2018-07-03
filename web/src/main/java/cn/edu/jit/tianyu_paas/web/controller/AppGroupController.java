@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 倪龙康
@@ -107,7 +105,7 @@ public class AppGroupController {
      * @param appGroupId
      * @return
      */
-    @DeleteMapping("{appGroupId}")
+    @DeleteMapping("/{appGroupId}")
     public TResult deleteGroup(@PathVariable Long appGroupId){
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         if(!appGroupService.delete(new EntityWrapper<AppGroup>().eq("app_group_id",appGroupId).eq("user_id",userId)))

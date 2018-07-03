@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/action-details/")
+@RequestMapping("/action-details")
 public class ActionDetailController {
     private final ActionDetailService actionDetailService;
     private ActionService actionService;
@@ -34,7 +34,7 @@ public class ActionDetailController {
      * @author 汪继友
      * @date 2018/6/30 14:27
      */
-    @GetMapping("detail")
+    @GetMapping("/detail")
     public TResult listAppInfoLog(long appId, long actionId, int level) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         if (actionService.isActionIdExist(userId, appId, actionId)) {

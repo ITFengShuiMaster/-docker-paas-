@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * @author 倪龙康
@@ -51,7 +52,13 @@ public class UserNoticeController {
                 , new EntityWrapper<Notice>().orderBy("gmt_create", false));
         if (noticePage == null)
             return TResult.failure(TResultCode.FAILURE);
-        return TResult.success(noticePage);
+        List<Notice> notices = noticePage.getRecords();
+        Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        for (Notice notice : notices) {
+            UserNotice userNotice = userNoticeService.selectOne(new EntityWrapper<UserNotice>().eq("user_id", userId).eq("notice_id", notice.getNoticeId()));
+            notice.setUserNotice(userNotice);
+        }
+        return TResult.success(notices);
     }
 
     /**
@@ -61,7 +68,7 @@ public class UserNoticeController {
      * @return
      * @author 倪龙康
      */
-    @GetMapping("{noticeId}")
+    @GetMapping("/{noticeId}")
     public TResult getNoticeInfo(@PathVariable long noticeId) {
         Notice notice = noticeService.selectById(noticeId);
         if (notice == null)
@@ -73,6 +80,20 @@ public class UserNoticeController {
         userNotice.setStatus(1);
         if (!userNoticeService.update(userNotice, new EntityWrapper<UserNotice>().eq("user_id", userId).eq("notice_id", noticeId)))
             return TResult.failure(TResultCode.FAILURE);
+        notice.setUserNotice(userNotice);
         return TResult.success(notice);
+    }
+
+    /**
+     * 获取该用户未读公告的数量
+     *
+     * @return
+     * @author 倪龙康
+     */
+    @GetMapping("/num")
+    public TResult getStatusNum() {
+        Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        int num = userNoticeService.selectCount(new EntityWrapper<UserNotice>().eq("user_id", userId).eq("status", 0));
+        return TResult.success(num);
     }
 }

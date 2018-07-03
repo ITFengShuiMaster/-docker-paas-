@@ -34,7 +34,7 @@ public class DateUtil {
         return getBeginOfDate(calendar.getTime());
     }
 
-    public static Date getBeginOfYear(){
+    public static Date getBeginOfYear() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         calendar.clear();
@@ -126,7 +126,7 @@ public class DateUtil {
      * @author 卢越
      * @date 2018/07/02 9:51
      */
-    public static Integer getDayOfMonthOfToday(){
+    public static Integer getDayOfMonthOfToday() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.DAY_OF_MONTH);
     }
@@ -137,9 +137,9 @@ public class DateUtil {
      * @author 卢越
      * @date 2018/07/02 9:51
      */
-    public static Integer getMonthOfYear(){
+    public static Integer getMonthOfYear() {
         Calendar calendar = Calendar.getInstance();
-        return calendar.get(Calendar.MONTH)+1;
+        return calendar.get(Calendar.MONTH) + 1;
     }
 
     public static void main(String[] args) throws ParseException {
@@ -155,7 +155,7 @@ public class DateUtil {
         System.out.println("*************");
         System.out.println(getWeeksDiff(new Date(), new Date()));
         System.out.println("*************");
-        System.out.println(calendar.get(Calendar.MONTH)+1);
+        System.out.println(calendar.get(Calendar.MONTH) + 1);
         System.out.println("*************");
         System.out.println(getBeginOfYear());
     }

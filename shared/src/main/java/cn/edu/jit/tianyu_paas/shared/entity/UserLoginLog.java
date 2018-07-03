@@ -2,12 +2,12 @@ package cn.edu.jit.tianyu_paas.shared.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import java.util.Date;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author 汪继友
@@ -80,9 +80,9 @@ public class UserLoginLog implements Serializable {
     @Override
     public String toString() {
         return "UserLoginLog{" +
-        ", userId=" + userId +
-        ", result=" + result +
-        ", gmtCreate=" + gmtCreate +
-        "}";
+                ", userId=" + userId +
+                ", result=" + result +
+                ", gmtCreate=" + gmtCreate +
+                "}";
     }
 }

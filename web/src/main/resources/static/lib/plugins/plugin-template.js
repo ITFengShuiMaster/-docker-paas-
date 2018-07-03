@@ -97,7 +97,7 @@
 
         } else { // for Sea.js
             define(function (require) {
-                var editormd = require("../jquery/editormd");
+                var editormd = require("../editor/editormd");
                 factory(editormd);
             });
         }

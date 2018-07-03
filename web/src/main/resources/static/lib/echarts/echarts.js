@@ -2562,7 +2562,7 @@
                 s = p * Math.asin(1 / a) / (2 * Math.PI);
             }
             return -(a * Math.pow(2, 10 * (k -= 1)) *
-            Math.sin((k - s) * (2 * Math.PI) / p));
+                Math.sin((k - s) * (2 * Math.PI) / p));
         },
         /**
          * @param {number} k
@@ -2586,7 +2586,7 @@
                 s = p * Math.asin(1 / a) / (2 * Math.PI);
             }
             return (a * Math.pow(2, -10 * k) *
-            Math.sin((k - s) * (2 * Math.PI) / p) + 1);
+                Math.sin((k - s) * (2 * Math.PI) / p) + 1);
         },
         /**
          * @param {number} k
@@ -4810,13 +4810,13 @@
             var y = mathMin(other.y, this.y);
 
             this.width = mathMax(
-                    other.x + other.width,
-                    this.x + this.width
-                ) - x;
+                other.x + other.width,
+                this.x + this.width
+            ) - x;
             this.height = mathMax(
-                    other.y + other.height,
-                    this.y + this.height
-                ) - y;
+                other.y + other.height,
+                this.y + this.height
+            ) - y;
             this.x = x;
             this.y = y;
         },
@@ -6556,8 +6556,8 @@
             if (this.hasStroke()) {
                 var lineWidth = style.lineWidth;
                 ctx.lineWidth = lineWidth / (
-                        (this.strokeNoScale && el && el.getLineScale) ? el.getLineScale() : 1
-                    );
+                    (this.strokeNoScale && el && el.getLineScale) ? el.getLineScale() : 1
+                );
             }
         },
 
@@ -6867,11 +6867,11 @@
                 if (clearColor.colorStops) {
                     // Cache canvas gradient
                     clearColorGradientOrPattern = clearColor.__canvasGradient || Style.getGradient(ctx, clearColor, {
-                            x: 0,
-                            y: 0,
-                            width: width,
-                            height: height
-                        });
+                        x: 0,
+                        y: 0,
+                        width: width,
+                        height: height
+                    });
 
                     clearColor.__canvasGradient = clearColorGradientOrPattern;
                 }
@@ -6896,17 +6896,17 @@
     };
 
     var requestAnimationFrame = (
-            typeof window !== 'undefined'
-            && (
-                (window.requestAnimationFrame && window.requestAnimationFrame.bind(window))
-                // https://github.com/ecomfe/zrender/issues/189#issuecomment-224919809
-                || (window.msRequestAnimationFrame && window.msRequestAnimationFrame.bind(window))
-                || window.mozRequestAnimationFrame
-                || window.webkitRequestAnimationFrame
-            )
-        ) || function (func) {
-            setTimeout(func, 16);
-        };
+        typeof window !== 'undefined'
+        && (
+            (window.requestAnimationFrame && window.requestAnimationFrame.bind(window))
+            // https://github.com/ecomfe/zrender/issues/189#issuecomment-224919809
+            || (window.msRequestAnimationFrame && window.msRequestAnimationFrame.bind(window))
+            || window.mozRequestAnimationFrame
+            || window.webkitRequestAnimationFrame
+        )
+    ) || function (func) {
+        setTimeout(func, 16);
+    };
 
     var globalImageCache = new LRU(50);
 
@@ -7660,12 +7660,12 @@
         // FIXME in node-canvas fontWeight is before fontStyle
         // Use `fontSize` `fontFamily` to check whether font properties are defined.
         var font = (style.fontSize || style.fontFamily) && [
-                style.fontStyle,
-                style.fontWeight,
-                (style.fontSize || 12) + 'px',
-                // If font properties are defined, `fontFamily` should not be ignored.
-                style.fontFamily || 'sans-serif'
-            ].join(' ');
+            style.fontStyle,
+            style.fontWeight,
+            (style.fontSize || 12) + 'px',
+            // If font properties are defined, `fontFamily` should not be ignored.
+            style.fontFamily || 'sans-serif'
+        ].join(' ');
         return font && trim(font) || style.textFont || style.font;
     }
 
@@ -7934,8 +7934,8 @@
             var token;
 
             while (
-            leftIndex < tokenCount
-            && (token = tokens[leftIndex], !token.textAlign || token.textAlign === 'left')
+                leftIndex < tokenCount
+                && (token = tokens[leftIndex], !token.textAlign || token.textAlign === 'left')
                 ) {
                 placeToken(hostEl, ctx, token, style, lineHeight, lineTop, lineXLeft, 'left');
                 usedWidth -= token.width;
@@ -7944,8 +7944,8 @@
             }
 
             while (
-            rightIndex >= 0
-            && (token = tokens[rightIndex], token.textAlign === 'right')
+                rightIndex >= 0
+                && (token = tokens[rightIndex], token.textAlign === 'right')
                 ) {
                 placeToken(hostEl, ctx, token, style, lineHeight, lineTop, lineXRight, 'right');
                 usedWidth -= token.width;
@@ -8719,14 +8719,14 @@
 
         // domRoot.onselectstart = returnFalse; // 避免页面选中的尴尬
         domRoot.style.cssText = [
-                'position:relative',
-                'overflow:hidden',
-                'width:' + width + 'px',
-                'height:' + height + 'px',
-                'padding:0',
-                'margin:0',
-                'border-width:0'
-            ].join(';') + ';';
+            'position:relative',
+            'overflow:hidden',
+            'width:' + width + 'px',
+            'height:' + height + 'px',
+            'padding:0',
+            'margin:0',
+            'border-width:0'
+        ].join(';') + ';';
 
         return domRoot;
     }
@@ -9612,10 +9612,10 @@
             var stl = document.defaultView.getComputedStyle(root);
 
             return (
-                    (root[cwh] || parseInt10(stl[wh]) || parseInt10(root.style[wh]))
-                    - (parseInt10(stl[plt]) || 0)
-                    - (parseInt10(stl[prb]) || 0)
-                ) | 0;
+                (root[cwh] || parseInt10(stl[wh]) || parseInt10(root.style[wh]))
+                - (parseInt10(stl[plt]) || 0)
+                - (parseInt10(stl[prb]) || 0)
+            ) | 0;
         },
 
         pathToImage: function (path, dpr) {
@@ -9898,7 +9898,7 @@
         this.stage = options.stage || {};
 
         this.onframe = options.onframe || function () {
-            };
+        };
 
         // private properties
         this._clips = [];
@@ -12008,9 +12008,9 @@
     function cubicDerivativeAt(p0, p1, p2, p3, t) {
         var onet = 1 - t;
         return 3 * (
-                ((p1 - p0) * onet + 2 * (p2 - p1) * t) * onet
-                + (p3 - p2) * t * t
-            );
+            ((p1 - p0) * onet + 2 * (p2 - p1) * t) * onet
+            + (p3 - p2) * t * t
+        );
     }
 
     /**
@@ -13901,18 +13901,18 @@
                 case CMD$1.C:
                     if (isStroke) {
                         if (containStroke$2(xi, yi,
-                                data[i++], data[i++], data[i++], data[i++], data[i], data[i + 1],
-                                lineWidth, x, y
-                            )) {
+                            data[i++], data[i++], data[i++], data[i++], data[i], data[i + 1],
+                            lineWidth, x, y
+                        )) {
                             return true;
                         }
                     }
                     else {
                         w += windingCubic(
-                                xi, yi,
-                                data[i++], data[i++], data[i++], data[i++], data[i], data[i + 1],
-                                x, y
-                            ) || 0;
+                            xi, yi,
+                            data[i++], data[i++], data[i++], data[i++], data[i], data[i + 1],
+                            x, y
+                        ) || 0;
                     }
                     xi = data[i++];
                     yi = data[i++];
@@ -13920,18 +13920,18 @@
                 case CMD$1.Q:
                     if (isStroke) {
                         if (containStroke$3(xi, yi,
-                                data[i++], data[i++], data[i], data[i + 1],
-                                lineWidth, x, y
-                            )) {
+                            data[i++], data[i++], data[i], data[i + 1],
+                            lineWidth, x, y
+                        )) {
                             return true;
                         }
                     }
                     else {
                         w += windingQuadratic(
-                                xi, yi,
-                                data[i++], data[i++], data[i], data[i + 1],
-                                x, y
-                            ) || 0;
+                            xi, yi,
+                            data[i++], data[i++], data[i], data[i + 1],
+                            x, y
+                        ) || 0;
                     }
                     xi = data[i++];
                     yi = data[i++];
@@ -13962,9 +13962,9 @@
                     var _x = (x - cx) * ry / rx + cx;
                     if (isStroke) {
                         if (containStroke$4(
-                                cx, cy, ry, theta, theta + dTheta, anticlockwise,
-                                lineWidth, _x, y
-                            )) {
+                            cx, cy, ry, theta, theta + dTheta, anticlockwise,
+                            lineWidth, _x, y
+                        )) {
                             return true;
                         }
                     }
@@ -14002,8 +14002,8 @@
                 case CMD$1.Z:
                     if (isStroke) {
                         if (containStroke$1(
-                                xi, yi, x0, y0, lineWidth, x, y
-                            )) {
+                            xi, yi, x0, y0, lineWidth, x, y
+                        )) {
                             return true;
                         }
                     }
@@ -14249,8 +14249,8 @@
                             lineWidth = Math.max(lineWidth, this.strokeContainThreshold);
                         }
                         if (containStroke(
-                                pathData, lineWidth / lineScale, x, y
-                            )) {
+                            pathData, lineWidth / lineScale, x, y
+                        )) {
                             return true;
                         }
                     }
@@ -15041,9 +15041,9 @@
                         var type = clipPath && clipPath.type;
 
                         if (shape && (
-                                (type === 'sector' && shape.startAngle === shape.endAngle)
-                                || (type === 'rect' && (!shape.width || !shape.height))
-                            )) {
+                            (type === 'sector' && shape.startAngle === shape.endAngle)
+                            || (type === 'rect' && (!shape.width || !shape.height))
+                        )) {
                             for (var j = 0; j < shadowTemp.length; j++) {
                                 // It is save to put shadowTemp static, because shadowTemp
                                 // will be all modified each item brush called.
@@ -16293,20 +16293,20 @@
     function doEnterHover(el) {
         el.type === 'group'
             ? el.traverse(function (child) {
-            if (child.type !== 'group') {
-                doSingleEnterHover(child);
-            }
-        })
+                if (child.type !== 'group') {
+                    doSingleEnterHover(child);
+                }
+            })
             : doSingleEnterHover(el);
     }
 
     function doLeaveHover(el) {
         el.type === 'group'
             ? el.traverse(function (child) {
-            if (child.type !== 'group') {
-                doSingleLeaveHover(child);
-            }
-        })
+                if (child.type !== 'group') {
+                    doSingleLeaveHover(child);
+                }
+            })
             : doSingleLeaveHover(el);
     }
 
@@ -16386,10 +16386,10 @@
 
         el.type === 'group'
             ? el.traverse(function (child) {
-            if (child.type !== 'group') {
-                setElementHoverStl(child, hoverStyle);
-            }
-        })
+                if (child.type !== 'group') {
+                    setElementHoverStl(child, hoverStyle);
+                }
+            })
             : setElementHoverStl(el, hoverStyle);
 
         // Duplicated function will be auto-ignored, see Eventful.js.
@@ -17285,9 +17285,9 @@
 
             var thisParentModel;
             parentModel = parentModel || (
-                    (thisParentModel = getParent(this, path))
-                    && thisParentModel.getModel(path)
-                );
+                (thisParentModel = getParent(this, path))
+                && thisParentModel.getModel(path)
+            );
 
             return new Model(obj, parentModel, this.ecModel);
         },
@@ -19294,17 +19294,17 @@
             if (__DEV__) {
                 if (!xAxisModel) {
                     throw new Error('xAxis "' + retrieve(
-                            seriesModel.get('xAxisIndex'),
-                            seriesModel.get('xAxisId'),
-                            0
-                        ) + '" not found');
+                        seriesModel.get('xAxisIndex'),
+                        seriesModel.get('xAxisId'),
+                        0
+                    ) + '" not found');
                 }
                 if (!yAxisModel) {
                     throw new Error('yAxis "' + retrieve(
-                            seriesModel.get('xAxisIndex'),
-                            seriesModel.get('yAxisId'),
-                            0
-                        ) + '" not found');
+                        seriesModel.get('xAxisIndex'),
+                        seriesModel.get('yAxisId'),
+                        0
+                    ) + '" not found');
                 }
             }
 
@@ -19506,8 +19506,8 @@
          * @type {Array|Object}
          */
         this.data = fields.data || (
-                fields.sourceFormat === SOURCE_FORMAT_KEYED_COLUMNS ? {} : []
-            );
+            fields.sourceFormat === SOURCE_FORMAT_KEYED_COLUMNS ? {} : []
+        );
 
         /**
          * See also "detectSourceFormat".
@@ -19968,9 +19968,9 @@
             var firstNotOrdinal;
             for (var i = 0; i < 5 && firstNotOrdinal == null; i++) {
                 if (!doGuessOrdinal(
-                        data, sourceFormat, seriesLayoutBy,
-                        completeResult.dimensionsDefine, completeResult.startIndex, i
-                    )) {
+                    data, sourceFormat, seriesLayoutBy,
+                    completeResult.dimensionsDefine, completeResult.startIndex, i
+                )) {
                     firstNotOrdinal = i;
                 }
             }
@@ -20842,8 +20842,8 @@
     function createSeriesIndices(ecModel, seriesModels) {
         ecModel._seriesIndicesMap = createHashMap(
             ecModel._seriesIndices = map(seriesModels, function (series) {
-                    return series.componentIndex;
-                }) || []
+                return series.componentIndex;
+            }) || []
         );
     }
 
@@ -20899,6 +20899,7 @@
         'on', 'off', 'getDataURL', 'getConnectedDataURL', 'getModel', 'getOption',
         'getViewOfComponentModel', 'getViewOfSeriesModel'
     ];
+
 // And `getCoordinateSystems` and `getComponentByElement` will be injected in echarts.js
 
     function ExtensionAPI(chartInstance) {
@@ -23099,8 +23100,8 @@
 
                 tooltipDims.length
                     ? each$1(tooltipDims, function (dim) {
-                    setEachItem(retrieveRawValue(data, dataIndex, dim), dim);
-                })
+                        setEachItem(retrieveRawValue(data, dataIndex, dim), dim);
+                    })
                     // By default, all dims is used on tooltip.
                     : each$1(value, setEachItem);
 
@@ -23113,8 +23114,8 @@
                     var dimType = dimInfo.type;
                     var dimHead = getTooltipMarker({color: color, type: 'subItem'});
                     var valStr = (vertially
-                                ? dimHead + encodeHTML(dimInfo.displayName || '-') + ': '
-                                : ''
+                            ? dimHead + encodeHTML(dimInfo.displayName || '-') + ': '
+                            : ''
                         )
                         // FIXME should not format time for raw data?
                         + encodeHTML(dimType === 'ordinal'
@@ -24770,8 +24771,8 @@
 
     function seriesTaskPlan(context) {
         return context.plan && context.plan(
-                context.model, context.ecModel, context.api, context.payload
-            );
+            context.model, context.ecModel, context.api, context.payload
+        );
     }
 
     function seriesTaskReset(context) {
@@ -25235,8 +25236,8 @@
         var defaultRenderer = 'canvas';
         if (__DEV__) {
             defaultRenderer = (
-                    typeof window === 'undefined' ? global : window
-                ).__ECHARTS__DEFAULT__RENDERER__ || defaultRenderer;
+                typeof window === 'undefined' ? global : window
+            ).__ECHARTS__DEFAULT__RENDERER__ || defaultRenderer;
         }
 
         /**
@@ -25776,9 +25777,9 @@
                     else {
                         if (__DEV__) {
                             console.warn(key + ': ' + (view
-                                        ? 'The found component do not support containPoint.'
-                                        : 'No view mapping to the found component.'
-                                ));
+                                    ? 'The found component do not support containPoint.'
+                                    : 'No view mapping to the found component.'
+                            ));
                         }
                     }
                 }
@@ -26374,10 +26375,10 @@
                 // Although zr is dirty if initial animation is not finished
             // and this checking is called on frame, we also check
             // animation finished for robustness.
-            zr.animation.isFinished()
-            && !ecIns[OPTION_UPDATED]
-            && !ecIns._scheduler.unfinished
-            && !ecIns._pendingActions.length
+                zr.animation.isFinished()
+                && !ecIns[OPTION_UPDATED]
+                && !ecIns._scheduler.unfinished
+                && !ecIns._pendingActions.length
             ) {
                 ecIns.trigger('finished');
             }
@@ -26437,8 +26438,8 @@
 
         isComponent
             ? ecModel.eachComponent(function (componentType, model) {
-            componentType !== 'series' && doPrepare(model);
-        })
+                componentType !== 'series' && doPrepare(model);
+            })
             : ecModel.eachSeries(doPrepare);
 
         function doPrepare(model) {
@@ -28329,9 +28330,9 @@
         for (var i = 0, len = dataDimsOnCoord.length; i < len; i++) {
             if (
                 // Ordinal type can be string or number
-            dimensionInfos[dataDimsOnCoord[i]].type !== 'ordinal'
-            // FIXME check ordinal when using index?
-            && isNaN(this.get(dataDimsOnCoord[i], idx))
+                dimensionInfos[dataDimsOnCoord[i]].type !== 'ordinal'
+                // FIXME check ordinal when using index?
+                && isNaN(this.get(dataDimsOnCoord[i], idx))
             ) {
                 return false;
             }
@@ -29974,10 +29975,10 @@
         if (!coordSysDimDefs) {
             // Get dimensions from registered coordinate system
             coordSysDimDefs = (registeredCoordSys && (
-                    registeredCoordSys.getDimensionsInfo
-                        ? registeredCoordSys.getDimensionsInfo()
-                        : registeredCoordSys.dimensions.slice()
-                )) || ['x', 'y'];
+                registeredCoordSys.getDimensionsInfo
+                    ? registeredCoordSys.getDimensionsInfo()
+                    : registeredCoordSys.dimensions.slice()
+            )) || ['x', 'y'];
         }
 
         var dimInfoList = createDimensions(source, {
@@ -30337,8 +30338,8 @@
 // Consider big data, do not create map until needed.
     function getOrCreateMap(ordinalMeta) {
         return ordinalMeta._map || (
-                ordinalMeta._map = createHashMap(ordinalMeta.categories)
-            );
+            ordinalMeta._map = createHashMap(ordinalMeta.categories)
+        );
     }
 
     function getName(obj) {
@@ -30929,13 +30930,13 @@
             var axisKey = seriesInfo.axisKey;
             var bandWidth = seriesInfo.bandWidth;
             var columnsOnAxis = columnsMap[axisKey] || {
-                    bandWidth: bandWidth,
-                    remainedWidth: bandWidth,
-                    autoWidthCount: 0,
-                    categoryGap: '20%',
-                    gap: '30%',
-                    stacks: {}
-                };
+                bandWidth: bandWidth,
+                remainedWidth: bandWidth,
+                autoWidthCount: 0,
+                categoryGap: '20%',
+                gap: '30%',
+                stacks: {}
+            };
             var stacks = columnsOnAxis.stacks;
             columnsMap[axisKey] = columnsOnAxis;
 
@@ -30945,9 +30946,9 @@
                 columnsOnAxis.autoWidthCount++;
             }
             stacks[stackId] = stacks[stackId] || {
-                    width: 0,
-                    maxWidth: 0
-                };
+                width: 0,
+                maxWidth: 0
+            };
 
             // Caution: In a single coordinate system, these barGrid attributes
             // will be shared by series. Consider that they have default values,
@@ -31023,9 +31024,9 @@
             var offset = -widthSum / 2;
             each$1(stacks, function (column, stackId) {
                 result[coordSysName][stackId] = result[coordSysName][stackId] || {
-                        offset: offset,
-                        width: column.width
-                    };
+                    offset: offset,
+                    width: column.width
+                };
 
                 offset += column.width * (1 + barGapPercent);
             });
@@ -34984,10 +34985,10 @@
             }
             while (i < len$$1) {
                 i += drawSegment(
-                        ctx, points, i, len$$1, len$$1,
-                        1, result.min, result.max, shape.smooth,
-                        shape.smoothMonotone, shape.connectNulls
-                    ) + 1;
+                    ctx, points, i, len$$1, len$$1,
+                    1, result.min, result.max, shape.smooth,
+                    shape.smoothMonotone, shape.connectNulls
+                ) + 1;
             }
         }
     });
@@ -35409,8 +35410,8 @@
         var step = Math.max(1, Math.round(dataLen / 5));
         for (var dataIndex = 0; dataIndex < dataLen; dataIndex += step) {
             if (SymbolClz$1.getSymbolSize(
-                    data, dataIndex
-                    // Only for cartesian, where `isHorizontal` exists.
+                data, dataIndex
+                // Only for cartesian, where `isHorizontal` exists.
                 )[categoryAxis.isHorizontal() ? 1 : 0]
                 // Empirical number
                 * 1.5 > availSize
@@ -37478,10 +37479,10 @@
             if (__DEV__) {
                 if (!axisModel) {
                     throw new Error(axisType + ' "' + retrieve(
-                            seriesModel.get(axisType + 'Index'),
-                            seriesModel.get(axisType + 'Id'),
-                            0
-                        ) + '" not found');
+                        seriesModel.get(axisType + 'Index'),
+                        seriesModel.get(axisType + 'Id'),
+                        0
+                    ) + '" not found');
                 }
             }
             return axisModel;
@@ -37525,9 +37526,9 @@
                 if (!gridModel) {
                     throw new Error(
                         'Grid "' + retrieve(
-                            xAxisModel.get('gridIndex'),
-                            xAxisModel.get('gridId'),
-                            0
+                        xAxisModel.get('gridIndex'),
+                        xAxisModel.get('gridId'),
+                        0
                         ) + '" not found'
                     );
                 }
@@ -38175,8 +38176,8 @@
 
         // Special label rotate.
         var labelRotation = (
-                retrieve(opt.labelRotate, labelModel.get('rotate')) || 0
-            ) * PI$2 / 180;
+            retrieve(opt.labelRotate, labelModel.get('rotate')) || 0
+        ) * PI$2 / 180;
 
         var labelLayout = innerTextLayout(opt.rotation, labelRotation, opt.labelDirection);
         var rawCategoryData = axisModel.getCategories(true);
@@ -38374,10 +38375,10 @@
 
                 var axisPointerShow = axisPointerModel.get('show');
                 if (!axisPointerShow || (
-                        axisPointerShow === 'auto'
-                        && !fromTooltip
-                        && !isHandleTrigger(axisPointerModel)
-                    )) {
+                    axisPointerShow === 'auto'
+                    && !fromTooltip
+                    && !isHandleTrigger(axisPointerModel)
+                )) {
                     return;
                 }
 
@@ -38560,10 +38561,10 @@
         extent[0] > extent[1] && extent.reverse();
 
         if (// Pick a value on axis when initializing.
-        value == null
-        // If both `handle` and `dataZoom` are used, value may be out of axis extent,
-        // where we should re-pick a value to keep `handle` displaying normally.
-        || value > extent[1]
+            value == null
+            // If both `handle` and `dataZoom` are used, value may be out of axis extent,
+            // where we should re-pick a value to keep `handle` displaying normally.
+            || value > extent[1]
         ) {
             // Make handle displayed on the end of the axis when init, which looks better.
             value = extent[1];
@@ -38693,7 +38694,7 @@
         var axisPointerModel = getAxisPointerModel(axisModel);
         axisPointerModel
             ? (axisView._axisPointer || (axisView._axisPointer = new Clazz()))
-            .render(axisModel, axisPointerModel, api, forceRender)
+                .render(axisModel, axisPointerModel, api, forceRender)
             : disposeAxisPointer(axisView, api);
     }
 
@@ -40168,10 +40169,10 @@
         hasAnimation
             // animateTo will stop revious animation like update transition
             ? el.animate()
-            .when(200, {
-                position: position
-            })
-            .start('bounceOut')
+                .when(200, {
+                    position: position
+                })
+                .start('bounceOut')
             : el.attr('position', position);
     }
 
@@ -44777,9 +44778,9 @@
 
             // Not update map if it is an roam action from self
             if (!(payload && payload.type === 'geoRoam'
-                    && payload.componentType === 'series'
-                    && payload.seriesId === mapModel.id
-                )
+                && payload.componentType === 'series'
+                && payload.seriesId === mapModel.id
+            )
             ) {
                 if (mapModel.needsDrawMap) {
                     var mapDraw = this._mapDraw || new MapDraw(api, true);
@@ -44953,9 +44954,9 @@
                 var zoomMin = zoomLimit.min || 0;
                 var zoomMax = zoomLimit.max || Infinity;
                 zoom = Math.max(
-                        Math.min(previousZoom * zoom, zoomMax),
-                        zoomMin
-                    ) / previousZoom;
+                    Math.min(previousZoom * zoom, zoomMax),
+                    zoomMin
+                ) / previousZoom;
             }
 
             // Zoom on given point(originX, originY)
@@ -46109,8 +46110,8 @@
                 node = node.parentNode;
             }
             return encodeHTML(name + (
-                    (isNaN(value) || value == null) ? '' : ' : ' + value
-                ));
+                (isNaN(value) || value == null) ? '' : ' : ' + value
+            ));
         },
 
         defaultOption: {
@@ -48905,17 +48906,17 @@
                 return bind(
                     thisOption.mappingMethod === 'category'
                         ? function (value, isNormalized) {
-                        !isNormalized && (value = this._normalizeData(value));
-                        return doMapCategory.call(this, value);
-                    }
+                            !isNormalized && (value = this._normalizeData(value));
+                            return doMapCategory.call(this, value);
+                        }
                         : function (value, isNormalized, out) {
-                        // If output rgb array
-                        // which will be much faster and useful in pixel manipulation
-                        var returnRGBArray = !!out;
-                        !isNormalized && (value = this._normalizeData(value));
-                        out = fastLerp(value, thisOption.parsedVisual, out);
-                        return returnRGBArray ? out : stringify(out, 'rgba');
-                    },
+                            // If output rgb array
+                            // which will be much faster and useful in pixel manipulation
+                            var returnRGBArray = !!out;
+                            !isNormalized && (value = this._normalizeData(value));
+                            out = fastLerp(value, thisOption.parsedVisual, out);
+                            return returnRGBArray ? out : stringify(out, 'rgba');
+                        },
                     this
                 );
             },
@@ -49099,8 +49100,8 @@
     function doMapToArray(normalized) {
         var visual = this.option.visual;
         return visual[
-                Math.round(linearMap(normalized, [0, 1], [0, visual.length - 1], true))
-                ] || {};
+            Math.round(linearMap(normalized, [0, 1], [0, visual.length - 1], true))
+            ] || {};
     }
 
     function makeApplyVisual(visualType) {
@@ -51320,16 +51321,16 @@
             symbolFrom.attr('position', fromPos);
             var tangent = line.tangentAt(0);
             symbolFrom.attr('rotation', Math.PI / 2 - Math.atan2(
-                    tangent[1], tangent[0]
-                ));
+                tangent[1], tangent[0]
+            ));
             symbolFrom.attr('scale', [invScale * percent, invScale * percent]);
         }
         if (symbolTo) {
             symbolTo.attr('position', toPos);
             var tangent = line.tangentAt(1);
             symbolTo.attr('rotation', -Math.PI / 2 - Math.atan2(
-                    tangent[1], tangent[0]
-                ));
+                tangent[1], tangent[0]
+            ));
             symbolTo.attr('scale', [invScale * percent, invScale * percent]);
         }
 
@@ -54626,8 +54627,8 @@
         // Expand span.
         var currDistSign = getSpanSign(handleEnds, handleIndex);
         if (minSpan != null && (
-                currDistSign.sign !== originalDistSign.sign || currDistSign.span < minSpan
-            )) {
+            currDistSign.sign !== originalDistSign.sign || currDistSign.span < minSpan
+        )) {
             // If minSpan exists, 'cross' is forbinden.
             handleEnds[1 - handleIndex] = handleEnds[handleIndex] + originalDistSign.sign * minSpan;
         }
@@ -56945,10 +56946,10 @@
                 behavior === 'none'
                     ? null // Cancle the last trigger, in case that mouse slide out of the area quickly.
                     : {
-                    axisExpandWindow: result.axisExpandWindow,
-                    // Jumping uses animation, and sliding suppresses animation.
-                    animation: behavior === 'jump' ? null : false
-                }
+                        axisExpandWindow: result.axisExpandWindow,
+                        // Jumping uses animation, and sliding suppresses animation.
+                        animation: behavior === 'jump' ? null : false
+                    }
             );
         }
     };
@@ -60753,16 +60754,16 @@
     effectLineProto.getLineLength = function (symbol) {
         // Not so accurate
         return (dist(symbol.__p1, symbol.__cp1)
-        + dist(symbol.__cp1, symbol.__p2));
+            + dist(symbol.__cp1, symbol.__p2));
     };
 
     effectLineProto.updateAnimationPoints = function (symbol, points) {
         symbol.__p1 = points[0];
         symbol.__p2 = points[1];
         symbol.__cp1 = points[2] || [
-                (points[0][0] + points[1][0]) / 2,
-                (points[0][1] + points[1][1]) / 2
-            ];
+            (points[0][0] + points[1][0]) / 2,
+            (points[0][1] + points[1][1]) / 2
+        ];
     };
 
     effectLineProto.updateData = function (lineData, idx, seriesScope) {
@@ -62611,8 +62612,8 @@
 
         var barRectShape = output.barRectShape = extend({}, layout);
         barRectShape[valueDim.wh] = pxSign * Math.max(
-                Math.abs(layout[valueDim.wh]), Math.abs(pathPosition[valueDim.index] + sizeFix)
-            );
+            Math.abs(layout[valueDim.wh]), Math.abs(pathPosition[valueDim.index] + sizeFix)
+        );
         barRectShape[categoryDim.wh] = layout[categoryDim.wh];
 
         var clipShape = output.clipShape = {};
@@ -63837,8 +63838,8 @@
         var seriesIndex = finder.seriesIndex;
         var seriesModel;
         if (seriesIndex == null || !(
-                seriesModel = ecModel.getSeriesByIndex(seriesIndex)
-            )) {
+            seriesModel = ecModel.getSeriesByIndex(seriesIndex)
+        )) {
             return {point: []};
         }
 
@@ -63856,12 +63857,12 @@
         }
         else if (coordSys && coordSys.dataToPoint) {
             point = coordSys.dataToPoint(
-                    data.getValues(
-                        map(coordSys.dimensions, function (dim) {
-                            return data.mapDimension(dim);
-                        }), dataIndex, true
-                    )
-                ) || [];
+                data.getValues(
+                    map(coordSys.dimensions, function (dim) {
+                        return data.mapDimension(dim);
+                    }), dataIndex, true
+                )
+            ) || [];
         }
         else if (el) {
             // Use graphic bounding rect
@@ -68177,12 +68178,12 @@
             currDataIndexInside = dataIndexInside;
             currDirty = true;
             return renderItem && renderItem(
-                    defaults({
-                        dataIndexInside: dataIndexInside,
-                        dataIndex: data.getRawIndex(dataIndexInside)
-                    }, userParams),
-                    userAPI
-                ) || {};
+                defaults({
+                    dataIndexInside: dataIndexInside,
+                    dataIndex: data.getRawIndex(dataIndexInside)
+                }, userParams),
+                userAPI
+            ) || {};
         };
 
         // Do not update cache until api called.
@@ -71821,13 +71822,13 @@
                 : (Math.abs(axisExtent[1] - axisExtent[0]) / data.count());
 
             var columnsOnAxis = columnsMap[getAxisKey$1(baseAxis)] || {
-                    bandWidth: bandWidth,
-                    remainedWidth: bandWidth,
-                    autoWidthCount: 0,
-                    categoryGap: '20%',
-                    gap: '30%',
-                    stacks: {}
-                };
+                bandWidth: bandWidth,
+                remainedWidth: bandWidth,
+                autoWidthCount: 0,
+                categoryGap: '20%',
+                gap: '30%',
+                stacks: {}
+            };
             var stacks = columnsOnAxis.stacks;
             columnsMap[getAxisKey$1(baseAxis)] = columnsOnAxis;
 
@@ -71837,9 +71838,9 @@
                 columnsOnAxis.autoWidthCount++;
             }
             stacks[stackId] = stacks[stackId] || {
-                    width: 0,
-                    maxWidth: 0
-                };
+                width: 0,
+                maxWidth: 0
+            };
 
             var barWidth = parsePercent$1(
                 seriesModel.get('barWidth'),
@@ -71916,9 +71917,9 @@
             var offset = -widthSum / 2;
             each$1(stacks, function (column, stackId) {
                 result[coordSysName][stackId] = result[coordSysName][stackId] || {
-                        offset: offset,
-                        width: column.width
-                    };
+                    offset: offset,
+                    width: column.width
+                };
 
                 offset += column.width * (1 + barGapPercent);
             });
@@ -72567,9 +72568,9 @@
                         if (!polarModel) {
                             throw new Error(
                                 'Polar "' + retrieve(
-                                    seriesModel.get('polarIndex'),
-                                    seriesModel.get('polarId'),
-                                    0
+                                seriesModel.get('polarIndex'),
+                                seriesModel.get('polarId'),
+                                0
                                 ) + '" not found'
                             );
                         }
@@ -74136,8 +74137,8 @@
         // If do not do this check, some brush (like lineX) will controll all axes.
         var targetInfo = this.findTargetInfo(area, ecModel);
         return targetInfo === true || (
-                targetInfo && indexOf$1(targetInfo.coordSyses, seriesModel.coordinateSystem) >= 0
-            );
+            targetInfo && indexOf$1(targetInfo.coordSyses, seriesModel.coordinateSystem) >= 0
+        );
     };
 
     /**
@@ -74630,8 +74631,8 @@
         for (var i = 0, len = rangeInfoList.length; i < len; i++) {
             var area = rangeInfoList[i];
             if (selectorsByBrushType[area.brushType](
-                    dataIndex, data, area.selectors, area
-                )) {
+                dataIndex, data, area.selectors, area
+            )) {
                 return true;
             }
         }
@@ -75442,9 +75443,9 @@
 
             // if not in range return [NaN, NaN]
             if (clamp && !(
-                    dayInfo.time >= range.start.time
-                    && dayInfo.time < range.end.time + PROXIMATE_ONE_DAY
-                )) {
+                dayInfo.time >= range.start.time
+                && dayInfo.time < range.end.time + PROXIMATE_ONE_DAY
+            )) {
                 return [NaN, NaN];
             }
 
@@ -77451,11 +77452,11 @@
 
                 // If exists, share axisProxy with other dataZoomModels.
                 var axisProxy = axisModel.__dzAxisProxy || (
-                        // Use the first dataZoomModel as the main model of axisProxy.
-                        axisModel.__dzAxisProxy = new AxisProxy(
-                            dimNames.name, axisIndex, this, ecModel
-                        )
-                    );
+                    // Use the first dataZoomModel as the main model of axisProxy.
+                    axisModel.__dzAxisProxy = new AxisProxy(
+                        dimNames.name, axisIndex, this, ecModel
+                    )
+                );
                 // FIXME
                 // dispose __dzAxisProxy
 
@@ -77593,9 +77594,9 @@
                                 if (!axisModel) {
                                     throw new Error(
                                         dimNames.axis + ' "' + retrieve(
-                                            axisIndex,
-                                            axisId,
-                                            0
+                                        axisIndex,
+                                        axisId,
+                                        0
                                         ) + '" not found'
                                     );
                                 }
@@ -78415,8 +78416,8 @@
                     }
 
                     if (showDataShadow !== true && indexOf(
-                            SHOW_DATA_SHADOW_SERIES_TYPE, seriesModel.get('type')
-                        ) < 0
+                        SHOW_DATA_SHADOW_SERIES_TYPE, seriesModel.get('type')
+                    ) < 0
                     ) {
                         return;
                     }
@@ -79216,10 +79217,10 @@
                 null, [mouseX, mouseY], axisModel, controller, coordInfo
             );
             var percentPoint = (
-                    directionInfo.signal > 0
-                        ? (directionInfo.pixelStart + directionInfo.pixelLength - directionInfo.pixel)
-                        : (directionInfo.pixel - directionInfo.pixelStart)
-                ) / directionInfo.pixelLength * (range[1] - range[0]) + range[0];
+                directionInfo.signal > 0
+                    ? (directionInfo.pixelStart + directionInfo.pixelLength - directionInfo.pixel)
+                    : (directionInfo.pixel - directionInfo.pixelStart)
+            ) / directionInfo.pixelLength * (range[1] - range[0]) + range[0];
 
             scale = Math.max(1 / scale, 0);
             range[0] = (range[0] - percentPoint) * scale + percentPoint;
@@ -79630,8 +79631,8 @@
             ecModel.eachComponent('visualMap', function (visualMapModel) {
                 if (visualMapModel.isTargetSeries(seriesModel)) {
                     var visualMeta = visualMapModel.getVisualMeta(
-                            bind(getColorVisual, null, seriesModel, visualMapModel)
-                        ) || {stops: [], outerColors: []};
+                        bind(getColorVisual, null, seriesModel, visualMapModel)
+                    ) || {stops: [], outerColors: []};
 
                     var concreteDim = visualMapModel.getDataDimension(data);
                     var dimInfo = data.getDimensionInfo(concreteDim);
@@ -81880,10 +81881,10 @@
 
             function has(obj, state, visualType) {
                 return obj && obj[state] && (
-                        isObject$1(obj[state])
-                            ? obj[state].hasOwnProperty(visualType)
-                            : obj[state] === visualType // e.g., inRange: 'symbol'
-                    );
+                    isObject$1(obj[state])
+                        ? obj[state].hasOwnProperty(visualType)
+                        : obj[state] === visualType // e.g., inRange: 'symbol'
+                );
             }
 
             VisualMapModel.prototype.completeVisualOption.apply(this, arguments);
@@ -82230,10 +82231,10 @@
                 var close = piece.close;
                 var edgeSymbols = [['<', '≤'][close[1]], ['>', '≥'][close[0]]];
                 piece.text = piece.text || this.formatValueText(
-                        piece.value != null ? piece.value : piece.interval,
-                        false,
-                        edgeSymbols
-                    );
+                    piece.value != null ? piece.value : piece.interval,
+                    false,
+                    edgeSymbols
+                );
             }, this);
         }
     };
@@ -83143,8 +83144,8 @@
         if (coordSys) {
             coordDimsInfos = map(coordSys && coordSys.dimensions, function (coordDim) {
                 var info = seriesModel.getData().getDimensionInfo(
-                        seriesModel.getData().mapDimension(coordDim)
-                    ) || {};
+                    seriesModel.getData().mapDimension(coordDim)
+                ) || {};
                 // In map series data don't have lng and lat dimension. Fallback to same with coordSys
                 return defaults({name: coordDim}, info);
             });
@@ -83374,7 +83375,7 @@
             if (
                 fromCoord && toCoord &&
                 (ifMarkLineHasOnlyDim(1, fromCoord, toCoord, coordSys)
-                || ifMarkLineHasOnlyDim(0, fromCoord, toCoord, coordSys))
+                    || ifMarkLineHasOnlyDim(0, fromCoord, toCoord, coordSys))
             ) {
                 return true;
             }
@@ -83593,8 +83594,8 @@
         if (coordSys) {
             coordDimsInfos = map(coordSys && coordSys.dimensions, function (coordDim) {
                 var info = seriesModel.getData().getDimensionInfo(
-                        seriesModel.getData().mapDimension(coordDim)
-                    ) || {};
+                    seriesModel.getData().mapDimension(coordDim)
+                ) || {};
                 // In map series data don't have lng and lat dimension. Fallback to same with coordSys
                 return defaults({name: coordDim}, info);
             });
@@ -83795,7 +83796,7 @@
             if (
                 fromCoord && toCoord &&
                 (ifMarkLineHasOnlyDim$1(1, fromCoord, toCoord, coordSys)
-                || ifMarkLineHasOnlyDim$1(0, fromCoord, toCoord, coordSys))
+                    || ifMarkLineHasOnlyDim$1(0, fromCoord, toCoord, coordSys))
             ) {
                 return true;
             }
@@ -84016,8 +84017,8 @@
             coordDimsInfos = map(coordSys && coordSys.dimensions, function (coordDim) {
                 var data = seriesModel.getData();
                 var info = data.getDimensionInfo(
-                        data.mapDimension(coordDim)
-                    ) || {};
+                    data.mapDimension(coordDim)
+                ) || {};
                 // In map series data don't have lng and lat dimension. Fallback to same with coordSys
                 return defaults({name: coordDim}, info);
             });
@@ -85181,9 +85182,9 @@
             var timelineModel = this.model;
 
             if (trigger || (
-                    targetDataIndex !== timelineModel.getCurrentIndex()
-                    && timelineModel.get('realtime')
-                )) {
+                targetDataIndex !== timelineModel.getCurrentIndex()
+                && timelineModel.get('realtime')
+            )) {
                 this._changeTimeline(targetDataIndex);
             }
         },
@@ -86892,13 +86893,13 @@
             .enableBrush(
                 zoomActive
                     ? {
-                    brushType: 'auto',
-                    brushStyle: {
-                        // FIXME user customized?
-                        lineWidth: 0,
-                        fill: 'rgba(0,0,0,0.2)'
+                        brushType: 'auto',
+                        brushStyle: {
+                            // FIXME user customized?
+                            lineWidth: 0,
+                            fill: 'rgba(0,0,0,0.2)'
+                        }
                     }
-                }
                     : false
             );
     }
@@ -89346,7 +89347,7 @@
             each$1(['fill', 'stroke'], function (fillOrStroke) {
                 if (displayable.style[fillOrStroke]
                     && (displayable.style[fillOrStroke].type === 'linear'
-                    || displayable.style[fillOrStroke].type === 'radial')
+                        || displayable.style[fillOrStroke].type === 'radial')
                 ) {
                     var gradient = displayable.style[fillOrStroke];
                     var defs = that.getDefs(true);
@@ -89871,8 +89872,8 @@
         // TODO: textBoxShadowBlur is not supported yet
         return style
             && (style.shadowBlur || style.shadowOffsetX || style.shadowOffsetY
-            || style.textShadowBlur || style.textShadowOffsetX
-            || style.textShadowOffsetY);
+                || style.textShadowBlur || style.textShadowOffsetX
+                || style.textShadowOffsetY);
     }
 
     /**
@@ -90219,10 +90220,10 @@
             var stl = document.defaultView.getComputedStyle(root);
 
             return (
-                    (root[cwh] || parseInt10$2(stl[wh]) || parseInt10$2(root.style[wh]))
-                    - (parseInt10$2(stl[plt]) || 0)
-                    - (parseInt10$2(stl[prb]) || 0)
-                ) | 0;
+                (root[cwh] || parseInt10$2(stl[wh]) || parseInt10$2(root.style[wh]))
+                - (parseInt10$2(stl[plt]) || 0)
+                - (parseInt10$2(stl[prb]) || 0)
+            ) | 0;
         },
 
         dispose: function () {

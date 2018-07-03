@@ -21,12 +21,24 @@
     </style>
 </head>
 
+<style>
+
+    #test {
+        height: 500px;
+    }
+
+    .logo_show {
+        background: #545C64;
+    }
+
+</style>
 <body>
 <el-container id="app">
 
     <el-aside>
         <el-header class="logo_show">
-            <div class="logo_show logo_text">1111</div>
+            <img src="img/logo.png" style="float: left; margin-top: 12px;padding-right: 10px">
+            <div class="logo_text" style="color: white;padding: 20px">Docker</div>
         </el-header>
         <el-menu
                 id="test"
@@ -113,8 +125,8 @@
                     </template>
                 </el-popover>
             </el-col>
-            <el-col :span="2" align="right" >
-                <img src="">
+                <el-col :span="2" align="right">
+                    <img src="">
             </el-col>
             <el-col :span="2" align="left">
                 <el-dropdown>
@@ -149,21 +161,19 @@
             activeName: 'second',
         },
         methods: {
-            init_usrInf(){
+            init_usrInf() {
                 $.ajax({
                     type: "get",
                     url: 'http://localhost:8080/tianyu-paas/users/info/' + this.id,
-                    data: {
-
-                    },
-                    success : function (result) {
-                        if(result.code) {
+                    data: {},
+                    success: function (result) {
+                        if (result.code) {
                             console.log(result);
                             vm.username = result.data.name;
                         } else {
                         }
                     },
-                    error :function () {
+                    error: function () {
                         console.log("失败")
                     }
                 })

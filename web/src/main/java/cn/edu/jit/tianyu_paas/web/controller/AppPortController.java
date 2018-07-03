@@ -31,7 +31,7 @@ public class AppPortController {
      * @param appId
      * @return
      */
-    @GetMapping("{appId}")
+    @GetMapping("/{appId}")
     public TResult getPortInfo(@PathVariable Long appId){
         AppPort appPort = appPortService.selectOne(new EntityWrapper<AppPort>().eq("app_id",appId));
         if(appPort == null)
@@ -78,7 +78,7 @@ public class AppPortController {
      * @param port
      * @return
      */
-    @DeleteMapping("{port}")
+    @DeleteMapping("/{port}")
     public TResult deletePort(@PathVariable Integer port) {
 
         if (!appPortService.delete(new EntityWrapper<AppPort>().eq("port", port)))

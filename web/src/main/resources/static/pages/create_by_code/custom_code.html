@@ -13,19 +13,20 @@
             <el-dialog title="新建应用组" :visible.sync="dialogFormVisible">
                 <el-form :model="ruleForm" staus-icon :rules="rules" ref="ruleForm" class="demo-ruleForm"
                          label-position="right" label-width="80px" :model="formLabelAlign">
-                    <el-form-item label="组名称" prop="name">
-                        <el-input placeholder="请填写组名称" v-model="ruleForm.name"></el-input>
+                    <el-form-item label="组名称" prop="group_name">
+                        <el-input placeholder="请填写组名称" v-model="ruleForm.group_name"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="AddGroup">确 定
+                    </el-button>
                 </div>
             </el-dialog>
         </el-form-item>
         <el-form-item label="仓库地址:">
             <el-input placeholder="请输入仓库地址" v-model="formLabelAlign.address" class="input-with-select">
-                <el-select class="select-git" v-model="select" slot="prepend" placeholder="git">
+                <el-select class="select-git" v-model="formLabelAlign.select" slot="prepend">
                     <el-option label="git" value="1"></el-option>
                 </el-select>
             </el-input>
@@ -47,24 +48,66 @@
                     group: '',
                     address: '',
                     branch: '',
+                    select: 'git'
                 },
                 select: '',
                 labelArr: [
-                    {label: '未分组', value: 'shanghai'},
-                    {label: '分组一', value: 'beijing'}
+                    // {label: '未分组', value: 'shanghai'},
+                    // {label: '分组一', value: 'beijing'}
                 ],
                 dialogFormVisible: false,
                 ruleForm: {
-                    name: '',
+                    group_name: '',
                 },
                 formLabelWidth: '60px',
                 rules: {
-                    name: [
+                    group_name: [
                         {required: true, message: '请输入组名称', trigger: 'blur'}
                     ]
                 },
                 activeIndex: '1',
             };
+        },
+        methods: {
+            AppList() {
+                $.ajax({
+                    type: "get",
+                    url: 'app-groups',
+                    success: function (result) {
+                        console.log(result.data)
+                        // this.labelArr = result.data;
+                        // console.log(this.labelArr."AppGroup)
+                    },
+                    error: function () {
+                        console.log('fail')
+                    }
+                })
+
+            },
+            AddGroup() {
+                $.ajax({
+                    type: "post",
+                    url: 'app-groups',
+                    data: {
+                        groupName: this.ruleForm.group_name,
+                    },
+                    success: function (TResultCode) {
+                        console.log("the result is " + TResultCode.code);
+                        if (TResultCode.code == 1) {
+                            alert("新建组成功")
+                        }
+                        else {
+                            alert(TResultCode.message)
+                        }
+                    },
+                    error: function () {
+                        console.log("fail")
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.AppList();
         }
     });
     $("#branch-input").val("master");
@@ -85,7 +128,7 @@
     }
 
     .select-group {
-        width: 88%;
+        width: 80%;
     }
 
     .add-group-button {
@@ -94,7 +137,7 @@
     }
 
     .add-button {
-        margin-left: 10%;
+        margin-left: 15%;
     }
 
     .select-git {

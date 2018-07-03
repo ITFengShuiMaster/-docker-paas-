@@ -2,11 +2,6 @@ package cn.edu.jit.tianyu_paas.ms.mapper;
 
 import cn.edu.jit.tianyu_paas.shared.entity.App;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.baomidou.mybatisplus.plugins.pagination.Pagination;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
-import java.util.List;
 
 /**
  * @author 倪龙康

@@ -18,13 +18,12 @@ import java.util.concurrent.ConcurrentMap;
 @ServerEndpoint(value = "/websocket", configurator = HttpSessionConfigurator.class)
 @Component
 public class TWebSocket {
-    private final Logger logger = LoggerFactory.getLogger(TWebSocket.class);
     private static int onlineCount = 0;
-
     /**
      * concurrent包的线程安全Map，用来存放每个登录用户(session）对应的TWebSocket对象。
      */
     private static ConcurrentMap<Long, TWebSocket> webSocketMap = new ConcurrentHashMap<>();
+    private final Logger logger = LoggerFactory.getLogger(TWebSocket.class);
     /**
      * http的session
      */
@@ -33,6 +32,23 @@ public class TWebSocket {
      * websocket的session
      */
     private Session webSocketSession;
+
+    public static boolean sendMessageToUser(Long userId, String message) {
+        TWebSocket tWebSocket = webSocketMap.get(userId);
+        return tWebSocket.sendMessage(message);
+    }
+
+    private static synchronized int getOnlineCount() {
+        return onlineCount;
+    }
+
+    private static synchronized void addOnlineCount() {
+        TWebSocket.onlineCount++;
+    }
+
+    private static synchronized void subOnlineCount() {
+        TWebSocket.onlineCount--;
+    }
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
@@ -75,22 +91,5 @@ public class TWebSocket {
             return false;
         }
         return true;
-    }
-
-    public static boolean sendMessageToUser(Long userId, String message) {
-        TWebSocket tWebSocket = webSocketMap.get(userId);
-        return tWebSocket.sendMessage(message);
-    }
-
-    private static synchronized int getOnlineCount() {
-        return onlineCount;
-    }
-
-    private static synchronized void addOnlineCount() {
-        TWebSocket.onlineCount++;
-    }
-
-    private static synchronized void subOnlineCount() {
-        TWebSocket.onlineCount--;
     }
 }
