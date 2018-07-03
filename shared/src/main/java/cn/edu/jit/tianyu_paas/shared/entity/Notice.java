@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * <p>
- *
+ * <p>
  * </p>
  *
  * @author 倪龙康
@@ -35,19 +35,19 @@ public class Notice implements Serializable {
     private Long adminId;
     private Date gmtCreate;
 
-
-
+    /**
+     * 状态，0未读，1已读
+     */
     @TableField(exist = false)
+    private Integer status;
 
-    private UserNotice userNotice;
-
-    public UserNotice getUserNotice() {
-        return userNotice;
-    }
-    public void setUserNotice(UserNotice userNotice) {
-        this.userNotice = userNotice;
+    public Integer getStatus() {
+        return status;
     }
 
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public Long getNoticeId() {
         return noticeId;

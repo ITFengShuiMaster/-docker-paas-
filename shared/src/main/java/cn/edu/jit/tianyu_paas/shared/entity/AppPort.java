@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * <p>
- *
+ * <p>
  * </p>
  *
  * @author 汪继友
@@ -14,6 +14,15 @@ import java.util.Date;
 public class AppPort implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public static final int HTTP = 0;
+    public static final int MYSQL = 1;
+    public static final int TCP = 2;
+    public static final int UDP = 3;
+    public static final int INOPEN = 1;
+    public static final int INCLOSE = 0;
+    public static final int OUTOPEN = 1;
+    public static final int OUTCLOSE = 0;
 
     private Long appId;
     /**
