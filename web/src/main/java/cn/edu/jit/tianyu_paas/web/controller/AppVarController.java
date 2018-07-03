@@ -35,7 +35,7 @@ public class AppVarController {
      */
     @PostMapping
     public TResult addVar(AppVar appVar){
-        if (appVarService.selectCount(new EntityWrapper<AppVar>().eq("var_name",appVar.getVarName()))!=0) {
+        if (appVarService.selectCount(new EntityWrapper<AppVar>().eq("var_name",appVar.getVarName()).eq("app_id",appVar.getAppId()))!=0) {
             return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
         }
         appVar.setGmtCreate(new Date());
@@ -63,9 +63,9 @@ public class AppVarController {
      * @param varName
      * @return
      */
-    @DeleteMapping("/{varName}")
-    public TResult deleteVar(@PathVariable String varName){
-        if(!appVarService.delete(new EntityWrapper<AppVar>().eq("var_name",varName)))
+    @DeleteMapping("/{appId}")
+    public TResult deleteVar(@PathVariable long appId, String varName){
+        if(!appVarService.delete(new EntityWrapper<AppVar>().eq("app_id",appId).eq("var_name",varName)))
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         return TResult.success();
     }

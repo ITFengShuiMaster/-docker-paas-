@@ -84,6 +84,30 @@
 <script>
     var log = new Vue({
         el: '#log',
+        data: {
+
+        },
+        methods :{
+            logInit() {
+                $.ajax({
+                    type:'get',
+                    url:'',
+                    data: {
+
+                    },
+                    success:function (data) {
+
+                    },
+                    error:function (data) {
+
+                    }
+                })
+            }
+        },
+        mounted() {
+
+        }
+
 
     });
 </script>

@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Index</title>
-    <!--<link rel="stylesheet" href="../../lib/element/index.css"/>-->
-    <!--<script src="../../lib/vue/vue.js"></script>-->
-    <!--<script src="../../lib/element/index.js"></script>-->
-    <!--<script src="../../lib/jquery/jquery_3.3.1.js"></script>-->
+
     <style>
         html, body {
             font-family: sans-serif;
@@ -64,9 +56,7 @@
             border-bottom: 1px solid #e8e8e8;
         }
     </style>
-</head>
 
-<body>
 <div id="overview">
     <div class="top">
         <el-row>
@@ -132,20 +122,59 @@
             overviewInit() {
                 $.ajax({
                     type: 'get',
-                    url: '/tianyu_pass/actions',
+                    url: '/tianyu-paas/actions/info',
+                    data:{
+
+                    },
                     success: function (data) {
-                        alert(1)
+                        console.log(data)
+                        if(data.code === 1) {
+                            console.log(data.message)
+                        }
+
                     },
                     error: function (data) {
 
                     }
                 })
+            },
+            getAction() {
+                $.ajax({
+                    type:'get',
+                    url:'/tianyu-paas/actions/1',
+                    data: {
+                        
+                    },
+                    success:function (data) {
+                        
+                    },
+                    error:function (data) {
+                        
+                    }
+
+                })
+            },
+            getActionDetail() {
+                $.ajax({
+                    type:'get',
+                    url:'/tianyu_paas/actions/detail',
+                    data: {
+
+                    },
+                    success:function (data) {
+                        console.log(data)
+                    },
+                    error:function (data) {
+
+                    }
+
+                })
             }
         },
         mounted() {
-            this.overviewInit()
+//            this.overviewInit()
+//            this.getAction()
+            this.getActionDetail()
         }
     });
 </script>
-</body>
-</html>
