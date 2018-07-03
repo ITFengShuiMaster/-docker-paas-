@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
@@ -75,6 +74,8 @@ public class UserMessageController {
      */
     @PutMapping
     public TResult updateUserMessageStatus(UserMessage userMessage) {
+        userMessage.setStatus(1);
+        userMessage.setUserId((Long) session.getAttribute(Constants.SESSION_KEY_USER_ID));
         if (!userMessageService.update(userMessage, new EntityWrapper<UserMessage>().setSqlSelect("status").eq("message_id", userMessage.getMessageId()).and().eq("user_id", userMessage.getUserId()))) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
