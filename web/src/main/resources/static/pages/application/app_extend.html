@@ -112,6 +112,26 @@
         data: {
             yn: '已开通',
             type: '全部',
+        },
+        methods: {
+            extendInit(){
+                $.ajax({
+                    type:'get',
+                    url:'',
+                    data:{
+
+                    },
+                    success:function (data) {
+
+                    },
+                    error:function (data) {
+
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.extendInit()
         }
     });
 </script>

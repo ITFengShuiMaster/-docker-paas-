@@ -113,7 +113,7 @@
             </el-breadcrumb>
         </div>
         <div class="appInfo">
-            <h3>MySQL</h3>
+            <h3>{{appName}}</h3>
             <!--<i class="el-icon-edit" @click="dialogFormVisible = true"></i>-->
             <el-button type="text" @click="dialogFormVisible = true"><i class="el-icon-edit"></i></el-button>
             <el-dialog title="修改应用名称" :visible.sync="dialogFormVisible">
@@ -170,6 +170,7 @@
     var home = new Vue({
         el: '#home',
         data: {
+            appName:'MySQL',
             showList: {
                 showOne: true,
                 showTwo: false,
@@ -286,10 +287,37 @@
                 $('#con').load(this.pageArr[index - 1], function (response, status, xhr) {
                 });
             },
+            infoInit() {
+//                var app_id = this.getUrlParam('appId')
+//                console.log(app_id)
+                var that = this
+                $.ajax({
+                    type:'get',
+                    url:'/tianyu-paas/app/1',
+                    data:{
 
+                    },
+                    success:function (data) {
+                        debugger
+                        that.appName = data.data[0].appName
+                        console.log("success")
+                        console.log(data)
+                    },
+                    error:function () {
+
+                    }
+                })
+            },
+            getUrlParam(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+                var r = window.location.search.substr(1).match(reg); //匹配目标参数
+                if (r != null) return unescape(r[2]);
+                return null; //返回参数值
+            }
         },
-        mounted() {
+        created() {
             this.selectPage1(1, '');
+            this.infoInit()
         }
 
     })
