@@ -126,6 +126,30 @@
 <script>
     var port = new Vue({
         el: '#port',
+        data: {
+
+        },
+        methods: {
+            portInit() {
+                $.ajax({
+                    type:'get',
+                    url:'',
+                    data: {
+
+                    },
+                    success:function (data) {
+
+                    },
+                    error:function (data) {
+
+                    }
+
+                })
+            }
+        },
+        mounted() {
+            this.portInit()
+        }
 
     });
 </script>

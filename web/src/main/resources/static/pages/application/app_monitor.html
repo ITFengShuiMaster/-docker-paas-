@@ -91,7 +91,29 @@
 <script>
     var monitor = new Vue({
         el: '#monitor',
+        data: {
 
+        },
+        methods:{
+            monitorInit() {
+                $.ajax({
+                    type:'get',
+                    url:'',
+                    data:{
+
+                    },
+                    success:function (data) {
+
+                    },
+                    error:function (data) {
+
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.monitorInit()
+        }
     });
 </script>
 </body>
