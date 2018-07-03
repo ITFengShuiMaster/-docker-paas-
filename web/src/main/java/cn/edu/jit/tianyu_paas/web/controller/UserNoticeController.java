@@ -54,8 +54,8 @@ public class UserNoticeController {
             return TResult.failure(TResultCode.FAILURE);
         List<Notice> notices = noticePage.getRecords();
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        for (Notice notice : notices){
-            UserNotice userNotice = userNoticeService.selectOne(new EntityWrapper<UserNotice>().eq("user_id",userId).eq("notice_id",notice.getNoticeId()));
+        for (Notice notice : notices) {
+            UserNotice userNotice = userNoticeService.selectOne(new EntityWrapper<UserNotice>().eq("user_id", userId).eq("notice_id", notice.getNoticeId()));
             notice.setUserNotice(userNotice);
         }
         return TResult.success(notices);
@@ -68,7 +68,7 @@ public class UserNoticeController {
      * @return
      * @author 倪龙康
      */
-    @GetMapping("{noticeId}")
+    @GetMapping("/{noticeId}")
     public TResult getNoticeInfo(@PathVariable long noticeId) {
         Notice notice = noticeService.selectById(noticeId);
         if (notice == null)
@@ -82,5 +82,18 @@ public class UserNoticeController {
             return TResult.failure(TResultCode.FAILURE);
         notice.setUserNotice(userNotice);
         return TResult.success(notice);
+    }
+
+    /**
+     * 获取该用户未读公告的数量
+     *
+     * @return
+     * @author 倪龙康
+     */
+    @GetMapping("/num")
+    public TResult getStatusNum() {
+        Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        int num = userNoticeService.selectCount(new EntityWrapper<UserNotice>().eq("user_id", userId).eq("status", 1));
+        return TResult.success(num);
     }
 }
