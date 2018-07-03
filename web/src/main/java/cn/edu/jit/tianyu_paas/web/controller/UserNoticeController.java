@@ -93,7 +93,7 @@ public class UserNoticeController {
     @GetMapping("/num")
     public TResult getStatusNum() {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        int num = userNoticeService.selectCount(new EntityWrapper<UserNotice>().eq("user_id", userId).eq("status", 1));
+        int num = userNoticeService.selectCount(new EntityWrapper<UserNotice>().eq("user_id", userId).eq("status", 0));
         return TResult.success(num);
     }
 }
