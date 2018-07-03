@@ -62,14 +62,14 @@
                 <el-menu-item index="3">从应用市场安装</el-menu-item>
             </el-submenu>
 
-            <el-submenu>
-                <template slot="title">
-                    <i class="el-icon-menu"></i>
-                    <span slot="title">我的应用</span>
-                </template>
-                <el-menu-item v-for="(item,index) in appList" :key="index" :index="index+999">{{item.userName}}</el-menu-item>
-                <!--<el-menu-item index="4">123</el-menu-item>-->
-            </el-submenu>
+            <!--<el-submenu>-->
+                <!--<template slot="title">-->
+                    <!--<i class="el-icon-menu"></i>-->
+                    <!--<span slot="title">我的应用</span>-->
+                <!--</template>-->
+                <!--<el-menu-item v-for="(item,index) in appList" :key="index" :index="index+999">{{item.userName}}</el-menu-item>-->
+                <!--&lt;!&ndash;<el-menu-item index="4">123</el-menu-item>&ndash;&gt;-->
+            <!--</el-submenu>-->
             <el-menu-item index="5">
                 <i class="el-icon-star-off"></i>
                 <span slot="title">我的插件</span>
@@ -118,7 +118,7 @@
                             width="200"
                             trigger="click"
                             content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-                        <el-button slot="reference" type="text" @click="bellclick()">
+                        <el-button slot="reference" type="text">
                             <el-badge :value="messagenum" :max="99">
                                 <i class="el-icon-bell"></i>
                             </el-badge>
@@ -236,7 +236,6 @@
                 })
             },
             setMessageRead(order) {
-                console.log(order)
                 $.ajax({
                     type: "put",
                     url: 'http://localhost:8080/tianyu-paas/userMessages',
@@ -244,9 +243,8 @@
                         messageId: order.messageId,
                     },
                     success: function (result) {
-                        console.log(result)
                         if (result.code) {
-//
+
                         } else {
                         }
                     },
@@ -256,7 +254,6 @@
                 })
             },
             setNoticeRead(order) {
-                console.log(order)
                 $.ajax({
                     type: "get",
                     url: 'http://localhost:8080/tianyu-paas/user-notices/'+ order.noticeId,
@@ -344,7 +341,7 @@
             this.getMessage();
             this.getNotice();
         },
-        created() {
+        mounted() {
 
         }
     });
