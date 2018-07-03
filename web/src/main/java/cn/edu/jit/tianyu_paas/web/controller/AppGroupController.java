@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 倪龙康
@@ -40,6 +42,7 @@ public class AppGroupController {
      * @param groupName
      * @param compose
      * @return
+     * @author 倪龙康
      */
     @PostMapping
     public TResult groupCreate(String groupName, String compose) {
@@ -54,7 +57,7 @@ public class AppGroupController {
         if (!appGroupService.insert(appGroup)) {
             return TResult.failure(TResultCode.FAILURE);
         }
-        return TResult.success( appGroup.getAppGroupId() );
+        return TResult.success(appGroup.getAppGroupId());
     }
 
     /**
@@ -64,9 +67,9 @@ public class AppGroupController {
      * @return
      */
     @PutMapping
-    public TResult updateGroup(AppGroup appGroup){
+    public TResult updateGroup(AppGroup appGroup) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        if(!appGroupService.update(appGroup, new EntityWrapper<AppGroup>(
+        if (!appGroupService.update(appGroup, new EntityWrapper<AppGroup>(
         ).eq("app_id", appGroup.getAppGroupId()).and().eq("user_id", userId)))
             return TResult.failure(TResultCode.FAILURE);
         return TResult.success();
@@ -92,7 +95,7 @@ public class AppGroupController {
     public TResult showGroupAndAppInfo() {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         List<AppGroup> groups = appGroupService.selectList(new EntityWrapper<AppGroup>().eq("user_id", userId));
-        for(AppGroup group: groups) {
+        for (AppGroup group : groups) {
             List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_id", group.getAppGroupId()));
             group.setApps(apps);
         }
