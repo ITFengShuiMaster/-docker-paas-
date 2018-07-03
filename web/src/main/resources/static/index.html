@@ -52,7 +52,7 @@
                 <i class="el-icon-more-outline"></i>
                 <span slot="title">总览</span>
             </el-menu-item>
-            <el-submenu index="999">
+            <el-submenu index="10001">
                 <template slot="title">
                     <i class="el-icon-plus"></i>
                     <span>创建应用</span>
@@ -62,13 +62,21 @@
                 <el-menu-item index="3">从应用市场安装</el-menu-item>
             </el-submenu>
 
-            <el-submenu>
-                <template slot="title">
+            <el-submenu index="10002">
+                <template>
                     <i class="el-icon-menu"></i>
                     <span slot="title">我的应用</span>
                 </template>
-                <el-menu-item v-for="(item,index) in appList" :key="index" :index="index+999">{{item.userName}}</el-menu-item>
-                <!--<el-menu-item index="4">123</el-menu-item>-->
+                <el-submenu v-for="(group,index) in groups" index="2000+index" @click="click">
+                    <template>
+                        <i class="el-icon-plus"></i>
+                        <span>{{group.name}}</span>
+                    </template>
+                    <el-menu-item v-for="app in group.apps" index="3000+index" @click="click">
+                        {{app.name}}
+                    </el-menu-item>
+                </el-submenu>
+
             </el-submenu>
             <el-menu-item index="5">
                 <i class="el-icon-star-off"></i>
@@ -236,7 +244,7 @@
                 })
             },
             setMessageRead(order) {
-                console.log(order)
+                console.log(order);
                 $.ajax({
                     type: "put",
                     url: 'http://localhost:8080/tianyu-paas/userMessages',
@@ -244,7 +252,7 @@
                         messageId: order.messageId,
                     },
                     success: function (result) {
-                        console.log(result)
+                        console.log(result);
                         if (result.code) {
 //
                         } else {
@@ -256,7 +264,7 @@
                 })
             },
             setNoticeRead(order) {
-                console.log(order)
+                console.log(order);
                 $.ajax({
                     type: "get",
                     url: 'http://localhost:8080/tianyu-paas/user-notices/'+ order.noticeId,
@@ -289,20 +297,20 @@
                     }
                 });
             },
-            myAppList(){
-                var that = this
+            myAppList() {
+                var that = this;
                 $.ajax({
-                    type:'get',
-                    url:'/tianyu-paas/actions/info',
-                    success:function (data) {
-                        if(data.code === 1) {
+                    type: 'get',
+                    url: '/tianyu-paas/actions/info',
+                    success: function (data) {
+                        if (data.code === 1) {
                             that.appList = data.data
                         }
                         else {
                             console.log(data.message)
                         }
                     },
-                    error:function () {
+                    error: function () {
                         console.log("error")
                     }
                 })
@@ -336,16 +344,13 @@
             },
             beforeAvatarUpload() {
 
-            },
+            }
         },
         created() {
             this.myAppList();
             this.init_usrInf();
             this.getMessage();
             this.getNotice();
-        },
-        created() {
-
         }
     });
 </script>
