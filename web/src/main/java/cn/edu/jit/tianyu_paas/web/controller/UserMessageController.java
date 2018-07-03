@@ -13,10 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -49,7 +50,21 @@ public class UserMessageController {
      */
     @GetMapping
     public TResult listUserMessages(){
-        return TResult.success(userMessageService.selectByUserId((Long)session.getAttribute(Constants.SESSION_KEY_USER_ID)));
+        List<UserMessage> lists = userMessageService.selectList(new EntityWrapper<UserMessage>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)));
+        List<Message> messages = new ArrayList<>();
+
+        for (UserMessage um : lists) {
+            Message message = messageService.selectOne(new EntityWrapper<Message>().eq("message_id", um.getMessageId()));
+            message.setStatus(um.getStatus());
+            messages.add(message);
+        }
+
+        return TResult.success(messages);
+    }
+
+    @GetMapping("/count")
+    public TResult getUnReadMessageCount() {
+        return TResult.success(userMessageService.selectCount(new EntityWrapper<UserMessage>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)).and().eq("status", 0)));
     }
 
     /**
