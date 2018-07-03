@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 倪龙康
@@ -42,12 +40,12 @@ public class AppGroupController {
      * @param groupName
      * @param compose
      * @return
-     * @author 倪龙康
      */
     @PostMapping
     public TResult groupCreate(String groupName, String compose) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        if (appGroupService.selectOne(new EntityWrapper<AppGroup>().eq("group_name", groupName).eq("user_id", userId)) != null)
+        if (appGroupService.selectOne(new EntityWrapper<AppGroup>()
+                .eq("group_name", groupName).eq("user_id", userId)) != null)
             return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
         AppGroup appGroup = new AppGroup();
         appGroup.setUserId(userId);
@@ -69,8 +67,8 @@ public class AppGroupController {
     @PutMapping
     public TResult updateGroup(AppGroup appGroup) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        if (!appGroupService.update(appGroup, new EntityWrapper<AppGroup>(
-        ).eq("app_id", appGroup.getAppGroupId()).and().eq("user_id", userId)))
+        if (!appGroupService.update(appGroup, new EntityWrapper<AppGroup>()
+                .eq("app_id", appGroup.getAppGroupId()).and().eq("user_id", userId)))
             return TResult.failure(TResultCode.FAILURE);
         return TResult.success();
     }
@@ -91,7 +89,7 @@ public class AppGroupController {
      * @return
      * @author 倪龙康
      */
-    @GetMapping("groups-apps")
+    @GetMapping("/groups-apps")
     public TResult showGroupAndAppInfo() {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         List<AppGroup> groups = appGroupService.selectList(new EntityWrapper<AppGroup>().eq("user_id", userId));
