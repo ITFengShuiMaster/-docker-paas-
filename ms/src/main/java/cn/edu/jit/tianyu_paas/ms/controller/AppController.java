@@ -37,22 +37,20 @@ public class AppController {
     /**
      * 获取所有用户以及应用
      *
-     * @param page
      * @return
      */
     @GetMapping
-    public TResult getApps(Pagination page) {
-        int num = 1;
-        Page<App> apps = appService.selectPage(new Page<>(page.getCurrent(), page.getSize()),
-                new EntityWrapper<App>().orderBy("gmt_create", false));
-        List<App> appList = apps.getRecords();
-        LinkedHashMap<String, App> maps = new LinkedHashMap<>();
-        for (App app : appList) {
-            User user = userService.selectById(app.getUserId());
-            maps.put(String.valueOf(num) + ":" + user.getName(), app);
-            num++;
+    public TResult getApps() {
+        List<User> users = userService.selectList(new EntityWrapper<User>());
+        if (users == null)
+            return TResult.failure(TResultCode.RESULE_DATA_NONE);
+        for (User user : users) {
+            List<App> apps = appService.selectList(new EntityWrapper<App>().eq("user_id", user.getUserId()));
+            if (apps == null)
+                return TResult.failure(TResultCode.RESULE_DATA_NONE);
+            user.setApps(apps);
         }
-        return TResult.success(maps);
+        return TResult.success(users);
     }
 
     /**

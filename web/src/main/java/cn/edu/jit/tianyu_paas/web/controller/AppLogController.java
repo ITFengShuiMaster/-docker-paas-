@@ -53,7 +53,7 @@ public class AppLogController {
         this.actionService = actionService;
     }
 
-    @GetMapping("{appId}")
+    @GetMapping("/{appId}")
     public TResult listAppLog(@PathVariable String appId) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         return TResult.success();

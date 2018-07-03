@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author 汪继友
@@ -49,9 +49,9 @@ public class UserMessage implements Serializable {
     @Override
     public String toString() {
         return "UserMessage{" +
-        ", userId=" + userId +
-        ", messageId=" + messageId +
-        ", status=" + status +
-        "}";
+                ", userId=" + userId +
+                ", messageId=" + messageId +
+                ", status=" + status +
+                "}";
     }
 }

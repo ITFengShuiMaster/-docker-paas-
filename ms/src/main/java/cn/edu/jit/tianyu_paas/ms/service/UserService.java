@@ -18,12 +18,12 @@ import java.util.List;
 public class UserService extends ServiceImpl<UserMapper, User> {
 
     /**
-     * @author 卢越
-     * @date 2018-07-01
-     * 查询指定天数之内登录的用户
      * @param days
      * @param pagination
      * @return List<User>
+     * @author 卢越
+     * @date 2018-07-01
+     * 查询指定天数之内登录的用户
      */
     public Page<User> selectAccessUsers(Integer days, Integer views, Pagination pagination) {
         Page<User> page = new Page<User>(pagination.getCurrent(), pagination.getSize());
@@ -31,22 +31,22 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     /**
+     * @return List<User>
      * @author 卢越
      * @date 2018-07-01
      * 查询一个月未登录过的用户
-     * @return List<User>
      */
-    public List<User> selectUnloginUsersInThreeMonth(){
+    public List<User> selectUnloginUsersInThreeMonth() {
         return baseMapper.listUnloginUsersInThreeMonth();
     }
 
     /**
+     * @return List<User>
      * @author 卢越
      * @date 2018-07-01
      * 查询欠费用户
-     * @return List<User>
      */
-    public List<User> selectArrearsUsers(){
+    public List<User> selectArrearsUsers() {
         return baseMapper.listArrearsUsers();
     }
 }

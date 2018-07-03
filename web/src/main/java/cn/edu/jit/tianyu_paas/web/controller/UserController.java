@@ -2,7 +2,6 @@ package cn.edu.jit.tianyu_paas.web.controller;
 
 import cn.edu.jit.tianyu_paas.shared.entity.User;
 import cn.edu.jit.tianyu_paas.shared.entity.UserDynamic;
-import cn.edu.jit.tianyu_paas.shared.entity.UserLoginLog;
 import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.UserDynamicService;

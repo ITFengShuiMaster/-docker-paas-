@@ -114,18 +114,18 @@
             onSubmit() {
                 console.log('submit!');
             },
-            init_data(){
+            init_data() {
                 $.ajax({
                     type: "GET",
-                    url: "http://localhost:8080/tianyu-paas/users/dynamic/"+this.userId,
+                    url: "http://localhost:8080/tianyu-paas/users/dynamic/" + this.userId,
                     data: {},
                     success: function (result) {
                         if (result.code) {
-                            financialcenter.balance=result.data.balance;
-                            financialcenter.memoryUsed=result.data.memoryUsed;
-                            financialcenter.memoryTotal=result.data.memoryTotal;
-                            financialcenter.diskUsed=result.data.diskUsed;
-                            financialcenter.diskTotal=result.data.diskTotal;
+                            financialcenter.balance = result.data.balance;
+                            financialcenter.memoryUsed = result.data.memoryUsed;
+                            financialcenter.memoryTotal = result.data.memoryTotal;
+                            financialcenter.diskUsed = result.data.diskUsed;
+                            financialcenter.diskTotal = result.data.diskTotal;
                         } else {
 
                         }

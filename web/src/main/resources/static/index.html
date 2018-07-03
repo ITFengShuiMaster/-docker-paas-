@@ -21,12 +21,24 @@
     </style>
 </head>
 
+<style>
+
+    #test {
+        height: 500px;
+    }
+
+    .logo_show {
+        background: #545C64;
+    }
+
+</style>
 <body>
 <el-container id="app">
 
     <el-aside>
         <el-header class="logo_show">
-            <div class="logo_show logo_text">1111</div>
+            <img src="img/logo.png" style="float: left; margin-top: 12px;padding-right: 10px">
+            <div class="logo_text" style="color: white;padding: 20px">Docker</div>
         </el-header>
         <el-menu
                 id="test"
@@ -162,9 +174,7 @@
                 $.ajax({
                     type: "get",
                     url: 'http://localhost:8080/tianyu-paas/users/info/' + this.id,
-                    data: {
-
-                    },
+                    data: {},
                     success : function (result) {
                         if(result.code) {
                             vm.username = result.data.name;

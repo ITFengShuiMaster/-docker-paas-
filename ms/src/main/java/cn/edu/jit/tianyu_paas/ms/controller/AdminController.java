@@ -118,8 +118,8 @@ public class AdminController {
     /**
      * 返回最近多少天登录的用户,还可以根据访问量查询
      *
-     * @param days "天数"
-     * @param views "用户访问量"
+     * @param days       "天数"
+     * @param views      "用户访问量"
      * @param pagination "分页插件"
      * @return TResult
      * @author 卢越
@@ -127,7 +127,7 @@ public class AdminController {
      */
     @GetMapping("/access-users")
     public TResult listAccessUsers(@RequestParam(value = "days", defaultValue = "1") Integer days,
-                                  @RequestParam(value = "views", defaultValue = "0") Integer views, Pagination pagination){
+                                   @RequestParam(value = "views", defaultValue = "0") Integer views, Pagination pagination) {
         Page<User> users = userService.selectAccessUsers(days, views, pagination);
 
         return TResult.success(users);
@@ -135,46 +135,50 @@ public class AdminController {
 
     /**
      * 查询最近几天注册的用户，默认三天
-     * @author 卢越
-     * @since 2018-07-01
+     *
      * @param days
      * @return
+     * @author 卢越
+     * @since 2018-07-01
      */
     @GetMapping("/register-recent-days")
-    public TResult listRegisterInRecentDays(@RequestParam(value = "days", defaultValue = "3") Integer days){
+    public TResult listRegisterInRecentDays(@RequestParam(value = "days", defaultValue = "3") Integer days) {
         return TResult.success(userService.selectList(new EntityWrapper<User>().setSqlSelect("user_id", " name", "phone", "email", "head_img", "gmt_create", "gmt_modified").where("gmt_create BETWEEN DATE_SUB(NOW(), INTERVAL {0} DAY) AND NOW()", days)));
     }
 
     /**
      * 查询一个月未登录的用户
+     *
+     * @return
      * @author 卢越
      * @since 2018-07-01
-     * @return
      */
     @GetMapping("/unloginInMonth")
-    public TResult listUnloginUsersInThreeMonth(){
+    public TResult listUnloginUsersInThreeMonth() {
         return TResult.success(userService.selectUnloginUsersInThreeMonth());
     }
 
     /**
      * 查询欠费的用户
+     *
+     * @return
      * @author 卢越
      * @since 2018-07-01
-     * @return
      */
     @GetMapping("/arrears-users")
-    public TResult listArrearsUsers(){
+    public TResult listArrearsUsers() {
         return TResult.success(userService.selectArrearsUsers());
     }
 
     /**
      * 返回注册的用户数量，不加days参数返回总用户数量，加上days则指定天数查询注册的数量
+     *
+     * @return
      * @author 卢越
      * @since 2018-07-01
-     * @return
      */
     @GetMapping("/amount-of-users")
-    public TResult getAmountOfUsers(@RequestParam(value = "days", defaultValue = "0") Integer days){
+    public TResult getAmountOfUsers(@RequestParam(value = "days", defaultValue = "0") Integer days) {
         if (days.equals(0)) {
             return TResult.success(userService.selectCount(new EntityWrapper<User>()));
         }

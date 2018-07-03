@@ -43,7 +43,7 @@ public class ActionController {
      * @author 卢越
      * @date 2018/6/29 16:30
      */
-    @GetMapping("info")
+    @GetMapping("/info")
     public TResult info() {
         List<Action> lists = actionService.selectList(new EntityWrapper<Action>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)).orderBy("gmt_create", false).last("LIMIT 6"));
 

@@ -38,7 +38,7 @@ public class AppGroupController {
 
     /**
      * 创建应用组
-     *
+     * @author 倪龙康
      * @param groupName
      * @param compose
      * @return
@@ -62,10 +62,9 @@ public class AppGroupController {
 
     /**
      * 修改组名
-     *
+     * @author 倪龙康
      * @param appGroup
      * @return
-     * @author 倪龙康
      */
     @PutMapping
     public TResult updateGroup(AppGroup appGroup) {
@@ -105,15 +104,14 @@ public class AppGroupController {
 
     /**
      * 删除应用组
-     *
+     * @author 倪龙康
      * @param appGroupId
      * @return
-     * @author 倪龙康
      */
-    @DeleteMapping("{appGroupId}")
-    public TResult deleteGroup(@PathVariable Long appGroupId) {
+    @DeleteMapping("/{appGroupId}")
+    public TResult deleteGroup(@PathVariable Long appGroupId){
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        if (!appGroupService.delete(new EntityWrapper<AppGroup>().eq("app_group_id", appGroupId).eq("user_id", userId)))
+        if(!appGroupService.delete(new EntityWrapper<AppGroup>().eq("app_group_id",appGroupId).eq("user_id",userId)))
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         return TResult.success();
     }

@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 
@@ -7,10 +8,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
- *
+ * <p>
  * </p>
  *
  * @author 汪继友
@@ -51,6 +53,16 @@ public class User implements Serializable {
     private Date gmtCreate;
     private Date gmtModified;
 
+    @TableField(exist = false)
+    private List<App> apps;
+
+    public List<App> getApps() {
+        return apps;
+    }
+
+    public void setApps(List<App> apps) {
+        this.apps = apps;
+    }
 
     public Long getUserId() {
         return userId;

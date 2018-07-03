@@ -2,209 +2,180 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="lib/element/index.css"/>
+    <title>注册</title>
+    <link rel="stylesheet" href="lib/element/index.css">
+    <link rel="stylesheet" href="lib/fonts/font-awesome.css">
     <script src="lib/vue/vue.js"></script>
     <script src="lib/element/index.js"></script>
     <script src="lib/jquery/jquery_3.3.1.js"></script>
-    <script src="lib/element/fonts/element-icons.woff"></script>
+    <style>
+        .login-page-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: url("img/login.jpg");
+        }
+
+        .demo-register {
+            background-color: white;
+            margin: 0 auto;
+            width: 350px;
+            height: 500px;
+            position: relative;
+            top: 30%;
+            transform: translateY(-30%);
+            border-radius: 5px;
+        }
+
+        .login-form {
+            position: relative;
+            top: 25%;
+            transform: translateY(-25%);
+        }
+
+        .login-container {
+            width: 70%;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<el-container id="app">
-    <el-header style="height: 50px">
-        <el-col :span=6>
-            <div>logo</div>
-        </el-col>
-        <el-col :span=4 :offset=20>
-            <div class="register">已有账号？立即<a href="" class="register_text_button">登陆</a></div>
-        </el-col>
-    </el-header>
-    <hr align="center" width="100%" size="1px" color="#E8E8E8"/>
-    <el-main>
-        <div class="registerForm">
-            <div class="line">欢迎使用平台</div>
-            <hr align="center" width="100%" size="1px" color="#E8E8E8"/>
-            <el-form :model="ruleForm" staus-icon :rules="rules" ref="ruleForm" class="demo-ruleForm"
-                     label-position="right" label-width="80px" :model="formLabelAlign">
-                <el-form-item label="企业名称" prop="company_name">
-                    <el-input placeholder="请填写企业名称" v-model="ruleForm.company_name"></el-input>
-                </el-form-item>
-                <el-form-item label="姓名" prop="name">
-                    <el-input type="password" placeholder="请输入姓名" v-model="ruleForm.name"></el-input>
-                </el-form-item>
-                <el-form-item label="密码" prop="pass">
-                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.pass"
-                              auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="确认密码" prop="checkPass">
-                    <el-input type="password" placeholder="请重复输入密码" v-model="ruleForm.checkPass"
-                              auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="邮箱" prop="email">
-                    <el-input placeholder="请填写邮箱" v-model="ruleForm.email"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号" prop="phone">
-                    <el-input placeholder="请输入手机号" v-model="ruleForm.phone"></el-input>
-                </el-form-item>
-                <el-form-item label="验证码" prop="verify_code">
-                    <el-input placeholder="请输入短信验证码" v-model="ruleForm.verify_code" style="width: 60%"></el-input>
-                    <el-button plain style="height: 35px;padding-top: 2%">获取验证码</el-button>
-                </el-form-item>
-            </el-form>
-            <el-button type="success">注册</el-button>
+<div id="app">
+    <div class="login-page-container">
+        <div class="demo-register">
+            <div class="login-form">
+                <el-form ref="User" status-icon :rules="Rules" :model="User" class="login-container">
+                    <p style="font-size: 17px">注 册</p>
+                    <el-form-item prop="name">
+                        <el-input type="text" v-model="User.name" auto-complete="off" placeholder="请输入账号"
+                                  prefix-icon="fa fa-user fa-lg"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="pass">
+                        <el-input type="password" v-model="User.pass" auto-complete="off" placeholder="请输入密码"
+                                  prefix-icon="fa fa-lock fa-lg"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="checkPass">
+                        <el-input type="password" v-model="User.checkPass" auto-complete="off" placeholder="请再次输入密码"
+                                  prefix-icon="fa fa-lock fa-lg"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="email">
+                        <el-input v-model="User.email" auto-complete="off" placeholder="请输入邮箱"
+                                  prefix-icon="fa fa-envelope fa-1x"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="phone">
+                        <el-input v-model="User.phone" auto-complete="off" placeholder="请输入手机号"
+                                  prefix-icon="fa fa-mobile fa-lg"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="vertify_code">
+                        <el-input v-model="User.vertify_code" auto-complete="off" placeholder="请输入验证码"
+                                  prefix-icon="fa fa-paper-plane 2x" style="width: 58%"></el-input>
+                        <el-button>获取短信</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" style="width:100%" :loading="loading" @click="register">注册</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
-    </el-main>
-
-</el-container>
-
-</body>
-<style>
-    .el-footer {
-        line-height: 30px;
-    }
-
-    .el-header {
-        padding: 0px 0px;
-    }
-
-    .register_text_button {
-        text-decoration: none;
-        color: #64C36A;
-        font-size: 16px;
-    }
-
-    .line {
-        margin-bottom: 2%;
-        margin-top: 2%;
-        margin-left: 5%;
-        font-size: 14px;
-        color: #262626;
-    }
-
-    .register {
-        margin-left: 10%;
-        margin-top: -3%;
-        font-size: 16px;
-        display: inline-block;
-        color: #848684;
-    }
-
-    .registerForm {
-        width: 50%;
-        height: 90%;
-        position: absolute;
-        left: 25%;
-        top: 30%;
-        border: solid #E8E8E8 1px;
-    }
-
-    .el-form-item {
-        width: 60%;
-        margin-left: 20%;
-        margin-top: 4%;
-        height: 35px;
-    }
-
-    .el-input__inner {
-        height: 35px;
-    }
-
-    .el-button--success {
-        margin-top: 5%;
-        margin-bottom: 10%;
-        width: 53%;
-        margin-left: 24%;
-        border: 0px;
-        background: #64C36A;
-        color: white;
-        height: 6%;
-        padding: 0px 10px;
-        display: block;
-    }
-
-    .el-form-item__label {
-        width: 100px;
-    }
-
-</style>
+    </div>
+</div>
 <script>
-    var app = new Vue({
+    var validateUser = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('账号不能为空'));
+        } else {
+            callback();
+        }
+    };
+    var validatePass = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('密码不能为空'));
+        } else if (vm.test) {
+            callback(new Error('密码错误'));
+        } else {
+            callback();
+        }
+    };
+    var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('请再次输入密码'));
+        } else if (value !== vm.User.pass) {
+            callback(new Error('两次输入密码不一致!'));
+        } else {
+            callback();
+        }
+    };
+    const vm = new Vue({
         el: '#app',
-
-        methods: {
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        alert('submit!');
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+        data: {
+            User: {
+                name: '',
+                pass: '',
+                checkPass: '',
+                email: '',
+                phone: '',
+                vertify_code: ''
             },
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
-            }
+            Rules: {
+                name: [
+                    {validator: validateUser, trigger: 'blur'}
+                ],
+                pass: [
+                    {validator: validatePass, trigger: 'blur'}
+                ],
+                checkPass: [
+                    {validator: validatePass2, trigger: 'blur'}
+                ],
+                email: [
+                    {required: true, message: '请输入邮箱', trigger: 'blur'}
+                ],
+                phone: [
+                    {required: true, message: '请输入手机号', trigger: 'blur'}
+                ],
+            },
+            loading: false,
+            test: false
         },
-        data() {
-            var validatePass = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('请输入密码'));
-                } else {
-                    if (this.ruleForm.checkPass !== '') {
-                        this.$refs.ruleForm.validateField('checkPass');
-                    }
-                    callback();
-                }
-            };
-            var validatePass2 = (rule, value, callback) => {
+        methods: {
+            validatePass2(rule, value, callback) {
                 if (value === '') {
                     callback(new Error('请再次输入密码'));
-                } else if (value !== this.ruleForm.pass) {
+                } else if (value !== vm.User.pass) {
                     callback(new Error('两次输入密码不一致!'));
                 } else {
                     callback();
                 }
-            };
-            return {
-                ruleForm: {
-                    company_name: '',
-                    name: '',
-                    pass: '',
-                    checkPass: '',
-                    email: '',
-                    phone: '',
-                    verify_code: ''
-                },
-                rules: {
-                    company_name: [
-                        {required: true, message: '请输入登录名', trigger: 'blur'}
-                        // {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
-                    ],
-                    name: [
-                        {required: true, message: '请输入密码', trigger: 'change'}
-                    ],
-                    pass: [
-                        {required: true, message: '长度8到16位', validator: validatePass, trigger: 'blur'},
-                        {min: 8, max: 16, message: '长度在 8 到 16 个字符', trigger: 'blur'}
-                    ],
-                    checkPass: [
-                        {required: true, validator: validatePass2, trigger: 'blur'}
-                    ],
-                    email: [
-                        {required: true, message: '请输入邮箱', trigger: 'blur'}
-                    ],
-                    phone: [
-                        {required: true, message: '请输入手机号', trigger: 'blur'}
-                    ],
-                    verify_code: [
-                        {required: true, message: '请输入验证码', trigger: 'blur'}
-                    ]
-                }
-            };
+            },
+            register() {
+                $.ajax({
+                    type: "post",
+                    url: 'users/register',
+                    data: {
+                        name: this.User.name,
+                        pwd: this.User.pass,
+                        phone: this.User.phone,
+                        email: this.User.email
+                    },
+                    success: function (TResultCode) {
+                        console.log("the reult is " + TResultCode.code);
+                        if (TResultCode.code == 1) {
+                            alert("注册成功")
+                        }
+                        else {
+                            alert(TResultCode.message)
+                        }
+                    },
+                    error: function () {
+                        console.log("fail")
+                    }
+                })
+            },
         },
-        created() {
-        }
+
     })
 </script>
+</body>
 </html>
