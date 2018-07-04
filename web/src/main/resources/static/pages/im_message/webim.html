@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../lib/layui/layui.css" media="all">
+</head>
+<body>
+
+</body>
+<script src="../../lib/layui/layui.all.js"></script>
+<script>
+    layui.use('layim',function (layim) {
+        layim.config({
+            brief:false
+        }).chat({
+            name:'客服姐姐',
+            type:'friend',
+            avater:'http://tp1.sinaimg.cn/5619439268/180/40030060651/1',
+            id:-2
+        })
+    })
+</script>
+</html>
