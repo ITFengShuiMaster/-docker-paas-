@@ -10,10 +10,10 @@
         </el-form-item>
         <el-form-item label="compose:">
             <div id="test-editormd" class="editormd editormd-vertical" style="width: 628px;height: 430px;">
-                <textarea style="display:none;"></textarea>
+                <textarea id="textarea" style="display:none;"></textarea>
             </div>
         </el-form-item>
-        <el-button type="primary" class="add-button">新建应用</el-button>
+        <el-button type="primary" class="add-button" @click="addApp()">新建应用</el-button>
 
     </el-form>
 
@@ -26,8 +26,32 @@
                 labelPosition: 'right',
                 formLabelAlign: {
                     name: '',
+                    compose: ''
                 },
-                message: ''
+            }
+        },
+        methods: {
+            addApp() {
+                $.ajax({
+                    type: 'post',
+                    url: '/tianyu-paas/apps/docker-compose',
+                    data: {
+                        groupName: this.formLabelAlign.name,
+                        compose: $('textarea').eq(0).val(),
+                    },
+                    success: function (result) {
+                        if (result.code == 1) {
+                            alert("新建应用成功");
+                        }
+                        else {
+                            alert(result.message)
+                        }
+                    },
+                    error: function () {
+                        console.log('fail')
+                    }
+
+                })
             }
         }
     });
