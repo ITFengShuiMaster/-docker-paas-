@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="lib/element/index.css"/>
     <script src="lib/vue/vue.js"></script>
     <script src="lib/element/index.js"></script>
-    <script src="lib/jquery/jquery_3.3.1.js"></script>
+    <script src="lib/jquery/jquery-1.7.1.min.js"></script>
+    <script src="lib/layui/layui.js"></script>
     <style>
         html {
             font-family: sans-serif;
@@ -52,7 +54,7 @@
                 <i class="el-icon-more-outline"></i>
                 <span slot="title">总览</span>
             </el-menu-item>
-            <el-submenu index="999">
+            <el-submenu index="10001">
                 <template slot="title">
                     <i class="el-icon-plus"></i>
                     <span>创建应用</span>
@@ -62,13 +64,22 @@
                 <el-menu-item index="3">从应用市场安装</el-menu-item>
             </el-submenu>
 
-            <el-submenu>
+            <el-submenu index="10002">
                 <template slot="title">
                     <i class="el-icon-menu"></i>
                     <span slot="title">我的应用</span>
                 </template>
-                <el-menu-item v-for="(item,index) in appList" :key="index" :index="index+999">{{item.userName}}</el-menu-item>
-                <!--<el-menu-item index="4">123</el-menu-item>-->
+                <el-submenu v-for="(group,index) in groups_apps" :index="'300'+index" :key="index">
+                    <template slot="title">
+                        <i class="el-icon-plus"></i>
+                        <span>{{group.groupName}}</span>
+                    </template>
+                    <el-menu-item v-for="(app,appIndex) in group.apps" :index="(index+1)*1000+appIndex+''"
+                                  @click="clickApp(app.appId)" :key="index">
+                        {{app.name}}
+                    </el-menu-item>
+                </el-submenu>
+
             </el-submenu>
             <el-menu-item index="5">
                 <i class="el-icon-star-off"></i>
@@ -88,18 +99,19 @@
     <el-container>
         <el-header style=" margin-top:-7px;padding:0px;width: 100%">
             <el-card shadow="always">
-            <el-col :span="6" align="center">
-                <el-dropdown>
-                    <span class="font">团队<i class="el-icon-arrow-down el-icon--right"></i></span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item class="font" v-for="team in teamArr" :key="team">{{team}}</el-dropdown-item>
-                        <el-dropdown-item class="font"><i class="el-icon-plus"></i>添加团队</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </el-col>
+                <el-col :span="6" align="center">
+                    <el-dropdown>
+                        <span class="font">团队<i class="el-icon-arrow-down el-icon--right"></i></span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item class="font" v-for="team in teamArr" :key="team">{{team}}
+                            </el-dropdown-item>
+                            <el-dropdown-item class="font"><i class="el-icon-plus"></i>添加团队</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </el-col>
 
-            <el-col :span="6">
-                <el-dropdown>
+                <el-col :span="6">
+                    <el-dropdown>
                   <span class="font">
                     数据中心<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
@@ -109,37 +121,53 @@
                     </el-dropdown-menu>
                 </el-dropdown>
 
-            </el-col>
-            <el-col :span="8" align="right" style="font-size: 20px; color: #409EFF; margin-top: 0px">
-                <el-popover
-                        placement="bottom"
-                        title="标题"
-                        width="200"
-                        trigger="click"
-                        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-                    <el-button slot="reference" type="text"><el-badge :value="messagenum" :max="99">
-                        <i class="el-icon-bell"></i>
-                    </el-badge></el-button>
-                    <template>
-                        <el-tabs v-model="activeName" @tab-click="handleClick">
-                            <el-tab-pane label="公共" name="first">公共</el-tab-pane>
-                            <el-tab-pane label="消息" name="second">消息</el-tab-pane>
-                            <el-tab-pane label="提醒" name="third">提醒</el-tab-pane>
-                        </el-tabs>
-                    </template>
-                </el-popover>
-            </el-col>
+                </el-col>
+                <el-col :span="8" align="right" style="font-size: 20px; color: #409EFF; margin-top: 0px">
+                    <el-popover
+                            placement="bottom"
+                            width="200"
+                            trigger="click"
+                            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                        <el-button slot="reference" type="text">
+                            <el-badge is-dot>
+                                <i class="el-icon-bell"></i>
+                            </el-badge>
+                        </el-button>
+                        <template>
+                            <el-tabs v-model="activeName" @tab-click="handleClick()">
+                                <el-tab-pane label="公共" name="first">
+                                    <el-badge is-dot>
+                                        <div @click="dialogVisible = true;getCurrentNotice(notice)"
+                                             v-for="notice in noticerecord"
+                                             style="border: 1px dotted rgb(211,220,230);">
+                                            <span style="font-size: 12px">{{notice.title}}</span>
+                                            <span style="font-size: 8px">{{notice.content}}</span>
+                                        </div>
+                                    </el-badge>
+                                </el-tab-pane>
+                                <el-tab-pane label="消息" name="second">
+                                    <div @click="dialogVisible = true;getCurrentMessage(message)"
+                                         v-for="message in messagerecord"
+                                         style="border: 1px dotted rgb(211,220,230);">
+                                        <span style="font-size: 12px">{{message.title}}</span>
+                                        <span style="font-size: 8px">{{message.content}}</span>
+                                    </div>
+                                </el-tab-pane>
+                            </el-tabs>
+                        </template>
+                    </el-popover>
+                </el-col>
                 <el-col :span="2" align="right">
                     <img src="">
-            </el-col>
-            <el-col :span="2" align="left">
-                <el-dropdown>
-                    <span style="font-size: 16px; color: #409EFF;">{{username}}</span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>退出登录</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </el-col>
+                </el-col>
+                <el-col :span="2" align="left">
+                    <el-dropdown @command="handleCommand">
+                        <span style="font-size: 16px; color: #409EFF;">{{username}}</span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="1">退出登录</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </el-col>
             </el-card>
         </el-header>
 
@@ -153,28 +181,33 @@
     var vm = new Vue({
         el: '#app',
         data: {
+            // 左侧导航栏的应用组和组里的app
+            groups_apps: [],
+            dialogVisible: false,
             id: 1,
-            url: "http://localhost:8080/tianyu-paas/users/info/",
             imageUrl: '',
             username: '',
             isCollapse: false,
             pageArr: ['', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/install.html', 'pages/appinfo.html', '', '', 'pages/financialcenter.html'],
-            messagenum: 199,
             teamArr: ['团队一', '团队二'],
             dataArr: ['假数据中心', '真数据中心'],
             activeName: 'second',
-            appList:[],
-            appListo:{}
+            appList: [],
+            appListo: {},
+            messagerecord: [],
+            noticerecord: [],
         },
         methods: {
+            handleCommand(command) {
+                this.$message("退出");
+            },
             init_usrInf() {
                 $.ajax({
                     type: "get",
                     url: 'http://localhost:8080/tianyu-paas/users/info/' + this.id,
                     data: {},
                     success: function (result) {
-                        if (result.code) {
-                            console.log(result);
+                        if (result.code === 1) {
                             vm.username = result.data.name;
                         } else {
                         }
@@ -184,20 +217,102 @@
                     }
                 })
             },
+            getNotice() {
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8080/tianyu-paas/user-notices',
+                    success: function (result) {
+                        if (result.code) {
+                            vm.noticerecord = result.data;
+                        } else {
+                        }
+                    },
+                    error: function () {
+                        console.log("失败")
+                    }
+                })
+            },
+            getMessage() {
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8080/tianyu-paas/userMessages',
+                    data: {},
+                    success: function (result) {
+                        if (result.code) {
+                            vm.messagerecord = result.data
+                        } else {
+                        }
+                    },
+                    error: function () {
+                        console.log("失败")
+                    }
+                })
+            },
+            setMessageRead(order) {
+                $.ajax({
+                    type: "put",
+                    url: 'http://localhost:8080/tianyu-paas/userMessages',
+                    data: {
+                        messageId: order.messageId,
+                    },
+                    success: function (result) {
+                        if (result.code) {
+
+                        } else {
+                        }
+                    },
+                    error: function () {
+                        console.log("失败")
+                    }
+                })
+            },
+            setNoticeRead(order) {
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8080/tianyu-paas/user-notices/'+ order.noticeId,
+
+                    success: function (result) {
+                        if (result.code===1) {
+
+                        } else {
+
+                        }
+                    },
+                    error: function () {
+                        console.log("失败")
+                    }
+                })
+            },
+            getCurrentNotice(currentNotice) {
+                this.$alert(currentNotice.content, currentNotice.title, {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        vm.setNoticeRead(currentNotice)
+                    }
+                });
+            },
+            getCurrentMessage(currentMessage) {
+                this.$alert(currentMessage.content, currentMessage.title, {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        vm.setMessageRead(currentMessage)
+                    }
+                });
+            },
             myAppList(){
                 var that = this
                 $.ajax({
-                    type:'get',
-                    url:'/tianyu-paas/actions/info',
-                    success:function (data) {
-                        if(data.code === 1) {
+                    type: 'get',
+                    url: '/tianyu-paas/actions/info',
+                    success: function (data) {
+                        if (data.code === 1) {
                             that.appList = data.data
                         }
                         else {
                             console.log(data.message)
                         }
                     },
-                    error:function () {
+                    error: function () {
                         console.log("error")
                     }
                 })
@@ -209,10 +324,10 @@
             selectPage(index, indexPath) {
                 // 主要就是通过jquery的load方法，加内容加载到元素上
                 console.log(index);
-                if(index>999){
-                    $('#content').load("pages/appinfo.html?appId="+(index-999));
+                if (index > 999) {
+                    $('#content').load("pages/appinfo.html?appId=" + (index - 999));
                 }
-                else{
+                else {
                     $('#content').load(this.pageArr[index], function (response, message, xhr) {
                     });
                 }
@@ -222,6 +337,11 @@
             },
             handleOpen(key, keyPath) {
                 console.log(key, keyPath);
+                // 打开我的应用选项卡
+                if (key >= 3000 && key < 4000) {
+                    var id = this.groups_apps[key - 3000].appGroupId;
+                    console.log(id);
+                }
             },
             handleClose(key, keyPath) {
                 console.log(key, keyPath);
@@ -232,13 +352,126 @@
             beforeAvatarUpload() {
 
             },
+            contact_customer_service() {
+                var websocket = null;
+
+                //判断当前浏览器是否支持WebSocket
+                if ('WebSocket' in window) {
+                    websocket = new WebSocket(email.url.websocket);
+                }
+                else {
+                    alert('Not support websocket')
+                }
+
+                //连接发生错误的回调方法
+                websocket.onerror = function () {
+                    console.log("error");
+                };
+
+                //连接成功建立的回调方法
+                websocket.onopen = function (event) {
+
+                }
+
+                //接收到消息的回调方法   event.data
+                websocket.onmessage = function (event) {
+                    vm.websocket(event.data);
+                }
+
+                //连接关闭的回调方法
+                websocket.onclose = function () {
+
+                }
+
+                //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+                window.onbeforeunload = function () {
+                    websocket.close();
+                }
+
+                //关闭连接
+                function closeWebSocket() {
+                    websocket.close();
+                }
+
+                //发送消息
+                function send() {
+                    var message = document.getElementById('text').value;
+                    websocket.send(message);
+                }
+
+                layui.use('layim', function (layim) {
+                    //基础配置
+                    layim.config({
+                        brief: true, //是否简约模式（如果true则不显示主面板）
+                        minRight: '10px',
+                        init: {
+                            mine: {
+                                username: "纸飞机" //我的昵称
+                                , id: "100000" //我的ID
+                                , status: "online" //在线状态 online：在线、hide：隐身
+                                , sign: "在深邃的编码世界，做一枚轻盈的纸飞机" //我的签名
+                                , avatar: "http://tp1.sinaimg.cn/5619439268/180/40030060651/1" //我的头像
+                            }
+                        } //获取主面板列表信息，下文会做进一步介绍
+
+
+                        //上传图片接口（返回的数据格式见下文），若不开启图片上传，剔除该项即可
+                        , uploadImage: {
+                            url: '', //接口地址
+                            type: 'post', //默认post
+                        }
+
+                        //上传文件接口（返回的数据格式见下文），若不开启文件上传，剔除该项即可
+                        , uploadFile: {
+                            url: '', //接口地址
+                            type: 'post', //默认post
+                        }
+                    }).chat({
+                        name: '客服',
+                        type: 'friend',
+                        avatar: 'http://tp1.sinaimg.cn/5619439268/180/40030060651/1',
+                        id: -2
+                    }).on('sendMessage', function (res) {
+                        console.log(res);
+                        var mine = res.mine;
+                        var to = res.to; //对方的信息
+                        //监听到上述消息后，就可以轻松地发送socket了，如：
+                        websocket.send(JSON.stringify({
+                            type: 'chatMessage' //随便定义，用于在服务端区分消息类型
+                            , data: res
+                        }))
+                        //获取收到的消息
+                        websocket.onmessage = function (res) {
+                            res = JSON.parse(res);
+                            if (res.emit === 'chatMessage') {
+                                layim.getMessage(res.data); //res.data即你发送消息传递的数据（阅读：监听发送的消息）
+                            }
+                        };
+                    }).setChatMin();
+                });
+            },
+            init_gruops() {
+                $.get({
+                    url: '/tianyu-paas/app-groups/groups-apps',
+                    success: function (res) {
+                        vm.groups_apps = res.data;
+                        console.log(vm.groups_apps);
+                    }
+                })
+            },
+            clickApp(appId) {
+                console.log(appId + 'appId');
+            }
         },
         created() {
-            // this.selectLeft(1, '');
-
-            this.init()
             this.myAppList()
             this.init_usrInf();
+            this.getMessage();
+            this.getNotice();
+        },
+        mounted() {
+//            this.contact_customer_service();
+            this.init_gruops();
         }
     });
 </script>

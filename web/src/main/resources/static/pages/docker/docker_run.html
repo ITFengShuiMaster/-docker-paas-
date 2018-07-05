@@ -6,8 +6,11 @@
         </el-form-item>
         <el-form-item label="应用组:">
             <el-select class="select-group" v-model="formLabelAlign.group" placeholder="选择应用组">
-                <el-option v-for="item in labelArr" :key="item.label" :label="item.label"
-                           :value="item.value"></el-option>
+
+                <el-option v-for="(item, index) in labelArr" :key="item.index" :value="item.id"
+                           :label="item.label">
+
+                </el-option>
             </el-select>
             <el-button @click="dialogFormVisible = true" class="add-group-button">新建</el-button>
             <el-dialog title="新建应用组" :visible.sync="dialogFormVisible">
@@ -19,7 +22,7 @@
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="AddGroup">确 定
+                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="addGroup">确 定
                     </el-button>
                 </div>
             </el-dialog>
@@ -29,7 +32,7 @@
                       placeholder="例如 : docker run -d -p 8080:8080 -e PWD= 1qa2ws&#10; --name=tomcat_demo tomcat"></el-input>
         </el-form-item>
 
-        <el-button type="primary" class="add-button">新建应用</el-button>
+        <el-button type="primary" class="add-button" @click.native="addApp()">新建应用</el-button>
 
     </el-form>
 </div>
@@ -45,8 +48,7 @@
                     order: '',
                 },
                 labelArr: [
-                    {label: '未分组', value: 'shanghai'},
-                    {label: '分组一', value: 'beijing'}
+                    {label: '', id: ''}
                 ],
                 dialogFormVisible: false,
                 ruleForm: {
@@ -61,8 +63,7 @@
             };
         },
         methods: {
-            AddGroup() {
-                console.log("ajax");
+            addGroup() {
                 $.ajax({
                     type: "post",
                     url: 'app-groups',
@@ -72,7 +73,8 @@
                     success: function (TResultCode) {
                         console.log("the result is " + TResultCode.code);
                         if (TResultCode.code == 1) {
-                            alert("新建组成功")
+                            alert("新建组成功");
+                            form_4.appList();
                         }
                         else {
                             alert(TResultCode.message)
@@ -82,7 +84,61 @@
                         console.log("fail")
                     }
                 })
+            },
+            appList() {
+                var that = this;
+
+                $.ajax({
+                    type: "get",
+                    url: 'app-groups',
+                    dataType: "json",
+                    success: function (result) {
+
+                        for (var i = 0; i < result.data.length; i++) {
+                            // console.log(result.data[i].appGroupId);
+                            var obj = that.labelArr[0];
+                            var testObj = {label: "", id: ""};
+                            obj.label = result.data[i].groupName;
+                            obj.id = result.data[i].appGroupId;
+
+                            testObj.label = obj.label;
+                            testObj.id = obj.id;
+
+                            that.labelArr.push(testObj);
+                        }
+                    },
+                    error: function () {
+                        console.log('fail')
+                    }
+                })
+            },
+            addApp() {
+                console.log("docker_run");
+                $.ajax({
+                    type: 'post',
+                    url: '/tianyu-paas/apps/docker-run',
+                    data: {
+                        name: this.formLabelAlign.name,
+                        appGroupId: this.formLabelAlign.group,
+                        cmd: this.formLabelAlign.order,
+                    },
+                    success: function (result) {
+                        if (result.code == 1) {
+                            alert("新建应用成功");
+                        }
+                        else {
+                            alert(result.message)
+                        }
+                    },
+                    error: function () {
+                        console.log('fail')
+                    }
+
+                })
             }
+        },
+        mounted() {
+            this.appList();
         }
     });
     $("#branch-input").val("master");

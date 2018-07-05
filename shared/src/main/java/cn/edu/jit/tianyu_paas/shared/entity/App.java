@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -53,7 +52,7 @@ public class App implements Serializable {
     /**
      * 属于哪个应用组
      */
-    @NotEmpty
+//    @NotEmpty
     @Min(1)
     private Long appGroupId;
     /**

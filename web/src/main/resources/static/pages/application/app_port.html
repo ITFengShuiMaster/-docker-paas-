@@ -75,7 +75,31 @@
 <body>
 <div id="port">
     <div class="button">
-        <el-button type="primary"><i class="el-icon-plus"></i>添加端口</el-button>
+        <el-button type="primary" @click="dialogFormVisible = true"><i class="el-icon-plus"></i>添加端口</el-button>
+        <el-dialog title="添加变量" :visible.sync="dialogFormVisible">
+            <el-form :model="ruleForm" staus-icon :rules="rules" ref="ruleForm" class="demo-ruleForm"
+                     label-position="left" label-width="80px" >
+                <el-form-item label="变量名" prop="var_name">
+                    <el-input placeholder="请填写端口，范围1025-65535" v-model="ruleForm.port"></el-input>
+                </el-form-item>
+                <el-form-item label="协议" prop="var_val">
+                    <el-select v-model="ruleForm.protocol">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false" @click.native="addPort">确 定
+                </el-button>
+            </div>
+        </el-dialog>
     </div>
     <div class="duankou">
         <div class="homeMiddle">
@@ -127,23 +151,58 @@
     var port = new Vue({
         el: '#port',
         data: {
-
+            ruleForm: {
+                port: '',
+                protocol:''
+            },
+            dialogFormVisible: false,
+            options: [{
+                value: '0',
+                label: 'http'
+            }, {
+                value: '1',
+                label: 'mysql'
+            }, {
+                value: '2',
+                label: 'tcp'
+            }, {
+                value: '3',
+                label: 'udp'
+            }],
+            value: ''
         },
         methods: {
             portInit() {
                 $.ajax({
                     type:'get',
-                    url:'',
+                    url:'/tianyu-paas/app-ports/1',
                     data: {
 
                     },
                     success:function (data) {
-
+                        console.log(data)
                     },
-                    error:function (data) {
+                    error:function () {
 
                     }
 
+                })
+            },
+            addPort() {
+                $.ajax({
+                    type:'post',
+                    url:'/tianyu-paas/app-ports',
+                    data: {
+                        appId:'1',
+                        port:this.ruleForm.port,
+                        protocol:this.ruleForm.protocol
+                    },
+                    success:function (data) {
+                        console.log(data)
+                    },
+                    error:function () {
+
+                    }
                 })
             }
         },

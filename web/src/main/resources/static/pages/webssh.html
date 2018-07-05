@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/webssh/css/fullscreen.min.css">
+    <link rel="stylesheet" href="../lib/webssh/css/xterm.min.css">
+
+</head>
+<body>
+    <div id="terminal"></div>
+</body>
+<script src="../lib/webssh/js/jquery.min.js"></script>
+<script src="../lib/webssh/js/xterm.min.js"></script>
+<script src="../lib/webssh/js/fullscreen.min.js"></script>
+<script src="../lib/webssh/js/popper.min.js"></script>
+<script>
+    var linkpath;
+//    $(function () {
+//        $.ajax({
+//            type:'get',
+//            url:'',
+//            data:{},
+//            success:function (data) {
+//                linkpath = data.data
+//            }
+//        })
+//    })
+
+    var xterm = new Terminal()
+
+    var ws = new WebSocket('wss://localhost:8080')
+    xterm.open(document.getElementById('terminal'))
+    xterm.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
+
+
+    ws.onerror = function () { console.log('connect error.') };
+    ws.onmessage = function(event) {
+        console.log('on message:',decodeBase64Content(event.data))
+
+        xterm.write(decodeBase64Content(event.data));
+    };
+    ws.onopen = function () {
+        console.log('ws onopen ')
+
+    }
+
+
+    xterm.textarea.onkeydown = function (e) {
+        console.log('User pressed key with keyCode: ', e.keyCode);
+        //console.log('编码',)
+        //ws.send(that.encodeBase64Content(e.keyCode.toString()));
+        //ws.send('bHM=');
+    }
+
+    xterm.attachCustomKeyEventHandler(function (e) {
+        if (e.keyCode == 13) {
+            console.log('enter')
+            ws.send('DQ==')
+            return false;
+        }
+    });
+    xterm.emit('data',function (data) {
+        console.log('data emit=>',data)
+        xterm.write(data);
+    })
+
+    xterm.on('data',function(data){
+        console.log('data xterm=>',data)
+        xterm.write(data);
+        ws.send(encodeBase64Content(data.toString()))
+    })
+
+    xterm.on('output', arrayBuffer => {
+        console.log('output===',arrayBuffer)
+        xterm.write(arrayBuffer);
+    });
+
+    xterm.on('blur', arrayBuffer => {
+        console.log('blur===',arrayBuffer)
+        xterm.write(arrayBuffer);
+    });
+
+    xterm.on('focus', arrayBuffer => {
+        console.log('focus===',arrayBuffer)
+        xterm.write(arrayBuffer);
+    });
+
+    xterm.on('keydown', arrayBuffer => {
+        console.log('keydown===',arrayBuffer)
+        xterm.write(arrayBuffer);
+    });
+
+
+    xterm.on('lineFeed', arrayBuffer => {
+        console.log('lineFeed===',arrayBuffer)
+        xterm.write(arrayBuffer);
+    });
+
+    xterm.on('resize', size => {
+        ws.send('resize', [size.cols, size.rows]);
+        console.log('resize', [size.cols, size.rows]);
+    })
+
+    function decodeBase64Content(base64Content) {
+        // base64 解码
+        let commonContent = base64Content.replace(/\s/g, '+');
+        commonContent = Buffer.from(commonContent, 'base64').toString();
+        return commonContent;
+    }
+    function encodeBase64Content(commonContent) {
+        // base64 编码
+        let base64Content = Buffer.from(commonContent).toString('base64');
+        return base64Content;
+    }
+</script>
+</html>
