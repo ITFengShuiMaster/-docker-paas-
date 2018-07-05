@@ -69,38 +69,35 @@
         <div class="layout">
             <Layout>
                 <Sider breakpoint="md" collapsible :collapsed-width="78" v-model="isCollapsed">
-                    <i-menu theme="dark" width="auto" :class="menuitemClasses" :open-names="['1','7']" active-name="2">
+                    <i-menu theme="dark" width="auto" :class="menuitemClasses" :open-names="['1','12']" active-name="2">
                         <Submenu name="1">
                             <template slot="title">
                                 <Icon type="person"></Icon>
                                 用户管理
                             </template>
                             <menu-item name="2">用户汇总查询</menu-item>
-                            <menu-item name="3">久未上线用户</menu-item>
-                            <menu-item name="4">欠费用户查询</menu-item>
+                            <menu-item name="3">新注册用户信息推送</menu-item>
+                            <menu-item name="4">久未上线用户</menu-item>
+                            <menu-item name="5">欠费用户查询</menu-item>
                         </Submenu>
-                        <menu-item name="5">
+                        <menu-item name="6">
                             <Icon type="clipboard"></Icon>
                             <span>公告查询</span>
                         </menu-item>
-                        <Submenu name="6">
+                        <Submenu name="7">
                             <template slot="title">
                                 <Icon type="ios-pulse"></Icon>
                                 访问量查询
                             </template>
-                            <menu-item name="7">当前访问量查询</menu-item>
-                            <menu-item name="7">各天平均访问量查询</menu-item>
-                            <menu-item name="7">本月每天访问量查询</menu-item>
-                            <menu-item name="7">本年每月访问量查询</menu-item>
+                            <menu-item name="8">当前访问量查询</menu-item>
+                            <menu-item name="9">各天平均访问量查询</menu-item>
+                            <menu-item name="10">本月每天访问量查询</menu-item>
+                            <menu-item name="11">本年每月访问量查询</menu-item>
                         </Submenu>
-                        <Submenu name="7">
-                            <template slot="title">
-                                <Icon type="person"></Icon>
-                                应用查询
-                            </template>
-                            <menu-item name="8">用户所属应用</menu-item>
-                            <menu-item name="9">系统内所有应用</menu-item>
-                        </Submenu>
+                        <menu-item name="12">
+                            <Icon type="android-apps"></Icon>
+                            <span>应用查询</span>
+                        </menu-item>
                     </i-menu>
                     <div slot="trigger"></div>
                 </Sider>
