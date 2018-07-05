@@ -4,15 +4,13 @@ import cn.edu.jit.tianyu_paas.ms.service.AppService;
 import cn.edu.jit.tianyu_paas.ms.service.UserService;
 import cn.edu.jit.tianyu_paas.shared.entity.App;
 import cn.edu.jit.tianyu_paas.shared.entity.User;
+import cn.edu.jit.tianyu_paas.shared.util.StringUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -79,5 +77,47 @@ public class AppController {
         if (!appService.deleteById(appId))
             return TResult.failure(TResultCode.FAILURE);
         return TResult.success();
+    }
+
+    /**
+     * 根据手机号或邮箱查询app
+     *
+     * @param phone ""手机号
+     * @param email ""邮箱
+     * @return TResult
+     * @author 卢越
+     * @since 2018-07-01
+     */
+    @PostMapping("/by-phone-email")
+    public TResult listAppsByPhoneAndEmail(String phone, String email) {
+        User user = null;
+
+        if (!StringUtil.isEmpty(phone)) {
+            user = userService.selectOne(new EntityWrapper<User>().eq("phone", phone));
+        } else if (!StringUtil.isEmpty(email)) {
+            user = userService.selectOne(new EntityWrapper<User>().eq("email", email));
+        } else if (!StringUtil.isEmpty(phone) && !StringUtil.isEmpty(email)) {
+            user = userService.selectOne(new EntityWrapper<User>().eq("phone", phone).and().eq("email", email));
+        }
+
+        if (user == null) {
+            return TResult.failure(TResultCode.RESULE_DATA_NONE);
+        }
+
+        List<App> apps = appService.selectList(new EntityWrapper<App>().eq("user_id", user.getUserId()));
+        return TResult.success(apps);
+    }
+
+    /**
+     * 根据app名模糊查询app
+     *
+     * @param name “容器名称”
+     * @return TResult
+     * @author 卢越
+     * @since 2018-07-01
+     */
+    @GetMapping("/contain")
+    public TResult listAppByName(@RequestParam(defaultValue = "") String name) {
+        return TResult.success(appService.selectList(new EntityWrapper<App>().like("name", name)));
     }
 }
