@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>信息推送</title>
+
+    <script src="../../lib/jquery/jquery_3.3.1.js"></script>
+    <!-- import Vue.js -->
+    <script src="//vuejs.org/js/vue.min.js"></script>
+    <!-- import stylesheet -->
+    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+    <!-- import iView -->
+    <script src="//unpkg.com/iview/dist/iview.min.js"></script>
+
+</head>
+<style>
+    .text {
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 15px;
+    }
+
+    p {
+        font-size: 14px;
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 8px;
+    }
+</style>
+<body>
+<div id="push_message">
+    <div style="margin: 10px 20px; display: inline-flex">
+        <p>主页</p>
+        <p>/</p>
+        <p>用户管理</p>
+        <p>/</p>
+        <p style="font-weight: bold">信息推送</p>
+    </div>
+    <div style="margin: 10px 20px">
+        <p style="font-size: 20px; color: black">新注册用户信息推送</p>
+        <p style="margin: 8px 0px 20px">给新注册用户信息推送</p>
+    </div>
+    <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px"></i-table>
+    <Row>
+        <i-col span="2" offset="22">
+            <i-button type="primary" @click="modal1 = true">发送推送</i-button>
+            <Modal
+                    v-model="modal1"
+                    title="消息推送">
+                <i-input v-model="value" placeholder="请输入推送内容"></i-input>
+
+            </Modal>
+        </i-col>
+    </Row>
+    </template>
+
+</div>
+
+</body>
+<script>
+    var push_message = new Vue({
+        el: '#push_message',
+        data() {
+            return {
+                modal1: false,
+                value: '',
+                columns1: [
+                    {
+                        title: '姓名',
+                        key: 'name',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Icon', {
+                                    props: {
+                                        type: 'person'
+                                    }
+                                }),
+                                h('strong', params.row.name)
+                            ]);
+                        }
+                    },
+                    {
+                        title: '邮箱',
+                        key: 'email'
+                    },
+                    {
+                        title: '手机号',
+                        key: 'phone'
+                    },
+                    {
+                        title: '注册时间',
+                        key: 'time'
+                    },
+                ],
+
+                data1: [
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                ]
+            }
+        },
+
+    })
+</script>
+</html>

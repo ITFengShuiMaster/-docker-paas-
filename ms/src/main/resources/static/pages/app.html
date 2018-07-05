@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>应用管理</title>
+
+    <script src="../lib/jquery/jquery_3.3.1.js"></script>
+    <!-- import Vue.js -->
+    <script src="//vuejs.org/js/vue.min.js"></script>
+    <!-- import stylesheet -->
+    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+    <!-- import iView -->
+    <script src="//unpkg.com/iview/dist/iview.min.js"></script>
+
+</head>
+<style>
+    .text {
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 15px;
+    }
+
+    p {
+        font-size: 14px;
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 8px;
+    }
+</style>
+<body>
+<div id="app_management">
+    <div style="margin: 10px 20px; display: inline-flex">
+        <p>主页</p>
+        <p>/</p>
+        <p style="font-weight: bold">应用管理</p>
+    </div>
+    <div style="margin: 10px 20px">
+        <p style="font-size: 20px; color: black">系统内应用管理</p>
+        <p style="margin: 8px 0px 20px">查询系统内应用使用情况</p>
+    </div>
+    <div style="display: inline-flex; padding-left: 20px;padding-bottom: 15px">
+        <i-input v-model="value" placeholder="请输入应用名" style="width: 300px; margin-right: 15px"></i-input>
+        <i-button type="primary" style:>查询</i-button>
+    </div>
+    <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px"></i-table>
+
+</div>
+
+</body>
+<script>
+    var app_management = new Vue({
+        el: '#app_management',
+        data() {
+            return {
+                value: '',
+                columns1: [
+                    {
+                        title: '应用名称',
+                        key: 'app_name',
+                    },
+                    {
+                        title: '创建应用的用户姓名',
+                        key: 'user_id'
+                    },
+                    {
+                        title: '应用使用的内存量',
+                        key: 'app_storage'
+                    },
+                    {
+                        title: '应用状态',
+                        key: 'app_status'
+                    },
+                    {
+                        title: '创建方式',
+                        key: 'create_method'
+                    },
+                    {
+                        title: '属于应用组id',
+                        key: 'app_group_id'
+                    },
+                    {
+                        title: '创建时间',
+                        key: 'time'
+                    },
+                    {
+                        title: 'Action',
+                        key: 'action',
+                        width: 150,
+                        align: 'center',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.show(params.index)
+                                        }
+                                    }
+                                }, 'View'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.remove(params.index)
+                                        }
+                                    }
+                                }, 'Delete')
+                            ]);
+                        }
+                    }
+
+                ],
+
+                data1: [
+                    {
+                        app_name: '发财',
+                        user_id: 2222,
+                        app_storage: "200",
+                        app_status: 1,
+                        create_method: "0自定义",
+                        app_group_id: "555",
+                        time: "1334"
+                    },
+                    {
+                        app_name: '发财',
+                        user_id: 2222,
+                        app_storage: "200",
+                        app_status: 1,
+                        create_method: "0自定义",
+                        app_group_id: "555",
+                        time: "1334"
+                    },
+                    {
+                        app_name: '发财',
+                        user_id: 2222,
+                        app_storage: "200",
+                        app_status: 1,
+                        create_method: "0自定义",
+                        app_group_id: "555",
+                        time: "1334"
+                    },
+                    {
+                        app_name: '发财',
+                        user_id: 2222,
+                        app_storage: "200",
+                        app_status: 1,
+                        create_method: "0自定义",
+                        app_group_id: "555",
+                        time: "1334"
+                    },
+                ]
+            }
+        },
+        methods: {
+            show(index) {
+                this.$Modal.info({
+                    title: 'User Info',
+                    content: `应用名：${this.data1[index].app_name}<br>所属用户：${this.data1[index].user_id}<br>应用使用的内存量：${this.data1[index].app_storage}<br>应用状态：${this.data1[index].app_status}<br>创建方式：${this.data1[index].create_method}<br>所属应用组：${this.data1[index].app_group_id}<br>创建时间：${this.data1[index].time}`
+                })
+            },
+            remove(index) {
+                this.data1.splice(index, 1);
+            }
+        }
+
+    })
+</script>
+</html>
