@@ -1,17 +1,20 @@
 <div id="form_1">
-
     <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign" class="form">
         <el-form-item label="应用名称:">
             <el-input v-model="formLabelAlign.name" placeholder="请为创建的应用起名"></el-input>
         </el-form-item>
         <el-form-item label="应用组:">
             <el-select class="select-group" v-model="formLabelAlign.group" placeholder="选择应用组">
-                <el-option v-for="item in labelArr" :key="item.label" :label="item.label"
-                           :value="item.value"></el-option>
+
+                <el-option v-for="(item, index) in labelArr" :key="item.index" :value="item.id"
+                           :label="item.label">
+
+                </el-option>
             </el-select>
+
             <el-button @click="dialogFormVisible = true" class="add-group-button">新建</el-button>
             <el-dialog title="新建应用组" :visible.sync="dialogFormVisible">
-                <el-form :model="ruleForm" staus-icon :rules="rules" ref="ruleForm" class="demo-ruleForm"
+                <el-form :model="ruleForm" staus-icon :rules="rules" ref="ruleForm" class="demo-rul eForm"
                          label-position="right" label-width="80px" :model="formLabelAlign">
                     <el-form-item label="组名称" prop="group_name">
                         <el-input placeholder="请填写组名称" v-model="ruleForm.group_name"></el-input>
@@ -19,10 +22,11 @@
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="AddGroup">确 定
+                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="addGroup();">确 定
                     </el-button>
                 </div>
             </el-dialog>
+            </el-select>
         </el-form-item>
         <el-form-item label="仓库地址:">
             <el-input placeholder="请输入仓库地址" v-model="formLabelAlign.address" class="input-with-select">
@@ -34,7 +38,7 @@
         <el-form-item label="代码分支:">
             <el-input v-model="formLabelAlign.branch" id="branch-input"></el-input>
         </el-form-item>
-        <el-button type="primary" class="add-button">新建应用</el-button>
+        <el-button type="primary" class="add-button" @click.native="addApp">新建应用</el-button>
     </el-form>
 </div>
 <script>
@@ -48,12 +52,11 @@
                     group: '',
                     address: '',
                     branch: '',
-                    select: 'git'
+                    select: 'git',
                 },
                 select: '',
                 labelArr: [
-                    // {label: '未分组', value: 'shanghai'},
-                    // {label: '分组一', value: 'beijing'}
+                    {label: '', id: ''}
                 ],
                 dialogFormVisible: false,
                 ruleForm: {
@@ -66,17 +69,32 @@
                     ]
                 },
                 activeIndex: '1',
+                pageArr: 'custom_code.html'
             };
         },
+
         methods: {
-            AppList() {
+            appList() {
+                var that = this;
+
                 $.ajax({
                     type: "get",
                     url: 'app-groups',
+                    dataType: "json",
                     success: function (result) {
-                        console.log(result.data)
-                        // this.labelArr = result.data;
-                        // console.log(this.labelArr."AppGroup)
+
+                        for (var i = 0; i < result.data.length; i++) {
+                            // console.log(result.data[i].appGroupId);
+                            var obj = that.labelArr[0];
+                            var testObj = {label: "", id: ""};
+                            obj.label = result.data[i].groupName;
+                            obj.id = result.data[i].appGroupId;
+
+                            testObj.label = obj.label;
+                            testObj.id = obj.id;
+
+                            that.labelArr.push(testObj);
+                        }
                     },
                     error: function () {
                         console.log('fail')
@@ -84,7 +102,7 @@
                 })
 
             },
-            AddGroup() {
+            addGroup() {
                 $.ajax({
                     type: "post",
                     url: 'app-groups',
@@ -92,9 +110,9 @@
                         groupName: this.ruleForm.group_name,
                     },
                     success: function (TResultCode) {
-                        console.log("the result is " + TResultCode.code);
                         if (TResultCode.code == 1) {
-                            alert("新建组成功")
+                            alert("新建组成功");
+                            custom_source_code.appList();
                         }
                         else {
                             alert(TResultCode.message)
@@ -104,10 +122,36 @@
                         console.log("fail")
                     }
                 })
+            },
+
+            addApp() {
+                console.log(this.formLabelAlign.group);
+                $.ajax({
+                    type: 'post',
+                    url: '/tianyu-paas/apps/custom',
+                    data: {
+                        name: this.formLabelAlign.name,
+                        appGroupId: this.formLabelAlign.group,
+                        repositoryUrl: this.formLabelAlign.address,
+                        branch: this.formLabelAlign.branch,
+                    },
+                    success: function (result) {
+                        if (result.code == 1) {
+                            alert("新建应用成功");
+                        }
+                        else {
+                            alert(result.message)
+                        }
+                    },
+                    error: function () {
+                        console.log('fail')
+                    }
+
+                })
             }
         },
         mounted() {
-            this.AppList();
+            this.appList();
         }
     });
     $("#branch-input").val("master");

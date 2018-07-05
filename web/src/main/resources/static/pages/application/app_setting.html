@@ -236,6 +236,20 @@
             }],
             powerInfo: '',
             pathInfo: '',
+        },
+        methods: {
+            settingInit() {
+                $.ajax({
+                    type:'get',
+                    url:'',
+                    data : {
+
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.settingInit()
         }
     });
 </script>

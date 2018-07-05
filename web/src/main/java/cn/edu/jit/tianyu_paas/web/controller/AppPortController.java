@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 倪龙康
@@ -34,10 +35,10 @@ public class AppPortController {
      */
     @GetMapping("/{appId}")
     public TResult getPortInfo(@PathVariable Long appId) {
-        AppPort appPort = appPortService.selectOne(new EntityWrapper<AppPort>().eq("app_id", appId));
-        if (appPort == null)
+        List<AppPort> appPorts = appPortService.selectList(new EntityWrapper<AppPort>().eq("app_id", appId));
+        if (appPorts == null)
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
-        return TResult.success(appPort);
+        return TResult.success(appPorts);
     }
 
     /**
@@ -49,7 +50,7 @@ public class AppPortController {
      */
     @PostMapping
     public TResult addPort(AppPort appPort) {
-        if (appPortService.selectCount(new EntityWrapper<AppPort>().eq("port", appPort.getPort())) != 0) {
+        if (appPortService.selectCount(new EntityWrapper<AppPort>().eq("port", appPort.getPort()).eq("app_id", appPort.getAppId())) != 0) {
             return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
         }
         appPort.setGmtModified(new Date());
@@ -78,14 +79,14 @@ public class AppPortController {
     /**
      * 删除端口
      *
+     * @param appId
      * @param port
      * @return
      * @author 倪龙康
      */
-    @DeleteMapping("/{port}")
-    public TResult deletePort(@PathVariable Integer port) {
-
-        if (!appPortService.delete(new EntityWrapper<AppPort>().eq("port", port)))
+    @DeleteMapping("/{appId}")
+    public TResult deletePort(@PathVariable long appId, Integer port) {
+        if (!appPortService.delete(new EntityWrapper<AppPort>().eq("port", port).eq("app_id", appId)))
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         return TResult.success();
     }

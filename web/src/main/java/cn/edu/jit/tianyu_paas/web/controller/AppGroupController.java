@@ -15,12 +15,13 @@ import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
+
 /**
  * @author 倪龙康
  * @since 2018-06-29
  */
-@RequestMapping("/app-groups")
 @RestController
+@RequestMapping("/app-groups")
 public class AppGroupController {
 
     private AppGroupService appGroupService;
@@ -44,7 +45,8 @@ public class AppGroupController {
     @PostMapping
     public TResult groupCreate(String groupName, String compose) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        if (appGroupService.selectOne(new EntityWrapper<AppGroup>().eq("group_name", groupName).eq("user_id", userId)) != null)
+        if (appGroupService.selectOne(new EntityWrapper<AppGroup>()
+                .eq("group_name", groupName).eq("user_id", userId)) != null)
             return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
         AppGroup appGroup = new AppGroup();
         appGroup.setUserId(userId);
@@ -54,7 +56,7 @@ public class AppGroupController {
         if (!appGroupService.insert(appGroup)) {
             return TResult.failure(TResultCode.FAILURE);
         }
-        return TResult.success( appGroup.getAppGroupId() );
+        return TResult.success(appGroup.getAppGroupId());
     }
 
     /**
@@ -64,10 +66,10 @@ public class AppGroupController {
      * @return
      */
     @PutMapping
-    public TResult updateGroup(AppGroup appGroup){
+    public TResult updateGroup(AppGroup appGroup) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        if(!appGroupService.update(appGroup, new EntityWrapper<AppGroup>(
-        ).eq("app_id", appGroup.getAppGroupId()).and().eq("user_id", userId)))
+        if (!appGroupService.update(appGroup, new EntityWrapper<AppGroup>()
+                .eq("app_id", appGroup.getAppGroupId()).and().eq("user_id", userId)))
             return TResult.failure(TResultCode.FAILURE);
         return TResult.success();
     }
@@ -88,11 +90,11 @@ public class AppGroupController {
      * @return
      * @author 倪龙康
      */
-    @GetMapping("groups-apps")
+    @GetMapping("/groups-apps")
     public TResult showGroupAndAppInfo() {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         List<AppGroup> groups = appGroupService.selectList(new EntityWrapper<AppGroup>().eq("user_id", userId));
-        for(AppGroup group: groups) {
+        for (AppGroup group : groups) {
             List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_id", group.getAppGroupId()));
             group.setApps(apps);
         }

@@ -84,6 +84,30 @@
 <script>
     var log = new Vue({
         el: '#log',
+        data: {
+
+        },
+        methods :{
+            logInit() {
+                $.ajax({
+                    type:'get',
+                    url:'/tianyu-paas/app-log/1',
+                    data: {
+
+                    },
+                    success:function (data) {
+                        console.log(data)
+                    },
+                    error:function (data) {
+
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.logInit()
+        }
+
 
     });
 </script>
