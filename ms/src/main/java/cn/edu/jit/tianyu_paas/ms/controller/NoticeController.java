@@ -13,6 +13,7 @@ import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,21 +50,24 @@ public class NoticeController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("创建公告")
     @PostMapping
     public TResult noticeCreate(Notice notice) {
         Long adminId = (Long) session.getAttribute(Constants.SESSION_KEY_ADMIN_ID);
         notice.setAdminId(adminId);
         notice.setGmtCreate(new Date());
-        if (!noticeService.insert(notice))
+        if (!noticeService.insert(notice)) {
             return TResult.failure(TResultCode.FAILURE);
+        }
         List<User> users = userService.selectList(new EntityWrapper<User>());
         for (User user : users) {
             UserNotice userNotice = new UserNotice();
             userNotice.setNoticeId(notice.getNoticeId());
             userNotice.setStatus(UserNotice.STATUS_UNREAD);
             userNotice.setUserId(user.getUserId());
-            if (!userNoticeService.insert(userNotice))
+            if (!userNoticeService.insert(userNotice)) {
                 return TResult.failure(TResultCode.FAILURE);
+            }
         }
         return TResult.success();
     }
@@ -75,6 +79,7 @@ public class NoticeController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("获取公告")
     @GetMapping
     public TResult getNotice(Pagination page) {
         Page<Notice> notices = noticeService.selectPage(new Page<>(page.getCurrent(), page.getSize()),
@@ -89,10 +94,12 @@ public class NoticeController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("更新公告")
     @PutMapping
     public TResult updateNotice(Notice notice) {
-        if (!noticeService.update(notice, new EntityWrapper<Notice>().eq("notice_id", notice.getNoticeId())))
+        if (!noticeService.update(notice, new EntityWrapper<Notice>().eq("notice_id", notice.getNoticeId()))) {
             return TResult.failure(TResultCode.FAILURE);
+        }
         return TResult.success();
     }
 
@@ -103,10 +110,12 @@ public class NoticeController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("删除公告")
     @DeleteMapping("/{noticeId}")
     public TResult deleteNotice(@PathVariable Long noticeId) {
-        if (!noticeService.deleteById(noticeId))
+        if (!noticeService.deleteById(noticeId)) {
             return TResult.failure(TResultCode.FAILURE);
+        }
         return TResult.success();
     }
 }

@@ -8,6 +8,7 @@ import cn.edu.jit.tianyu_paas.shared.entity.UserMessage;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +49,7 @@ public class MessageController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("插入一条message记录")
     @PostMapping
     public TResult insertMessage(@Valid Message message, @RequestParam(required = true) Long[] userIds) {
         message.setGmtCreate(new Date());
@@ -80,6 +82,7 @@ public class MessageController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("返回所有message记录")
     @GetMapping
     public TResult listMessages() {
         return TResult.success(messageService.selectList(new EntityWrapper<Message>()));
@@ -93,6 +96,7 @@ public class MessageController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("删除一条message")
     @DeleteMapping("{id}")
     public TResult deleteMessage(@PathVariable String id) {
         if (!messageService.deleteById(Long.parseLong(id))) {

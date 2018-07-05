@@ -8,6 +8,7 @@ import cn.edu.jit.tianyu_paas.web.service.UserDynamicService;
 import cn.edu.jit.tianyu_paas.web.service.UserLoginLogService;
 import cn.edu.jit.tianyu_paas.web.service.UserService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,7 @@ public class UserController {
      * @param pwd
      * @return
      */
+    @ApiOperation("登录接口")
     @PostMapping("/login")
     public TResult login(String account, String pwd) {
         if (StringUtil.isAnyEmpty(account, pwd)) {
@@ -82,6 +84,7 @@ public class UserController {
      * @param user
      * @return
      */
+    @ApiOperation("注册接口")
     @PostMapping("/register")
     public TResult register(@Valid User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -127,6 +130,7 @@ public class UserController {
      * @param userId
      * @return
      */
+    @ApiOperation("返回用户个人信息")
     @GetMapping("/info/{userId}")
     public TResult info(@PathVariable String userId) {
         EntityWrapper<User> entityWrapper = new EntityWrapper<>();
@@ -145,6 +149,7 @@ public class UserController {
      * @param userId
      * @return
      */
+    @ApiOperation("返回用户个人的动态：如余额，内存使用情况等")
     @GetMapping("/dynamic/{userId}")
     public TResult dynamic(@PathVariable String userId) {
         UserDynamic userDynamic = userDynamicService.selectOne(new EntityWrapper<UserDynamic>().eq("user_id", userId));

@@ -11,6 +11,7 @@ import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,7 @@ public class AppController {
      * @param appId
      * @return
      */
+    @ApiOperation("获取应用信息")
     @GetMapping("/{appId}")
     public TResult getAppInfo(@PathVariable Long appId) {
         App app = appService.selectById(appId);
@@ -86,6 +88,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
+    @ApiOperation("从自定义源码创建应用（git仓库）")
     @PostMapping("/custom")
     public TResult createAppByCustom(@Validated App app, @Validated AppInfoByCustom custom) {
         initApp(app, AppCreateMethodEnum.CUSTOM);
@@ -106,6 +109,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
+    @ApiOperation("从官方demo创建应用")
     @PostMapping("/demo")
     public TResult createAppByDemo(@Validated App app, @Validated AppInfoByDemo infoByDemo) {
         Demo demo = demoService.selectById(infoByDemo.getDemoId());
@@ -129,6 +133,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
+    @ApiOperation("从docker image创建应用")
     @PostMapping("/docker-image")
     public TResult createAppByDockerImage(@Validated App app, @Validated AppInfoByDockerImage dockerImage) {
         initApp(app, AppCreateMethodEnum.DOCKER_IMAGE);
@@ -147,6 +152,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 14:41
      */
+    @ApiOperation("用docker run命令创建应用")
     @PostMapping("/docker-run")
     public TResult createAppByDockerRun(@Validated App app, @Validated AppInfoByDockerRun dockerRun) {
         initApp(app, AppCreateMethodEnum.DOCKER_RUN);
@@ -165,6 +171,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 14:58
      */
+    @ApiOperation("根据docker compose创建应用（创建的是应用组）")
     @PostMapping("/docker-compose")
     public TResult createAppByDockerCompose(@Validated AppGroup appGroup) {
         long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
@@ -185,6 +192,7 @@ public class AppController {
      * @author 卢越
      * @date 2018/6/29 16:30
      */
+    @ApiOperation("总览页面应用接口，包含分页，根据名字查询，根据状态查询")
     @GetMapping("/lists")
     public TResult listAppByNameAndStatus(@RequestParam(required = false, defaultValue = "") String name, Integer status, Pagination page) {
         App app = new App();
@@ -196,6 +204,7 @@ public class AppController {
         return TResult.success(appPages);
     }
 
+    @ApiOperation("从应用市场创建应用")
     @PostMapping("/market")
     public TResult createAppByMarket(@Validated App app, @Validated AppInfoByMarket market) {
         MarketApp marketApp = marketAppService.selectById(market.getMarketAppId());

@@ -9,6 +9,7 @@ import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.MessageService;
 import cn.edu.jit.tianyu_paas.web.service.UserMessageService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -49,6 +50,7 @@ public class UserMessageController {
      * @since 2018-07-01
      * @return
      */
+    @ApiOperation("返回用户未读消息")
     @GetMapping
     public TResult listUserMessages(){
         List<UserMessage> lists = userMessageService.selectList(new EntityWrapper<UserMessage>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)));
@@ -63,6 +65,7 @@ public class UserMessageController {
         return TResult.success(messages);
     }
 
+    @ApiOperation("返回用户未读信息的数量")
     @GetMapping("/count")
     public TResult getUnReadMessageCount() {
         return TResult.success(userMessageService.selectCount(new EntityWrapper<UserMessage>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)).and().eq("status", 0)));
@@ -73,6 +76,7 @@ public class UserMessageController {
      * @param userMessage
      * @return
      */
+    @ApiOperation("将用户未读消息更新为已读")
     @PutMapping
     public TResult updateUserMessageStatus(UserMessage userMessage){
         if (!userMessageService.update(userMessage, new EntityWrapper<UserMessage>().setSqlSelect("status").eq("message_id", userMessage.getMessageId()).and().eq("user_id", userMessage.getUserId()))){

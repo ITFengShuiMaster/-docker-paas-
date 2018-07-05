@@ -11,6 +11,7 @@ import cn.edu.jit.tianyu_paas.web.service.UserNoticeService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,12 +47,14 @@ public class UserNoticeController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("分页获取所有的公告")
     @GetMapping
     public TResult getAllNotices(Pagination page) {
         Page<Notice> noticePage = noticeService.selectPage(new Page<>(page.getCurrent(), page.getSize())
                 , new EntityWrapper<Notice>().orderBy("gmt_create", false));
-        if (noticePage == null)
+        if (noticePage == null) {
             return TResult.failure(TResultCode.FAILURE);
+        }
         List<Notice> notices = noticePage.getRecords();
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         for (Notice notice : notices) {
@@ -68,18 +71,22 @@ public class UserNoticeController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("获取公告详情，并将状态改为已读")
     @GetMapping("/{noticeId}")
     public TResult getNoticeInfo(@PathVariable long noticeId) {
         Notice notice = noticeService.selectById(noticeId);
-        if (notice == null)
+        if (notice == null) {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
+        }
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         UserNotice userNotice = userNoticeService.selectOne(new EntityWrapper<UserNotice>().eq("user_id", userId).eq("notice_id", noticeId));
-        if (userNotice == null)
+        if (userNotice == null) {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
+        }
         userNotice.setStatus(UserNotice.STATUS_READ);
-        if (!userNoticeService.update(userNotice, new EntityWrapper<UserNotice>().eq("user_id", userId).eq("notice_id", noticeId)))
+        if (!userNoticeService.update(userNotice, new EntityWrapper<UserNotice>().eq("user_id", userId).eq("notice_id", noticeId))) {
             return TResult.failure(TResultCode.FAILURE);
+        }
         notice.setStatus(userNotice.getStatus());
         return TResult.success(notice);
     }
@@ -90,6 +97,7 @@ public class UserNoticeController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("获取该用户未读公告的数量")
     @GetMapping("/num")
     public TResult getStatusNum() {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);

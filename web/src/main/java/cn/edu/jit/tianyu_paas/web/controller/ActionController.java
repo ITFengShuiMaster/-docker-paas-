@@ -9,6 +9,7 @@ import cn.edu.jit.tianyu_paas.web.service.ActionDetailService;
 import cn.edu.jit.tianyu_paas.web.service.ActionService;
 import cn.edu.jit.tianyu_paas.web.service.AppLogService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ public class ActionController {
      * @author 卢越
      * @date 2018/6/29 16:30
      */
+    @ApiOperation("总览页面行为接口")
     @GetMapping("/info")
     public TResult info() {
         List<Action> lists = actionService.selectList(new EntityWrapper<Action>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)).orderBy("gmt_create", false).last("LIMIT 6"));
@@ -59,6 +61,7 @@ public class ActionController {
      * @author 汪继友
      * @date 2018/6/30 14:14
      */
+    @ApiOperation("获取应用的操作日志")
     @GetMapping("/{appId}")
     public TResult listAppAction(@PathVariable long appId) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
@@ -71,6 +74,7 @@ public class ActionController {
      * @author 汪继友
      * @date 2018/6/30 14:27
      */
+    @ApiOperation("获取应用操作日志的详细日志（info,debug,error)")
     @GetMapping("/detail")
     public TResult listActionDetails(long appId, long actionId, int level) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
