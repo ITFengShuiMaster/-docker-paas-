@@ -3,7 +3,6 @@ package cn.edu.jit.tianyu_paas.shared.entity;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 
 import javax.validation.constraints.Min;
@@ -19,7 +18,6 @@ import java.util.Date;
  * @author 汪继友
  * @since 2018-06-28
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class App implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -57,7 +55,6 @@ public class App implements Serializable {
     /**
      * 属于哪个应用组
      */
-//    @NotEmpty
     @Min(1)
     private Long appGroupId;
     /**

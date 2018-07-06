@@ -8,16 +8,21 @@ import cn.edu.jit.tianyu_paas.ms.service.UserService;
 import cn.edu.jit.tianyu_paas.shared.entity.Notice;
 import cn.edu.jit.tianyu_paas.shared.entity.User;
 import cn.edu.jit.tianyu_paas.shared.entity.UserNotice;
+import cn.edu.jit.tianyu_paas.shared.global.PublicConstants;
+import cn.edu.jit.tianyu_paas.shared.rabbitmq.MQMessage;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,13 +39,15 @@ public class NoticeController {
     private final UserService userService;
     private final UserNoticeService userNoticeService;
     private final HttpSession session;
+    private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public NoticeController(NoticeService noticeService, HttpSession session, UserService userService, UserNoticeService userNoticeService) {
+    public NoticeController(NoticeService noticeService, HttpSession session, UserService userService, UserNoticeService userNoticeService, RabbitTemplate rabbitTemplate) {
         this.noticeService = noticeService;
         this.session = session;
         this.userService = userService;
         this.userNoticeService = userNoticeService;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     /**
@@ -59,17 +66,25 @@ public class NoticeController {
         if (!noticeService.insert(notice)) {
             return TResult.failure(TResultCode.FAILURE);
         }
-        List<User> users = userService.selectList(new EntityWrapper<User>());
+        List<User> users = userService.selectList(new EntityWrapper<>());
+        List<UserNotice> uesrNotices = new ArrayList<>();
+        List<Long> receivers = new ArrayList<>();
         for (User user : users) {
             UserNotice userNotice = new UserNotice();
             userNotice.setNoticeId(notice.getNoticeId());
             userNotice.setStatus(UserNotice.STATUS_UNREAD);
             userNotice.setUserId(user.getUserId());
-            if (!userNoticeService.insert(userNotice)) {
-                return TResult.failure(TResultCode.FAILURE);
-            }
+            uesrNotices.add(userNotice);
+
+            receivers.add(user.getUserId());
         }
-        return TResult.success();
+        if (userNoticeService.insertBatch(uesrNotices)) {
+
+            // 往消息队列发送json格式的字符串消息
+            rabbitTemplate.convertAndSend(PublicConstants.RABBITMQ_QUEUE_NAME, JSON.toJSONString(MQMessage.notice(notice, receivers)));
+            return TResult.success();
+        }
+        return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
     /**

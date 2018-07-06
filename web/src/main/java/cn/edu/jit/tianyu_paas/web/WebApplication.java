@@ -4,6 +4,8 @@ import cn.edu.jit.tianyu_paas.web.global.AppInterceptor;
 import cn.edu.jit.tianyu_paas.web.global.GlobalInterceptor;
 import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +20,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableWebSocket
 @EnableSwagger2
 public class WebApplication implements WebMvcConfigurer {
+
+    @Autowired
+    private ConnectionFactory connectionFactory;
 
     public static void main(String[] args) {
         SpringApplication.run(WebApplication.class, args);
@@ -64,4 +69,23 @@ public class WebApplication implements WebMvcConfigurer {
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
     }
+
+    /**
+     * 设置rabbitmq消息格式转换器
+     * @return
+     */
+    /*@Bean
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public SimpleRabbitListenerContainerFactory myFactory(
+            SimpleRabbitListenerContainerFactoryConfigurer configurer) {
+        SimpleRabbitListenerContainerFactory factory =
+                new SimpleRabbitListenerContainerFactory();
+        configurer.configure(factory, connectionFactory);
+        factory.setMessageConverter(messageConverter());
+        return factory;
+    }*/
 }

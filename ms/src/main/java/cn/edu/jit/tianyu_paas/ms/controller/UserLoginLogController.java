@@ -3,6 +3,7 @@ package cn.edu.jit.tianyu_paas.ms.controller;
 
 import cn.edu.jit.tianyu_paas.ms.service.UserLoginLogService;
 import cn.edu.jit.tianyu_paas.shared.entity.UserLoginLog;
+import cn.edu.jit.tianyu_paas.shared.global.PublicConstants;
 import cn.edu.jit.tianyu_paas.shared.util.DateUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -65,7 +66,7 @@ public class UserLoginLogController {
     public TResult listViewsByDaysOfWeek() {
         List<Map<String, Object>> views = userLoginLogService.selectMaps(new EntityWrapper<UserLoginLog>().setSqlSelect("COUNT(*) as views, day_of_week").groupBy("day_of_week"));
 
-        int weeks = DateUtil.getWeeksDiff(cn.edu.jit.tianyu_paas.shared.global.Constants.DATE_OF_START, new Date());
+        int weeks = DateUtil.getWeeksDiff(PublicConstants.DATE_OF_START, new Date());
 
         if (weeks == 0) {
             return TResult.success(views);
@@ -91,7 +92,7 @@ public class UserLoginLogController {
     public TResult listViewsDayOfMonth() {
         List<Map<String, Object>> views = userLoginLogService.selectMaps(new EntityWrapper<UserLoginLog>().setSqlSelect("COUNT(*) as views, day").groupBy("day"));
 
-        int months = DateUtil.getMonthDiff(cn.edu.jit.tianyu_paas.shared.global.Constants.DATE_OF_START, new Date());
+        int months = DateUtil.getMonthDiff(PublicConstants.DATE_OF_START, new Date());
 
         if (months == 0) {
             return TResult.success(views);
@@ -117,7 +118,7 @@ public class UserLoginLogController {
     public TResult listViewsMonthOfYear() {
         List<Map<String, Object>> views = userLoginLogService.selectMaps(new EntityWrapper<UserLoginLog>().setSqlSelect("COUNT(*) as views, month").groupBy("month"));
 
-        int years = DateUtil.getYearsDiff(cn.edu.jit.tianyu_paas.shared.global.Constants.DATE_OF_START, new Date());
+        int years = DateUtil.getYearsDiff(PublicConstants.DATE_OF_START, new Date());
 
         if (years == 0) {
             return TResult.success(views);
