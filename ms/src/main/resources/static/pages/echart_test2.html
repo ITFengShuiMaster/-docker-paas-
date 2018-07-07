@@ -124,7 +124,7 @@
             get_views_day_of_month() {
                 $.ajax({
                     type: "get",
-                    url: 'http://localhost:8080/ms/logs/views-day-of-month',
+                    url: 'http://localhost:8081/ms/logs/views-day-of-month',
                     success: function (result) {
                         console.log(result);
                         if (result.code) {
@@ -144,7 +144,7 @@
             get_views_month_of_year() {
                 $.ajax({
                     type: "get",
-                    url: 'http://localhost:8080/ms/logs/views-month-of-year',
+                    url: 'http://localhost:8081/ms/logs/views-month-of-year',
                     success: function (result) {
                         console.log(result);
                         if (result.code) {
