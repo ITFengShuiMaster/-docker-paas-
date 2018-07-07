@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package cn.edu.jit.tianyu_paas.im.binary;
+package cn.edu.jit.tianyu_paas.im.websocket;
 
 /*
  * To change this template, choose Tools | Templates
@@ -1563,7 +1563,7 @@ public class Base64 {
 
 
     /**
-     * Convenience method for reading a binary file
+     * Convenience method for reading a websocket file
      * and base64-encoding it.
      *
      * <p>As of v 2.3, if there is a error,
@@ -1571,7 +1571,7 @@ public class Base64 {
      * In earlier versions, it just returned false, but
      * in retrospect that's a pretty poor way to handle it.</p>
      *
-     * @param filename Filename for reading binary data
+     * @param filename Filename for reading websocket data
      * @return base64-encoded string
      * @throws java.io.IOException if there is an error
      * @since 2.1

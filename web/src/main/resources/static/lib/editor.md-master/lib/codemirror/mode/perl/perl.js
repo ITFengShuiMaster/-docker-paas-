@@ -259,7 +259,7 @@
             alarm: 1,     // - schedule a SIGALRM
             'atan2': 1,     // - arctangent of Y/X in the range -PI to PI
             bind: 1,     // - binds an address to a socket
-            binmode: 1,     // - prepare binary files for I/O
+            binmode: 1,     // - prepare websocket files for I/O
             bless: 1,     // - create an object
             bootstrap: 1,     //
             'break': 1,     // - break out of a "given" block
@@ -370,7 +370,7 @@
             opendir: 1,     // - open a directory
             ord: 1,     // - find a character's numeric representation
             our: 2,    // - declare and assign a package variable (lexical scoping)
-            pack: 1,     // - convert a list into a binary representation
+            pack: 1,     // - convert a list into a websocket representation
             'package': 1,     // - declare a separate global namespace
             pipe: 1,     // - open a pair of connected filehandles
             pop: 1,     // - remove the last element from an array and return it
@@ -462,7 +462,7 @@
             umask: 1,     // - set file creation mode mask
             undef: 1,     // - remove a variable or function definition
             unlink: 1,     // - remove one link to a file
-            unpack: 1,     // - convert binary structure into normal perl variables
+            unpack: 1,     // - convert websocket structure into normal perl variables
             unshift: 1,     // - prepend more elements to the beginning of a list
             untie: 1,     // - break a tie binding to a variable
             use: 1,     // - load in a module at compile time

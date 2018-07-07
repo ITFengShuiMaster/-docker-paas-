@@ -87403,7 +87403,7 @@ if (!env$1.canvasSupported) {
                         // IE won't render arches drawn counter clockwise if x0 == x1.
                         if (Math.abs(endAngle - startAngle) > 1e-2) {
                             // Offset x0 by 1/80 of a pixel. Use something
-                            // that can be represented in binary
+                            // that can be represented in websocket
                             if (clockwise) {
                                 x0 += 270 / Z;
                             }

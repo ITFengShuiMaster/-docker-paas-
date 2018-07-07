@@ -2984,7 +2984,7 @@
         var fromX = getX(from), fromOutside = wrongLine, toX = getX(to), toOutside = wrongLine;
 
         if (x > toX) return PosWithInfo(lineNo, to, toOutside, 1);
-        // Do a binary search between these bounds.
+        // Do a websocket search between these bounds.
         for (; ;) {
             if (bidi ? to == from || to == moveVisually(lineObj, from, 1) : to - from <= 1) {
                 var ch = x < fromX || x - fromX <= toX - x ? from : to;

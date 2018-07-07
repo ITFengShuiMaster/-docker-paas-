@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cn.edu.jit.tianyu_paas.im.binary;
+package cn.edu.jit.tianyu_paas.im.websocket;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
