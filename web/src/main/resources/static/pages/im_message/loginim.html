@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            font-family: "Source Sans Pro", sans-serif;
+            /* color: white; */
+            font-weight: 300;
+        }
+        body{
+            text-align: center
+        }
+        .main {
+            width: 500px;
+            background-color: rgba(165, 185, 179, 0.32);
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            padding: 30px;
+            display: block;
+            margin: 0 auto;
+            border: 0.5px solid rgba(255, 255, 255, 0.4);
+            border-radius: 5px;
+v        }
+        .img {
+            position: fixed;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            background-repeat: no-repeat;
+        }
+        label {
+            font-size: 18px;
+            margin-right: 20px;
+        }
+
+        input {
+            outline: 0;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 200px;
+            border-radius: 3px;
+            padding: 10px 15px;
+            margin: 0 auto 10px auto;
+            text-align: center;
+            font-size: 18px;
+            color: white;
+        }
+        button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            outline: 0;
+            background-color: white;
+            border: 0;
+            padding: 10px 15px;
+            margin: 0 auto 10px auto;
+            border-radius: 3px;
+            width: 180px;
+            cursor: pointer;
+            font-size: 18px;
+            -webkit-transition-duration: 0.25s;
+            transition-duration: 0.25s;
+            opacity: 0.85;
+        }
+
+        button:hover {
+            background-color: #e4eaf0;
+        }
+
+        .box {
+            margin-top:10px
+        }
+
+        p {
+            color: #000;
+            font-family: "Source Sans Pro", sans-serif;
+        }
+        a {
+            text-decoration:none;
+            color:rgb(35, 155, 125);
+        }
+        a:hover {
+            color: #000;
+        }
+        a:visited {
+            color: rgb(54, 85, 170);
+        }
+    </style>
+</head>
+<body>
+<div id="loginim">
+    <div class="main">
+        <div class="img">
+            <img src="https://discordapp.com/assets/57d8f3f7d76dae7c5ecdb19fb76fd7f1.jpg" alt="">
+        </div>
+        <header>
+            <div class="Name">
+                <h1>IM</h1>
+            </div>
+        </header>
+        <div class="login">
+            <form action="" :model="loginForm" :rules="loginRules" ref="loginForm">
+                <div class="username box">
+                    <label for="username">账号</label>
+                    <input type="text" name="username" placeholder="请输入账号" required="required" v-model="loginForm.username" >
+                </div>
+                <div class="password box">
+                    <label for="password">密码</label>
+                    <input type="password" name="password" placeholder="请输入密码" required="required" v-model="loginForm.password">
+                </div>
+                <div class="button box">
+                    <button type="button" id="loginbtn" @click="login">登录</button>
+                    <!-- <button type="button" id="registerbtn" @click="returnToRegister">注册</button> -->
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var loginim = new Vue({
+        el: '#loginim',
+        data: {
+            loginFrom: {
+                username: '',
+                password: ''
+            },
+        },
+        methods: {
+            homeInit() {
+                $.ajax({
+                    type:'get',
+                    url:'',
+                    data: {
+
+                    },
+                    success:function (data) {
+
+                    },
+                    error:function (data) {
+
+                    }
+                })
+            }
+        },
+        mounted() {
+//            this.overviewInit()
+        }
+
+    })
+
+</script>
+</html>

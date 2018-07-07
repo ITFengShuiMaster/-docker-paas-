@@ -31,7 +31,7 @@
         <Modal
                 v-model="modal1"
                 title="发布新公告"
-                @on-ok="ok"
+                @on-ok="createNotice"
                 @on-cancel="cancel">
             <div style="display: inline-flex;margin-right: 10px;margin-bottom: 10px">
                 <div style="font-size: 14px;">请输入标题：</div>
@@ -53,6 +53,8 @@
         el: '#notice',
         data() {
             return {
+                title:'',
+                content:'',
                 input_title: '',
                 input_content: '',
                 modal1: false,
@@ -69,11 +71,7 @@
                     },
                     {
                         title: '创建者id',
-                        key: 'id'
-                    },
-                    {
-                        title: '状态',
-                        key: 'read'
+                        key: 'adminId'
                     },
                     {
                         title: '操作',
@@ -93,6 +91,7 @@
                                     on: {
                                         click: () => {
                                             this.show(params.index)
+//                                            console.log(params.index)
                                         }
                                     }
                                 }, '查看'),
@@ -106,7 +105,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.modify()
+                                            this.modify(params.index)
                                         }
                                     }
                                 }, '修改'),
@@ -127,36 +126,11 @@
 
                 ],
 
-                data1: [
-                    {
-                        title: '发财',
-                        content: "1111",
-                        id: 2222,
-                        read: "已读"
-                    },
-                    {
-                        title: '发财',
-                        content: "1111",
-                        id: 2222,
-                        read: "已读"
-                    },
-                    {
-                        title: '发财',
-                        content: "1111",
-                        id: 2222,
-                        read: "已读"
-                    },
-                    {
-                        title: '发财',
-                        content: "1111",
-                        id: 2222,
-                        read: "已读"
-                    },
-                ]
+                data1: []
             }
         },
         methods: {
-            modify() {
+            modify(index) {
                 this.$Modal.confirm({
                     render: (h) => {
                         return h('div', [
@@ -169,13 +143,13 @@
                                     marginBottom: '10px'
                                 },
                                 props: {
-                                    value: this.name,
+                                    value: this.title,
                                     autofocus: true,
                                     placeholder: '请输入公告标题'
                                 },
                                 on: {
                                     input: (val) => {
-                                        this.name = val;
+                                        this.title = val;
                                     }
                                 }
                             }),
@@ -187,19 +161,20 @@
                                     marginBottom: '10px'
                                 },
                                 props: {
-                                    value: this.id,
+                                    value: this.content,
                                     autofocus: true,
                                     placeholder: '请输入公告内容'
                                 },
                                 on: {
                                     input: (val) => {
-                                        this.id = val;
+                                        this.content = val;
                                     }
                                 },
                             })
                         ]);
                     },
                     onOk: () => {
+                        this.modifyNotice(index)
                         console.log(app_management.name)
                     }
                 })
@@ -208,7 +183,7 @@
             show(index) {
                 this.$Modal.info({
                     title: 'User Info',
-                    content: `公告标题：${this.data1[index].title}<br>公告内容：${this.data1[index].content}<br>创建者：${this.data1[index].id}<br>状态：${this.data1[index].read}`
+                    content: `公告标题：${this.data1[index].title}<br>公告内容：${this.data1[index].content}<br>创建者：${this.data1[index].adminId}<br>`
                 })
             },
             remove(index) {
@@ -216,7 +191,9 @@
                     content: '是否确认删除？',
                     onOk: () => {
                         this.data1.splice(index, 1);
+                        this.deleteNotice(this.data1[index].noticeId)
                         this.$Message.info('已删除');
+
                     },
                     onCancel: () => {
                         this.$Message.info('Clicked cancel');
@@ -228,7 +205,83 @@
             },
             cancel() {
                 this.$Message.info('Clicked cancel');
-            }
+            },
+            createNotice() {
+                var that = this
+                $.ajax({
+                    type:'post',
+                    url:'notices',
+                    data:{
+                        title:that.title,
+                        content:that.content,
+                    },
+                    success:function (data) {
+                        console.log(data)
+                        that.ok()
+                    },
+                    error:function () {
+
+                    }
+                })
+            },
+            viewNotice() {
+                var that = this
+                $.ajax({
+                    type:'get',
+                    url:'notices',
+                    success:function (data) {
+                        console.log(data)
+                        var result = data.data.records
+                        console.log(result)
+                        for(var i = 0;i<result.length;i++) {
+                            that.data1.push(result[i])
+                            console.log(that.data1)
+                        }
+                    },
+                    error:function () {
+                        console.log(err)
+                    }
+                })
+            },
+            modifyNotice(index) {
+                var that = this
+                $.ajax({
+                    type:'put',
+                    url:'notices',
+                    data: {
+                        noticeId:that.data1[index].noticeId,
+                        title:that.title,
+                        content:that.content
+                    },
+                    success:function (data) {
+                        if(data.code === 1) {
+                            that.$Message.info("修改成功");
+                            that.data1.splice(index, 1);
+                            that.viewNotice()
+                        }
+                    },
+                    error:function (err) {
+                        console.log(err)
+                    }
+
+                })
+            },
+            deleteNotice(noticeId) {
+                $.ajax({
+                    type:'delete',
+                    url:'notices/'+noticeId,
+                    success:function (data) {
+                        console.log(data)
+                    },
+                    error:function (err) {
+                        console.log(err)
+                    }
+                })
+            },
+
+        },
+        mounted() {
+            this.viewNotice()
         }
 
     })

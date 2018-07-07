@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="../../lib/layui/layui.css" media="all">
+    <link rel="stylesheet" href="../../lib/layui/css/layui.css" media="all">
 </head>
 <body>
 
 <script src="../../lib/layui/layui.js"></script>
 <script>
+    var ws
+
     layui.use('layim', function(layim){
         //基础配置
         layim.config({
@@ -30,13 +32,11 @@
                         , "status": "online" //若值为offline代表离线，online或者不填为在线
                     }]
                 }]
-                ,group: [
-                        {
-                            "groupname": "前端群" //群组名
-                            ,"id": "101" //群组ID
-                            ,"avatar": "a.jpg" //群组头像
-                        }
-                    ]
+                ,group: [{
+                     "groupname": "前端群" //群组名
+                     ,"id": "101" //群组ID
+                      ,"avatar": "a.jpg" //群组头像
+                 }]
             },//获取主面板列表信息，下文会做进一步介绍
 
             //获取群员接口（返回的数据格式见下文）
@@ -79,7 +79,21 @@
             type:'friend',
             avatar:'a.jpg',
             id:100001
-        })
+        }).on('sendMessage',function (res) {
+            console.log(res)
+            var me = res.mine
+            var to = res.to
+            ws.send(JSON.stringify({
+                type:'chat',
+                data:res
+            }))
+            ws.onmessage = function (res) {
+                res = JSON.parse(res)
+                if(res.emit === 'chat') {
+                    layim.getMessage(res,data)
+                }
+            }
+        }).setChatMin();
     });
 </script>
 </body>
