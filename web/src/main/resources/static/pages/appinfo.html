@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Index</title>
-    <link rel="stylesheet" href="../lib/element/index.css"/>
-    <script src="../lib/vue/vue.js"></script>
-    <script src="../lib/element/index.js"></script>
-    <script src="../lib/jquery/jquery_3.3.1.js"></script>
+
     <style>
         .homeTop {
             background: #ffffff;
@@ -103,7 +95,7 @@
         }
 
     </style>
-</head>
+
 
 <div id="home">
     <div class="homeTop">
@@ -165,23 +157,12 @@
     </div>
 
 </div>
-</html>
 <script>
     var home = new Vue({
         el: '#home',
         data: {
+            app_id: 1,
             appName:'MySQL',
-            showList: {
-                showOne: true,
-                showTwo: false,
-                showThree: false,
-                showFour: false,
-                showFive: false,
-                showSix: false,
-                showSeven: false,
-                showEight: false,
-                showNine: false
-            },
             dialogTableVisible: false,
             dialogFormVisible: false,
             form: {
@@ -230,10 +211,6 @@
                 name: 'ba464ae',
                 list: '/data',
                 type: 'share-file'
-            }], lastingSet: [{
-                name: 'ba464ae',
-                list: '/data',
-                type: 'share-file'
             }],
             fileStorage: [{
                 localList: '',
@@ -278,7 +255,7 @@
                 label: '2'
             }],
             activeIndex: '1',
-            pageArr: ['application/app_overview.html', 'application/app_monitor.html', 'application/app_log.html', 'application/app_flex.html', 'application/app_extend.html', 'application/app_storage.html', 'application/app_port.html', 'application/app_rely.html', 'application/app_setting.html'],
+            pageArr: ['pages/application/app_overview.html', 'pages/application/app_monitor.html', 'pages/application/app_log.html', 'pages/application/app_flex.html', 'pages/application/app_extend.html', 'pages/application/app_storage.html', 'pages/application/app_port.html', 'pages/application/app_rely.html', 'pages/application/app_setting.html'],
         },
         methods: {
             selectPage1(index, indexPath) {
@@ -293,7 +270,7 @@
                 var that = this
                 $.ajax({
                     type:'get',
-                    url:'/tianyu-paas/apps/1',
+                    url:'/tianyu-paas/apps/'+that.app_id,
                     data:{
 
                     },

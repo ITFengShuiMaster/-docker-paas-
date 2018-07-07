@@ -72,7 +72,8 @@
                     <el-form-item prop="vertify_code">
                         <el-input v-model="User.vertify_code" auto-complete="off" placeholder="请输入验证码"
                                   prefix-icon="fa fa-paper-plane 2x" style="width: 58%"></el-input>
-                        <el-button>获取短信</el-button>
+                        <el-button v-show="flag" @click="getMessageCode">获取短信</el-button>
+                        <el-button v-show="!flag" :disabled="!flag">{{code_time}}秒</el-button>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" style="width:100%" :loading="loading" @click="register">注册</el-button>
@@ -117,7 +118,8 @@
                 checkPass: '',
                 email: '',
                 phone: '',
-                vertify_code: ''
+                vertify_code: '',
+
             },
             Rules: {
                 name: [
@@ -137,7 +139,9 @@
                 ],
             },
             loading: false,
-            test: false
+            test: false,
+            flag: true,
+            code_time:sessionStorage.getItem('codeTime'),
         },
         methods: {
             validatePass2(rule, value, callback) {
@@ -148,6 +152,49 @@
                 } else {
                     callback();
                 }
+            },
+
+            getMessageCode() {
+                var that = this
+                this.flag = false
+                var codeTime = 60
+                sessionStorage.setItem("codeTime",codeTime)
+                var code_timer = setInterval(() => {
+                    codeTime--
+                    sessionStorage.setItem("codeTime",codeTime)
+                    that.code_time = sessionStorage.getItem("codeTime")
+                    console.log(that.code_time)
+                    if(codeTime<=0) {
+                        that.flag = true
+                        clearInterval(code_timer)
+                    }
+                },1000);
+                $.ajax({
+                    type:'get',
+                    url:'',
+                    success:function (data) {
+                        console.log(data)
+                    },
+                    error:function () {
+                        console.log(error)
+                    }
+                })
+            },
+            getSessionCode() {
+                var that = this
+                if(sessionStorage.getItem('codeTime') >=0 )
+                    this.flag = false
+                    var codeTime = sessionStorage.getItem('codeTime')
+                    var code_timer = setInterval(() => {
+                        codeTime--
+                        sessionStorage.setItem("codeTime",codeTime)
+                        that.code_time = sessionStorage.getItem("codeTime")
+                        console.log(that.code_time)
+                        if(codeTime<=0) {
+                            that.flag = true
+                            clearInterval(code_timer)
+                        }
+                    },1000);
             },
             register() {
                 $.ajax({
@@ -174,8 +221,11 @@
                 })
             },
         },
+        mounted() {
+            this.getSessionCode()
+        }
 
     })
 </script>
 </body>
-</html>
+</html>-
