@@ -32,20 +32,17 @@
         <i-select v-model="model3" style="width:150px; height: 30px; margin-right: 15px; margin-left: 15px">
             <i-option v-for="item in list_requirement" :value="item.value" :key="item.value">{{ item.label }}</i-option>
         </i-select>
-        <i-button type="primary">查询</i-button>
+        <i-button type="primary">搜索</i-button>
     </div>
     <div style="margin: 10px 20px; display: inline-flex">
-        <p class="text">排序条件:</p>
-        <i-select v-model="model1" style="width:150px; height: 30px; margin-right: 15px">
-            <i-option v-for="item in requirement" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-        </i-select>
-        <p class="text">排序时间段:</p>
-        <i-select v-model="model2" style="width:150px; height: 30px; margin-right: 15px">
-            <i-option v-for="item in time" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-        </i-select>
-        <i-button type="primary">排序</i-button>
+        <p class="text">访问量查询：</p>
+        <i-input v-model="model1" style="width:150px; height: 30px; margin-right: 15px;"
+                 placeholder="请输入查询天数"></i-input>
+        <p class="text">天内访问量大于:</p>
+        <i-input v-model="model2" style="width:150px; height: 30px; margin-right: 15px" placeholder="请输入数值"></i-input>
+        <i-button type="primary" @click.native="sort()">查询</i-button>
     </div>
-    <i-table stripe border :columns="columns7" :data="data6" style="margin:10px 20px"></i-table>
+    <i-table stripe border :columns="columns7" :data="labelArr" style="margin:10px 20px"></i-table>
 </div>
 
 </body>
@@ -67,7 +64,10 @@
                                 h('Icon', {
                                     props: {
                                         type: 'person'
-                                    }
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
                                 }),
                                 h('strong', params.row.name)
                             ]);
@@ -86,7 +86,7 @@
                         key: 'time'
                     },
                     {
-                        title: 'Action',
+                        title: '操作',
                         key: 'action',
                         width: 150,
                         align: 'center',
@@ -105,7 +105,7 @@
                                             this.show(params.index)
                                         }
                                     }
-                                }, 'View'),
+                                }, '查看'),
                                 h('Button', {
                                     props: {
                                         type: 'error',
@@ -116,61 +116,18 @@
                                             this.remove(params.index)
                                         }
                                     }
-                                }, 'Delete')
+                                }, '删除')
                             ]);
                         }
                     }
                 ],
-                data6: [
+                labelArr: [
                     {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
+                        name: '',
+                        email: '',
+                        phone: '',
+                        time: ''
                     }
-                ],
-                requirement: [
-                    {
-                        value: '1',
-                        label: '访问量排序'
-                    },
-                    {
-                        value: '2',
-                        label: '注册用户'
-                    }
-                ],
-
-                time: [
-                    {
-                        value: '3',
-                        label: '天'
-                    },
-                    {
-                        value: '4',
-                        label: '周'
-                    },
-                    {
-                        value: '5',
-                        label: '月'
-                    },
                 ],
                 list_requirement: [
                     {
@@ -189,15 +146,98 @@
             }
         },
         methods: {
+            sort() {
+                $.ajax({
+                    type: 'get',
+                    url: 'admins/access-users',
+                    data: {
+                        days: this.model1,
+                        views: this.model2,
+                    },
+                    success: function (result) {
+                        if (result.code == 1) {
+                            console.log(result.data.records.length);
+                            if (result.data.records.length == 0) {
+                                alert('nothing!')
+                            } else {
+                                for (var i = 0; i < result.data.records.length; i++) {
+                                    console.log(result.data.records[i]);
+                                    var obj = user_info.labelArr[0];
+                                    var testObj = {name: "", email: "", phone: '', time: ''};
+                                    obj.name = result.data.records[i].name;
+                                    obj.email = result.data.records[i].email;
+                                    obj.phone = result.data.records[i].phone;
+                                    obj.time = result.data.records[i].gmtCreate;
+
+                                    testObj.name = obj.name;
+                                    testObj.email = obj.email;
+                                    testObj.phone = obj.phone;
+                                    testObj.time = obj.time;
+
+                                    user_info.labelArr.push(testObj);
+                                }
+                            }
+                        }
+                        else {
+                            alert(result.message)
+                        }
+                    },
+                    error: function () {
+                        console.log('fail')
+                    }
+
+                })
+            },
             show(index) {
                 this.$Modal.info({
                     title: '用户信息',
-                    content: `姓名：${this.data6[index].name}<br>邮箱：${this.data6[index].email}<br>手机号：${this.data6[index].phone}<br>注册时间：${this.data6[index].time}`
+                    content: `姓名：${this.labelArr[index].name}<br>邮箱：${this.labelArr[index].email}<br>手机号：${this.labelArr[index].phone}<br>注册时间：${this.labelArr[index].time}`
                 })
             },
             remove(index) {
-                this.data6.splice(index, 1);
-            }
+                this.$Modal.confirm({
+                    content: '是否确认删除？',
+                    onOk: () => {
+                        this.labelArr.splice(index, 1);
+                        this.$Message.info('已删除');
+                    },
+                    onCancel: () => {
+                        this.$Message.info('Clicked cancel');
+                    }
+                });
+            },
+            userList() {
+                $.ajax({
+                    type: "get",
+                    url: 'admins',
+                    dataType: "json",
+                    success: function (result) {
+                        for (var i = 0; i < result.data.records.length; i++) {
+                            console.log(result.data.records[i]);
+                            var obj = user_info.labelArr[0];
+                            var testObj = {name: "", email: "", phone: '', time: ''};
+                            obj.name = result.data.records[i].name;
+                            obj.email = result.data.records[i].email;
+                            obj.phone = result.data.records[i].phone;
+                            obj.time = result.data.records[i].gmtCreate;
+
+                            testObj.name = obj.name;
+                            testObj.email = obj.email;
+                            testObj.phone = obj.phone;
+                            testObj.time = obj.time;
+
+                            user_info.labelArr.push(testObj);
+                        }
+                    },
+                    error: function () {
+                        console.log('fail')
+                    }
+                })
+            },
+        },
+        mounted() {
+            this.userList();
         }
+
     })
 </script>

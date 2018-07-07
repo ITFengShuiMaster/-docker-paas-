@@ -155,6 +155,10 @@
                     });
                 }
             },
+            load() {
+                $('#content').load('pages/user_management/user_info.html', function (response, message, xhr) {
+                });
+            }
         },
         computed: {
             menuitemClasses: function () {
@@ -163,6 +167,9 @@
                     this.isCollapsed ? 'collapsed-menu' : ''
                 ]
             }
+        },
+        mounted() {
+            this.load();
         }
     })
 </script>

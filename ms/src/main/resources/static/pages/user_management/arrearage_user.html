@@ -25,7 +25,7 @@
         <p style="font-size: 20px; color: black">欠费用户查询</p>
         <p style="margin: 8px 0px 20px">查询所有欠费或未续费用户信息</p>
     </div>
-    <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px"></i-table>
+    <i-table stripe border :columns="columns1" :data="labelArr" style="margin:10px 20px"></i-table>
 
 </div>
 
@@ -63,34 +63,59 @@
                         key: 'time'
                     },
                 ],
-
-                data1: [
+                labelArr: [
                     {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
+                        name: '',
+                        email: '',
+                        phone: '',
+                        time: '',
                     },
                 ]
             }
+        },
+        methods: {
+            userList() {
+                $.ajax({
+                    type: "get",
+                    url: 'admins/arrears-users',
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.code == 1) {
+                            console.log(result.data.length);
+                            if (result.data.length == 0) {
+                                alert('nothing!')
+                            } else {
+                                for (var i = 0; i < result.data.length; i++) {
+                                    console.log(result.data[i]);
+                                    var obj = user_info.labelArr[0];
+                                    var testObj = {name: "", email: "", phone: '', time: ''};
+                                    obj.name = result.data[i].name;
+                                    obj.email = result.data[i].email;
+                                    obj.phone = result.data[i].phone;
+                                    obj.time = result.data[i].gmtCreate;
+
+                                    testObj.name = obj.name;
+                                    testObj.email = obj.email;
+                                    testObj.phone = obj.phone;
+                                    testObj.time = obj.time;
+
+                                    user_info.labelArr.push(testObj);
+                                }
+                            }
+                        }
+                        else {
+                            alert(result.message)
+                        }
+                    },
+                    error: function () {
+                        console.log('fail')
+                    }
+                })
+            },
+
+        },
+        mounted() {
+            this.userList();
         }
     })
 </script>
