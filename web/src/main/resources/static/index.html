@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="lib/element/index.css"/>
     <script src="lib/vue/vue.js"></script>
     <script src="lib/element/index.js"></script>
-    <script src="lib/jquery/jquery-1.7.1.min.js"></script>
+    <!--<script src="lib/jquery/jquery-1.7.1.min.js"></script>-->
+    <script src="lib/jquery/jquery-3.2.1.js"></script>
     <script src="lib/layui/layui.js"></script>
     <style>
         html {
@@ -69,14 +70,18 @@
                     <i class="el-icon-menu"></i>
                     <span slot="title">我的应用</span>
                 </template>
-                <el-submenu v-for="(group,index) in groups_apps" :index="'300'+index" :key="index">
+                <el-submenu v-for="(group,index) in groups_apps" :index="'300'+index">
                     <template slot="title">
-                        <i class="el-icon-plus"></i>
-                        <span>{{group.groupName}}</span>
+                        <div @click="clickGroup(group.appGroupId)">
+                            <i class="el-icon-plus"></i>
+                            <span>{{group.groupName}}</span>
+                        </div>
                     </template>
-                    <el-menu-item v-for="(app,appIndex) in group.apps" :index="(index+1)*1000+appIndex+''"
-                                  @click="clickApp(app.appId)" :key="index">
-                        {{app.name}}
+                    <el-menu-item v-for="(app,appIndex) in group.apps" :index="(index+1)*1000+appIndex+''">
+                        <div @click="clickApp(app.appId)">
+
+                            <span>{{app.name}}</span>
+                        </div>
                     </el-menu-item>
                 </el-submenu>
 
@@ -99,35 +104,12 @@
     <el-container>
         <el-header style=" margin-top:-7px;padding:0px;width: 100%">
             <el-card shadow="always">
-                <el-col :span="6" align="center">
-                    <el-dropdown>
-                        <span class="font">团队<i class="el-icon-arrow-down el-icon--right"></i></span>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item class="font" v-for="team in teamArr" :key="team">{{team}}
-                            </el-dropdown-item>
-                            <el-dropdown-item class="font"><i class="el-icon-plus"></i>添加团队</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
-                </el-col>
 
-                <el-col :span="6">
-                    <el-dropdown>
-                  <span class="font">
-                    数据中心<i class="el-icon-arrow-down el-icon--right"></i>
-                  </span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item class="font" v-for="data in dataArr" :key="data">{{data}}</el-dropdown-item>
-                        <el-dropdown-item><i class="el-icon-plus"></i>选择数据中心</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-
-                </el-col>
                 <el-col :span="8" align="right" style="font-size: 20px; color: #409EFF; margin-top: 0px">
                     <el-popover
                             placement="bottom"
                             width="200"
-                            trigger="click"
-                            content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                            trigger="click">
                         <el-button slot="reference" type="text">
                             <el-badge is-dot>
                                 <i class="el-icon-bell"></i>
@@ -198,6 +180,15 @@
             noticerecord: [],
         },
         methods: {
+            openSubMenu(index, indexPath) {
+                console.log(index, indexPath);
+            },
+            clickGroup(id) {
+                console.log('grousssp' + id);
+            },
+            clickApp(id) {
+                console.log('apppp' + id);
+            },
             handleCommand(command) {
                 this.$message("退出");
             },
@@ -300,7 +291,7 @@
                 });
             },
             myAppList(){
-                var that = this
+                var that = this;
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/actions/info',
@@ -371,22 +362,22 @@
                 //连接成功建立的回调方法
                 websocket.onopen = function (event) {
 
-                }
+                };
 
                 //接收到消息的回调方法   event.data
                 websocket.onmessage = function (event) {
                     vm.websocket(event.data);
-                }
+                };
 
                 //连接关闭的回调方法
                 websocket.onclose = function () {
 
-                }
+                };
 
                 //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
                 window.onbeforeunload = function () {
                     websocket.close();
-                }
+                };
 
                 //关闭连接
                 function closeWebSocket() {
@@ -439,7 +430,7 @@
                         websocket.send(JSON.stringify({
                             type: 'chatMessage' //随便定义，用于在服务端区分消息类型
                             , data: res
-                        }))
+                        }));
                         //获取收到的消息
                         websocket.onmessage = function (res) {
                             res = JSON.parse(res);
@@ -454,6 +445,7 @@
                 $.get({
                     url: '/tianyu-paas/app-groups/groups-apps',
                     success: function (res) {
+                        console.log('sss' + res.data);
                         vm.groups_apps = res.data;
                         console.log(vm.groups_apps);
                     }
@@ -464,10 +456,11 @@
             }
         },
         created() {
-            this.myAppList()
+            this.myAppList();
             this.init_usrInf();
             this.getMessage();
             this.getNotice();
+            this.init_gruops();
         },
         mounted() {
 //            this.contact_customer_service();
