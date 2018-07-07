@@ -161,4 +161,35 @@ public class UserLoginLogController {
 
         return TResult.success(views);
     }
+
+    /**
+     * 返回一年内每月中7个工作日的访问量
+     * @return
+     * @author 倪龙康
+     * @since 2018-07-07
+     */
+    @ApiOperation("返回一年内每月中7个工作日的访问量")
+    @GetMapping("/views-days-month-of-year")
+    public TResult viewsByDaysOfMonthOfYear(){
+        Integer [][] view = new Integer[7][12];
+        for (int i=0; i<12; i++){
+          List<UserLoginLog> userLoginLogs = userLoginLogService.selectList(new EntityWrapper<UserLoginLog>().eq("month",i+1));
+          if (userLoginLogs.size() == 0){
+              for (int j=0;j<7;j++){
+                  view[j][i]=0;
+              }
+          }else {
+              for (int j = 0; j < 7; j++) {
+                  int count = 0;
+                  for (UserLoginLog userLoginLog : userLoginLogs) {
+                      if (j + 1 == userLoginLog.getDayOfWeek()) {
+                          count++;
+                      }
+                      view[j][i] = count;
+                  }
+              }
+          }
+        }
+        return TResult.success(view);
+    }
 }

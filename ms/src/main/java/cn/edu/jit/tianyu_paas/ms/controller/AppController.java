@@ -42,18 +42,12 @@ public class AppController {
     @ApiOperation("获取所有用户以及应用")
     @GetMapping
     public TResult getApps() {
-        List<User> users = userService.selectList(new EntityWrapper<User>());
-        if (users == null) {
-            return TResult.failure(TResultCode.RESULE_DATA_NONE);
-        }
-        for (User user : users) {
-            List<App> apps = appService.selectList(new EntityWrapper<App>().eq("user_id", user.getUserId()));
-            if (apps == null) {
-                return TResult.failure(TResultCode.RESULE_DATA_NONE);
-            }
-            user.setApps(apps);
-        }
-        return TResult.success(users);
+       List<App> appList = appService.selectList(new EntityWrapper<App>());
+       for (App app:appList){
+           User user = userService.selectOne(new EntityWrapper<User>().eq("user_id",app.getUserId()));
+           app.setUsername(user.getName());
+       }
+           return TResult.success(appList);
     }
 
     /**

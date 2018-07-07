@@ -68,6 +68,20 @@ public class App implements Serializable {
     private Date gmtCreate;
 
     /**
+     * 应用所属用户的用户名
+     */
+    @TableField(exist = false)
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
      * 获取容器的信息
      */
     @TableField(exist = false)
