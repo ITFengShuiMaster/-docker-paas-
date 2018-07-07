@@ -26,7 +26,7 @@ public interface UserMapper extends BaseMapper<User> {
      */
     @Select("SELECT u.user_id as userId, u.name as name, u.phone as phone, u.email as email, u.head_img as headImg, u.gmt_create as gmtCreate, u.gmt_modified as gmtModified " +
             "from `user` as u " +
-            "where u.user_id in (SELECT ull.user_id FROM user_login_log as ull WHERE ull.gmt_create BETWEEN DATE_SUB(NOW(), INTERVAL #{days} DAY) AND NOW() GROUP BY user_id HAVING COUNT(*) > #{views})")
+            "where u.user_id in (SELECT ull.user_id FROM user_login_log as ull WHERE ull.gmt_create BETWEEN DATE_SUB(NOW(), INTERVAL #{days} DAY) AND NOW() GROUP BY user_id HAVING COUNT(ull.user_id) >= #{views})")
     List<User> selectAccessUsers(@Param("days") Integer days, @Param("views") Integer views, Pagination pagination);
 
     /**
