@@ -12,9 +12,9 @@ import javax.servlet.http.HttpSession;
 
 public class GlobalInterceptor implements HandlerInterceptor {
 
-    @Value("${web.runtime}")
+    @Value("${ms.runtime}")
     private boolean runtime;
-    @Value("${web.test-user-id}")
+    @Value("${ms.test-user-id}")
     private long testUserId;
 
     private Logger logger = LoggerFactory.getLogger(GlobalInterceptor.class);
