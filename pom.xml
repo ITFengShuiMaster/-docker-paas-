@@ -26,6 +26,12 @@
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.mina/mina-core -->
+        <dependency>
+            <groupId>org.apache.mina</groupId>
+            <artifactId>mina-core</artifactId>
+            <version>3.0.0-M2</version>
+        </dependency>
         <!--断路器，避免一个微服务瘫痪导致连锁瘫痪整个系统雪崩-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
