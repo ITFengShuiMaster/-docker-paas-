@@ -195,7 +195,16 @@
                 })
             },
             remove(index) {
-                this.data6.splice(index, 1);
+                this.$Modal.confirm({
+                    content: '是否确认删除？',
+                    onOk: () => {
+                        this.labelArr.splice(index, 1);
+                        this.$Message.info('已删除');
+                    },
+                    onCancel: () => {
+                        this.$Message.info('Clicked cancel');
+                    }
+                });
             },
             userList() {
                 $.ajax({
@@ -203,7 +212,6 @@
                     url: 'admins',
                     dataType: "json",
                     success: function (result) {
-                        // console.log(result.data.records);
                         for (var i = 0; i < result.data.records.length; i++) {
                             console.log(result.data.records[i]);
                             var obj = user_info.labelArr[0];
@@ -227,7 +235,9 @@
                 })
             },
         },
-
+        mounted() {
+            this.userList();
+        }
 
     })
 </script>

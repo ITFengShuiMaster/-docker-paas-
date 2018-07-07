@@ -80,22 +80,31 @@
                     url: 'admins/arrears-users',
                     dataType: "json",
                     success: function (result) {
-                        // console.log(result.data.records);
-                        for (var i = 0; i < result.data.length; i++) {
-                            console.log(result.data[i]);
-                            var obj = user_info.labelArr[0];
-                            var testObj = {name: "", email: "", phone: '', time: ''};
-                            obj.name = result.data[i].name;
-                            obj.email = result.data[i].email;
-                            obj.phone = result.data[i].phone;
-                            obj.time = result.data[i].gmtCreate;
+                        if (result.code == 1) {
+                            console.log(result.data.length);
+                            if (result.data.length == 0) {
+                                alert('nothing!')
+                            } else {
+                                for (var i = 0; i < result.data.length; i++) {
+                                    console.log(result.data[i]);
+                                    var obj = user_info.labelArr[0];
+                                    var testObj = {name: "", email: "", phone: '', time: ''};
+                                    obj.name = result.data[i].name;
+                                    obj.email = result.data[i].email;
+                                    obj.phone = result.data[i].phone;
+                                    obj.time = result.data[i].gmtCreate;
 
-                            testObj.name = obj.name;
-                            testObj.email = obj.email;
-                            testObj.phone = obj.phone;
-                            testObj.time = obj.time;
+                                    testObj.name = obj.name;
+                                    testObj.email = obj.email;
+                                    testObj.phone = obj.phone;
+                                    testObj.time = obj.time;
 
-                            user_info.labelArr.push(testObj);
+                                    user_info.labelArr.push(testObj);
+                                }
+                            }
+                        }
+                        else {
+                            alert(result.message)
                         }
                     },
                     error: function () {
