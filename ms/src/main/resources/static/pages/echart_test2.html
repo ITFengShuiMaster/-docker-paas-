@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="../lib/echarts/echarts.js"></script>
+    <script src="../lib/vue/vue.min.js"></script>
+    <script src="../lib/jquery/jquery-3.2.1.js"></script>
+
+</head>
+<body>
+<div id="echart_table" style="width: 900px;height: 600px"></div>
+</body>
+<script>
+    var echart_table = new Vue({
+        el: "#echart_table",
+        data: {
+            table_data_days: [],
+            table_data_views: [],
+        },
+        methods: {
+            init_table() {
+                var mycharts = echarts.init(document.getElementById('echart_table'));
+                var dates = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+                    values = [4, 3, 5, 2, 3, 6, 2];
+                option = {
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        triggerOn: 'onmousemove',
+                        formatter: function (params) {
+                            return '时间: ' + params.name + '<br>浏览量: ' + params.value + '人';
+                        }
+                    },
+                    xAxis: {
+                        boundaryGap: false,
+                        data: this.table_data_days,
+                        axisLabel: {
+                            color: '#000000'
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#BFBFBF'
+                            }
+                        }
+                    },
+                    yAxis: {
+                        axisLabel: {
+                            color: '#000000'
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#BFBFBF'
+                            }
+                        }
+                    },
+                    visualMap: {
+                        top: 100,
+                        right: 10,
+                        pieces: [{
+                            gt: 0,
+                            lte: 1,
+                            color: '#096'
+                        }, {
+                            gt: 1,
+                            lte: 2,
+                            color: '#ffde33'
+                        }, {
+                            gt: 2,
+                            lte: 3,
+                            color: '#ff9933'
+                        }, {
+                            gt: 3,
+                            lte: 4,
+                            color: '#cc0033'
+                        }, {
+                            gt: 4,
+                            lte: 5,
+                            color: '#660099'
+                        }, {
+                            gt: 5,
+                            color: '#7e0023'
+                        }],
+                        outOfRange: {
+                            color: '#999'
+                        }
+                    },
+                    dataZoom: [{
+                        startValue: '星期一'
+                    }, {
+                        type: 'inside'
+                    }],
+                    series: [{
+                        type: 'line',
+                        data: echart_table.table_data_views,
+                        markLine: {
+                            silent: true,
+                            data: [{
+                                yAxis: 1
+                            }, {
+                                yAxis: 2
+                            }, {
+                                yAxis: 3
+                            }, {
+                                yAxis: 4
+                            }, {
+                                yAxis: 5
+                            }]
+                        }
+
+                        /*,
+                    label:{
+                        normal:{
+                            show:true//圆点上显示值
+                        }
+                    }*/
+                    }
+                    ]
+
+                };
+
+                mycharts.setOption(option);
+            },
+            get_views_day_of_month() {
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8080/ms/logs/views-day-of-month',
+                    success: function (result) {
+                        console.log(result);
+                        if (result.code) {
+                            for (i in result.data) {
+                                echart_table.table_data_days.push(result.data[i].day);
+                                echart_table.table_data_views.push(result.data[i].views);
+                            }
+                        } else {
+                        }
+                        echart_table.init_table();
+                    },
+                    error: function () {
+                        console.log("失败")
+                    }
+                })
+            },
+            get_views_month_of_year() {
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8080/ms/logs/views-month-of-year',
+                    success: function (result) {
+                        console.log(result);
+                        if (result.code) {
+                            for (i in result.data) {
+                                echart_table.table_data_days.push(result.data[i].day);
+                                echart_table.table_data_views.push(result.data[i].views);
+                            }
+                        } else {
+                        }
+                        echart_table.init_table();
+                    },
+                    error: function () {
+                        console.log("失败")
+                    }
+                })
+            }
+        },
+        created(){
+            this.get_views_day_of_month();
+        },
+        mounted() {
+
+        }
+    })
+
+</script>
+</html>
