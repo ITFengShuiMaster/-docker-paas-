@@ -69,50 +69,55 @@
         <div class="layout">
             <Layout>
                 <Sider breakpoint="md" collapsible :collapsed-width="78" v-model="isCollapsed">
-                    <i-menu theme="dark" width="auto" :class="menuitemClasses" :open-names="['1','12']" active-name="2">
-                        <Submenu name="1">
+                    <i-menu theme="dark" width="auto" :class="menuitemClasses" :open-names="['999','1000']"
+                            active-name="0" @on-select="selectPage">
+                        <Submenu name="999">
                             <template slot="title">
                                 <Icon type="person"></Icon>
                                 用户管理
                             </template>
-                            <menu-item name="2">用户汇总查询</menu-item>
-                            <menu-item name="3">新注册用户信息推送</menu-item>
-                            <menu-item name="4">久未上线用户</menu-item>
-                            <menu-item name="5">欠费用户查询</menu-item>
+                            <menu-item name="0">用户汇总查询</menu-item>
+                            <menu-item name="1">新注册用户信息推送</menu-item>
+                            <menu-item name="2">久未上线用户</menu-item>
+                            <menu-item name="3">欠费用户查询</menu-item>
                         </Submenu>
-                        <menu-item name="6">
+                        <menu-item name="4">
                             <Icon type="clipboard"></Icon>
-                            <span>公告查询</span>
+                            <span>公告管理</span>
                         </menu-item>
-                        <Submenu name="7">
+                        <Submenu name="998">
                             <template slot="title">
                                 <Icon type="ios-pulse"></Icon>
                                 访问量查询
                             </template>
-                            <menu-item name="8">当前访问量查询</menu-item>
-                            <menu-item name="9">各天平均访问量查询</menu-item>
-                            <menu-item name="10">本月每天访问量查询</menu-item>
-                            <menu-item name="11">本年每月访问量查询</menu-item>
+                            <menu-item name="5">当前访问量查询</menu-item>
+                            <menu-item name="6">各天平均访问量查询</menu-item>
+                            <menu-item name="7">本月每天访问量查询</menu-item>
+                            <menu-item name="8">本年每月访问量查询</menu-item>
                         </Submenu>
-                        <menu-item name="12">
-                            <Icon type="android-apps"></Icon>
-                            <span>应用查询</span>
-                        </menu-item>
+                        <Submenu name="1000">
+                            <template slot="title">
+                                <Icon type="android-apps"></Icon>
+                                应用查询
+                            </template>
+                            <menu-item name="9">用户新建应用</menu-item>
+                            <menu-item name="10">官方应用</menu-item>
+                        </Submenu>
                     </i-menu>
                     <div slot="trigger"></div>
                 </Sider>
                 <Layout>
                     <Header class="layout-header-bar" style="display: inline-flex">
                         <i-col span="20">
-                            <p style="margin: 13px 25px;font-size: 16px">后台管理系统</p>
+                            <div style="margin: 13px 25px;font-size: 16px">后台管理系统</div>
                         </i-col>
                         <i-col span="4">
                             <Dropdown>
-                                <p href="javascript:void(0)" v-model="name"
-                                   style="font-size: 16px;padding-top: 13px;cursor:hand">
+                                <div href="javascript:void(0)" v-model="name"
+                                     style="font-size: 16px;padding-top: 13px;cursor:hand">
                                     {{name}}
                                     <Icon type="arrow-down-b"></Icon>
-                                </p>
+                                </div>
                                 <dropdown-menu slot="list">
                                     <dropdown-item>退出登录</dropdown-item>
                                 </dropdown-menu>
@@ -120,7 +125,7 @@
                         </i-col>
                     </Header>
                     <Content :style="{margin: '20px', background: '#fff', minHeight: '220px'}">
-                        Content
+                        <div id="content"></div>
 
                     </Content>
                 </Layout>
@@ -134,11 +139,22 @@
     new Vue({
         el: '#app',
         data() {
-
             return {
+                pageArr: ['pages/user_management/user_info.html', 'pages/user_management/push_message.html', 'pages/user_management/long_time_without_login.html',
+                    'pages/user_management/arrearage_user.html', 'pages/notice_push.html', '', '', '', '', 'pages/app/app.html', 'pages/app/app_demo.html'],
                 name: 'ltl',
                 isCollapsed: false
             };
+        },
+        methods: {
+            selectPage(index, indexPath) {
+                // 主要就是通过jquery的load方法，加内容加载到元素上
+                console.log('select');
+                if (index < 998) {
+                    $('#content').load(this.pageArr[index], function (response, message, xhr) {
+                    });
+                }
+            },
         },
         computed: {
             menuitemClasses: function () {

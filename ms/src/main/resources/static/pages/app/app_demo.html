@@ -1,0 +1,283 @@
+<style>
+    .text {
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 15px;
+    }
+
+    p {
+        font-size: 14px;
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 8px;
+    }
+</style>
+<body>
+<div id="app_demo">
+    <div style="margin: 10px 20px; display: inline-flex">
+        <p>主页</p>
+        <p>/</p>
+        <p style="font-weight: bold">应用管理</p>
+    </div>
+    <div style="margin: 10px 20px">
+        <p style="font-size: 20px; color: black">官方应用管理</p>
+        <p style="margin: 8px 0px 20px">查询用户新建应用使用情况</p>
+    </div>
+    <div style="display: inline-flex; padding-left: 20px;padding-bottom: 15px">
+        <p class="text">查询条件:</p>
+        <i-input v-model="app_name" placeholder="请输入应用名" style="width: 300px; margin-right: 15px"></i-input>
+        <i-button type="primary" style:>查询</i-button>
+        <i-button type="success" style="margin-left: 300px" @click="modal1 = true">添加公告</i-button>
+        <Modal
+                v-model="modal1"
+                title="发布新公告"
+                @on-ok="ok"
+                @on-cancel="cancel">
+            <div style="display: inline-flex;margin-right: 10px;margin-bottom: 10px">
+                <div style="font-size: 14px;">请输入标题：</div>
+                <i-input v-model="input_title" style="width: 60%" size="small"></i-input>
+            </div>
+            <div style="margin-right: 10px">
+                <div style="font-size: 14px;margin-bottom: 5px">请输入内容：</div>
+                <i-input v-model="input_content" style="width: 70%"></i-input>
+            </div>
+        </Modal>
+    </div>
+    <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px"></i-table>
+
+</div>
+
+</body>
+<script>
+    var app_demo = new Vue({
+        el: '#app_demo',
+        data: {
+            input_title: '',
+            input_content: '',
+            app_name: '',
+            modal1: false,
+            data1: [
+                {
+                    app_name: '发财',
+                    app_storage: "200",
+                    app_status: 1,
+                    app_group_id: "555",
+                    time: "1334"
+                },
+                {
+                    app_name: '发财',
+                    app_storage: "200",
+                    app_status: 1,
+                    app_group_id: "555",
+                    time: "1334"
+                },
+                {
+                    app_name: '发财',
+                    app_storage: "200",
+                    app_status: false,
+                    app_group_id: "555",
+                    time: "1334"
+                },
+                {
+                    app_name: '发财',
+                    app_storage: "200",
+                    app_status: false,
+                    app_group_id: "555",
+                    time: "1334"
+                },
+            ],
+            columns1: [
+                {
+                    title: '应用名称',
+                    key: 'app_name',
+                },
+                {
+                    title: '应用使用的内存量',
+                    key: 'app_storage'
+                },
+                {
+                    title: '应用状态',
+                    key: 'app_status',
+                    render: (h, param) => {
+                        return h('div', [
+                            h('Tag', {
+                                props: {
+                                    color: 'blue',
+                                    name: 'tt',
+                                    value: 'tt'
+                                },
+                                on: {}
+                            }, param.row.app_name)
+                        ])
+                    }
+                },
+                {
+                    title: '状态改变',
+                    key: 'app_status',
+                    render: (h, params) => {
+                        return h('div', [
+                            h('i-switch', {
+                                props: {
+                                    //true和false判断开关
+                                    value: params.row.app_status,
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    'on-change': (change_status) => {//触发事件是on-change,用双引号括起来，
+                                        //参数value是回调值，并没有使用到
+                                        app_demo.switch(params.index) //params.index是拿到table的行序列，可以取到对应的表
+                                    }
+                                }
+                            }),
+                        ]);
+                    }
+
+                },
+                {
+                    title: '属于应用组',
+                    key: 'app_group_id'
+                },
+                {
+                    title: '创建时间',
+                    key: 'time'
+                },
+                {
+                    title: '操作',
+                    key: 'action',
+                    width: 200,
+                    align: 'center',
+                    render: (h, params) => {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        console.log(params);
+                                        app_demo.show(params.index)
+                                    }
+                                }
+                            }, '查询'),
+                            h('i-button', {
+                                props: {
+                                    type: 'success',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        app_demo.modify()
+                                    }
+                                }
+                            }, '修改'),
+                            h('Button', {
+                                props: {
+                                    type: 'error',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click: () => {
+                                        app_demo.remove(params.index)
+                                    }
+                                }
+                            }, '删除')
+                        ]);
+                    }
+                }
+
+            ]
+        },
+        methods: {
+            switch(index) {
+
+            },
+            modify() {
+                this.$Modal.confirm({
+                    render: (h) => {
+                        return h('div', [
+                            h('span', '标题'),
+                            h('Input', {
+                                style: {
+                                    width: '80%',
+                                    marginLeft: '15px',
+                                    marginRight: '25px',
+                                    marginBottom: '10px'
+                                },
+                                props: {
+                                    value: this.name,
+                                    autofocus: true,
+                                    placeholder: '请输入公告标题'
+                                },
+                                on: {
+                                    input: (val) => {
+                                        this.name = val;
+                                    }
+                                }
+                            }),
+                            h('span', '内容'),
+                            h('Input', {
+                                style: {
+                                    width: '80%',
+                                    marginLeft: '15px',
+                                    marginBottom: '10px'
+                                },
+                                props: {
+                                    value: this.id,
+                                    autofocus: true,
+                                    placeholder: '请输入公告内容'
+                                },
+                                on: {
+                                    input: (val) => {
+                                        this.id = val;
+                                    }
+                                },
+                            })
+                        ]);
+                    },
+                    onOk: () => {
+                        console.log(app_management.name)
+                    }
+                })
+            },
+
+            show(index) {
+                this.$Modal.info({
+                    title: 'User Info',
+                    content: `应用名：${this.data1[index].app_name}<br>所属用户：${this.data1[index].user_id}<br>应用使用的内存量：
+                    ${this.data1[index].app_storage}<br>应用状态：${this.data1[index].app_status}<br>
+                    所属应用组：${this.data1[index].app_group_id}<br>创建时间：${this.data1[index].time}`
+                })
+            },
+            remove(index) {
+                this.$Modal.confirm({
+                    content: '是否确认删除？',
+                    onOk: () => {
+                        this.data1.splice(index, 1);
+                        this.$Message.info('已删除');
+                    },
+                    onCancel: () => {
+                        this.$Message.info('Clicked cancel');
+                    }
+                });
+            },
+            ok() {
+                this.$Message.info('Clicked ok');
+            },
+            cancel() {
+                this.$Message.info('Clicked cancel');
+            },
+            mounted() {
+                this.data1[0].app_status = true;
+            }
+        }
+    })
+</script>
