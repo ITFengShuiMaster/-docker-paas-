@@ -3,6 +3,7 @@ package cn.edu.jit.tianyu_paas.web.controller;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ public class AppLogController {
         this.actionService = actionService;
     }
 
+    @ApiOperation("根据appId获取applog信息")
     @GetMapping("/{appId}")
     public TResult listAppLog(@PathVariable String appId) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);

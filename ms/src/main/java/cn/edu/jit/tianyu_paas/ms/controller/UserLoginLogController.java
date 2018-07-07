@@ -3,9 +3,11 @@ package cn.edu.jit.tianyu_paas.ms.controller;
 
 import cn.edu.jit.tianyu_paas.ms.service.UserLoginLogService;
 import cn.edu.jit.tianyu_paas.shared.entity.UserLoginLog;
+import cn.edu.jit.tianyu_paas.shared.global.PublicConstants;
 import cn.edu.jit.tianyu_paas.shared.util.DateUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +40,7 @@ public class UserLoginLogController {
      * @returnTResult
      * @since 2018-07-01
      */
+    @ApiOperation("获取访问量")
     @GetMapping("/views")
     public TResult getViewsBydayOrWeekOrMonth(@RequestParam(value = "status", defaultValue = "0") Integer status) {
         Integer counts = 0;
@@ -58,11 +61,12 @@ public class UserLoginLogController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("返回每周各天平均访问量")
     @GetMapping("/views-day-of-week-avg")
     public TResult listViewsByDaysOfWeek() {
         List<Map<String, Object>> views = userLoginLogService.selectMaps(new EntityWrapper<UserLoginLog>().setSqlSelect("COUNT(*) as views, day_of_week").groupBy("day_of_week"));
 
-        int weeks = DateUtil.getWeeksDiff(cn.edu.jit.tianyu_paas.shared.global.Constants.DATE_OF_START, new Date());
+        int weeks = DateUtil.getWeeksDiff(PublicConstants.DATE_OF_START, new Date());
 
         if (weeks == 0) {
             return TResult.success(views);
@@ -83,11 +87,12 @@ public class UserLoginLogController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("返回每月各天平均访问量")
     @GetMapping("/views-day-of-month-avg")
     public TResult listViewsDayOfMonth() {
         List<Map<String, Object>> views = userLoginLogService.selectMaps(new EntityWrapper<UserLoginLog>().setSqlSelect("COUNT(*) as views, day").groupBy("day"));
 
-        int months = DateUtil.getMonthDiff(cn.edu.jit.tianyu_paas.shared.global.Constants.DATE_OF_START, new Date());
+        int months = DateUtil.getMonthDiff(PublicConstants.DATE_OF_START, new Date());
 
         if (months == 0) {
             return TResult.success(views);
@@ -108,11 +113,12 @@ public class UserLoginLogController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("返回每年各月平均访问量")
     @GetMapping("/views-month-of-year-avg")
     public TResult listViewsMonthOfYear() {
         List<Map<String, Object>> views = userLoginLogService.selectMaps(new EntityWrapper<UserLoginLog>().setSqlSelect("COUNT(*) as views, month").groupBy("month"));
 
-        int years = DateUtil.getYearsDiff(cn.edu.jit.tianyu_paas.shared.global.Constants.DATE_OF_START, new Date());
+        int years = DateUtil.getYearsDiff(PublicConstants.DATE_OF_START, new Date());
 
         if (years == 0) {
             return TResult.success(views);
@@ -133,6 +139,7 @@ public class UserLoginLogController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("返回本月每天访问量")
     @GetMapping("/views-day-of-month")
     public TResult listViewsByDayOfMonth() {
         List<Map<String, Object>> views = userLoginLogService.selectMaps(new EntityWrapper<UserLoginLog>().setSqlSelect("COUNT(*) as views, day").between("gmt_create", DateUtil.getBeginOfMonth(), new Date()).groupBy("day"));
@@ -147,10 +154,42 @@ public class UserLoginLogController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("返回本月每天访问量")
     @GetMapping("/views-month-of-year")
     public TResult listViewsByMonthOfYear() {
         List<Map<String, Object>> views = userLoginLogService.selectMaps(new EntityWrapper<UserLoginLog>().setSqlSelect("COUNT(*) as views, month").between("gmt_create", DateUtil.getBeginOfYear(), new Date()).groupBy("month"));
 
         return TResult.success(views);
+    }
+
+    /**
+     * 返回一年内每月中7个工作日的访问量
+     * @return
+     * @author 倪龙康
+     * @since 2018-07-07
+     */
+    @ApiOperation("返回一年内每月中7个工作日的访问量")
+    @GetMapping("/views-days-month-of-year")
+    public TResult viewsByDaysOfMonthOfYear(){
+        Integer [][] view = new Integer[7][12];
+        for (int i=0; i<12; i++){
+          List<UserLoginLog> userLoginLogs = userLoginLogService.selectList(new EntityWrapper<UserLoginLog>().eq("month",i+1));
+          if (userLoginLogs.size() == 0){
+              for (int j=0;j<7;j++){
+                  view[j][i]=0;
+              }
+          }else {
+              for (int j = 0; j < 7; j++) {
+                  int count = 0;
+                  for (UserLoginLog userLoginLog : userLoginLogs) {
+                      if (j + 1 == userLoginLog.getDayOfWeek()) {
+                          count++;
+                      }
+                      view[j][i] = count;
+                  }
+              }
+          }
+        }
+        return TResult.success(view);
     }
 }

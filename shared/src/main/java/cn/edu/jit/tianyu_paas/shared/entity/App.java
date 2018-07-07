@@ -3,7 +3,7 @@ package cn.edu.jit.tianyu_paas.shared.entity;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.github.dockerjava.api.command.InspectContainerResponse;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -18,7 +18,6 @@ import java.util.Date;
  * @author 汪继友
  * @since 2018-06-28
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class App implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,6 +27,10 @@ public class App implements Serializable {
      */
     @TableId(value = "app_id", type = IdType.AUTO)
     private Long appId;
+    /**
+     * 应用容器的id
+     */
+    private String containerId;
     /**
      * 创建应用的用户id
      */
@@ -52,7 +55,6 @@ public class App implements Serializable {
     /**
      * 属于哪个应用组
      */
-//    @NotEmpty
     @Min(1)
     private Long appGroupId;
     /**
@@ -64,6 +66,26 @@ public class App implements Serializable {
      * 创建时间
      */
     private Date gmtCreate;
+
+    /**
+     * 应用所属用户的用户名
+     */
+    @TableField(exist = false)
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * 获取容器的信息
+     */
+    @TableField(exist = false)
+    private InspectContainerResponse inspectContainerResponse;
 
     public String getName() {
         return name;
@@ -79,6 +101,14 @@ public class App implements Serializable {
 
     public void setAppId(Long appId) {
         this.appId = appId;
+    }
+
+    public String getContainerId() {
+        return containerId;
+    }
+
+    public void setContainerId(String containerId) {
+        this.containerId = containerId;
     }
 
     public Long getUserId() {
@@ -135,6 +165,14 @@ public class App implements Serializable {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public InspectContainerResponse getInspectContainerResponse() {
+        return inspectContainerResponse;
+    }
+
+    public void setInspectContainerResponse(InspectContainerResponse inspectContainerResponse) {
+        this.inspectContainerResponse = inspectContainerResponse;
     }
 
     @Override

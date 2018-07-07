@@ -8,6 +8,8 @@ import cn.edu.jit.tianyu_paas.shared.util.StringUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,18 +39,15 @@ public class AppController {
      *
      * @return
      */
+    @ApiOperation("获取所有用户以及应用")
     @GetMapping
     public TResult getApps() {
-        List<User> users = userService.selectList(new EntityWrapper<User>());
-        if (users == null)
-            return TResult.failure(TResultCode.RESULE_DATA_NONE);
-        for (User user : users) {
-            List<App> apps = appService.selectList(new EntityWrapper<App>().eq("user_id", user.getUserId()));
-            if (apps == null)
-                return TResult.failure(TResultCode.RESULE_DATA_NONE);
-            user.setApps(apps);
-        }
-        return TResult.success(users);
+       List<App> appList = appService.selectList(new EntityWrapper<App>());
+       for (App app:appList){
+           User user = userService.selectOne(new EntityWrapper<User>().eq("user_id",app.getUserId()));
+           app.setUsername(user.getName());
+       }
+           return TResult.success(appList);
     }
 
     /**
@@ -58,10 +57,12 @@ public class AppController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("更新app")
     @PutMapping
     public TResult updateApp(App app) {
-        if (!appService.updateById(app))
+        if (!appService.updateById(app)) {
             return TResult.failure(TResultCode.FAILURE);
+        }
         return TResult.success();
     }
 
@@ -72,10 +73,12 @@ public class AppController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("删除应用")
     @DeleteMapping("/{appId}")
     public TResult deleteApp(@PathVariable Long appId) {
-        if (!appService.deleteById(appId))
+        if (!appService.deleteById(appId)) {
             return TResult.failure(TResultCode.FAILURE);
+        }
         return TResult.success();
     }
 
@@ -88,6 +91,7 @@ public class AppController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("根据手机号或邮箱查询app")
     @PostMapping("/by-phone-email")
     public TResult listAppsByPhoneAndEmail(String phone, String email) {
         User user = null;
@@ -116,6 +120,7 @@ public class AppController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("根据app名模糊查询app")
     @GetMapping("/contain")
     public TResult listAppByName(@RequestParam(defaultValue = "") String name) {
         return TResult.success(appService.selectList(new EntityWrapper<App>().like("name", name)));

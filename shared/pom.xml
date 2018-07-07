@@ -6,7 +6,7 @@
     <groupId>cn.edu.jit.tianyu_paas</groupId>
     <artifactId>shared</artifactId>
     <version>1.0</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>shared</name>
     <description>公共实体类，工具类等</description>

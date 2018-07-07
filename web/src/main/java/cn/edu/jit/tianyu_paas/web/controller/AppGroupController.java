@@ -8,6 +8,7 @@ import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.AppGroupService;
 import cn.edu.jit.tianyu_paas.web.service.AppService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,17 +38,19 @@ public class AppGroupController {
 
     /**
      * 创建应用组
-     * @author 倪龙康
+     *
      * @param groupName
      * @param compose
      * @return
+     * @author 倪龙康
      */
+    @ApiOperation("创建应用组")
     @PostMapping
     public TResult groupCreate(String groupName, String compose) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        if (appGroupService.selectOne(new EntityWrapper<AppGroup>()
-                .eq("group_name", groupName).eq("user_id", userId)) != null)
-            return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
+        if (appGroupService.selectOne(new EntityWrapper<AppGroup>().eq("group_name", groupName).eq("user_id", userId)) != null) {
+                return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
+        }
         AppGroup appGroup = new AppGroup();
         appGroup.setUserId(userId);
         appGroup.setGmtCreate(new Date());
@@ -61,25 +64,30 @@ public class AppGroupController {
 
     /**
      * 修改组名
-     * @author 倪龙康
+     *
      * @param appGroup
      * @return
+     * @author 倪龙康
      */
+    @ApiOperation("修改组名")
     @PutMapping
     public TResult updateGroup(AppGroup appGroup) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        if (!appGroupService.update(appGroup, new EntityWrapper<AppGroup>()
-                .eq("app_id", appGroup.getAppGroupId()).and().eq("user_id", userId)))
+        if (!appGroupService.update(appGroup, new EntityWrapper<AppGroup>(
+        ).eq("app_group_id", appGroup.getAppGroupId()).and().eq("user_id", userId))) {
             return TResult.failure(TResultCode.FAILURE);
+        }
         return TResult.success();
     }
 
     /**
      * 获取所有组的信息
+     *
      * @return
      */
+    @ApiOperation("获取所有组的信息")
     @GetMapping
-    public TResult listGruopsInfo() {
+    public TResult listGroupsInfo() {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         return TResult.success(appGroupService.selectList(new EntityWrapper<AppGroup>().eq("user_id", userId)));
     }
@@ -90,6 +98,7 @@ public class AppGroupController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("获取所有组的信息")
     @GetMapping("/groups-apps")
     public TResult showGroupAndAppInfo() {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
@@ -103,15 +112,18 @@ public class AppGroupController {
 
     /**
      * 删除应用组
-     * @author 倪龙康
+     *
      * @param appGroupId
      * @return
+     * @author 倪龙康
      */
+    @ApiOperation("删除应用组")
     @DeleteMapping("/{appGroupId}")
-    public TResult deleteGroup(@PathVariable Long appGroupId){
+    public TResult deleteGroup(@PathVariable Long appGroupId) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        if(!appGroupService.delete(new EntityWrapper<AppGroup>().eq("app_group_id",appGroupId).eq("user_id",userId)))
+        if (!appGroupService.delete(new EntityWrapper<AppGroup>().eq("app_group_id", appGroupId).eq("user_id", userId))) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
         return TResult.success();
     }
 }

@@ -1,0 +1,235 @@
+<style>
+    .text {
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 15px;
+    }
+
+    p {
+        font-size: 14px;
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 8px;
+    }
+</style>
+<body>
+<div id="notice">
+    <div style="margin: 10px 20px; display: inline-flex">
+        <p>主页</p>
+        <p>/</p>
+        <p style="font-weight: bold">公告管理</p>
+    </div>
+    <div style="margin: 10px 20px">
+        <p style="font-size: 20px; color: black">发布公告管理</p>
+        <p style="margin: 8px 0px 20px">查询所有发布公告信息和阅读情况</p>
+    </div>
+    <div style="margin-left: 20px; margin-bottom: 20px;display: inline-flex">
+        <p class="text">查询条件:</p>
+        <i-input v-model="search" placeholder="请输入查询内容" style="width: 400px;margin-right: 15px;"></i-input>
+        <i-button type="primary">查询</i-button>
+        <i-button type="success" style="margin-left: 300px" @click="modal1 = true">添加公告</i-button>
+        <Modal
+                v-model="modal1"
+                title="发布新公告"
+                @on-ok="ok"
+                @on-cancel="cancel">
+            <div style="display: inline-flex;margin-right: 10px;margin-bottom: 10px">
+                <div style="font-size: 14px;">请输入标题：</div>
+                <i-input v-model="input_title" style="width: 60%" size="small"></i-input>
+            </div>
+            <div style="margin-right: 10px">
+                <div style="font-size: 14px;margin-bottom: 5px">请输入内容：</div>
+                <i-input v-model="input_content" style="width: 70%"></i-input>
+            </div>
+        </Modal>
+    </div>
+    <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px;width: auto"></i-table>
+
+</div>
+
+</body>
+<script>
+    var notice = new Vue({
+        el: '#notice',
+        data() {
+            return {
+                input_title: '',
+                input_content: '',
+                modal1: false,
+                search: '',
+                model3: '',
+                columns1: [
+                    {
+                        title: '标题',
+                        key: 'title',
+                    },
+                    {
+                        title: '内容',
+                        key: 'content'
+                    },
+                    {
+                        title: '创建者id',
+                        key: 'id'
+                    },
+                    {
+                        title: '状态',
+                        key: 'read'
+                    },
+                    {
+                        title: '操作',
+                        key: 'action',
+                        width: 200,
+                        align: 'left',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.show(params.index)
+                                        }
+                                    }
+                                }, '查看'),
+                                h('i-button', {
+                                    props: {
+                                        type: 'success',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.modify()
+                                        }
+                                    }
+                                }, '修改'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.remove(params.index)
+                                        }
+                                    }
+                                }, '删除')
+                            ]);
+                        }
+                    }
+
+                ],
+
+                data1: [
+                    {
+                        title: '发财',
+                        content: "1111",
+                        id: 2222,
+                        read: "已读"
+                    },
+                    {
+                        title: '发财',
+                        content: "1111",
+                        id: 2222,
+                        read: "已读"
+                    },
+                    {
+                        title: '发财',
+                        content: "1111",
+                        id: 2222,
+                        read: "已读"
+                    },
+                    {
+                        title: '发财',
+                        content: "1111",
+                        id: 2222,
+                        read: "已读"
+                    },
+                ]
+            }
+        },
+        methods: {
+            modify() {
+                this.$Modal.confirm({
+                    render: (h) => {
+                        return h('div', [
+                            h('span', '标题'),
+                            h('Input', {
+                                style: {
+                                    width: '80%',
+                                    marginLeft: '15px',
+                                    marginRight: '25px',
+                                    marginBottom: '10px'
+                                },
+                                props: {
+                                    value: this.name,
+                                    autofocus: true,
+                                    placeholder: '请输入公告标题'
+                                },
+                                on: {
+                                    input: (val) => {
+                                        this.name = val;
+                                    }
+                                }
+                            }),
+                            h('span', '内容'),
+                            h('Input', {
+                                style: {
+                                    width: '80%',
+                                    marginLeft: '15px',
+                                    marginBottom: '10px'
+                                },
+                                props: {
+                                    value: this.id,
+                                    autofocus: true,
+                                    placeholder: '请输入公告内容'
+                                },
+                                on: {
+                                    input: (val) => {
+                                        this.id = val;
+                                    }
+                                },
+                            })
+                        ]);
+                    },
+                    onOk: () => {
+                        console.log(app_management.name)
+                    }
+                })
+            },
+
+            show(index) {
+                this.$Modal.info({
+                    title: 'User Info',
+                    content: `公告标题：${this.data1[index].title}<br>公告内容：${this.data1[index].content}<br>创建者：${this.data1[index].id}<br>状态：${this.data1[index].read}`
+                })
+            },
+            remove(index) {
+                this.$Modal.confirm({
+                    content: '是否确认删除？',
+                    onOk: () => {
+                        this.data1.splice(index, 1);
+                        this.$Message.info('已删除');
+                    },
+                    onCancel: () => {
+                        this.$Message.info('Clicked cancel');
+                    }
+                });
+            },
+            ok() {
+                this.$Message.info('Clicked ok');
+            },
+            cancel() {
+                this.$Message.info('Clicked cancel');
+            }
+        }
+
+    })
+</script>

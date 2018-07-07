@@ -25,18 +25,9 @@ public class TWebSocket {
     private static ConcurrentMap<Long, TWebSocket> webSocketMap = new ConcurrentHashMap<>();
     private final Logger logger = LoggerFactory.getLogger(TWebSocket.class);
     /**
-     * http的session
-     */
-    private HttpSession httpSession = null;
-    /**
      * websocket的session
      */
     private Session webSocketSession;
-
-    public static boolean sendMessageToUser(Long userId, String message) {
-        TWebSocket tWebSocket = webSocketMap.get(userId);
-        return tWebSocket.sendMessage(message);
-    }
 
     private static synchronized int getOnlineCount() {
         return onlineCount;
@@ -50,15 +41,9 @@ public class TWebSocket {
         TWebSocket.onlineCount--;
     }
 
-    @OnOpen
-    public void onOpen(Session session, EndpointConfig config) {
-        this.webSocketSession = session;
-        httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
-
-        long userId = (long) httpSession.getAttribute(Constants.SESSION_KEY_USER_ID);
-        webSocketMap.put(userId, this);
-        addOnlineCount(); //在线数加1
-        logger.debug("有新连接加入！当前在线人数为" + getOnlineCount());
+    public static boolean sendMessageToUser(String message, Long userId) {
+        TWebSocket tWebSocket = webSocketMap.get(userId);
+        return tWebSocket.sendMessage(message);
     }
 
     /**
@@ -70,18 +55,24 @@ public class TWebSocket {
         logger.debug("有一连接关闭！当前在线人数为" + getOnlineCount());
     }
 
+    @OnOpen
+    public void onOpen(Session session, EndpointConfig config) {
+        this.webSocketSession = session;
+
+        HttpSession httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
+        long userId = (long) httpSession.getAttribute(Constants.SESSION_KEY_USER_ID);
+
+        webSocketMap.put(userId, this);
+        addOnlineCount(); //在线数加1
+        logger.debug("有新连接加入！当前在线人数为" + getOnlineCount());
+    }
+
     /**
      * 收到客户端消息后调用的方法
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("来自客户端的消息:" + message);
-    }
-
-    @OnError
-    public void onError(Session session, Throwable error) {
-        System.out.println("发生错误");
-        error.printStackTrace();
+        logger.info("来自客户端的消息:" + message);
     }
 
     private boolean sendMessage(String message) {
@@ -91,5 +82,11 @@ public class TWebSocket {
             return false;
         }
         return true;
+    }
+
+    @OnError
+    public void onError(Session session, Throwable error) {
+        logger.error("发生错误");
+        error.printStackTrace();
     }
 }

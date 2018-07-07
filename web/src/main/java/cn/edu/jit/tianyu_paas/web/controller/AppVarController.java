@@ -5,6 +5,7 @@ import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.service.AppVarService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,14 +34,16 @@ public class AppVarController {
      * @author 倪龙康
      * @return
      */
+    @ApiOperation("添加变量")
     @PostMapping
     public TResult addVar(AppVar appVar){
         if (appVarService.selectCount(new EntityWrapper<AppVar>().eq("var_name",appVar.getVarName()).eq("app_id",appVar.getAppId()))!=0) {
             return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
         }
         appVar.setGmtCreate(new Date());
-        if(!appVarService.insert(appVar))
+        if(!appVarService.insert(appVar)) {
             return TResult.failure(TResultCode.FAILURE);
+        }
         return TResult.success();
     }
 
@@ -50,10 +53,12 @@ public class AppVarController {
      * @param appVar
      * @return
      */
+    @ApiOperation("修改变量")
     @PutMapping
     public TResult updateVar(AppVar appVar){
-        if(!appVarService.update(appVar, new EntityWrapper<AppVar>().eq("app_id", appVar.getAppId()).and().eq("var_name", appVar.getVarName())))
+        if(!appVarService.update(appVar, new EntityWrapper<AppVar>().eq("app_id", appVar.getAppId()).and().eq("var_name", appVar.getVarName()))) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
         return TResult.success();
     }
 
@@ -63,10 +68,12 @@ public class AppVarController {
      * @param varName
      * @return
      */
+    @ApiOperation("删除变量")
     @DeleteMapping("/{appId}")
     public TResult deleteVar(@PathVariable long appId, String varName){
-        if(!appVarService.delete(new EntityWrapper<AppVar>().eq("app_id",appId).eq("var_name",varName)))
+        if(!appVarService.delete(new EntityWrapper<AppVar>().eq("app_id",appId).eq("var_name",varName))) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
         return TResult.success();
     }
     /**
@@ -75,11 +82,13 @@ public class AppVarController {
      * @param appId
      * @return
      */
+    @ApiOperation("获取变量相关信息")
     @GetMapping("/{appId}")
     public TResult getVarInfo(@PathVariable Long appId){
         List<AppVar> appVars = appVarService.selectList(new EntityWrapper<AppVar>().eq("app_id",appId));
-        if(appVars == null)
+        if(appVars == null) {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
+        }
         return TResult.success(appVars);
     }
 }

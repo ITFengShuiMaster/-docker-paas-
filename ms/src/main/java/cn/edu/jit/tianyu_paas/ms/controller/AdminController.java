@@ -15,6 +15,7 @@ import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +51,7 @@ public class AdminController {
      * @author 卢越
      * @since 2018-06-29
      */
+    @ApiOperation("登录接口")
     @PostMapping("/login")
     public TResult login(String username, String pwd) {
         if (StringUtil.isAnyEmpty(username, pwd)) {
@@ -76,6 +78,7 @@ public class AdminController {
      * <p>
      * 所有用户信息
      */
+    @ApiOperation("返回所有用户信息")
     @GetMapping
     public TResult listUsers(Pagination page) {
         return TResult.success(userService.selectPage(new Page<User>(page.getCurrent(), page.getSize()), new EntityWrapper<User>().setSqlSelect("user_id", " name", "phone", "email", "head_img", "gmt_create", "gmt_modified")));
@@ -89,6 +92,7 @@ public class AdminController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("更新用户内存，余额等")
     @PutMapping
     public TResult updateUser(UserDynamic userDynamic) {
         if (!userDynamicService.update(userDynamic, new EntityWrapper<UserDynamic>().eq("user_id", userDynamic.getUserId()))) {
@@ -106,6 +110,7 @@ public class AdminController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("删除用户")
     @DeleteMapping("{userId}")
     public TResult deleteUser(@PathVariable(required = true) Long userId) {
         if (!userService.deleteById(userId)) {
@@ -125,6 +130,7 @@ public class AdminController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("返回最近多少天登录的用户,还可以根据访问量查询")
     @GetMapping("/access-users")
     public TResult listAccessUsers(@RequestParam(value = "days", defaultValue = "1") Integer days,
                                    @RequestParam(value = "views", defaultValue = "0") Integer views, Pagination pagination) {
@@ -141,6 +147,7 @@ public class AdminController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("查询最近几天注册的用户，默认三天")
     @GetMapping("/register-recent-days")
     public TResult listRegisterInRecentDays(@RequestParam(value = "days", defaultValue = "3") Integer days) {
         return TResult.success(userService.selectList(new EntityWrapper<User>().setSqlSelect("user_id", " name", "phone", "email", "head_img", "gmt_create", "gmt_modified").where("gmt_create BETWEEN DATE_SUB(NOW(), INTERVAL {0} DAY) AND NOW()", days)));
@@ -153,6 +160,7 @@ public class AdminController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("查询一个月未登录的用户")
     @GetMapping("/unloginInMonth")
     public TResult listUnloginUsersInThreeMonth() {
         return TResult.success(userService.selectUnloginUsersInThreeMonth());
@@ -165,6 +173,7 @@ public class AdminController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("查询欠费的用户")
     @GetMapping("/arrears-users")
     public TResult listArrearsUsers() {
         return TResult.success(userService.selectArrearsUsers());
@@ -177,6 +186,7 @@ public class AdminController {
      * @author 卢越
      * @since 2018-07-01
      */
+    @ApiOperation("返回注册的用户数量，不加days参数返回总用户数量，加上days则指定天数查询注册的数量")
     @GetMapping("/amount-of-users")
     public TResult getAmountOfUsers(@RequestParam(value = "days", defaultValue = "0") Integer days) {
         if (days.equals(0)) {

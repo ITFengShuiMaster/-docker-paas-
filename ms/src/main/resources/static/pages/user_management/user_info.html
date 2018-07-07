@@ -1,0 +1,203 @@
+<style>
+    .text {
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 15px;
+    }
+
+    p {
+        font-size: 14px;
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 8px;
+    }
+</style>
+<body>
+<div id="user_info">
+    <div style="margin: 10px 20px; display: inline-flex">
+        <p>主页</p>
+        <p>/</p>
+        <p>用户管理</p>
+        <p>/</p>
+        <p style="font-weight: bold">用户信息查询</p>
+    </div>
+    <div style="margin: 10px 20px">
+        <p style="font-size: 20px; color: black">用户信息汇总查询</p>
+        <p>查询所有用户信息，根据搜索条件进行排序</p>
+    </div>
+    <div style="margin: 10px 20px; display: inline-flex">
+        <p class="text">查询条件:</p>
+        <i-input v-model="value" placeholder="请输入查询内容" style="width: 400px"></i-input>
+
+        <i-select v-model="model3" style="width:150px; height: 30px; margin-right: 15px; margin-left: 15px">
+            <i-option v-for="item in list_requirement" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+        </i-select>
+        <i-button type="primary">查询</i-button>
+    </div>
+    <div style="margin: 10px 20px; display: inline-flex">
+        <p class="text">排序条件:</p>
+        <i-select v-model="model1" style="width:150px; height: 30px; margin-right: 15px">
+            <i-option v-for="item in requirement" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+        </i-select>
+        <p class="text">排序时间段:</p>
+        <i-select v-model="model2" style="width:150px; height: 30px; margin-right: 15px">
+            <i-option v-for="item in time" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+        </i-select>
+        <i-button type="primary">排序</i-button>
+    </div>
+    <i-table stripe border :columns="columns7" :data="data6" style="margin:10px 20px"></i-table>
+</div>
+
+</body>
+<script>
+    var user_info = new Vue({
+        el: '#user_info',
+        data() {
+            return {
+                model1: '',
+                model2: '',
+                model3: "8",
+                value: '',
+                columns7: [
+                    {
+                        title: '姓名',
+                        key: 'name',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Icon', {
+                                    props: {
+                                        type: 'person'
+                                    }
+                                }),
+                                h('strong', params.row.name)
+                            ]);
+                        }
+                    },
+                    {
+                        title: '邮箱',
+                        key: 'email'
+                    },
+                    {
+                        title: '手机号',
+                        key: 'phone'
+                    },
+                    {
+                        title: '注册时间',
+                        key: 'time'
+                    },
+                    {
+                        title: 'Action',
+                        key: 'action',
+                        width: 150,
+                        align: 'center',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.show(params.index)
+                                        }
+                                    }
+                                }, 'View'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.remove(params.index)
+                                        }
+                                    }
+                                }, 'Delete')
+                            ]);
+                        }
+                    }
+                ],
+                data6: [
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    }
+                ],
+                requirement: [
+                    {
+                        value: '1',
+                        label: '访问量排序'
+                    },
+                    {
+                        value: '2',
+                        label: '注册用户'
+                    }
+                ],
+
+                time: [
+                    {
+                        value: '3',
+                        label: '天'
+                    },
+                    {
+                        value: '4',
+                        label: '周'
+                    },
+                    {
+                        value: '5',
+                        label: '月'
+                    },
+                ],
+                list_requirement: [
+                    {
+                        value: '8',
+                        label: '用户名'
+                    },
+                    {
+                        value: '6',
+                        label: '邮箱'
+                    },
+                    {
+                        value: '7',
+                        label: '手机号'
+                    }
+                ]
+            }
+        },
+        methods: {
+            show(index) {
+                this.$Modal.info({
+                    title: '用户信息',
+                    content: `姓名：${this.data6[index].name}<br>邮箱：${this.data6[index].email}<br>手机号：${this.data6[index].phone}<br>注册时间：${this.data6[index].time}`
+                })
+            },
+            remove(index) {
+                this.data6.splice(index, 1);
+            }
+        }
+    })
+</script>

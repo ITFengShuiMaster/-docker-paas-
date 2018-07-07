@@ -1,7 +1,5 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,7 +11,6 @@ import java.util.Date;
  * @author 汪继友
  * @since 2018-07-01
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class UserLoginLog implements Serializable {
 
     private static final long serialVersionUID = 1L;

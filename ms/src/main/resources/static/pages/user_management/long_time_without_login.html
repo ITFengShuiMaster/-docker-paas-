@@ -1,0 +1,96 @@
+<style>
+    .text {
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 15px;
+    }
+
+    p {
+        font-size: 14px;
+        color: #495060;
+        margin-top: 8px;
+        margin-right: 8px;
+    }
+</style>
+<body>
+<div id="long_time_without_login">
+    <div style="margin: 10px 20px; display: inline-flex">
+        <p>主页</p>
+        <p>/</p>
+        <p>用户管理</p>
+        <p>/</p>
+        <p style="font-weight: bold">久未上线用户</p>
+    </div>
+    <div style="margin: 10px 20px">
+        <p style="font-size: 20px; color: black">久未上线用户查询</p>
+        <p style="margin: 8px 0px 20px">查询所有超过3个月未登陆用户信息</p>
+    </div>
+    <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px"></i-table>
+
+</div>
+
+</body>
+<script>
+    var long_time_without_login = new Vue({
+        el: '#long_time_without_login',
+        data() {
+            return {
+                columns1: [
+                    {
+                        title: '姓名',
+                        key: 'name',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Icon', {
+                                    props: {
+                                        type: 'person'
+                                    }
+                                }),
+                                h('strong', params.row.name)
+                            ]);
+                        }
+                    },
+                    {
+                        title: '邮箱',
+                        key: 'email'
+                    },
+                    {
+                        title: '手机号',
+                        key: 'phone'
+                    },
+                    {
+                        title: '注册时间',
+                        key: 'time'
+                    },
+                ],
+
+                data1: [
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                    {
+                        name: 'John Brown',
+                        email: 1111,
+                        phone: 2222,
+                        time: 2018 - 7 - 4
+                    },
+                ]
+            }
+        }
+    })
+</script>

@@ -4,6 +4,8 @@ package cn.edu.jit.tianyu_paas.web.controller;
 import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.enums.AppCreateMethodEnum;
 import cn.edu.jit.tianyu_paas.shared.enums.AppStatusEnum;
+import cn.edu.jit.tianyu_paas.shared.util.PassUtil;
+import cn.edu.jit.tianyu_paas.shared.util.StringUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
@@ -11,11 +13,24 @@ import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import io.swagger.annotations.ApiOperation;
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.DockerCmdExecFactory;
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.Ports;
+import com.github.dockerjava.core.DefaultDockerClientConfig;
+import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.core.DockerClientConfig;
+import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -60,14 +75,18 @@ public class AppController {
     }
 
     /**
-     * 获取应用信息
-     * @author 倪龙康
+     * 获取应用信息----完善过（2018-7-6）
+     * @author 倪龙康, 卢越
      * @param appId
      * @return
      */
+    @ApiOperation("获取应用信息")
     @GetMapping("/{appId}")
     public TResult getAppInfo(@PathVariable Long appId) {
         App app = appService.selectById(appId);
+        //获取容器的信息
+        app.setInspectContainerResponse(getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
+
         return TResult.success(app);
     }
 
@@ -80,12 +99,32 @@ public class AppController {
         // TODO 检测仓库，并给应用设置memory, disk等
     }
 
+    private DockerClient getDockerClient() {
+        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                .withDockerHost("tcp://118.24.116.137:2375")
+                .withRegistryUsername("itfengshuimaster")
+                .withRegistryPassword("wxhzq520")
+                .withRegistryEmail("wxhzq520@sina.com")
+                .withRegistryUrl("https://hub.docker.com/r/itfengshuimaster/mydocker/")
+                .build();
+        DockerCmdExecFactory dockerCmdExecFactory = new JerseyDockerCmdExecFactory()
+                .withReadTimeout(100000)
+                .withConnectTimeout(100000)
+                .withMaxTotalConnections(100)
+                .withMaxPerRouteConnections(10);
+
+        return DockerClientBuilder.getInstance(config)
+                .withDockerCmdExecFactory(dockerCmdExecFactory)
+                .build();
+    }
+
     /**
      * 从自定义源码创建应用（git仓库）
      *
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
+    @ApiOperation("从自定义源码创建应用（git仓库）")
     @PostMapping("/custom")
     public TResult createAppByCustom(@Validated App app, @Validated AppInfoByCustom custom) {
         initApp(app, AppCreateMethodEnum.CUSTOM);
@@ -106,6 +145,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
+    @ApiOperation("从官方demo创建应用")
     @PostMapping("/demo")
     public TResult createAppByDemo(@Validated App app, @Validated AppInfoByDemo infoByDemo) {
         Demo demo = demoService.selectById(infoByDemo.getDemoId());
@@ -129,15 +169,73 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
+    @ApiOperation("从docker image创建应用")
     @PostMapping("/docker-image")
     public TResult createAppByDockerImage(@Validated App app, @Validated AppInfoByDockerImage dockerImage) {
         initApp(app, AppCreateMethodEnum.DOCKER_IMAGE);
+        DockerClient dockerClient = getDockerClient();
 
         if (appService.insert(app)) {
             dockerImage.setAppId(app.getAppId());
             appInfoByDockerImageService.insert(dockerImage);
+
+            RestTemplate template = new RestTemplate();
+//请求参数
+            String param = "?fromImage=" + dockerImage.getImage() + "&tag=latest";
+
+            ResponseEntity<String> responseEntity = template.exchange(Constants.CREATE_IMAGE + param,
+                    HttpMethod.POST, null, String.class);
+
+            if (responseEntity.getStatusCodeValue() != 200) {
+                return TResult.failure("存储库不存在或不具有读取访问权限。");
+            }
+
+            // TODO 还需要判断返回结果中是否存在error，存在则说明镜相不存在，拉取失败
+            if (!StringUtil.isEmpty(responseEntity.getBody()) && responseEntity.getBody().contains("error")) {
+                return TResult.failure("镜相不存在");
+            }
+
+            CreateContainerResponse createContainerResponse = null;
+            //判断容器要创建的容器是否是mysql
+            if ("mysql".equals(dockerImage.getImage())) {
+                AppVar appVar = new AppVar();
+
+                String mysqlPwd = PassUtil.getMD5(String.valueOf(System.currentTimeMillis()));
+                appVar.setAppId(app.getAppId());
+                appVar.setVarName("MYSQL_ROOT_PASSWORD");
+                appVar.setVarValue(mysqlPwd);
+                appVar.setVarExplain("mysql容器的root密码");
+                appVar.setGmtCreate(new Date());
+
+                //将容器的3306对外端口绑定到宿主机的53306端口
+                // TODO 将端口信息保存到appPort表中
+                ExposedPort tcp3306 = ExposedPort.tcp(3306);
+                Ports portBindings = new Ports();
+                portBindings.bind(tcp3306, Ports.Binding.bindPort(53306));
+
+                createContainerResponse = dockerClient.createContainerCmd(dockerImage.getImage())
+                        .withExposedPorts(tcp3306)
+                        .withPortBindings(portBindings)
+                        .withEnv(appVar.getVarName() + "=" + appVar.getVarValue())
+                        .exec();
+                appVarService.insert(appVar);
+            } else {
+                //创建容器
+                createContainerResponse = dockerClient.createContainerCmd(dockerImage.getImage()).exec();
+            }
+
+            if (createContainerResponse == null) {
+                return TResult.failure(TResultCode.BUSINESS_ERROR);
+            }
+            //运行容器
+            dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
+
+            app.setContainerId(createContainerResponse.getId());
+            appService.update(app, new EntityWrapper<App>().eq("app_id", app.getAppId()));
+
             return TResult.success();
         }
+
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
@@ -147,6 +245,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 14:41
      */
+    @ApiOperation("用docker run命令创建应用")
     @PostMapping("/docker-run")
     public TResult createAppByDockerRun(@Validated App app, @Validated AppInfoByDockerRun dockerRun) {
         initApp(app, AppCreateMethodEnum.DOCKER_RUN);
@@ -165,6 +264,7 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 14:58
      */
+    @ApiOperation("根据docker compose创建应用（创建的是应用组）")
     @PostMapping("/docker-compose")
     public TResult createAppByDockerCompose(@Validated AppGroup appGroup) {
         long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
@@ -185,6 +285,7 @@ public class AppController {
      * @author 卢越
      * @date 2018/6/29 16:30
      */
+    @ApiOperation("总览页面应用接口，包含分页，根据名字查询，根据状态查询")
     @GetMapping("/lists")
     public TResult listAppByNameAndStatus(@RequestParam(required = false, defaultValue = "") String name, Integer status, Pagination page) {
         App app = new App();
@@ -196,6 +297,7 @@ public class AppController {
         return TResult.success(appPages);
     }
 
+    @ApiOperation("从应用市场创建应用")
     @PostMapping("/market")
     public TResult createAppByMarket(@Validated App app, @Validated AppInfoByMarket market) {
         MarketApp marketApp = marketAppService.selectById(market.getMarketAppId());
