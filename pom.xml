@@ -30,13 +30,14 @@
         <dependency>
             <groupId>org.apache.mina</groupId>
             <artifactId>mina-core</artifactId>
-            <version>3.0.0-M2</version>
+            <version>2.0.19</version>
         </dependency>
+
         <!--断路器，避免一个微服务瘫痪导致连锁瘫痪整个系统雪崩-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-hystrix</artifactId>
-        </dependency>
+        </dependency>-->
         <!--eureka client-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
