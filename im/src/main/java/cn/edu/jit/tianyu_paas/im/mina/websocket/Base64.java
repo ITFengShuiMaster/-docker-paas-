@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package cn.edu.jit.tianyu_paas.im.websocket;
+package cn.edu.jit.tianyu_paas.im.mina.websocket;
 
 /*
  * To change this template, choose Tools | Templates

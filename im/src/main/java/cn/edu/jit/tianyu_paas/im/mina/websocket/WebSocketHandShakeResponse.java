@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cn.edu.jit.tianyu_paas.im.websocket;
+package cn.edu.jit.tianyu_paas.im.mina.websocket;
 
 /**
  * Wraps around a string that represents a websocket handshake response from

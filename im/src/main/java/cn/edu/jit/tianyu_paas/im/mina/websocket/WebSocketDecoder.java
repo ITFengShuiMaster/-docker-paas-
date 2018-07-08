@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cn.edu.jit.tianyu_paas.im.websocket;
+package cn.edu.jit.tianyu_paas.im.mina.websocket;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -32,7 +32,7 @@ public class WebSocketDecoder extends CumulativeProtocolDecoder {
             if (opCode == 8) {
                 // opCode 8 means close. See RFC 6455 Section 5.2
                 // return what ever is parsed till now.
-                session.close(true);
+                session.closeOnFlush();
                 return resultBuffer;
             }
             int frameLen = (in.get() & (byte) 0x7F);
