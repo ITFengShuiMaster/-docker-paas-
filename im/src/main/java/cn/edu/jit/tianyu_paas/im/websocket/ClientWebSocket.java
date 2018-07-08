@@ -1,6 +1,5 @@
 package cn.edu.jit.tianyu_paas.im.websocket;
 
-import cn.edu.jit.tianyu_paas.im.global.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
