@@ -25,7 +25,7 @@
         <p style="font-size: 20px; color: black">久未上线用户查询</p>
         <p style="margin: 8px 0px 20px">查询所有超过3个月未登陆用户信息</p>
     </div>
-    <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px"></i-table>
+    <i-table stripe border :columns="columns1" :data="data3" style="margin:10px 20px"></i-table>
 
 </div>
 
@@ -64,33 +64,39 @@
                     },
                 ],
 
-                data1: [
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                ]
+                data3: []
             }
+        },
+        methods:{
+            longTimeUser() {
+                var that = this
+                $.ajax({
+                    type:'get',
+                    url:'admins/unloginInMonth',
+                    success:function (data) {
+                        if(data.data) {
+                            console.log("nothing")
+                        }
+                        else {
+                            var result = data.data.records
+                            console.log(result)
+                            for(var i = 0;i<result.length;i++) {
+                                that.data3.push(result[i])
+                                console.log(that.data3)
+                            }
+                            console.log(data)
+                        }
+
+                    },
+                    error:function (err) {
+                        console.log(err);
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.longTimeUser()
         }
+
     })
 </script>

@@ -25,7 +25,7 @@
         <p style="font-size: 20px; color: black">新注册用户信息推送</p>
         <p style="margin: 8px 0px 20px">给新注册用户信息推送</p>
     </div>
-    <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px"></i-table>
+    <i-table stripe border :columns="columns1" :data="data2" style="margin:10px 20px"></i-table>
     <Row>
         <i-col span="2" offset="22">
             <i-button type="primary" @click="modal1 = true">发送推送</i-button>
@@ -78,34 +78,39 @@
                     },
                 ],
 
-                data1: [
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                    {
-                        name: 'John Brown',
-                        email: 1111,
-                        phone: 2222,
-                        time: 2018 - 7 - 4
-                    },
-                ]
+                data2: []
             }
         },
+        methods:{
+            messagePush() {
+                var that = this
+                $.ajax({
+                    type:'get',
+                    url:'admins/register-recent-days/',
+                    success:function (data) {
+                        if(data.data) {
+                            console.log("nothing")
+                        }
+                        else{
+                            var result = data.data.records
+                            console.log(result)
+                            for(var i = 0;i<result.length;i++) {
+                                that.data2.push(result[i])
+                                console.log(that.data2)
+                            }
+                            console.log(data)
+                        }
+
+                    },
+                    error:function (err) {
+                        console.log(err)
+                    }
+                })
+            }
+        },
+        mounted() {
+            this.messagePush()
+        }
 
     })
 </script>
