@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <script src="../lib/echarts/echarts.js"></script>
-    <script src="../lib/jquery/jquery-3.2.1.js"></script>
+    <script src="../lib/jquery/jquery-3.2.1.js"></script>px
     <script src="../lib/vue/vue.min.js"></script>
 
 </head>
 <body>
 <div id="echart_table">
     <div id="dashboard" style="width: 600px;height: 400px"></div>
-    <div id="scatter" style="width: 600px;height: 400px"></div>
+    <div id="scatter" style="width: 100%;height: 400px"></div>
 </div>
 </body>
 
@@ -26,7 +26,7 @@
                 let chart2 = echarts.init(document.getElementById('scatter'));
                 chart2.title = '单轴散点图';
 
-                var hours = ['1','2','3','4','5','1','2','3','4','1','2','3'];
+                var hours = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
                 var days = ['Saturday', 'Friday', 'Thursday',
                     'Wednesday', 'Tuesday', 'Monday', 'Sunday'];
 
