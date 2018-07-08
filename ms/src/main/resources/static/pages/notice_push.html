@@ -190,8 +190,8 @@
                 this.$Modal.confirm({
                     content: '是否确认删除？',
                     onOk: () => {
-                        this.data1.splice(index, 1);
                         this.deleteNotice(this.data1[index].noticeId)
+                        this.data1.splice(index, 1);
                         this.$Message.info('已删除');
 
                     },

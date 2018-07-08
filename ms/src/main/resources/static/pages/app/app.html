@@ -38,56 +38,23 @@
         el: '#app_management',
         data: {
             value: '',
-            table_data: [
-                {
-                    app_name: '发财',
-                    user_id: 2222,
-                    app_storage: "200",
-                    app_status: 1,
-                    app_group_id: "555",
-                    time: "1334"
-                },
-                {
-                    app_name: '发财',
-                    user_id: 2222,
-                    app_storage: "200",
-                    app_status: 1,
-                    app_group_id: "555",
-                    time: "1334"
-                },
-                {
-                    app_name: '发财',
-                    user_id: 2222,
-                    app_storage: "200",
-                    app_status: false,
-                    app_group_id: "555",
-                    time: "1334"
-                },
-                {
-                    app_name: '发财',
-                    user_id: 2222,
-                    app_storage: "200",
-                    app_status: false,
-                    app_group_id: "555",
-                    time: "1334"
-                },
-            ],
+            table_data: [],
             columns1: [
                 {
                     title: '应用名称',
-                    key: 'app_name',
+                    key: 'name',
                 },
                 {
                     title: '创建用户',
-                    key: 'user_id'
+                    key: 'username'
                 },
                 {
                     title: '应用使用的内存量',
-                    key: 'app_storage'
+                    key: 'memoryUsed'
                 },
                 {
                     title: '应用状态',
-                    key: 'app_status',
+                    key: 'status',
                     render: (h, param) => {
                         return h('div', [
                             h('Tag', {
@@ -97,19 +64,19 @@
                                     value: 'tt'
                                 },
                                 on: {}
-                            }, param.row.app_name)
+                            }, param.row.statusName)
                         ])
                     }
                 },
                 {
                     title: '状态改变',
-                    key: 'app_status',
+                    key: 'status',
                     render: (h, params) => {
                         return h('div', [
                             h('i-switch', {
                                 props: {
                                     //true和false判断开关
-                                    value: params.row.app_status,
+                                    value: params.row.status,
                                 },
                                 style: {
                                     marginRight: '5px'
@@ -118,6 +85,8 @@
                                     'on-change': (change_status) => {//触发事件是on-change,用双引号括起来，
                                         //参数value是回调值，并没有使用到
                                         app_management.switch(params.index) //params.index是拿到table的行序列，可以取到对应的表
+
+                                        app_management.convertStatus(params.index)
                                     }
                                 }
                             }),
@@ -127,11 +96,11 @@
                 },
                 {
                     title: '属于应用组',
-                    key: 'app_group_id'
+                    key: 'appGroupId'
                 },
                 {
                     title: '创建时间',
-                    key: 'time'
+                    key: 'gmtCreate'
                 },
                 {
                     title: '操作',
@@ -174,13 +143,31 @@
         },
         methods: {
             get_app_inf() {
+                var that = this
                 console.log("1")
                 $.ajax({
                     type: 'get',
-                    url: 'http://localhost:8081/ms/apps',
+                    url: 'apps',
                     success: function (result) {
+
                         if (result.code === 1) {
-                            console.log(result)
+                           for(var i=0;i<result.data.length;i++) {
+                               that.table_data.push(result.data[i])
+                               if(that.table_data[i].status === 0) {
+                                   that.table_data[i].status = false
+                                   that.table_data[i].statusName="关闭"
+                               }
+                               else if(that.table_data[i].status === 1){
+                                   that.table_data[i].status = true
+                                   that.table_data[i].statusName="运行中"
+
+                               }
+                               else if(that.table_data[i].status === 2){
+                                   that.table_data[i].status = true
+                                   that.table_data[i].statusName="异常"
+                               }
+                           }
+                           console.log(that.table_data)
                         } else {
                             alert("请求出现问题啦" + result.message)
                         }
@@ -194,15 +181,16 @@
             show(index) {
                 this.$Modal.info({
                     title: 'User Info',
-                    content: `应用名：${this.table_data[index].app_name}<br>所属用户：${this.table_data[index].user_id}<br>应用使用的内存量：
-                    ${this.table_data[index].app_storage}<br>应用状态：${this.table_data[index].app_status}<br>
-                    所属应用组：${this.table_data[index].app_group_id}<br>创建时间：${this.table_data[index].time}`
+                    content: `应用名：${this.table_data[index].name}<br>所属用户：${this.table_data[index].username}<br>应用使用的内存量：
+                    ${this.table_data[index].memoryUsed}<br>应用状态：${this.table_data[index].statusName}<br>
+                    所属应用组：${this.table_data[index].appGroupId}<br>创建时间：${this.table_data[index].gmtCreate}`
                 })
             },
             remove(index) {
                 this.$Modal.confirm({
                     content: '是否确认删除？',
                     onOk: () => {
+                        this.deleteApp(this.table_data[index].appId)
                         this.table_data.splice(index, 1);
                         this.$Message.info('已删除');
                     },
@@ -211,6 +199,55 @@
                     }
                 });
             },
+            convertStatus(index) {
+                var flag;
+                if(this.table_data[index].status === true) {
+                    flag = 0
+                }
+                else {
+                    flag = 1
+                }
+                var that = this
+                $.ajax({
+                    type:'put',
+                    url:'apps',
+                    dataType:'json',
+                    data:{
+                        appId:that.table_data[index].appId,
+                        status:flag
+                    },
+                    success:function (data) {
+                        console.log(data.message)
+                        if(flag === 1) {
+                            that.table_data[index].status = 1
+                            that.table_data[index].statusName = "运行中"
+                        }
+                        else {
+                            that.table_data[index].status = 0
+                            that.table_data[index].statusName = "关闭"
+                        }
+                        that.get_app_inf()
+
+                    },
+                    error:function (err) {
+                        console.log(err);
+                    }
+                })
+            },
+            deleteApp(app_id) {
+                var that = this
+                $.ajax({
+                    type:'delete',
+                    url:'apps/'+ app_id
+                    ,
+                    success:function (data) {
+                        console.log(data)
+                    },
+                    error:function (err) {o
+                        console.log(err);
+                    }
+                })
+            }
         },
         mounted() {
             this.get_app_inf();
