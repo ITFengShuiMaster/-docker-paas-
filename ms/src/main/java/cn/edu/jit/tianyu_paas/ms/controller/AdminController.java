@@ -85,6 +85,22 @@ public class AdminController {
     }
 
     /**
+     * 根据手机号查询用户
+     *
+     * @param phone
+     * @return
+     */
+    @ApiOperation("根据手机号查询用户")
+    @GetMapping("/phone")
+    public TResult getUserByPhone(@RequestParam(required = true) String phone) {
+        User user = userService.selectOne(new EntityWrapper<User>().eq("phone", phone));
+        if (user != null) {
+            return TResult.success(user);
+        }
+        return TResult.failure(TResultCode.RESULE_DATA_NONE);
+    }
+
+    /**
      * 更新用户内存，余额等
      *
      * @param userDynamic

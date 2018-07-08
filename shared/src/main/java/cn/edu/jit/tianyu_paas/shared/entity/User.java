@@ -52,6 +52,10 @@ public class User implements Serializable {
      */
     private Date gmtCreate;
     private Date gmtModified;
+    /**
+     * 用户是否激活 0 未激活 1 已激活
+     */
+    private Integer active;
 
     @TableField(exist = false)
     private List<App> apps;
@@ -126,6 +130,14 @@ public class User implements Serializable {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getActive() {
+        return active;
+    }
+
+    public void setActive(Integer active) {
+        this.active = active;
     }
 
     @Override

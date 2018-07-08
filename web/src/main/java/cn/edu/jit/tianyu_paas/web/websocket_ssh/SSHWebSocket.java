@@ -19,6 +19,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author 卢越
+ */
 @ServerEndpoint(value = "/websocket-ssh", configurator = HttpSessionConfigurator.class)
 @Component
 public class SSHWebSocket {

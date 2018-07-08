@@ -1,12 +1,11 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
 import cn.edu.jit.tianyu_paas.shared.entity.User;
+import cn.edu.jit.tianyu_paas.shared.entity.UserActive;
 import cn.edu.jit.tianyu_paas.shared.entity.UserDynamic;
 import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
-import cn.edu.jit.tianyu_paas.web.service.UserDynamicService;
-import cn.edu.jit.tianyu_paas.web.service.UserLoginLogService;
-import cn.edu.jit.tianyu_paas.web.service.UserService;
+import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +27,18 @@ public class UserController {
     private final UserService userService;
     private final UserDynamicService userDynamicService;
     private final UserLoginLogService userLoginLogService;
+    private final MailUtilService mailUtilService;
+    private final UserActiveService userActiveService;
     private HttpSession session;
 
     @Autowired
-    public UserController(UserService userService, UserDynamicService userDynamicService, HttpSession session, UserLoginLogService userLoginLogService) {
+    public UserController(UserService userService, UserDynamicService userDynamicService, HttpSession session, UserLoginLogService userLoginLogService, MailUtilService mailUtilService, UserActiveService userActiveService) {
         this.userService = userService;
         this.session = session;
         this.userDynamicService = userDynamicService;
         this.userLoginLogService = userLoginLogService;
+        this.mailUtilService = mailUtilService;
+        this.userActiveService = userActiveService;
     }
 
     /**
@@ -63,6 +66,10 @@ public class UserController {
 
         if (user == null) {
             return TResult.failure(TResultCode.USER_NOT_EXIST);
+        }
+
+        if (user.getActive() == 0) {
+            return TResult.failure("该账号未激活");
         }
 
         if (!user.getPwd().equals(PassUtil.getMD5(pwd))) {
@@ -112,9 +119,25 @@ public class UserController {
         user.setGmtCreate(new Date());
         user.setGmtModified(new Date());
         user.setPwd(PassUtil.getMD5(user.getPwd()));
+        user.setActive(0);
+
         if (!userService.insert(user)) {
             return TResult.failure(TResultCode.FAILURE);
         }
+
+        //发送邮箱验证
+        String emailCode = MailUtil.getRandomEmailCode();
+
+        if (!mailUtilService.sendRegisterMail(user.getUserId(), user.getEmail(), emailCode)) {
+            return TResult.failure("邮箱验证发送失败，请重试：" + String.format(Constants.MAIL_CONTEXT + "?userId=%s&code=%s", user.getUserId().toString(), emailCode));
+        }
+
+        //插入邮箱验证码
+        UserActive userActive = new UserActive();
+        userActive.setUserId(user.getUserId());
+        userActive.setEmailCode(emailCode);
+        userActive.setEmailCodeGtmCreate(new Date());
+        userActiveService.insert(userActive);
 
         //对新注册用户绑定UserDynamic
         UserDynamic userDynamic = new UserDynamic();
@@ -158,5 +181,24 @@ public class UserController {
         }
 
         return TResult.success(userDynamic);
+    }
+
+    /**
+     * 账号激活
+     *
+     * @param userId
+     * @param code
+     * @return
+     */
+    @ApiOperation("账号激活接口")
+    @GetMapping("/active")
+    public TResult accountActive(@RequestParam(required = true) String userId, @RequestParam(required = true) String code) {
+        if (userActiveService.selectCount(new EntityWrapper<UserActive>().eq("user_id", userId).and().eq("email_code", code).and().ge("email_code_gtm_create", new Date(System.currentTimeMillis() - 600000))) != 0) {
+            User user = userService.selectOne(new EntityWrapper<User>().eq("user_id", userId));
+            user.setActive(1);
+            userService.updateById(user);
+            return TResult.success("账号激活成功");
+        }
+        return TResult.failure("链接无效或已过期");
     }
 }

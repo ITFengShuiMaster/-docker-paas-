@@ -13,7 +13,6 @@ import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
-import io.swagger.annotations.ApiOperation;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.DockerCmdExecFactory;
@@ -23,6 +22,7 @@ import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 倪龙康，卢越
@@ -55,11 +57,14 @@ public class AppController {
     private final AppGroupService appGroupService;
     private final MarketAppService marketAppService;
     private final Logger logger = LoggerFactory.getLogger(AppController.class);
-    private AppVarService appVarService;
-    private AppPortService appPortService;
+    private final AppVarService appVarService;
+    private final AppPortService appPortService;
+    private final MachinePortService machinePortService;
+    private final MachineService machineService;
+    private final MarketAppPortService marketAppPortService;
 
     @Autowired
-    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService) {
+    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, MachinePortService machinePortService, MachineService machineService, MarketAppPortService marketAppPortService) {
         this.appService = appService;
         this.appInfoByCustomService = appInfoByCustomService;
         this.session = session;
@@ -72,6 +77,46 @@ public class AppController {
         this.marketAppService = marketAppService;
         this.appVarService = appVarService;
         this.appPortService = appPortService;
+        this.machinePortService = machinePortService;
+        this.machineService = machineService;
+        this.marketAppPortService = marketAppPortService;
+    }
+
+    /**
+     * 获取可用端口的信息
+     *
+     * @return
+     */
+    private List<MachinePort> getUsablePort() {
+        return machinePortService.selectList(new EntityWrapper<MachinePort>().eq("status", 1));
+    }
+
+    private void initApp(App app, AppCreateMethodEnum createMethodEnum) {
+        long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        app.setUserId(userId);
+        app.setGmtCreate(new Date());
+        app.setStatus(AppStatusEnum.SHUTDOWN.getCode());
+        app.setCreateMethod(createMethodEnum.getCode());
+        // TODO 检测仓库，并给应用设置memory, disk等
+    }
+
+    private void initAppPort(App app, AppPort appPort, MachinePort machinePort) {
+        appPort.setAppId(app.getAppId());
+        appPort.setInsideAccessUrl("xxx");
+        appPort.setInsideAlias("xxx");
+        appPort.setIsInsideOpen(AppPort.INOPEN);
+        appPort.setIsOutsideOpen(AppPort.OUTOPEN);
+        appPort.setOutsideAccessUrl(machineService.selectOne(new EntityWrapper<Machine>().eq("machine_id", machinePort.getMachineId())).getMachineIp() + ":" + machinePort.getMachinePort());
+        appPort.setPort(machinePort.getMachinePort());
+        appPort.setProtocol(AppPort.MYSQL);
+        appPort.setMachineId(machinePort.getMachineId());
+        appPort.setGmtCreate(new Date());
+        appPort.setGmtModified(new Date());
+    }
+
+    private void initAppVar(App app, AppVar appVar) {
+        appVar.setAppId(app.getAppId());
+        appVar.setGmtCreate(new Date());
     }
 
     /**
@@ -88,15 +133,6 @@ public class AppController {
         app.setInspectContainerResponse(getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
 
         return TResult.success(app);
-    }
-
-    private void initApp(App app, AppCreateMethodEnum createMethodEnum) {
-        long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        app.setUserId(userId);
-        app.setGmtCreate(new Date());
-        app.setStatus(AppStatusEnum.SHUTDOWN.getCode());
-        app.setCreateMethod(createMethodEnum.getCode());
-        // TODO 检测仓库，并给应用设置memory, disk等
     }
 
     private DockerClient getDockerClient() {
@@ -180,42 +216,66 @@ public class AppController {
             appInfoByDockerImageService.insert(dockerImage);
 
             RestTemplate template = new RestTemplate();
-//请求参数
-            String param = "?fromImage=" + dockerImage.getImage() + "&tag=latest";
 
-            ResponseEntity<String> responseEntity = template.exchange(Constants.CREATE_IMAGE + param,
+            ResponseEntity<String> responseEntity = template.exchange(String.format(Constants.CREATE_IMAGE, dockerImage.getImage()),
                     HttpMethod.POST, null, String.class);
 
             if (responseEntity.getStatusCodeValue() != 200) {
                 return TResult.failure("存储库不存在或不具有读取访问权限。");
             }
 
-            // TODO 还需要判断返回结果中是否存在error，存在则说明镜相不存在，拉取失败
+            //还需要判断返回结果中是否存在error，存在则说明镜相不存在，拉取失败
             if (!StringUtil.isEmpty(responseEntity.getBody()) && responseEntity.getBody().contains("error")) {
                 return TResult.failure("镜相不存在");
             }
 
             CreateContainerResponse createContainerResponse = null;
+            //获得可用端口信息
+//            List<MachinePort> machinePorts = getUsablePort();
+            AppVar appVar = new AppVar();
+//            AppPort appPort = new AppPort();
+
+            //初始化app相关的变量,相关端口信息
+            // TODO 将端口信息保存到appPort表中
+            initAppVar(app, appVar);
+//            initAppPort(app, appPort, machinePort);
+
+            //判断容器所需端口
+            List<ExposedPort> exposedPorts = new ArrayList<>();
+            List<MarketAppPort> marketAppPortList = new ArrayList<>();
+            MarketApp marketApp = marketAppService.selectOne(new EntityWrapper<MarketApp>().eq("name", dockerImage.getImage()));
+
+            if (marketApp != null) {
+                marketAppPortList = marketAppPortService.selectList(new EntityWrapper<MarketAppPort>().eq("market_app_id", marketApp.getMarketAppId()));
+            }
+
+            for (MarketAppPort marketAppPort : marketAppPortList) {
+                ExposedPort port = ExposedPort.tcp(marketAppPort.getPort());
+                exposedPorts.add(port);
+            }
+
+            Ports portBindings = new Ports();
+            for (ExposedPort exposedPort : exposedPorts) {
+//                portBindings.bind(exposedPort, Ports.Binding.bindPort(machinePorts.get(0).getMachinePort()));
+//                machinePorts.remove(0);
+            }
+
+
             //判断容器要创建的容器是否是mysql
             if ("mysql".equals(dockerImage.getImage())) {
-                AppVar appVar = new AppVar();
-
+                //mysql变量信息的保存
                 String mysqlPwd = PassUtil.getMD5(String.valueOf(System.currentTimeMillis()));
-                appVar.setAppId(app.getAppId());
                 appVar.setVarName("MYSQL_ROOT_PASSWORD");
                 appVar.setVarValue(mysqlPwd);
                 appVar.setVarExplain("mysql容器的root密码");
-                appVar.setGmtCreate(new Date());
-
-                //将容器的3306对外端口绑定到宿主机的53306端口
-                // TODO 将端口信息保存到appPort表中
+                //端口映射
                 ExposedPort tcp3306 = ExposedPort.tcp(3306);
-                Ports portBindings = new Ports();
-                portBindings.bind(tcp3306, Ports.Binding.bindPort(53306));
+                Ports portBinding = new Ports();
+                portBinding.bind(tcp3306, Ports.Binding.bindPort(43306));
 
                 createContainerResponse = dockerClient.createContainerCmd(dockerImage.getImage())
                         .withExposedPorts(tcp3306)
-                        .withPortBindings(portBindings)
+                        .withPortBindings(portBinding)
                         .withEnv(appVar.getVarName() + "=" + appVar.getVarValue())
                         .exec();
                 appVarService.insert(appVar);

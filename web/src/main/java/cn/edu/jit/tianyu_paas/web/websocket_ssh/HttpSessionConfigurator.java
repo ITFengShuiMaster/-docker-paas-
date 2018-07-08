@@ -8,7 +8,7 @@ import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
 
 /**
- * @author 天宇小凡
+ * @author 卢越
  */
 public class HttpSessionConfigurator extends ServerEndpointConfig.Configurator {
     @Override

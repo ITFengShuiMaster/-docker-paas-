@@ -56,6 +56,11 @@ public class AppPort implements Serializable {
     private Date gmtCreate;
     private Date gmtModified;
 
+    /**
+     * 机器id
+     */
+    private Long machineId;
+
 
     public Long getAppId() {
         return appId;
@@ -135,6 +140,14 @@ public class AppPort implements Serializable {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Long getMachineId() {
+        return machineId;
+    }
+
+    public void setMachineId(Long machineId) {
+        this.machineId = machineId;
     }
 
     @Override
