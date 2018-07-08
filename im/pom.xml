@@ -13,6 +13,11 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>cn.edu.jit.tianyu_paas</groupId>
+            <artifactId>shared</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
     <packaging>war</packaging>
 
