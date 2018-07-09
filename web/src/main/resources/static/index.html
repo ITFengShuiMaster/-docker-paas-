@@ -85,15 +85,8 @@
                 </el-submenu>
 
             </el-submenu>
+
             <el-menu-item index="5">
-                <i class="el-icon-star-off"></i>
-                <span slot="title">我的插件</span>
-            </el-menu-item>
-            <el-menu-item index="6">
-                <i class="el-icon-news"></i>
-                <span slot="title">团队管理</span>
-            </el-menu-item>
-            <el-menu-item index="7">
                 <i class="el-icon-tickets"></i>
                 <span slot="title">财务中心</span>
             </el-menu-item>
@@ -169,7 +162,7 @@
             imageUrl: '',
             username: '',
             isCollapse: false,
-            pageArr: ['', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/install.html', 'pages/appinfo.html', '', '', 'pages/financialcenter.html'],
+            pageArr: ['pages/home.html', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/install.html', 'pages/appinfo.html', 'pages/financialcenter.html'],
             teamArr: ['团队一', '团队二'],
             dataArr: ['假数据中心', '真数据中心'],
             activeName: 'second',
@@ -180,13 +173,13 @@
         },
         methods: {
             openSubMenu(index, indexPath) {
-                console.log(index, indexPath);
+                console.log("openSubMenu"+index, indexPath);
             },
             clickGroup(id) {
                 console.log('grousssp' + id);
             },
             clickApp(id) {
-                console.log('apppp' + id);
+                console.log('apppp = ' + id);
             },
             handleCommand(command) {
                 this.$message("退出");
@@ -308,14 +301,17 @@
                 })
             },
             handleClick(tab, event) {
-                console.log(tab, event);
+                console.log("handleClick"+tab, event);
             },
             // 选择页面
             selectPage(index, indexPath) {
                 // 主要就是通过jquery的load方法，加内容加载到元素上
-                console.log(index);
+                console.log("index = "+index);
                 if (index > 999) {
-                    $('#content').load("pages/appinfo.html?appId=" + (index - 999));
+                    $('#content').load("pages/appinfo.html", function (response, message, xhr) {
+
+                        appinfo.getId(index-999)
+                    });
                 }
                 else {
                     $('#content').load(this.pageArr[index], function (response, message, xhr) {
@@ -419,6 +415,7 @@
         mounted() {
             this.contact_customer_service();
             this.init_gruops();
+            this.selectPage(0,'')
         }
     });
 </script>

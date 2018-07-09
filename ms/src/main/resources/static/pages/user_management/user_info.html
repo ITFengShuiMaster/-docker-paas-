@@ -83,7 +83,7 @@
                     },
                     {
                         title: '注册时间',
-                        key: 'time'
+                        key: 'gmtCreate'
                     },
                     {
                         title: '操作',
@@ -121,14 +121,7 @@
                         }
                     }
                 ],
-                labelArr: [
-                    {
-                        name: '',
-                        email: '',
-                        phone: '',
-                        time: ''
-                    }
-                ],
+                labelArr: [],
                 list_requirement: [
                     {
                         value: '8',
@@ -147,6 +140,7 @@
         },
         methods: {
             sort() {
+                var that =this
                 $.ajax({
                     type: 'get',
                     url: 'admins/access-users',
@@ -160,22 +154,13 @@
                             if (result.data.records.length == 0) {
                                 alert('nothing!')
                             } else {
-                                for (var i = 0; i < result.data.records.length; i++) {
-                                    console.log(result.data.records[i]);
-                                    var obj = user_info.labelArr[0];
-                                    var testObj = {name: "", email: "", phone: '', time: ''};
-                                    obj.name = result.data.records[i].name;
-                                    obj.email = result.data.records[i].email;
-                                    obj.phone = result.data.records[i].phone;
-                                    obj.time = result.data.records[i].gmtCreate;
-
-                                    testObj.name = obj.name;
-                                    testObj.email = obj.email;
-                                    testObj.phone = obj.phone;
-                                    testObj.time = obj.time;
-
-                                    user_info.labelArr.push(testObj);
+                                var res = result.data.records
+                                console.log(res)
+                                for(var i = 0;i<res.length;i++) {
+                                    that.labelArr.push(res[i])
+                                    console.log(that.labelArr)
                                 }
+                                console.log(res)
                             }
                         }
                         else {
@@ -191,13 +176,15 @@
             show(index) {
                 this.$Modal.info({
                     title: '用户信息',
-                    content: `姓名：${this.labelArr[index].name}<br>邮箱：${this.labelArr[index].email}<br>手机号：${this.labelArr[index].phone}<br>注册时间：${this.labelArr[index].time}`
+                    content: `姓名：${this.labelArr[index].name}<br>邮箱：${this.labelArr[index].email}<br>手机号：${this.labelArr[index].phone}<br>注册时间：${this.labelArr[index].gmtCreate}`
                 })
             },
             remove(index) {
+                var that = this
                 this.$Modal.confirm({
                     content: '是否确认删除？',
                     onOk: () => {
+                        this.deleteAdmin(this.labelArr[index].userId)
                         this.labelArr.splice(index, 1);
                         this.$Message.info('已删除');
                     },
@@ -207,33 +194,38 @@
                 });
             },
             userList() {
+                var that= this
                 $.ajax({
                     type: "get",
                     url: 'admins',
                     dataType: "json",
                     success: function (result) {
-                        for (var i = 0; i < result.data.records.length; i++) {
-                            console.log(result.data.records[i]);
-                            var obj = user_info.labelArr[0];
-                            var testObj = {name: "", email: "", phone: '', time: ''};
-                            obj.name = result.data.records[i].name;
-                            obj.email = result.data.records[i].email;
-                            obj.phone = result.data.records[i].phone;
-                            obj.time = result.data.records[i].gmtCreate;
-
-                            testObj.name = obj.name;
-                            testObj.email = obj.email;
-                            testObj.phone = obj.phone;
-                            testObj.time = obj.time;
-
-                            user_info.labelArr.push(testObj);
+                        var res = result.data.records
+                        console.log(res)
+                        for(var i = 0;i<res.length;i++) {
+                            that.labelArr.push(res[i])
                         }
+                        console.log(that.labelArr[2].userId)
+
                     },
                     error: function () {
                         console.log('fail')
                     }
                 })
             },
+            deleteAdmin(user_id) {
+                var that = this
+                $.ajax({
+                    type:'delete',
+                    url:'admins/'+user_id,
+                    success:function (data) {
+                        console.log(data)
+                    },
+                    error:function () {
+
+                    }
+                })
+            }
         },
         mounted() {
             this.userList();
