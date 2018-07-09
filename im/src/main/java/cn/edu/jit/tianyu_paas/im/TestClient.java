@@ -1,13 +1,12 @@
 package cn.edu.jit.tianyu_paas.im;
 
+import cn.edu.jit.tianyu_paas.im.global.CommonMessage;
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
-import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
-import org.apache.mina.filter.codec.textline.LineDelimiter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
@@ -23,7 +22,7 @@ public class TestClient {
         // 如果传byte[] 可以去掉
         connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
 
-        connector.setHandler(new IoHandlerAdapter(){
+        connector.setHandler(new IoHandlerAdapter() {
             @Override
             public void sessionCreated(IoSession session) throws Exception {
                 super.sessionCreated(session);
@@ -40,9 +39,11 @@ public class TestClient {
             }
 
             @Override
-            public void sessionOpened(IoSession session) throws Exception {
-
-                session.write("test");
+            public void sessionOpened(IoSession session) {
+                CommonMessage commonMessage = new CommonMessage();
+                commonMessage.setContent("test");
+                commonMessage.setReceivers("1");
+                session.write(commonMessage);
             }
 
             @Override
