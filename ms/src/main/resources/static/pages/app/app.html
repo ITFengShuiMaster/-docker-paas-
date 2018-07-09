@@ -84,8 +84,7 @@
                                 on: {
                                     'on-change': (change_status) => {//触发事件是on-change,用双引号括起来，
                                         //参数value是回调值，并没有使用到
-                                        app_management.switch(params.index) //params.index是拿到table的行序列，可以取到对应的表
-
+                                        //params.index是拿到table的行序列，可以取到对应的表
                                         app_management.convertStatus(params.index)
                                     }
                                 }
@@ -144,7 +143,6 @@
         methods: {
             get_app_inf() {
                 var that = this
-                console.log("1")
                 $.ajax({
                     type: 'get',
                     url: 'apps',
@@ -174,10 +172,6 @@
                     }
                 })
             },
-            switch(index) {
-
-            },
-
             show(index) {
                 this.$Modal.info({
                     title: 'User Info',
@@ -200,6 +194,7 @@
                 });
             },
             convertStatus(index) {
+                console.log(index);
                 var flag;
                 if(this.table_data[index].status === true) {
                     flag = 0
@@ -217,16 +212,15 @@
                         status:flag
                     },
                     success:function (data) {
-                        console.log(data.message)
+                        console.log(data)
                         if(flag === 1) {
-                            that.table_data[index].status = 1
+                            that.table_data[index].status = true
                             that.table_data[index].statusName = "运行中"
                         }
                         else {
-                            that.table_data[index].status = 0
+                            that.table_data[index].status = false
                             that.table_data[index].statusName = "关闭"
                         }
-                        that.get_app_inf()
 
                     },
                     error:function (err) {
