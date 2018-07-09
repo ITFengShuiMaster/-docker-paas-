@@ -7,6 +7,9 @@ public class MQMessage {
     private Object data;
     private List<Long> receivers;
 
+    public MQMessage() {
+    }
+
     private MQMessage(MQMessageType type, Object data, List<Long> receivers) {
         this.type = type;
         this.data = data;

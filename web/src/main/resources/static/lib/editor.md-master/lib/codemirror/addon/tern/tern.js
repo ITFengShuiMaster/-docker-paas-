@@ -19,7 +19,7 @@
 //   to documents before passing them on to Tern.
 // * switchToDoc: A function(name, doc) that should, when providing a
 //   multi-file view, switch the view or focus to the named file.
-// * showError: A function(editor, message) that can be used to
+// * showError: A function(editor, mina_message) that can be used to
 //   override the way errors are displayed.
 // * completionTip: Customize the content in tooltips for completions.
 //   Is passed a single argument—the completion's data as returned by

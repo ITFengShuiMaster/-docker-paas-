@@ -27,25 +27,12 @@
 
     <dependencies>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-eureka -->
-        <!--<dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-eureka</artifactId>
-            <version>1.4.5.RELEASE</version>
-        </dependency>-->
-
         <!-- https://mvnrepository.com/artifact/org.apache.mina/mina-core -->
         <dependency>
             <groupId>org.apache.mina</groupId>
             <artifactId>mina-core</artifactId>
             <version>2.0.19</version>
         </dependency>
-
-        <!--<dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>${spring-cloud.version}</version>
-        </dependency>-->
 
         <!--断路器，避免一个微服务瘫痪导致连锁瘫痪整个系统雪崩-->
         <!--<dependency>
@@ -57,6 +44,13 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
             <version>2.0.0.RELEASE</version>
+            <!--排除此包，docker-java才能正常创建应用-->
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

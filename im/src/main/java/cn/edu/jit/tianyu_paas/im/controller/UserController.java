@@ -3,6 +3,7 @@ package cn.edu.jit.tianyu_paas.im.controller;
 
 import cn.edu.jit.tianyu_paas.im.entity.User;
 import cn.edu.jit.tianyu_paas.im.service.UserService;
+import cn.edu.jit.tianyu_paas.shared.util.PassUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -61,6 +62,7 @@ public class UserController {
     @PostMapping
     public TResult userAdd(User user) {
         user.setGmtCreate(new Date());
+        user.setPwd(PassUtil.getMD5(user.getPwd()));
         if (!userService.insert(user)) {
             return TResult.failure(TResultCode.FAILURE);
         }

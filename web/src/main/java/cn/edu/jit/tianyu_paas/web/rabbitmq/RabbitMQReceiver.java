@@ -3,6 +3,7 @@ package cn.edu.jit.tianyu_paas.web.rabbitmq;
 import cn.edu.jit.tianyu_paas.shared.entity.Message;
 import cn.edu.jit.tianyu_paas.shared.entity.Notice;
 import cn.edu.jit.tianyu_paas.shared.global.PublicConstants;
+import cn.edu.jit.tianyu_paas.shared.rabbitmq.MQMessage;
 import cn.edu.jit.tianyu_paas.web.websocket.TWebSocket;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
@@ -25,7 +26,8 @@ public class RabbitMQReceiver {
     @RabbitListener(queues = PublicConstants.RABBITMQ_QUEUE_NAME)
     public void process(String messageStr) {
         LOGGER.debug(messageStr);
-//        MQMessage mqMessage = JSON.parseObject(messageStr, MQMessage.class);
+        MQMessage mqMessage = JSON.parseObject(messageStr, MQMessage.class);
+        System.out.println(mqMessage.toString());
         /*List<Long> receivers = mqMessage.getReceivers();
         switch (mqMessage.getType()) {
             case NOTICE:
@@ -33,8 +35,8 @@ public class RabbitMQReceiver {
                 receiveNotices(notice, receivers);
                 break;
             case MESSAGE:
-                Message message = JSON.parseObject(mqMessage.getData().toString(), Message.class);
-                receiveMessages(message, receivers);
+                Message mina_message = JSON.parseObject(mqMessage.getData().toString(), Message.class);
+                receiveMessages(mina_message, receivers);
                 break;
             default:
                 break;

@@ -1,8 +1,7 @@
 var websocket = null;
-
 //判断当前浏览器是否支持WebSocket
 if ('WebSocket' in window) {
-    websocket = new WebSocket(email.url.websocket);
+    websocket = new WebSocket("wss://39.106.54.222:8080/api/devices/004a770066003304/frames");
 }
 else {
     alert('Not support websocket')
@@ -15,17 +14,17 @@ websocket.onerror = function () {
 
 //连接成功建立的回调方法
 websocket.onopen = function (event) {
-
+    console.log('open')
 };
 
 //接收到消息的回调方法   event.data
 websocket.onmessage = function (event) {
-    vm.websocket(event.data);
+    console.log(event)
 };
 
 //连接关闭的回调方法
 websocket.onclose = function () {
-
+    console.log('close')
 };
 
 //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。

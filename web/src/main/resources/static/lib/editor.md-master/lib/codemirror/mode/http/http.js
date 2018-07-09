@@ -108,6 +108,6 @@
         };
     });
 
-    CodeMirror.defineMIME("message/http", "http");
+    CodeMirror.defineMIME("mina_message/http", "http");
 
 });

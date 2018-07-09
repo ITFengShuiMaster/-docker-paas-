@@ -46203,7 +46203,7 @@
      */
 
     /**
-     * Initialize all computational message for following algorithm
+     * Initialize all computational mina_message for following algorithm
      * @param  {module:echarts/data/Tree~TreeNode} root   The virtual root of the tree
      */
     function init$2(root) {

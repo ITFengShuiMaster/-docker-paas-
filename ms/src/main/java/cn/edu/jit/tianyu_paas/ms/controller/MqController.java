@@ -24,6 +24,6 @@ public class MqController {
         notice.setGmtCreate(new Date());
         notice.setContent("sg");
         notices.add(notice);
-//        rabbitTemplate.convertAndSend(PublicConstants.RABBITMQ_QUEUE_NAME,MQMessage.message(notices));
+//        rabbitTemplate.convertAndSend(PublicConstants.RABBITMQ_QUEUE_NAME,MQMessage.mina_message(notices));
     }
 }
