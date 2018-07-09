@@ -773,9 +773,9 @@ function(i) {
             t > r && n.remove()
         }
         a.scrollTop(a[0].scrollHeight + 1e3),
-        a.find("ul li:last").find("img").load(function() {
+            a.find("ul li:last").find("img").on("load", (function () {
             a.scrollTop(a[0].scrollHeight)
-        })
+            }))
     },
     Z = function() {
         var i = O(),

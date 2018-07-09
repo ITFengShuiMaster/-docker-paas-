@@ -22,7 +22,7 @@
 
         var keywords = parseWords("Tcl safe after append array auto_execok auto_import auto_load " +
             "auto_mkindex auto_mkindex_old auto_qualify auto_reset bgerror " +
-            "binary break catch cd close concat continue dde eof encoding error " +
+            "websocket break catch cd close concat continue dde eof encoding error " +
             "eval exec exit expr fblocked fconfigure fcopy file fileevent filename " +
             "filename flush for foreach format gets glob global history http if " +
             "incr info interp join lappend lindex linsert list llength load lrange " +

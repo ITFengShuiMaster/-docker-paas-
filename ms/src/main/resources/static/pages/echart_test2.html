@@ -129,7 +129,7 @@
                         console.log(result);
                         if (result.code) {
                             for (i in result.data) {
-                                echart_table.table_data_days.push(result.data[i].day);
+                                echart_table.table_data_days.push(result.data[i].day + "日");
                                 echart_table.table_data_views.push(result.data[i].views);
                             }
                         } else {
@@ -149,9 +149,10 @@
                         console.log(result);
                         if (result.code) {
                             for (i in result.data) {
-                                echart_table.table_data_days.push(result.data[i].day);
+                                echart_table.table_data_days.push(result.data[i].month + "月");
                                 echart_table.table_data_views.push(result.data[i].views);
                             }
+                            console.log(echart_table.table_data_days);
                         } else {
                         }
                         echart_table.init_table();
@@ -163,7 +164,8 @@
             }
         },
         created(){
-            this.get_views_day_of_month();
+//            this.get_views_day_of_month();
+            this.get_views_month_of_year();
         },
         mounted() {
 

@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.ms;
 
+import cn.edu.jit.tianyu_paas.ms.global.GlobalInterceptor;
 import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -7,12 +8,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @MapperScan("cn.edu.jit.tianyu_paas.ms.mapper")
 @EnableSwagger2
-public class MsApplication {
+public class MsApplication implements WebMvcConfigurer {
 
     public static void main(String[] args) {
         SpringApplication.run(MsApplication.class, args);
@@ -24,6 +27,19 @@ public class MsApplication {
     @Bean
     public PaginationInterceptor paginationInterceptor() {
         return new PaginationInterceptor();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(globalInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns("/admin/login")
+                .excludePathPatterns("/error");
+    }
+
+    @Bean
+    public GlobalInterceptor globalInterceptor() {
+        return new GlobalInterceptor();
     }
 
     /**

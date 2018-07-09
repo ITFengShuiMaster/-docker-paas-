@@ -3,28 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <script src="../lib/echarts/echarts.js"></script>
-    <script src="../lib/jquery/jquery-3.2.1.js"></script>
+    <script src="../lib/jquery/jquery-3.2.1.js"></script>px
     <script src="../lib/vue/vue.min.js"></script>
 
 </head>
 <body>
 <div id="echart_table">
-    <div id="main" style="width: 600px;height: 400px"></div>
-    <div id="table" style="width: 600px;height: 400px"></div>
+    <div id="dashboard" style="width: 600px;height: 400px"></div>
+    <div id="scatter" style="width: 100%;height: 400px"></div>
 </div>
 </body>
 
 <script>
-    var echart_table = new Vue({
+    let echart_table = new Vue({
         el: '#echart_table',
         data: {
-            a: '',
+            data:[]
         },
         methods: {
-            init_table() {
-                var myChart = echarts.init(document.getElementById('main'));
-                var myChart2 = echarts.init(document.getElementById('table'));
+            // 加载echarts，单轴散点图，每月每周几的访问量展示
+            initScatterOnSingleAxis() {
+                let chart2 = echarts.init(document.getElementById('scatter'));
+                chart2.title = '单轴散点图';
 
+                var hours = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+                var days = ['Saturday', 'Friday', 'Thursday',
+                    'Wednesday', 'Tuesday', 'Monday', 'Sunday'];
+
+                option = {
+                    tooltip: {
+                        position: 'top'
+                    },
+                    title: [],
+                    singleAxis: [],
+                    series: []
+                };
+
+                echarts.util.each(days, function (day, idx) {
+                    option.title.push({
+                        textBaseline: 'middle',
+                        top: (idx + 0.5) * 100 / 7 + '%',
+                        text: day
+                    });
+                    option.singleAxis.push({
+                        left: 150,
+                        type: 'category',
+                        boundaryGap: false,
+                        data: hours,
+                        top: (idx * 100 / 7 + 5) + '%',
+                        height: (100 / 7 - 10) + '%',
+                        axisLabel: {
+                            interval: 2
+                        }
+                    });
+                    option.series.push({
+                        singleAxisIndex: idx,
+                        coordinateSystem: 'singleAxis',
+                        type: 'scatter',
+                        data: [],
+                        symbolSize: function (dataItem) {
+                            return dataItem[1] * 4*3;
+                        }
+                    });
+                });
+
+                echarts.util.each(this.data, function (dataItem) {
+                    option.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+                });
+
+                chart2.setOption(option);
+            },
+            initDashboard() {
                 //仪表盘样式
                 option = {
                     tooltip : {
@@ -104,97 +153,26 @@
                         },
                     ]
                 };
-                //圆点样式
-                this.title = '单轴散点图';
-
-                var month = ['一月', '二月', '三月', '四月', '五月', '六月', '七月',
-                    '八月', '九月', '十月', '十一月', '十二月',];
-                var days = ['Saturday', 'Friday', 'Thursday',
-                    'Wednesday', 'Tuesday', 'Monday', 'Sunday'];
-
-                var data = [[0,0,5],[0,1,4],[0,2,1] ,[1,0,4],[1,1,5],[2,0,1],[2,1,3]]
-                option2 = {
-                    tooltip: {
-                        position: 'top'
-                    },
-                    title: [],
-                    singleAxis: [],
-                    series: [],
-                };
-
-                echarts.util.each(days, function (day, idx) {
-                    option2.title.push({
-                        textBaseline: 'middle',
-                        top: (idx + 0.5) * 100 / 7 + '%',
-                        text: day
-                    });
-                    option2.singleAxis.push({
-                        left: 150,
-                        type: 'category',
-                        boundaryGap: false,
-                        data: month,
-                        top: (idx * 100 / 7 + 5) + '%',
-                        height: (100 / 7 - 10) + '%',
-                        axisLabel: {
-                            interval: 1
-                        }
-                    });
-                    option2.series.push({
-                        singleAxisIndex: idx,
-                        coordinateSystem: 'singleAxis',
-                        type: 'scatter',
-                        data: [],
-                        symbolSize: function (dataItem) {
-                            return dataItem[1] * 4;
-                        }
-                    });
-                });
-
-                echarts.util.each(data, function (dataItem) {
-                    option2.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
-                });
-
-
-                myChart.setOption(option);
-                myChart2.setOption(option2);
+                let dashboard = echarts.init(document.getElementById('#dashboard'));
+                dashboard.setOption(option);
             },
-            get_views_month_of_year_avg() {
+            getViewsDayOfWeekAvg() {
                 $.ajax({
                     type: "get",
-                    url: 'http://localhost:8081/ms/logs/views-month-of-year-avg',
+                    url: 'http://localhost:8081/ms/logs/views-days-month-of-year',
                     success: function (result) {
-                        console.log(result);
-                        if (result.code) {
-                        } else {
-                        }
-                    },
-                    error: function () {
-                        console.log("失败")
-                    }
-                })
-            },
-            get_views_day_of_month_avg() {
-                $.ajax({
-                    type: "get",
-                    url: 'http://localhost:8081/ms/logs/views-day-of-month-avg',
-                    success: function (result) {
-                        console.log(result);
-                        if (result.code) {
-                        } else {
-                        }
-                    },
-                    error: function () {
-                        console.log("失败")
-                    }
-                })
-            },
-            get_views_day_of_week_avg() {
-                $.ajax({
-                    type: "get",
-                    url: 'http://localhost:8081/ms/logs/views-day-of-week-avg',
-                    success: function (result) {
-                        console.log(result);
-                        if (result.code) {
+                        if (result.code === 1) {
+                            console.log(result);
+                            let resArr = [];
+                            for (let i in result.data) {
+                                for (let j in result.data[i]) {
+                                    let tempArr = [];
+                                    tempArr.push(parseInt(i),parseInt(j),result.data[i][j]);
+                                    resArr.push(tempArr);
+                                }
+                            }
+                            echart_table.data = resArr;
+                            echart_table.initScatterOnSingleAxis();
                         } else {
                         }
                     },
@@ -204,9 +182,8 @@
                 })
             },
         },
-        mounted() {
-            this.init_table();
-            this.get_views_day_of_week_avg();
+        mounted(){
+            this.getViewsDayOfWeekAvg();
         }
 
     });

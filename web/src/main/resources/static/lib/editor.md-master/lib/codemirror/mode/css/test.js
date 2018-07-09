@@ -175,7 +175,7 @@
         "[def @document] [tag regexp]([string \".*blah.+\"]) { [builtin #id] { } }");
 
     MT("counter-style",
-        "[def @counter-style] [variable binary] {",
+        "[def @counter-style] [variable websocket] {",
         "  [property system]: [atom numeric];",
         "  [property symbols]: [number 0] [number 1];",
         "  [property suffix]: [string \".\"];",
