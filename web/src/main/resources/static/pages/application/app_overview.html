@@ -64,7 +64,7 @@
                 <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
                     <div class="first a">
                         <span>应用状态</span>
-                        <div class="statusFirst" v-loading="loading"></div>
+                        <div class="statusFirst" ></div>
                         <div class="text">
                             <span>运行中</span>
                         </div>
@@ -186,7 +186,7 @@
                     type:'get',
                     url:'/tianyu-paas/actions/detail',
                     data:{
-                        appId:'1',
+                        appId:appinfo.app_id,
                         actionId:action_id,
                         level:'0'
                     },
@@ -204,7 +204,7 @@
                     type:'get',
                     url:'/tianyu-paas/actions/detail',
                     data:{
-                        appId:'1',
+                        appId:appinfo.app_id,
                         actionId:action_id,
                         level:'1'
                     },
@@ -222,7 +222,7 @@
                     type:'get',
                     url:'/tianyu-paas/actions/detail',
                     data:{
-                        appId:'1',
+                        appId:appinfo.app_id,
                         actionId:action_id,
                         level:'2'
                     },
@@ -239,7 +239,7 @@
                     type:'get',
                     url:'/tianyu-paas/actions/detail',
                     data: {
-                        appId:'1',
+                        appId:appinfo.app_id,
                         actionId:'1',
                         level:'1'
                     },
@@ -257,6 +257,7 @@
             this.overviewInit()
 //            this.getAction()
             this.getActionDetail()
+            console.log("overview:"+appinfo.app_id)
         }
     });
 </script>
