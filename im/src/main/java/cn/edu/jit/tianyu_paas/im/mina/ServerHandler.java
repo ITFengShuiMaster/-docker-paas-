@@ -12,14 +12,17 @@ public class ServerHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionCreated(IoSession session) {
+        LOGGER.info("create");
     }
 
     @Override
     public void sessionOpened(IoSession session) {
+        LOGGER.info("open");
     }
 
     @Override
     public void sessionClosed(IoSession session) {
+        LOGGER.info("close");
     }
 
     /**
@@ -27,6 +30,7 @@ public class ServerHandler extends IoHandlerAdapter {
      */
     @Override
     public void sessionIdle(IoSession session, IdleStatus status) {
+        LOGGER.info(status.toString());
     }
 
     @Override
@@ -37,10 +41,13 @@ public class ServerHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) {
+        LOGGER.info(message.toString());
+        session.write(message);
     }
 
     @Override
     public void messageSent(IoSession session, Object message) {
+        LOGGER.info(message.toString());
     }
 
     @Override

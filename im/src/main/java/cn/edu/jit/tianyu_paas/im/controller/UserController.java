@@ -6,17 +6,12 @@ import cn.edu.jit.tianyu_paas.im.service.UserService;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.netflix.discovery.converters.Auto;
 import io.swagger.annotations.ApiOperation;
-import org.bouncycastle.util.test.TestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.TraversableResolver;
-import javax.validation.Valid;
 import java.util.Date;
 
 /**
