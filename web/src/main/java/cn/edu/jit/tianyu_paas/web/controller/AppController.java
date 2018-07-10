@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.DockerCmdExecFactory;
 import com.github.dockerjava.api.model.ExposedPort;
@@ -62,9 +63,10 @@ public class AppController {
     private final MachinePortService machinePortService;
     private final MachineService machineService;
     private final MarketAppPortService marketAppPortService;
+    private final MarketAppVarService marketAppVarService;
 
     @Autowired
-    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, MachinePortService machinePortService, MachineService machineService, MarketAppPortService marketAppPortService) {
+    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, MachinePortService machinePortService, MachineService machineService, MarketAppPortService marketAppPortService, MarketAppVarService marketAppVarService) {
         this.appService = appService;
         this.appInfoByCustomService = appInfoByCustomService;
         this.session = session;
@@ -80,15 +82,7 @@ public class AppController {
         this.machinePortService = machinePortService;
         this.machineService = machineService;
         this.marketAppPortService = marketAppPortService;
-    }
-
-    /**
-     * 获取可用端口的信息
-     *
-     * @return
-     */
-    private List<MachinePort> getUsablePort() {
-        return machinePortService.selectList(new EntityWrapper<MachinePort>().eq("status", 1));
+        this.marketAppVarService = marketAppVarService;
     }
 
     private void initApp(App app, AppCreateMethodEnum createMethodEnum) {
@@ -100,23 +94,77 @@ public class AppController {
         // TODO 检测仓库，并给应用设置memory, disk等
     }
 
-    private void initAppPort(App app, AppPort appPort, MachinePort machinePort) {
-        appPort.setAppId(app.getAppId());
-        appPort.setInsideAccessUrl("xxx");
-        appPort.setInsideAlias("xxx");
-        appPort.setIsInsideOpen(AppPort.INOPEN);
-        appPort.setIsOutsideOpen(AppPort.OUTOPEN);
-        appPort.setOutsideAccessUrl(machineService.selectOne(new EntityWrapper<Machine>().eq("machine_id", machinePort.getMachineId())).getMachineIp() + ":" + machinePort.getMachinePort());
-        appPort.setPort(machinePort.getMachinePort());
-        appPort.setProtocol(AppPort.MYSQL);
-        appPort.setMachineId(machinePort.getMachineId());
-        appPort.setGmtCreate(new Date());
-        appPort.setGmtModified(new Date());
+    private List<AppPort> initAppPort(App app, List<MachinePort> machinePorts) {
+        List<AppPort> appPorts = new ArrayList<>();
+        for (MachinePort usedPort : machinePorts) {
+            AppPort appPort = new AppPort();
+            appPort.setAppId(app.getAppId());
+            appPort.setInsideAccessUrl("xxx");
+            appPort.setInsideAlias("xxx");
+            appPort.setIsInsideOpen(AppPort.INOPEN);
+            appPort.setIsOutsideOpen(AppPort.OUTOPEN);
+            appPort.setOutsideAccessUrl(machineService.selectOne(new EntityWrapper<Machine>().eq("machine_id", usedPort.getMachineId())).getMachineIp() + ":" + usedPort.getMachinePort());
+            appPort.setPort(usedPort.getMachinePort());
+            appPort.setProtocol(AppPort.MYSQL);
+            appPort.setMachineId(usedPort.getMachineId());
+            appPort.setGmtCreate(new Date());
+            appPort.setGmtModified(new Date());
+            appPorts.add(appPort);
+        }
+        return appPorts;
     }
 
-    private void initAppVar(App app, AppVar appVar) {
-        appVar.setAppId(app.getAppId());
-        appVar.setGmtCreate(new Date());
+    private List<AppVar> initAppVar(App app, List<MarketAppVar> marketAppVarList) {
+        List<AppVar> list = new ArrayList<>();
+        for (MarketAppVar marketAppVar : marketAppVarList) {
+            AppVar appVar = new AppVar();
+            appVar.setAppId(app.getAppId());
+            appVar.setVarName(marketAppVar.getVarName());
+            appVar.setVarValue(marketAppVar.getValue());
+            appVar.setVarExplain(marketAppVar.getVarExplain());
+            appVar.setGmtCreate(new Date());
+            list.add(appVar);
+        }
+        return list;
+    }
+
+    /**
+     * 获取可用端口的信息
+     *
+     * @return
+     */
+    private List<MachinePort> getUsablePort() {
+        return machinePortService.selectList(new EntityWrapper<MachinePort>().eq("status", 1).last("limit 50"));
+    }
+
+    /**
+     * 拉取镜相
+     *
+     * @return
+     */
+    private Boolean pullImage(String imageName) {
+        RestTemplate template = new RestTemplate();
+
+        ResponseEntity<String> responseEntity = template.exchange(String.format(Constants.CREATE_IMAGE, imageName),
+                HttpMethod.POST, null, String.class);
+
+        if (responseEntity.getStatusCodeValue() != 200) {
+            return false;
+        }
+
+        //还需要判断返回结果中是否存在error，存在则说明镜相不存在，拉取失败
+        return StringUtil.isEmpty(responseEntity.getBody()) || !responseEntity.getBody().contains("error");
+    }
+
+    private void free(DockerClient dockerClient, String containerId, Long appId) {
+        appService.deleteById(appId);
+        dockerClient.stopContainerCmd(containerId).exec();
+    }
+
+    private void free(DockerClient dockerClient, String containerId, Long appId, String image) {
+        appService.deleteById(appId);
+        appInfoByDockerImageService.delete(new EntityWrapper<AppInfoByDockerImage>().eq("app_id", appId).and().eq("image", image));
+        dockerClient.stopContainerCmd(containerId).exec();
     }
 
     /**
@@ -211,92 +259,99 @@ public class AppController {
         initApp(app, AppCreateMethodEnum.DOCKER_IMAGE);
         DockerClient dockerClient = getDockerClient();
 
-        if (appService.insert(app)) {
-            dockerImage.setAppId(app.getAppId());
-            appInfoByDockerImageService.insert(dockerImage);
-
-            RestTemplate template = new RestTemplate();
-
-            ResponseEntity<String> responseEntity = template.exchange(String.format(Constants.CREATE_IMAGE, dockerImage.getImage()),
-                    HttpMethod.POST, null, String.class);
-
-            if (responseEntity.getStatusCodeValue() != 200) {
-                return TResult.failure("存储库不存在或不具有读取访问权限。");
+        MarketApp marketApp = marketAppService.selectOne(new EntityWrapper<MarketApp>().eq("name", dockerImage.getImage()));
+        if (marketApp != null) {
+            //拉取镜相
+            if (!pullImage(dockerImage.getImage())) {
+                return TResult.failure("镜相名错误或存储库中不存在");
             }
+            //判断容器所需端口和所需的变量
+            List<MarketAppPort> marketAppPortList = marketAppPortService.selectList(new EntityWrapper<MarketAppPort>().eq("market_app_id", marketApp.getMarketAppId()));
+            List<MarketAppVar> marketAppVarList = marketAppVarService.selectList(new EntityWrapper<MarketAppVar>().eq("market_app_id", marketApp.getMarketAppId()));
 
-            //还需要判断返回结果中是否存在error，存在则说明镜相不存在，拉取失败
-            if (!StringUtil.isEmpty(responseEntity.getBody()) && responseEntity.getBody().contains("error")) {
-                return TResult.failure("镜相不存在");
-            }
-
-            CreateContainerResponse createContainerResponse = null;
-            //获得可用端口信息
-//            List<MachinePort> machinePorts = getUsablePort();
-            AppVar appVar = new AppVar();
-//            AppPort appPort = new AppPort();
-
-            //初始化app相关的变量,相关端口信息
-            // TODO 将端口信息保存到appPort表中
-            initAppVar(app, appVar);
-//            initAppPort(app, appPort, machinePort);
-
-            //判断容器所需端口
+            //容器需要向外暴露的端口
             List<ExposedPort> exposedPorts = new ArrayList<>();
-            List<MarketAppPort> marketAppPortList = new ArrayList<>();
-            MarketApp marketApp = marketAppService.selectOne(new EntityWrapper<MarketApp>().eq("name", dockerImage.getImage()));
-
-            if (marketApp != null) {
-                marketAppPortList = marketAppPortService.selectList(new EntityWrapper<MarketAppPort>().eq("market_app_id", marketApp.getMarketAppId()));
-            }
-
             for (MarketAppPort marketAppPort : marketAppPortList) {
                 ExposedPort port = ExposedPort.tcp(marketAppPort.getPort());
                 exposedPorts.add(port);
             }
 
+            //将可用的机器端口映射到容器端口上
             Ports portBindings = new Ports();
+            //获得可用端口信息
+            List<MachinePort> machinePorts = getUsablePort();
+            //保存机器中已使用的端口
+            List<MachinePort> usedMachinePortList = new ArrayList<>();
             for (ExposedPort exposedPort : exposedPorts) {
-//                portBindings.bind(exposedPort, Ports.Binding.bindPort(machinePorts.get(0).getMachinePort()));
-//                machinePorts.remove(0);
+                portBindings.bind(exposedPort, Ports.Binding.bindPort(machinePorts.get(0).getMachinePort()));
+                //将使用过的机器端口添加到集合中
+                MachinePort machinePort = machinePorts.remove(0);
+                machinePort.setStatus(2);
+                usedMachinePortList.add(machinePort);
             }
 
+            //配置所需要的容器信息
+            CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(dockerImage.getImage())
+                    .withExposedPorts(exposedPorts)
+                    .withPortBindings(portBindings);
 
-            //判断容器要创建的容器是否是mysql
-            if ("mysql".equals(dockerImage.getImage())) {
-                //mysql变量信息的保存
-                String mysqlPwd = PassUtil.getMD5(String.valueOf(System.currentTimeMillis()));
-                appVar.setVarName("MYSQL_ROOT_PASSWORD");
-                appVar.setVarValue(mysqlPwd);
-                appVar.setVarExplain("mysql容器的root密码");
-                //端口映射
-                ExposedPort tcp3306 = ExposedPort.tcp(3306);
-                Ports portBinding = new Ports();
-                portBinding.bind(tcp3306, Ports.Binding.bindPort(43306));
-
-                createContainerResponse = dockerClient.createContainerCmd(dockerImage.getImage())
-                        .withExposedPorts(tcp3306)
-                        .withPortBindings(portBinding)
-                        .withEnv(appVar.getVarName() + "=" + appVar.getVarValue())
-                        .exec();
-                appVarService.insert(appVar);
-            } else {
-                //创建容器
-                createContainerResponse = dockerClient.createContainerCmd(dockerImage.getImage()).exec();
+            for (MarketAppVar var : marketAppVarList) {
+                if (StringUtil.isEmpty(var.getValue())) {
+                    var.setValue(PassUtil.getMD5(String.valueOf(System.currentTimeMillis()).substring(0, 6)));
+                }
+                createContainerCmd = createContainerCmd.withEnv(var.getVarName() + "=" + var.getValue());
             }
 
-            if (createContainerResponse == null) {
+            try {
+                CreateContainerResponse createContainerResponse = createContainerCmd.exec();
+                dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
+
+                app.setContainerId(createContainerResponse.getId());
+                if (!appService.insert(app)) {
+                    dockerClient.stopContainerCmd(createContainerResponse.getId()).exec();
+                    return TResult.failure(TResultCode.BUSINESS_ERROR);
+                }
+
+                dockerImage.setAppId(app.getAppId());
+                if (!appInfoByDockerImageService.insert(dockerImage)) {
+                    free(dockerClient, createContainerResponse.getId(), dockerImage.getAppId());
+                    return TResult.failure(TResultCode.BUSINESS_ERROR);
+                }
+
+                //将容器变量信息保存到app_var表中
+                List<AppVar> varList = initAppVar(app, marketAppVarList);
+                if (varList.size() != 0) {
+                    if (!appVarService.insertBatch(varList)) {
+                        free(dockerClient, createContainerResponse.getId(), dockerImage.getAppId(), dockerImage.getImage());
+                        return TResult.failure(TResultCode.BUSINESS_ERROR);
+                    }
+                }
+
+                //将容器端口信息保存到app_port表中
+                List<AppPort> portList = initAppPort(app, usedMachinePortList);
+                if (portList.size() != 0) {
+                    if (!appPortService.insertBatch(portList)) {
+                        free(dockerClient, createContainerResponse.getId(), dockerImage.getAppId(), dockerImage.getImage());
+                        return TResult.failure(TResultCode.BUSINESS_ERROR);
+                    }
+                }
+
+                //更新机器被占用端口的状态
+                if (!machinePortService.updateMachinePortStatusByIdAndPort(usedMachinePortList)) {
+                    free(dockerClient, createContainerResponse.getId(), dockerImage.getAppId(), dockerImage.getImage());
+                    return TResult.failure(TResultCode.BUSINESS_ERROR);
+                }
+
+                return TResult.success();
+
+            } catch (Exception e) {
+                logger.error("容器创建失败");
+                e.printStackTrace();
                 return TResult.failure(TResultCode.BUSINESS_ERROR);
             }
-            //运行容器
-            dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
-
-            app.setContainerId(createContainerResponse.getId());
-            appService.update(app, new EntityWrapper<App>().eq("app_id", app.getAppId()));
-
-            return TResult.success();
         }
 
-        return TResult.failure(TResultCode.BUSINESS_ERROR);
+        return TResult.failure("目前不支持该镜相的创建!");
     }
 
     /**

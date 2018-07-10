@@ -192,13 +192,12 @@
             <artifactId>docker-client</artifactId>
             <version>8.11.7</version>
         </dependency>
-
-        <!--&lt;!&ndash;TODO更换版本 若项目出错，看看这&ndash;&gt;-->
-        <!--<dependency>-->
-        <!--<groupId>javax.ws.rs</groupId>-->
-        <!--<artifactId>javax.ws.rs-api</artifactId>-->
-        <!--<version>2.0.1</version>-->
-        <!--</dependency>-->
+        <!--腾讯云短信sdk-->
+        <dependency>
+            <groupId>com.github.qcloudsms</groupId>
+            <artifactId>qcloudsms</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
 
     <!--<dependencyManagement>

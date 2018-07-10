@@ -124,7 +124,7 @@ public class SSHWebSocket {
                 }
             }
             // TODO 线程池
-            SocketRunable socketRunable = new SocketRunable(inputStream, session);
+            SocketRunable socketRunable = new SocketRunable(inputStream, socket, session);
             socketPoolExecutor.execute(socketRunable);
             this.socket = socket;
             this.socketRunnable = socketRunable;
@@ -148,11 +148,13 @@ public class SSHWebSocket {
     }
 
     class SocketRunable implements Runnable {
+        private Socket socket;
         private InputStream inputStream;
         private Session session;
 
-        public SocketRunable(InputStream inputStream, Session session) {
+        public SocketRunable(InputStream inputStream, Socket socket, Session session) {
             this.inputStream = inputStream;
+            this.socket = socket;
             this.session = session;
         }
 
@@ -160,7 +162,7 @@ public class SSHWebSocket {
         public void run() {
             try {
                 byte[] bytes = new byte[1024];
-                while (true) {
+                while (!socket.isClosed()) {
                     int n = inputStream.read(bytes);
                     String msg = new String(bytes, 0, n);
                     session.getBasicRemote().sendText(msg);
