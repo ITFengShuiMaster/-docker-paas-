@@ -371,7 +371,7 @@ var config = ({
   silent: false,
 
   /**
-   * Show production mode tip message on boot?
+   * Show production mode tip mina_message on boot?
    */
   productionTip: "development" !== 'production',
 

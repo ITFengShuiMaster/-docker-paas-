@@ -61,7 +61,7 @@ public class WebSocketEncoder extends ProtocolEncoderAdapter {
             WebSocketCodecPacket packet = (WebSocketCodecPacket) message;
             resultBuffer = isRemoteWebSocket ? WebSocketEncoder.buildWSDataFrameBuffer(packet.getPacket()) : packet.getPacket();
         } else {
-            throw (new Exception("message not a websocket type"));
+            throw (new Exception("mina_message not a websocket type"));
         }
 
         out.write(resultBuffer);

@@ -1,8 +1,8 @@
-package cn.edu.jit.tianyu_paas.im.global;
+package cn.edu.jit.tianyu_paas.shared.mina_message;
 
 public class CommonMessage extends MinaMessage {
     private String content;
-    private String receivers;
+    private Long receiver;
 
     public CommonMessage() {
         super.setMessageType(MinaMessageType.COMMON);
@@ -16,11 +16,11 @@ public class CommonMessage extends MinaMessage {
         this.content = content;
     }
 
-    public String getReceivers() {
-        return receivers;
+    public Long getReceiver() {
+        return receiver;
     }
 
-    public void setReceivers(String receivers) {
-        this.receivers = receivers;
+    public void setReceiver(Long receiver) {
+        this.receiver = receiver;
     }
 }

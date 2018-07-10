@@ -603,7 +603,7 @@
         "media-sliderthumb", "media-time-remaining-display", "media-volume-slider",
         "media-volume-slider-container", "media-volume-sliderthumb", "medium",
         "menu", "menulist", "menulist-button", "menulist-text",
-        "menulist-textfield", "menutext", "message-box", "middle", "min-intrinsic",
+        "menulist-textfield", "menutext", "mina_message-box", "middle", "min-intrinsic",
         "mix", "mongolian", "monospace", "move", "multiple", "myanmar", "n-resize",
         "narrower", "ne-resize", "nesw-resize", "no-close-quote", "no-drop",
         "no-open-quote", "no-repeat", "none", "normal", "not-allowed", "nowrap",

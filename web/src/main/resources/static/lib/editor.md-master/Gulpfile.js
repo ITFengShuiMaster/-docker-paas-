@@ -332,7 +332,7 @@ gulp.task("jsdoc2md", function() {
     return gulp.src("src/js/editormd.js")
             .pipe(jsdoc2md())
             .on("error", function(err){
-                gutil.log(gutil.colors.red("jsdoc2md failed"), err.message);
+                gutil.log(gutil.colors.red("jsdoc2md failed"), err.mina_message);
             })
             .pipe(rename(function(path) {
                 path.extname = ".md";

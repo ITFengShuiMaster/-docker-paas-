@@ -25,7 +25,7 @@ public class GeneratorUtil {
     public static void main(String[] args) {
         String packageName = "cn.edu.jit.tianyu_paas.im";
         initDataSource();
-        generateByTables(packageName, "message", "user");
+        generateByTables(packageName, "mina_message", "user");
     }
 
     private static void initDataSource() {

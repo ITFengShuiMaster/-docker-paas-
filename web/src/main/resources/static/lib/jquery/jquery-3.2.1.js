@@ -8907,7 +8907,7 @@
                 requestHeaders = {},
                 requestHeadersNames = {},
 
-                // Default abort message
+                // Default abort mina_message
                 strAbort = "canceled",
 
                 // Fake xhr

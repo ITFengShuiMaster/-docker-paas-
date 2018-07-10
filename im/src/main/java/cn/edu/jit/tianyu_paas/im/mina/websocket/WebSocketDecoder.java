@@ -85,15 +85,15 @@ public class WebSocketDecoder extends CumulativeProtocolDecoder {
     protected boolean doDecode(IoSession session, IoBuffer in, ProtocolDecoderOutput out) {
         IoBuffer resultBuffer;
         if (!session.containsAttribute(WebSocketUtils.SessionAttribute)) {
-            // first message on a new connection. see if its from a websocket or a
+            // first mina_message on a new connection. see if its from a websocket or a
             // native socket.
             if (tryWebSockeHandShake(session, in, out)) {
                 // websocket handshake was successful. Don't write anything to output
-                // as we want to abstract the handshake request message from the handler.
+                // as we want to abstract the handshake request mina_message from the handler.
                 in.position(in.limit());
                 return true;
             } else {
-                // message is from a native socket. Simply wrap and pass through.
+                // mina_message is from a native socket. Simply wrap and pass through.
                 resultBuffer = IoBuffer.wrap(in.array(), 0, in.limit());
                 in.position(in.limit());
                 session.setAttribute(WebSocketUtils.SessionAttribute, false);
@@ -119,7 +119,7 @@ public class WebSocketDecoder extends CumulativeProtocolDecoder {
     }
 
     /**
-     * Try parsing the message as a websocket handshake request. If it is such
+     * Try parsing the mina_message as a websocket handshake request. If it is such
      * a request, then send the corresponding handshake response (as in Section 4.2.2 RFC 6455).
      */
     private boolean tryWebSockeHandShake(IoSession session, IoBuffer in, ProtocolDecoderOutput out) {

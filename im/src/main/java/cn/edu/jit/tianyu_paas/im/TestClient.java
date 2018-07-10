@@ -1,7 +1,8 @@
 package cn.edu.jit.tianyu_paas.im;
 
-import cn.edu.jit.tianyu_paas.im.global.CommonMessage;
+import cn.edu.jit.tianyu_paas.im.mina_message.CommonMessage;
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
+import com.alibaba.fastjson.JSON;
 import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
@@ -42,8 +43,9 @@ public class TestClient {
             public void sessionOpened(IoSession session) {
                 CommonMessage commonMessage = new CommonMessage();
                 commonMessage.setContent("test");
-                commonMessage.setReceivers("1");
-                session.write(commonMessage);
+                commonMessage.setReceiver(1L);
+                session.write(JSON.toJSONString(commonMessage));
+                session.closeOnFlush();
             }
 
             @Override

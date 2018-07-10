@@ -17,6 +17,6 @@ import java.util.List;
  * @since 2018-07-02
  */
 public interface UserMessageMapper extends BaseMapper<UserMessage> {
-    @Select("SELECT * from message as m where m.message_id in (SELECT um.message_id from user_message as um where um.`status` = 0 AND um.user_id = #{userId})")
+    @Select("SELECT * from mina_message as m where m.message_id in (SELECT um.message_id from user_message as um where um.`status` = 0 AND um.user_id = #{userId})")
     List<Message> selectByUserId(@Param("userId") Long userId);
 }

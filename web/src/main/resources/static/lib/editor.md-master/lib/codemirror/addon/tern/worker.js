@@ -23,7 +23,7 @@ this.onmessage = function (e) {
             delete pending[data.id];
             return c(data.err, data.text);
         default:
-            throw new Error("Unknown message type: " + data.type);
+            throw new Error("Unknown mina_message type: " + data.type);
     }
 };
 

@@ -95,9 +95,8 @@
         }
 
     </style>
-</head>
 
-<div id="home">
+<div id="appinfo">
     <div class="homeTop">
         <div>
             <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -158,10 +157,10 @@
 
 </div>
 <script>
-    var home = new Vue({
-        el: '#home',
+    var appinfo = new Vue({
+        el: '#appinfo',
         data: {
-            app_id: 1,
+            app_id: '',
             appName:'MySQL',
             dialogTableVisible: false,
             dialogFormVisible: false,
@@ -264,16 +263,15 @@
                 $('#con').load(this.pageArr[index - 1], function (response, status, xhr) {
                 });
             },
+            getId(id) {
+                appinfo.app_id = id;
+                appinfo.infoInit()
+            },
             infoInit() {
-//                var app_id = this.getUrlParam('appId')
-//                console.log(app_id)
-                var that = this
+                var that = this;
                 $.ajax({
                     type:'get',
                     url:'/tianyu-paas/apps/'+that.app_id,
-                    data:{
-
-                    },
                     success:function (data) {
                         that.appName = data.data.name
                         console.log("success")
@@ -293,7 +291,7 @@
         },
         mounted() {
             this.selectPage1(1, '');
-            this.infoInit()
+//            this.infoInit()
         }
 
     })
