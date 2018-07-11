@@ -135,7 +135,7 @@
                         <div class="button">
                             <el-button @click="dialogFormVisible = true"><i class="el-icon-plus"></i>添加变量</el-button>
                             <el-dialog title="添加变量" :visible.sync="dialogFormVisible">
-                                <el-form :model="ruleForm" staus-icon :rules="rules" ref="ruleForm" class="demo-ruleForm"
+                                <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
                                          label-position="left" label-width="80px" >
                                     <el-form-item label="变量名" prop="var_name">
                                         <el-input placeholder="请输入变量名称 格式/^[A-Z][A-Z0-9_]*$/" v-model="ruleForm.var_name"></el-input>
@@ -268,7 +268,7 @@
                     type:'post',
                     url:'/tianyu-paas/app-vars/',
                     data: {
-                        appId:1,
+                        appId:appinfo.app_id,
                         varName:this.ruleForm.var_name,
                         varValue:this.ruleForm.var_val,
                         varExplain:this.ruleForm.var_des
