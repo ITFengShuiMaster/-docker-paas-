@@ -6,8 +6,10 @@
             <el-breadcrumb-item>从源码创建</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <p class="big-text">由源码创建应用</p>
-        <p class="normal-text">从指定源码仓库中获取源码，基于源码信息创建新应用</p>
+        <div class="titleCode">
+            <p class="big-text">由源码创建应用</p>
+            <p class="normal-text">从指定源码仓库中获取源码，基于源码信息创建新应用</p>
+        </div>
 
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="selectForm">
             <el-menu-item index="1">自定义源码</el-menu-item>
@@ -56,6 +58,7 @@
     })
 </script>
 <style>
+
     .el-breadcrumb__inner a, .el-breadcrumb__inner.is-link {
         color: #909399;
         font-weight: normal;
@@ -71,8 +74,17 @@
 
     #info {
         padding: 10px 20px;
-    }
+        background: #ffffff;
+        margin-bottom:20px ;
 
+    }
+    .titleCode{
+        margin-top:25px;
+        margin-bottom: 20px;
+    }
+    .titleCode p{
+        line-height: 2;
+    }
     .big-text {
         color: #303133;
         font-size: 20px;

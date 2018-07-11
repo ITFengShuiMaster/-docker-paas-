@@ -67,7 +67,7 @@
     <div class="button">
         <el-button type="primary" @click="dialogFormVisible = true"><i class="el-icon-plus"></i>添加端口</el-button>
         <el-dialog title="添加变量" :visible.sync="dialogFormVisible">
-            <el-form :model="ruleForm" staus-icon :rules="rules" ref="ruleForm" class="demo-ruleForm"
+            <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
                      label-position="left" label-width="80px" >
                 <el-form-item label="变量名" prop="var_name">
                     <el-input placeholder="请填写端口，范围1025-65535" v-model="ruleForm.port"></el-input>
@@ -141,6 +141,7 @@
     var port = new Vue({
         el: '#port',
         data: {
+            portInfo:[],
             ruleForm: {
                 port: '',
                 protocol:''
@@ -165,7 +166,7 @@
             portInit() {
                 $.ajax({
                     type:'get',
-                    url:'/tianyu-paas/app-ports/1',
+                    url:'/tianyu-paas/app-ports/'+appinfo.app_id,
                     data: {
 
                     },

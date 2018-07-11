@@ -3,6 +3,13 @@
         padding-top: 10px;
         padding-left: 20px;
     }
+    .block{
+        margin: 5px;
+        float: right;
+    }
+    .bottom{
+        margin-bottom: -21px;
+    }
 </style>
 <div id="install">
 
@@ -11,7 +18,7 @@
             <div id="info">
                 <el-breadcrumb separator="/" style="font-size: 14px">
                     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-                    <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>从应用市场安装</el-breadcrumb-item>
                 </el-breadcrumb>
 
             </div>
@@ -32,21 +39,20 @@
             </el-row>
         </div>
     </el-row>
-    <div style="margin: 0; margin-top: -4%;background: #ffffff">
-        <el-tabs v-model="activeName" @tab-click="handleClick" style="text-align: center">
-            <el-tab-pane v-for="item in classify" :key="item.id" :label="item.name" :name="item.id">
-                <div style="margin-left:0%">
-                    <el-row>
-                        <el-col :span="6" v-for="(o, index) in 6" :key="o" :offset="index > -1 ? 1 : 0"
-                                style="height: 170px">
+    <div>
+
+                <div>
+                    <el-row :gutter="60">
+                        <el-col :span="8" :xs="24" :sm="11" :md="9" :lg="8" v-for="(o, index) in 9" :key="o"
+                                style="height: 160px;margin: 30px 0;">
                             <el-card :body-style="{ padding: '0px' }">
                                 <img :src="imageUrl" style="width: 28%; float: left;">
                                 <div style="padding: 20px;">
                                     简介<br>
                                     <span style="font-size: 3px">
-                                    xxx<br>
-                                    xxx<br>
-                                </span>
+                                        <p>xxx</p>
+                                        <p>xxx</p>
+                                    </span>
                                     <div class="bottom clearfix">
                                         <el-button class="button" type="text" @click="outerVisible = true"
                                                    style="margin-left: -10%; width: 120%; background: #d3dce6">安装
@@ -68,8 +74,6 @@
                             :total="pagenum">
                     </el-pagination>
                 </div>
-            </el-tab-pane>
-        </el-tabs>
 
     </div>
     <el-dialog :visible.sync="outerVisible">
