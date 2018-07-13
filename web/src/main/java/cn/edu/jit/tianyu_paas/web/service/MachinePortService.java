@@ -2,6 +2,7 @@ package cn.edu.jit.tianyu_paas.web.service;
 
 import cn.edu.jit.tianyu_paas.shared.entity.MachinePort;
 import cn.edu.jit.tianyu_paas.web.mapper.MachinePortMapper;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,9 @@ public class MachinePortService extends ServiceImpl<MachinePortMapper, MachinePo
      */
     public boolean updateMachinePortStatusByIdAndPort(List<MachinePort> usedMachinePortList) {
         for (MachinePort usedPort : usedMachinePortList) {
-            Integer flag = baseMapper.updateMachinePortStatusByIdAndPort(usedPort);
-            int a = 1;
+            if (baseMapper.update(usedPort, new EntityWrapper<MachinePort>().eq("machine_id", usedPort.getMachineId()).and().eq("machine_port", usedPort.getMachinePort())) == 0) {
+                return false;
+            }
         }
         return true;
     }

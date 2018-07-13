@@ -11,6 +11,9 @@
         margin-top: 8px;
         margin-right: 8px;
     }
+    .ivu-table{
+        height:auto;
+    }
 </style>
 <body>
 <div id="push_message">
@@ -25,18 +28,28 @@
         <p style="font-size: 20px; color: black">新注册用户信息推送</p>
         <p style="margin: 8px 0px 20px">给新注册用户信息推送</p>
     </div>
-    <i-table stripe border :columns="columns1" :data="data2" style="margin:10px 20px"></i-table>
     <Row>
         <i-col span="2" offset="22">
             <i-button type="primary" @click="modal1 = true">发送推送</i-button>
             <Modal
                     v-model="modal1"
                     title="消息推送">
-                <i-input v-model="value" placeholder="请输入推送内容"></i-input>
+                <div style="margin: 20px">
+                    <span>推送内容</span>
+                    <i-input v-model="value" placeholder="请输入推送内容" style="width: 60%;margin-left: 15px"></i-input>
+                </div>
+                <div style="margin: 20px">
+                    <span>被推送人</span>
+                    <i-select :model.sync="modelselect" style="width:200px;margin-left: 15px">
+                        <i-option v-for="item in data2" :value="item.name">{{item.name}}</i-option>
+                    </i-select>
+                </div>
 
             </Modal>
         </i-col>
     </Row>
+    <i-table stripe border :columns="columns1" :data="data2" style="margin:10px 20px"></i-table>
+
     </template>
 
 </div>
@@ -47,6 +60,7 @@
         el: '#push_message',
         data() {
             return {
+                modelselect:'',
                 modal1: false,
                 value: '',
                 columns1: [

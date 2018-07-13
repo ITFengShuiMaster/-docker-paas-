@@ -16,9 +16,9 @@ public class UserActive implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户id
+     * 用户邮箱
      */
-    private Long userId;
+    private String userEmail;
     /**
      * 邮箱验证码
      */
@@ -27,22 +27,13 @@ public class UserActive implements Serializable {
      * 邮箱验证码创建时间
      */
     private Date emailCodeGtmCreate;
-    /**
-     * 手机验证码
-     */
-    private String phoneCode;
-    /**
-     * 手机验证码创建时间
-     */
-    private Date phoneCodeGmtCreate;
 
-
-    public Long getUserId() {
-        return userId;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public String getEmailCode() {
@@ -61,30 +52,12 @@ public class UserActive implements Serializable {
         this.emailCodeGtmCreate = emailCodeGtmCreate;
     }
 
-    public String getPhoneCode() {
-        return phoneCode;
-    }
-
-    public void setPhoneCode(String phoneCode) {
-        this.phoneCode = phoneCode;
-    }
-
-    public Date getPhoneCodeGmtCreate() {
-        return phoneCodeGmtCreate;
-    }
-
-    public void setPhoneCodeGmtCreate(Date phoneCodeGmtCreate) {
-        this.phoneCodeGmtCreate = phoneCodeGmtCreate;
-    }
-
     @Override
     public String toString() {
         return "UserActive{" +
-                ", userId=" + userId +
+                ", userId=" + userEmail +
                 ", emailCode=" + emailCode +
                 ", emailCodeGtmCreate=" + emailCodeGtmCreate +
-                ", phoneCode=" + phoneCode +
-                ", phoneCodeGmtCreate=" + phoneCodeGmtCreate +
                 "}";
     }
 }

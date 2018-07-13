@@ -11,6 +11,13 @@
         margin-top: 8px;
         margin-right: 8px;
     }
+    .ivu-table{
+        height:auto;
+    }
+    .m{
+        margin-left: 10px;
+        font-size: 15px;
+    }
 </style>
 <body>
 <div id="app_demo">
@@ -79,14 +86,13 @@
                 {
                     title: '操作',
                     key: 'action',
-                    width: 200,
+                    width: 300,
                     align: 'center',
                     render: (h, params) => {
                         return h('div', [
                             h('Button', {
                                 props: {
                                     type: 'primary',
-                                    size: 'small'
                                 },
                                 style: {
                                     marginRight: '5px'
@@ -101,7 +107,6 @@
                             h('Button', {
                                 props: {
                                     type: 'error',
-                                    size: 'small'
                                 },
                                 on: {
                                     click: () => {
@@ -168,9 +173,9 @@
             show(index) {
                 this.$Modal.info({
                     title: 'User Info',
-                    content: `应用名称：${this.data1[index].demoId}<br>应用所使用的语言：
-                    ${this.data1[index].languageType}<br>分支：${this.data1[index].branch}<br>
-                    创建时间：${this.data1[index].gmtCreate}`
+                    content: `<p class="m">应用名称：${this.data1[index].demoId}</p><br><p class="m">应用所使用的语言：
+                    ${this.data1[index].languageType}</p><br><p class="m">分支：${this.data1[index].branch}</p><br>
+                    <p class="m">创建时间：${this.data1[index].gmtCreate}</p>`
                 })
             },
             remove(index) {

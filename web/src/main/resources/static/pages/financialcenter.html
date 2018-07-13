@@ -12,7 +12,7 @@
                 </el-col>
             </div>
         </el-col>
-        <div style="margin-top: 1%; border: 1px dotted rgb(211,220,230);background: white;height: 150px;">
+        <div style="margin-top: 1%;background: white;height: 150px;">
             <el-row :gutter="10">
                 <el-col :span="8">
                     <div class="" style="text-align: center;margin-top: 35px ">账户余额<br>
@@ -23,12 +23,16 @@
                 </el-col>
                 <el-col :span="8">
                     <div class="" style="text-align: center;margin-top: 35px ">数据中心内存 (已使用/总资源)<br>
-                        <div style="margin-top: 5%;color: rgba(0, 0, 0, .85);font-size: 28px;line-height: 30px;">{{memoryUsed}}/{{memoryTotal}}M</div>
+                        <div style="margin-top: 5%;color: rgba(0, 0, 0, .85);font-size: 28px;line-height: 30px;">
+                            {{memoryUsed}}/{{memoryTotal}}M
+                        </div>
                     </div>
                 </el-col>
                 <el-col :span="8">
                     <div class="" style="text-align: center;margin-top: 35px ">数据中心磁盘 (已使用/总资源)<br>
-                        <div style="margin-top: 5%;color: rgba(0, 0, 0, .85);font-size: 28px;line-height: 30px;">{{diskUsed}}/{{diskTotal}}G</div>
+                        <div style="margin-top: 5%;color: rgba(0, 0, 0, .85);font-size: 28px;line-height: 30px;">
+                            {{diskUsed}}/{{diskTotal}}G
+                        </div>
                     </div>
                 </el-col>
             </el-row>
@@ -40,9 +44,6 @@
                             <el-radio-button label="账户充值"></el-radio-button>
                             <el-radio-button label="更多"></el-radio-button>
                         </el-radio-group>
-                    <!--<el-button size="mini" plain>购买资源</el-button>-->
-                    <!--<el-button size="mini" plain>账户充值</el-button>-->
-                    <!--<el-button size="mini" plain>更多</el-button>-->
                 </div>
             </el-col>
         <el-row style="background: #ffffff; width: 100%;margin-top: 4%;">
@@ -51,7 +52,7 @@
                 <el-row>
                     <el-col :span="10">
                         <div style="float: left ; margin-left:5%; margin-top: 3%">
-                            <span style="font-size: 16px;">当前数据中心每小时费用</span>
+                            <span style="font-size: 17px;">当前数据中心每小时费用</span>
                         </div>
                     </el-col>
                     <el-col :span="12">
@@ -70,27 +71,26 @@
                     <template>
                         <el-table
                                 :data="tableData3"
-                                height="250"
                                 style="width: 100%">
                             <el-table-column
                                     prop="date"
                                     label="时间"
-                                    width="250">
+                                    width="300">
                             </el-table-column>
                             <el-table-column
                                     prop="name"
                                     label="内存费用"
-                                    width="250">
+                                    width="300">
                             </el-table-column>
                             <el-table-column
                                     prop="address"
                                     label="磁盘费用"
-                                    width="250">
+                                    width="300">
                             </el-table-column>
                             <el-table-column
                                     prop="cost"
                                     label="流量费用"
-                                    width="250">
+                                    width="300">
                             </el-table-column>
                             <el-table-column
                                     prop="allcost"
@@ -106,7 +106,70 @@
 <script>
     var financialcenter = new Vue({
         el: '#financialcenter',
-
+        data:{
+            radio:'',
+            pickerOptions1: {
+                disabledDate(time) {
+                    return time.getTime() > Date.now();
+                },
+                shortcuts: [{
+                    text: '今天',
+                    onClick(picker) {
+                        picker.$emit('pick', new Date());
+                    }
+                }, {
+                    text: '昨天',
+                    onClick(picker) {
+                        const date = new Date();
+                        date.setTime(date.getTime() - 3600 * 1000 * 24);
+                        picker.$emit('pick', date);
+                    }
+                }, {
+                    text: '一周前',
+                    onClick(picker) {
+                        const date = new Date();
+                        date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                        picker.$emit('pick', date);
+                    }
+                }]
+            },
+            value: '',
+            balance: 99,
+            diskTotal: 99,
+            diskUsed: 99,
+            memoryTotal: 99,
+            memoryUsed: 99,
+            userId: 7,
+            tableData3: [{
+                date: '2016-05-03',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }, {
+                date: '2016-05-02',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }, {
+                date: '2016-05-04',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }, {
+                date: '2016-05-01',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }, {
+                date: '2016-05-08',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }, {
+                date: '2016-05-06',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }, {
+                date: '2016-05-07',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }]
+        },
         methods: {
             onSubmit() {
                 console.log('submit!');
@@ -128,71 +191,6 @@
                         }
                     }
                 })
-            }
-        },
-        data() {
-            return {
-                pickerOptions1: {
-                    disabledDate(time) {
-                        return time.getTime() > Date.now();
-                    },
-                    shortcuts: [{
-                        text: '今天',
-                        onClick(picker) {
-                            picker.$emit('pick', new Date());
-                        }
-                    }, {
-                        text: '昨天',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24);
-                            picker.$emit('pick', date);
-                        }
-                    }, {
-                        text: '一周前',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit('pick', date);
-                        }
-                    }]
-                },
-                value: '',
-                balance: 99,
-                diskTotal: 99,
-                diskUsed: 99,
-                memoryTotal: 99,
-                memoryUsed: 99,
-                userId: 7,
-                tableData3: [{
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-08',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-06',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-07',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }]
             }
         },
         created() {

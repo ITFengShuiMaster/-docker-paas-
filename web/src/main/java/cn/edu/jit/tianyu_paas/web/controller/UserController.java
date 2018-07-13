@@ -1,12 +1,16 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
+import cn.edu.jit.tianyu_paas.shared.entity.PhoneVerificationCode;
 import cn.edu.jit.tianyu_paas.shared.entity.User;
 import cn.edu.jit.tianyu_paas.shared.entity.UserActive;
 import cn.edu.jit.tianyu_paas.shared.entity.UserDynamic;
+import cn.edu.jit.tianyu_paas.shared.global.SendPhoneCodeConstants;
 import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.github.qcloudsms.SmsSingleSender;
+import com.github.qcloudsms.SmsSingleSenderResult;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -29,16 +33,33 @@ public class UserController {
     private final UserLoginLogService userLoginLogService;
     private final MailUtilService mailUtilService;
     private final UserActiveService userActiveService;
+    private final PhoneVerificationCodeService phoneVerificationCodeService;
     private HttpSession session;
 
     @Autowired
-    public UserController(UserService userService, UserDynamicService userDynamicService, HttpSession session, UserLoginLogService userLoginLogService, MailUtilService mailUtilService, UserActiveService userActiveService) {
+    public UserController(UserService userService, UserDynamicService userDynamicService, HttpSession session, UserLoginLogService userLoginLogService, MailUtilService mailUtilService, UserActiveService userActiveService, PhoneVerificationCodeService phoneVerificationCodeService) {
         this.userService = userService;
         this.session = session;
         this.userDynamicService = userDynamicService;
         this.userLoginLogService = userLoginLogService;
         this.mailUtilService = mailUtilService;
         this.userActiveService = userActiveService;
+        this.phoneVerificationCodeService = phoneVerificationCodeService;
+    }
+
+    private void initUser(User user) {
+        user.setGmtCreate(new Date());
+        user.setGmtModified(new Date());
+        user.setPwd(PassUtil.getMD5(user.getPwd()));
+        user.setActive(0);
+    }
+
+    private UserActive initUserActive(User user, String emailCode) {
+        UserActive userActive = new UserActive();
+        userActive.setUserEmail(user.getEmail());
+        userActive.setEmailCode(emailCode);
+        userActive.setEmailCodeGtmCreate(new Date());
+        return userActive;
     }
 
     /**
@@ -93,12 +114,16 @@ public class UserController {
      */
     @ApiOperation("注册接口")
     @PostMapping("/register")
-    public TResult register(@Valid User user, BindingResult bindingResult) {
+    public TResult register(@Valid User user, String phoneCode, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return TResult.failure(bindingResult.getFieldError().getDefaultMessage());
         }
 
-        if (!StringUtil.isEmpty(user.getName()) && userService.selectCount(new EntityWrapper<User>().eq("name", user.getName())) != 0) {
+        if (StringUtil.isAllEmpty(user.getPhone(), user.getEmail())) {
+            return TResult.failure("邮箱和手机号必填一个");
+        }
+
+        if (userService.selectCount(new EntityWrapper<User>().eq("name", user.getName())) != 0) {
             return TResult.failure("名字已存在");
         }
 
@@ -106,8 +131,12 @@ public class UserController {
             return TResult.failure("手机号不合法");
         }
 
+        if (!StringUtil.isEmpty(user.getEmail()) && !RegexUtil.isEmail(user.getEmail())) {
+            return TResult.failure("邮箱格式不合法");
+        }
+
         //如果查询出邮箱的结果不为0
-        if (userService.selectCount(new EntityWrapper<User>().eq("email", user.getEmail())) != 0) {
+        if (userService.selectCount(new EntityWrapper<User>().eq("email", user.getEmail())) != 0 && !StringUtil.isEmpty(user.getEmail())) {
             return TResult.failure("用户邮箱已注册");
         }
 
@@ -116,28 +145,41 @@ public class UserController {
             return TResult.failure("用户手机号已注册");
         }
 
-        user.setGmtCreate(new Date());
-        user.setGmtModified(new Date());
-        user.setPwd(PassUtil.getMD5(user.getPwd()));
-        user.setActive(0);
+        if (!StringUtil.isEmpty(user.getEmail())) {
+            initUser(user);
 
-        if (!userService.insert(user)) {
-            return TResult.failure(TResultCode.FAILURE);
+            if (!userService.insert(user)) {
+                return TResult.failure(TResultCode.BUSINESS_ERROR);
+            }
+
+            //发送邮箱验证
+            String emailCode = MailUtil.getRandomEmailCode();
+
+            if (!mailUtilService.sendRegisterMail(user.getUserId(), user.getEmail(), emailCode)) {
+                return TResult.failure("邮箱验证发送失败，请重试：" + String.format(Constants.RE_SEND_EMAIL, user.getEmail()));
+            }
+
+            //插入邮箱验证码
+            UserActive userActive = initUserActive(user, emailCode);
+
+            if (!userActiveService.insert(userActive)) {
+                return TResult.failure("邮箱验证码发送失败，请重试: " + String.format(Constants.RE_SEND_EMAIL, user.getEmail()));
+            }
+        } else if (!StringUtil.isEmpty(user.getPhone())) {
+            if (StringUtil.isEmpty(phoneCode)) {
+                return TResult.failure("请填写手机验证码");
+            }
+            initUser(user);
+
+            if (phoneVerificationCodeService.selectOne(new EntityWrapper<PhoneVerificationCode>().eq("phone", user.getPhone()).and().eq("phone_code", phoneCode).and().ge("gmt_create", new Date(System.currentTimeMillis() - 60000))) != null) {
+                user.setActive(1);
+                if (!userService.insert(user)) {
+                    return TResult.failure(TResultCode.BUSINESS_ERROR);
+                }
+            } else {
+                return TResult.failure("手机验证码已过期");
+            }
         }
-
-        //发送邮箱验证
-        String emailCode = MailUtil.getRandomEmailCode();
-
-        if (!mailUtilService.sendRegisterMail(user.getUserId(), user.getEmail(), emailCode)) {
-            return TResult.failure("邮箱验证发送失败，请重试：" + String.format(Constants.MAIL_CONTEXT + "?userId=%s&code=%s", user.getUserId().toString(), emailCode));
-        }
-
-        //插入邮箱验证码
-        UserActive userActive = new UserActive();
-        userActive.setUserId(user.getUserId());
-        userActive.setEmailCode(emailCode);
-        userActive.setEmailCodeGtmCreate(new Date());
-        userActiveService.insert(userActive);
 
         //对新注册用户绑定UserDynamic
         UserDynamic userDynamic = new UserDynamic();
@@ -145,6 +187,31 @@ public class UserController {
         userDynamicService.insert(userDynamic);
 
         return TResult.success();
+    }
+
+    @GetMapping("/re-email")
+    public TResult reSendEmailCode(@RequestParam(required = true) String email) {
+        if (RegexUtil.isEmail(email)) {
+            User user = userService.selectOne(new EntityWrapper<User>().eq("email", email));
+            if (user == null) {
+                return TResult.failure("没有该用户");
+            }
+
+            String emailCode = MailUtil.getRandomEmailCode();
+            if (!mailUtilService.sendRegisterMail(user.getUserId(), user.getEmail(), emailCode)) {
+                return TResult.failure("邮箱验证发送失败，请重试：" + String.format(Constants.RE_SEND_EMAIL, user.getEmail()));
+            }
+
+            //插入邮箱验证码
+            UserActive userActive = initUserActive(user, emailCode);
+            if (!userActiveService.insert(userActive)) {
+                return TResult.failure("邮箱验证码发送失败，请重试: " + String.format(Constants.RE_SEND_EMAIL, user.getEmail()));
+            }
+
+            return TResult.success();
+        }
+
+        return TResult.failure("邮箱格式不合法！");
     }
 
     /**返回用户个人信息
@@ -193,12 +260,49 @@ public class UserController {
     @ApiOperation("账号激活接口")
     @GetMapping("/active")
     public TResult accountActive(@RequestParam(required = true) String userId, @RequestParam(required = true) String code) {
-        if (userActiveService.selectCount(new EntityWrapper<UserActive>().eq("user_id", userId).and().eq("email_code", code).and().ge("email_code_gtm_create", new Date(System.currentTimeMillis() - 600000))) != 0) {
-            User user = userService.selectOne(new EntityWrapper<User>().eq("user_id", userId));
+        User user = userService.selectOne(new EntityWrapper<User>().eq("user_id", userId));
+        if (user == null) {
+            return TResult.failure("该用户未注册!");
+        }
+
+        if (userActiveService.selectCount(new EntityWrapper<UserActive>().eq("user_email", user.getEmail()).and().eq("email_code", code).and().ge("email_code_gtm_create", new Date(System.currentTimeMillis() - 600000))) != 0) {
             user.setActive(1);
             userService.updateById(user);
+            // TODO 应该跳转到登录页
             return TResult.success("账号激活成功");
         }
         return TResult.failure("链接无效或已过期");
     }
+
+    @GetMapping("phone-code/{phone}")
+    public TResult sendPhoneCode(@PathVariable(required = true) String phone) {
+        if (RegexUtil.isPhoneNumber(phone)) {
+            String[] params = {RandomPhoneCodeUtil.getRandomCode(), "1"};
+            SmsSingleSender ssender = new SmsSingleSender(SendPhoneCodeConstants.APP_ID, SendPhoneCodeConstants.APP_KEY);
+            try {
+                SmsSingleSenderResult result = ssender.sendWithParam("86", phone,
+                        SendPhoneCodeConstants.TEMPLATE_ID, params, "", "", "");
+
+                if (result.getResponse().statusCode == 200) {
+                    PhoneVerificationCode phoneVerificationCode = new PhoneVerificationCode();
+                    phoneVerificationCode.setPhone(phone);
+                    phoneVerificationCode.setPhoneCode(params[0]);
+                    phoneVerificationCode.setGmtCreate(new Date());
+                    if (!phoneVerificationCodeService.insert(phoneVerificationCode)) {
+                        return TResult.failure("验证码发送失败，请重试！");
+                    }
+                } else {
+                    return TResult.failure("验证码发送失败，请重试！");
+                }
+
+                return TResult.success();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return TResult.failure("验证码发送失败，请重试！");
+            }
+        }
+
+        return TResult.failure("手机号码格式不正确！");
+    }
+
 }
