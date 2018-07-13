@@ -4,7 +4,7 @@ public class SourceCodeConstants {
 
     public static final String JAVA_CONTAINER_NAME = "nginx_java_maven";
 
-    public static final String HTML_CONTAINER_NAME ="nginx_html";
+    public static final String HTML_CONTAINER_NAME = "nginx_html";
 
     public static final String NODEJS_CONTAINER_NAME = "nodejs";
 

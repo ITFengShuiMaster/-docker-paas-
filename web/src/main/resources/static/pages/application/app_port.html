@@ -141,7 +141,7 @@
     var port = new Vue({
         el: '#port',
         data: {
-            portInfo:[],
+            portInfo: [],
             ruleForm: {
                 port: '',
                 protocol:''
@@ -166,7 +166,7 @@
             portInit() {
                 $.ajax({
                     type:'get',
-                    url:'/tianyu-paas/app-ports/'+appinfo.app_id,
+                    url: '/tianyu-paas/app-ports/' + appinfo.app_id,
                     data: {
 
                     },

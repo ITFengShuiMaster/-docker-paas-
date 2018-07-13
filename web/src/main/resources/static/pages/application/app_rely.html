@@ -174,7 +174,7 @@
     var rely = new Vue({
         el: '#rely',
         data: {
-            appInfo:[],
+            appInfo: [],
             connectInfo: [{
                 name: 'MYSQL_USER',
                 val: 'admin',
@@ -208,7 +208,7 @@
             relyInit() {
                 $.ajax({
                     type:'get',
-                    url:'/tianyu-paas/app-vars/',
+                    url: '/tianyu-paas/app-vars/',
                     data:{
 
                     },
@@ -225,7 +225,7 @@
                     type:'post',
                     url:'/tianyu-paas/app-vars/',
                     data: {
-                        appId:appinfo.app_id,
+                        appId: appinfo.app_id,
                         varName:this.ruleForm.var_name,
                         varValue:this.ruleForm.var_val,
                         varExplain:this.ruleForm.var_des

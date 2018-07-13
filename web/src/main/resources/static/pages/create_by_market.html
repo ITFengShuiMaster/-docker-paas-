@@ -3,11 +3,13 @@
         padding-top: 10px;
         padding-left: 20px;
     }
-    .block{
+
+    .block {
         margin: 5px;
         float: right;
     }
-    .bottom{
+
+    .bottom {
         margin-bottom: -21px;
     }
 </style>
@@ -41,10 +43,10 @@
     </el-row>
     <div>
 
-                <div>
-                    <el-row :gutter="60">
-                        <el-col :span="8" :xs="24" :sm="11" :md="9" :lg="8" v-for="(o, index) in 9" :key="o"
-                                style="height: 160px;margin: 30px 0;">
+        <div>
+            <el-row :gutter="60">
+                <el-col :span="8" :xs="24" :sm="11" :md="9" :lg="8" v-for="(o, index) in 9" :key="o"
+                        style="height: 160px;margin: 30px 0;">
                             <el-card :body-style="{ padding: '0px' }">
                                 <img :src="imageUrl" style="width: 28%; float: left;">
                                 <div style="padding: 20px;">

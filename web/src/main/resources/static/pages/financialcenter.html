@@ -23,26 +23,30 @@
                 </el-col>
                 <el-col :span="8">
                     <div class="" style="text-align: center;margin-top: 35px ">数据中心内存 (已使用/总资源)<br>
-                        <div style="margin-top: 5%;color: rgba(0, 0, 0, .85);font-size: 28px;line-height: 30px;">{{memoryUsed}}/{{memoryTotal}}M</div>
+                        <div style="margin-top: 5%;color: rgba(0, 0, 0, .85);font-size: 28px;line-height: 30px;">
+                            {{memoryUsed}}/{{memoryTotal}}M
+                        </div>
                     </div>
                 </el-col>
                 <el-col :span="8">
                     <div class="" style="text-align: center;margin-top: 35px ">数据中心磁盘 (已使用/总资源)<br>
-                        <div style="margin-top: 5%;color: rgba(0, 0, 0, .85);font-size: 28px;line-height: 30px;">{{diskUsed}}/{{diskTotal}}G</div>
+                        <div style="margin-top: 5%;color: rgba(0, 0, 0, .85);font-size: 28px;line-height: 30px;">
+                            {{diskUsed}}/{{diskTotal}}G
+                        </div>
                     </div>
                 </el-col>
             </el-row>
         </div>
         <el-col style="margin-left: 0%; height: 45px">
-                <div style="margin-top: 1%; margin-left: 80%">
-                        <el-radio-group v-model="radio" size="medium">
-                            <el-radio-button label="购买资源" ></el-radio-button>
-                            <el-radio-button label="账户充值"></el-radio-button>
-                            <el-radio-button label="更多"></el-radio-button>
-                        </el-radio-group>
-                    <!--<el-button size="mini" plain>购买资源</el-button>-->
-                    <!--<el-button size="mini" plain>账户充值</el-button>-->
-                    <!--<el-button size="mini" plain>更多</el-button>-->
+            <div style="margin-top: 1%; margin-left: 80%">
+                <el-radio-group v-model="radio" size="medium">
+                    <el-radio-button label="购买资源"></el-radio-button>
+                    <el-radio-button label="账户充值"></el-radio-button>
+                    <el-radio-button label="更多"></el-radio-button>
+                </el-radio-group>
+                <!--<el-button size="mini" plain>购买资源</el-button>-->
+                <!--<el-button size="mini" plain>账户充值</el-button>-->
+                <!--<el-button size="mini" plain>更多</el-button>-->
                 </div>
             </el-col>
         <el-row style="background: #ffffff; width: 100%;margin-top: 4%;">
