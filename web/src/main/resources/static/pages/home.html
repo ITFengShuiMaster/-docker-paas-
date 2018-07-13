@@ -22,7 +22,7 @@
             margin: 10px;
             background: #fff;
             min-height: 200px;
-            min-width: 600px;
+            min-width: 500px;
         }
 
         .homeRight span {
@@ -31,6 +31,7 @@
 
         .userInfo {
             float: left;
+            min-width: 200px;
         }
 
         .userTeamInfo {
@@ -47,7 +48,7 @@
         }
 
         .appNum, .memberNum, .balanceNum, .memoryNum, .diskNum {
-            text-align: right;
+            text-align: center;
         }
 
         .appNumNum, .memberNumNum, .balanceNumNum, .memoryNumNum, .diskNumNum {
@@ -56,16 +57,19 @@
             line-height: 30px;
             margin: 0px;
         }
-
-        .page {
+        .page{
             float: right;
             margin-top: 20px;
         }
+        .bread {
+            font-size:15px;
+        }
+
     </style>
 
 <div id="home">
     <div class="homeTop">
-        <div>
+        <div class="bread">
             <el-breadcrumb separator-class="el-icon-arrow-right">
                 <el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>
             </el-breadcrumb>
@@ -75,7 +79,7 @@
         </el-row>
         <div class="userInfo">
             <div class="img">
-                <img src="" class="image">
+                <img src="../../static/img/team.png" alt="" style="height: 50px;width: 50px;display: block;">
             </div>
             <div class="imginfo">
                 <div class="name">
@@ -116,7 +120,7 @@
                     <span>已使用内存</span>
                 </div>
                 <div class="memoryNumNum ">
-                    <span>{{usedMemory}}</span>
+                    <span>{{usedMemory}}MB</span>
                 </div>
             </div>
             <div class="diskNum titleInfo">
@@ -124,7 +128,7 @@
                     <span>已使用磁盘</span>
                 </div>
                 <div class="diskNumNum">
-                    <span>{{usedDisk}}</span>
+                    <span>{{usedDisk}}MB</span>
                 </div>
             </div>
         </div>
@@ -202,41 +206,41 @@
                 name: '',
                 region: ''
             },
-            currentPage: '',
-            pageSize: 10,
-            radio: '',
+            currentPage:'',
+            pageSize:10,
+            radio:'',
             tableData: [],
             userName: '',
             appNum: '1',
             memberNum: '1',
             balance: '1',
-            usedMemory: '1',
-            usedDisk: '1',
+            usedMemory: '326',
+            usedDisk: '500',
 
         },
         methods: {
             homeInit() {
-                var that = this;
+                var that = this
                 $.ajax({
                     type:'get',
-                    url: '/tianyu-paas/apps/lists',
+                    url:'/tianyu-paas/apps/lists',
                     data: {
-                        current: 1,
-                        size: 100
+                        current:1,
+                        size:100
                     },
                     success:function (data) {
-                        if (data.code === 1) {
-                            console.log(data);
-                            var result = data.data.records;
-                            for (var i = 0; i < data.data.total; i++) {
-                                that.tableData.push(result[i]);
-                                if (that.tableData[i].status === 1) {
+                        if(data.code === 1) {
+                            console.log(data)
+                            var result = data.data.records
+                            for(var i = 0;i<data.data.total;i++) {
+                                that.tableData.push(result[i])
+                                if(that.tableData[i].status === 1) {
                                     that.tableData[i].status = '运行中'
                                 } else {
                                     that.tableData[i].status = '已关闭'
                                 }
                             }
-                            that.currentPage = data.data.current;
+                            that.currentPage = data.data.current
                             console.log(that.tableData)
                         } else {
                             console.log(data.message)
@@ -248,7 +252,7 @@
                     }
                 })
             },
-            handleCurrentChange: function (currentPage) {
+            handleCurrentChange: function(currentPage){
                 this.currentPage = currentPage;
             }
         },

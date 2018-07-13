@@ -134,30 +134,30 @@
                         </div>
                         <div class="button">
                             <el-button @click="dialogFormVisible = true"><i class="el-icon-plus"></i>添加变量</el-button>
-                            <el-dialog title="添加变量" :visible.sync="dialogFormVisible">
-                                <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
-                                         label-position="left" label-width="80px" >
-                                    <el-form-item label="变量名" prop="var_name">
-                                        <el-input placeholder="请输入变量名称 格式/^[A-Z][A-Z0-9_]*$/" v-model="ruleForm.var_name"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="变量值" prop="var_val">
-                                        <el-input placeholder="请输入变量值" v-model="ruleForm.var_val"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="说明" prop="var_des">
-                                        <el-input placeholder="请输入变量说明" v-model="ruleForm.var_des"></el-input>
-                                    </el-form-item>
-                                </el-form>
-                                <div slot="footer" class="dialog-footer">
-                                    <el-button @click="dialogFormVisible = false">取 消</el-button>
-                                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="addVar">确 定
-                                    </el-button>
-                                </div>
-                            </el-dialog>
                         </div>
                     </div>
                 </el-col>
             </el-row>
         </div>
+        <el-dialog title="添加变量" :visible.sync="dialogFormVisible" width="30%">
+            <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
+                     label-position="left" label-width="80px" >
+                <el-form-item label="变量名" prop="var_name">
+                    <el-input placeholder="请输入变量名称 格式/^[A-Z][A-Z0-9_]*$/" v-model="ruleForm.var_name"></el-input>
+                </el-form-item>
+                <el-form-item label="变量值" prop="var_val">
+                    <el-input placeholder="请输入变量值" v-model="ruleForm.var_val"></el-input>
+                </el-form-item>
+                <el-form-item label="说明" prop="var_des">
+                    <el-input placeholder="请输入变量说明" v-model="ruleForm.var_des"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false" @click.native="addVar">确 定
+                </el-button>
+            </div>
+        </el-dialog>
 
         <div class="homeMiddle">
             <el-row :gutter="20">

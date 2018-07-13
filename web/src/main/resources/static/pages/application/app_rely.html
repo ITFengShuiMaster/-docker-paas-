@@ -61,9 +61,6 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
-        .el-dialog {
-            width: 40%;
-        }
     </style>
 
 <div id="rely">
@@ -80,19 +77,19 @@
                                     :data="connectInfo"
                                     style="width: 100%;">
                                 <el-table-column
-                                        prop="name"
+                                        prop="varName"
                                         label="变量名"
-                                        width="180">
+                                        width="260">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="val"
+                                        prop="varValue"
                                         label="变量值"
-                                        width="180">
+                                        width="260">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="des"
+                                        prop="varExplain"
                                         label="说明"
-                                        width="180">
+                                        width="260">
                                 </el-table-column>
                                 <el-table-column
                                         prop="opera"
@@ -102,31 +99,31 @@
                         </div>
                         <div class="button">
                             <el-button @click="dialogFormVisible = true"><i class="el-icon-plus"></i>添加变量</el-button>
-                            <el-dialog title="添加变量" :visible.sync="dialogFormVisible">
-                                <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
-                                         label-position="left" label-width="80px" >
-                                    <el-form-item label="变量名" prop="var_name">
-                                        <el-input placeholder="请输入变量名称 格式/^[A-Z][A-Z0-9_]*$/" v-model="ruleForm.var_name"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="变量值" prop="var_val">
-                                        <el-input placeholder="请输入变量值" v-model="ruleForm.var_val"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="说明" prop="var_des">
-                                        <el-input placeholder="请输入变量说明" v-model="ruleForm.var_des"></el-input>
-                                    </el-form-item>
-                                </el-form>
-                                <div slot="footer" class="dialog-footer">
-                                    <el-button @click="dialogFormVisible = false">取 消</el-button>
-                                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="addVar">确 定
-                                    </el-button>
-                                </div>
-                            </el-dialog>
+
                         </div>
                     </div>
                 </el-col>
             </el-row>
         </div>
-
+        <el-dialog title="添加变量" :visible.sync="dialogFormVisible" width="30%">
+            <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
+                     label-position="left" label-width="80px" >
+                <el-form-item label="变量名" prop="var_name">
+                    <el-input placeholder="请输入变量名称 格式/^[A-Z][A-Z0-9_]*$/" v-model="ruleForm.var_name"></el-input>
+                </el-form-item>
+                <el-form-item label="变量值" prop="var_val">
+                    <el-input placeholder="请输入变量值" v-model="ruleForm.var_val"></el-input>
+                </el-form-item>
+                <el-form-item label="说明" prop="var_des">
+                    <el-input placeholder="请输入变量说明" v-model="ruleForm.var_des"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false" @click.native="addVar">确 定
+                </el-button>
+            </div>
+        </el-dialog>
         <div class="homeBottom">
             <el-row :gutter="20">
                 <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
@@ -174,28 +171,8 @@
     var rely = new Vue({
         el: '#rely',
         data: {
-            appInfo: [],
-            connectInfo: [{
-                name: 'MYSQL_USER',
-                val: 'admin',
-                des: '用户名',
-                opera: ''
-            }, {
-                name: 'MYSQL_PASS',
-                val: '2d849696',
-                des: '密码',
-                opera: ''
-            }, {
-                name: 'MYSQL_HOST',
-                val: '127.0.0.1',
-                des: '连接地址	',
-                opera: ''
-            }, {
-                name: 'MYSQL_PORT',
-                val: '3306',
-                des: '端口',
-                opera: ''
-            }],
+            appInfo:[],
+            connectInfo: [],
             ruleForm: {
                 var_name: '',
                 var_val:'',
@@ -206,13 +183,15 @@
         },
         methods:{
             relyInit() {
+                var that = this
                 $.ajax({
                     type:'get',
-                    url: '/tianyu-paas/app-vars/',
-                    data:{
-
-                    },
+                    url:'/tianyu-paas/app-vars/'+appinfo.app_id,
                     success:function (data) {
+                        var result = data.data
+                        for(var i = 0;i<result.length;i++) {
+                            that.connectInfo.push(result[i])
+                        }
                         console.log(data)
                     },
                     error:function () {
@@ -221,17 +200,26 @@
                 })
             },
             addVar() {
+                var that = this
+                var val = [{
+                    appId: appinfo.app_id, varName: this.ruleForm.var_name,
+                    varValue: this.ruleForm.var_val,
+                    varExplain: this.ruleForm.var_des,
+                    gmtCreate:''
+                }]
+                console.log(val)
                 $.ajax({
                     type:'post',
                     url:'/tianyu-paas/app-vars/',
                     data: {
-                        appId: appinfo.app_id,
+                        appId:appinfo.app_id,
                         varName:this.ruleForm.var_name,
                         varValue:this.ruleForm.var_val,
                         varExplain:this.ruleForm.var_des
-
                     },
-                    success:function () {
+                    success:function (data) {
+                        console.log(data)
+                        that.connectInfo.push(val[0])
 
                     },
                     error:function () {

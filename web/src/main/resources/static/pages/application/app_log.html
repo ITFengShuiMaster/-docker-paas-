@@ -7,7 +7,10 @@
             background: #f0f2f5 !important;
             color: rgba(0, 0, 0, .65);
         }
-
+        hr{
+            margin: 20px 0;
+            margin-left: -32px;
+        }
         .a {
             /*display: inline-block;*/
             margin: 10px;
@@ -25,6 +28,8 @@
         }
 
         .logs {
+            display: block;
+
             background: #000;
             min-height: 300px;
             padding: 15px;
@@ -32,11 +37,22 @@
             overflow: auto;
             margin: 10px;
         }
-
+        .rizhiTop{
+            display: block;
+        }
         .logs p {
             margin-bottom: 0;
             margin-top: 0;
             color: #999;
+        }
+        .rizhiLeft{
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .rizhiRight{
+            display: inline-block;
+            float: right;
+            margin-right: 10px;
         }
     </style>
 
@@ -54,8 +70,8 @@
                                 <el-button type="text">历史日志下载</el-button>
                                 <el-button type="text">最近1000条日志</el-button>
                             </div>
-
                         </div>
+                        <hr width="1512px">
                         <div class="logs">
                             <p>539b9c229678:Version: '5.5.46-37.5-log' socket: '/tmp/mysql.sock' port: 3306 Percona
                                 Server (GPL), Release 37.5, Revision 684ce54</p>
