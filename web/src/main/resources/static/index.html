@@ -5,10 +5,12 @@
     <title>Index</title>
     <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="lib/element/index.css"/>
+    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
     <script src="lib/vue/vue.js"></script>
     <script src="lib/element/index.js"></script>
     <script src="lib/jquery/jquery-3.2.1.js"></script>
     <script src="lib/layui/layui.js"></script>
+    <script src="lib/iView/iView.min.js"></script>
     <style>
         html {
             font-family: sans-serif;
@@ -32,19 +34,29 @@
     }
 
     .logo_show {
-        background: #545C64;
+        background: #002140;
     }
     .el-main{
         height: 880px;
         overflow: auto;
     }
+    #test .el-menu-item.is-active {
+        background-color: #1890ff !important;
+    }
 
+    .el-submenu .el-menu-item{
+        background-color: #000000 !important;
+
+    }
+    .el-submenu .el-menu{
+        background-color: #000000 !important;
+    }
 </style>
 <body>
 <el-container id="app">
 
-    <el-aside >
-        <el-header class="logo_show">
+    <el-aside style="width: 270px;">
+        <el-header class="logo_show" style="height:68px;">
             <img src="img/logo.png" style="float: left; margin-top: 12px;padding-right: 10px">
             <div class="logo_text" style="color: white;padding: 20px">Docker</div>
         </el-header>
@@ -53,9 +65,9 @@
                 default-active="0"
                 class="el-menu-vertical-marketApp"
                 @select="selectPage"
-                background-color="#545c64"
+                background-color="#001529"
                 text-color="#fff"
-                active-text-color="#ffd04b">
+                active-text-color="#ffffff">
             <el-menu-item index="0">
                 <i class="el-icon-more-outline"></i>
                 <span slot="title">总览</span>
@@ -96,7 +108,7 @@
     </el-aside>
 
     <el-container>
-        <el-header style=" margin-top:-7px;padding:0px;width: 100%">
+        <el-header style="padding:0px;width: 100%">
             <el-card shadow="always">
 
                 <el-col :span="23" align="right" style="font-size: 20px; color: #409EFF; margin-top: 0px">
@@ -106,7 +118,7 @@
                             trigger="click">
                         <el-button slot="reference" type="text">
                             <el-badge is-dot>
-                                <i class="el-icon-bell"></i>
+                                <i class="el-icon-bell" style="font-size: 20px"></i>
                             </el-badge>
                         </el-button>
                         <template>
@@ -136,7 +148,7 @@
                 <!--<el-col :span="12" align="right">-->
                     <img src="img/logo.png">
                     <el-dropdown @command="handleCommand">
-                        <span style="font-size: 16px; color: #409EFF;">{{username}}</span>
+                        <span style="font-size: 18px; color: #409EFF;">{{username}}</span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item command="1">退出登录</el-dropdown-item>
                         </el-dropdown-menu>
@@ -407,7 +419,7 @@
                 console.log(appId + 'appId');
             },
             getWindowHeight() {
-                $("#test").height($(window).height()-60)
+                $("#test").height($(window).height()-68)
             },
         },
         created() {
@@ -417,7 +429,7 @@
             this.getNotice();
             this.init_gruops();
 //            this.getWindowHeight()
-            $("#test").height(this.bodyHeight-60)
+            $("#test").height(this.bodyHeight-68)
 
         },
         mounted() {
@@ -429,7 +441,7 @@
             window.onresize = function () {
                 this.bodyHeight = document.documentElement.clientHeight
                 if(document.getElementById('test') != null) {
-                    $("#test").height(this.bodyHeight-60)
+                    $("#test").height(this.bodyHeight-68)
                 }
             }
         }

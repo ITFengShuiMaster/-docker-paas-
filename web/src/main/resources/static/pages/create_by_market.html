@@ -5,15 +5,18 @@
     }
     .block{
         margin: 5px;
-        float: right;
+        text-align: center;
     }
     .bottom{
         margin-bottom: -21px;
     }
+    #install{
+        overflow: hidden;
+    }
 </style>
 <div id="install">
 
-    <el-row style="background: #ffffff; height: 150px;">
+    <el-row style="background: #ffffff; height: 130px;">
         <el-col :span="18">
             <div id="info">
                 <el-breadcrumb separator="/" style="font-size: 14px">
@@ -26,7 +29,7 @@
 
         <div style="width: 50%; margin-top: 4%; margin-left: 20%">
             <el-row>
-                <el-col :span="22">
+                <el-col :span="12" :offset="5">
                     <el-input
                             placeholder="请输入内容"
                             v-model="input10"
@@ -136,7 +139,7 @@
             outerVisible: false,
             innerVisible: false,
             input10: '',
-            imageUrl: 'https://static.goodrain.com/07a1d55ff418440aa764ff05d71d4a15.png',
+            imageUrl: 'http://img.sccnn.com/bimg/338/27244.jpg',
             currentPage: 1,
             pagenum: 100,
             activeName: 'first',

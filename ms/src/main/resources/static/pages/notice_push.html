@@ -11,6 +11,17 @@
         margin-top: 8px;
         margin-right: 8px;
     }
+    .ivu-table{
+        height:auto;
+    }
+    .m{
+        margin-left: 10px;
+        font-size: 15px;
+    }
+    .add{
+        position: absolute;
+        right:160px;
+    }
 </style>
 <body>
 <div id="notice">
@@ -27,19 +38,27 @@
         <p class="text">查询条件:</p>
         <i-input v-model="search" placeholder="请输入查询内容" style="width: 400px;margin-right: 15px;"></i-input>
         <i-button type="primary">查询</i-button>
-        <i-button type="success" style="margin-left: 300px" @click="modal1 = true">添加公告</i-button>
+        <div style="display: inline-block;margin-left: 30px">
+            <i-select :model.sync="modelselect" style="width: 200px;margin-right: 15px">
+                <i-option v-for="item in userList" :value="item.value">{{item.label}}</i-option>
+            </i-select>
+            <i-button type="primary">查询</i-button>
+
+        </div>
+
+        <i-button type="success" class="add" @click="modal1 = true" size="large">添加公告</i-button>
         <Modal
                 v-model="modal1"
                 title="发布新公告"
                 @on-ok="createNotice"
                 @on-cancel="cancel">
-            <div style="display: inline-flex;margin-right: 10px;margin-bottom: 10px">
-                <div style="font-size: 14px;">请输入标题：</div>
-                <i-input v-model="input_title" style="width: 60%" size="small"></i-input>
+            <div style="display: inline-flex;margin: 15px">
+                <div style="font-size: 15px;margin-bottom: 5px;margin-right: 5px"><p style="width: 100px;">请输入标题：</p></div>
+                <i-input v-model="input_title"></i-input>
             </div>
-            <div style="margin-right: 10px">
-                <div style="font-size: 14px;margin-bottom: 5px">请输入内容：</div>
-                <i-input v-model="input_content" style="width: 70%"></i-input>
+            <div style="display:inline-flex;margin:15px">
+                <div style="font-size: 15px;margin-bottom: 5px;margin-right: 5px"><p style="width: 100px;">请输入内容：</p></div>
+                <i-input v-model="input_content"></i-input>
             </div>
         </Modal>
     </div>
@@ -53,6 +72,7 @@
         el: '#notice',
         data() {
             return {
+                modelselect:'',
                 title:'',
                 content:'',
                 input_title: '',
@@ -60,6 +80,14 @@
                 modal1: false,
                 search: '',
                 model3: '',
+                userList:[{
+                    value: 'beijing',
+                    label: '北京市'
+                },
+                    {
+                        value: 'shanghai',
+                        label: '上海市'
+                    },],
                 columns1: [
                     {
                         title: '标题',
@@ -76,14 +104,13 @@
                     {
                         title: '操作',
                         key: 'action',
-                        width: 200,
-                        align: 'left',
+                        width: 320  ,
+                        align: 'center',
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
                                     props: {
                                         type: 'primary',
-                                        size: 'small'
                                     },
                                     style: {
                                         marginRight: '5px'
@@ -98,7 +125,6 @@
                                 h('i-button', {
                                     props: {
                                         type: 'success',
-                                        size: 'small'
                                     },
                                     style: {
                                         marginRight: '5px'
@@ -112,7 +138,6 @@
                                 h('Button', {
                                     props: {
                                         type: 'error',
-                                        size: 'small'
                                     },
                                     on: {
                                         click: () => {
@@ -134,16 +159,30 @@
                 this.$Modal.confirm({
                     render: (h) => {
                         return h('div', [
+                            h('div',{
+                                style: {
+                                    marginTop: '20px',
+                                    marginBottom: '10px'
+                                }
+                            },[
+                                h('span',{
+                                    style:{
+                                      fontSize:'18px',
+                                    }
+                                },'修改公告')
+                            ]),
                             h('span', '标题'),
                             h('Input', {
                                 style: {
                                     width: '80%',
                                     marginLeft: '15px',
                                     marginRight: '25px',
-                                    marginBottom: '10px'
+                                    marginBottom: '15px',
+                                    marginTop: '10px'
+
                                 },
                                 props: {
-                                    value: this.title,
+                                    value: this.data1[index].title,
                                     autofocus: true,
                                     placeholder: '请输入公告标题'
                                 },
@@ -158,10 +197,12 @@
                                 style: {
                                     width: '80%',
                                     marginLeft: '15px',
+                                    marginRight: '25px',
+                                    marginTop: '10px',
                                     marginBottom: '10px'
                                 },
                                 props: {
-                                    value: this.content,
+                                    value: this.data1[index].content,
                                     autofocus: true,
                                     placeholder: '请输入公告内容'
                                 },
@@ -175,15 +216,14 @@
                     },
                     onOk: () => {
                         this.modifyNotice(index)
-                        console.log(app_management.name)
+//                        console.log(app_management.name)
                     }
                 })
             },
 
             show(index) {
                 this.$Modal.info({
-                    title: 'User Info',
-                    content: `公告标题：${this.data1[index].title}<br>公告内容：${this.data1[index].content}<br>创建者：${this.data1[index].adminId}<br>`
+                    content: `<p class="m">公告标题：${this.data1[index].title}</p><br><p class="m">公告内容：${this.data1[index].content}</p><br><p class="m">创建者：${this.data1[index].adminId}</p><br>`
                 })
             },
             remove(index) {
@@ -208,15 +248,23 @@
             },
             createNotice() {
                 var that = this
+                var t = [{
+                    adminId:1,
+                    content:this.input_content,
+                    gmtCreate:new Date(),
+                    noticeId:'',
+                    title:this.input_title
+                }]
                 $.ajax({
                     type:'post',
                     url:'notices',
                     data:{
-                        title:that.title,
-                        content:that.content,
+                        title:that.input_title,
+                        content:that.input_content,
                     },
                     success:function (data) {
                         console.log(data)
+                        that.data1.push(t[0])
                         that.ok()
                     },
                     error:function () {
@@ -256,8 +304,10 @@
                     success:function (data) {
                         if(data.code === 1) {
                             that.$Message.info("修改成功");
-                            that.data1.splice(index, 1);
-                            that.viewNotice()
+                            that.data1[index].title = that.title
+                            that.data1[index].content= that.content
+//                            that.data1.splice(index, 1);
+//                            that.viewNotice()
                         }
                     },
                     error:function (err) {

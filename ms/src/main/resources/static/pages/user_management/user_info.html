@@ -11,6 +11,14 @@
         margin-top: 8px;
         margin-right: 8px;
     }
+    .ivu-table{
+        height:auto;
+    }
+    .m{
+        margin-left: 10px;
+        font-size: 15px;
+    }
+
 </style>
 <body>
 <div id="user_info">
@@ -59,19 +67,19 @@
                     {
                         title: '姓名',
                         key: 'name',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Icon', {
-                                    props: {
-                                        type: 'person'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                }),
-                                h('strong', params.row.name)
-                            ]);
-                        }
+//                        render: (h, params) => {
+//                            return h('div', [
+//                                h('Icon', {
+//                                    props: {
+//                                        type: 'person'
+//                                    },
+//                                    style: {
+//                                        marginRight: '5px'
+//                                    },
+//                                }),
+//                                h('strong', params.row.name)
+//                            ]);
+//                        }
                     },
                     {
                         title: '邮箱',
@@ -88,14 +96,13 @@
                     {
                         title: '操作',
                         key: 'action',
-                        width: 150,
+                        width: 250,
                         align: 'center',
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
                                     props: {
                                         type: 'primary',
-                                        size: 'small'
                                     },
                                     style: {
                                         marginRight: '5px'
@@ -109,7 +116,6 @@
                                 h('Button', {
                                     props: {
                                         type: 'error',
-                                        size: 'small'
                                     },
                                     on: {
                                         click: () => {
@@ -176,7 +182,7 @@
             show(index) {
                 this.$Modal.info({
                     title: '用户信息',
-                    content: `姓名：${this.labelArr[index].name}<br>邮箱：${this.labelArr[index].email}<br>手机号：${this.labelArr[index].phone}<br>注册时间：${this.labelArr[index].gmtCreate}`
+                    content: `<p class="m">姓名：${this.labelArr[index].name}</p><br><p  class="m">邮箱：${this.labelArr[index].email}</p><br><p class="m">手机号：${this.labelArr[index].phone}</p><br><p class="m">注册时间：${this.labelArr[index].gmtCreate}</p>`
                 })
             },
             remove(index) {

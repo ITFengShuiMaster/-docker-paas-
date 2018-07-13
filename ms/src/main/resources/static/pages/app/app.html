@@ -11,6 +11,14 @@
         margin-top: 8px;
         margin-right: 8px;
     }
+    .ivu-table{
+         height:auto;
+     }
+    .m{
+        margin-left: 10px;
+        font-size: 15px;
+    }
+
 </style>
 <body>
 <div id="app_management">
@@ -20,7 +28,7 @@
         <p style="font-weight: bold">应用管理</p>
     </div>
     <div style="margin: 10px 20px">
-        <p style="font-size: 20px; color: black">用户应用管理</p>
+        <p style="font-size: 20px; color: black">用户新建管理</p>
         <p style="margin: 8px 0px 20px">查询用户新建应用使用情况</p>
     </div>
     <div style="display: inline-flex; padding-left: 20px;padding-bottom: 15px">
@@ -59,7 +67,7 @@
                         return h('div', [
                             h('Tag', {
                                 props: {
-                                    color: 'blue',
+                                    color: (param.row.status === true)?'blue':'red',
                                     name: 'tt',
                                     value: 'tt'
                                 },
@@ -104,14 +112,13 @@
                 {
                     title: '操作',
                     key: 'action',
-                    width: 150,
+                    width: 250,
                     align: 'center',
                     render: (h, params) => {
                         return h('div', [
                             h('Button', {
                                 props: {
                                     type: 'primary',
-                                    size: 'small'
                                 },
                                 style: {
                                     marginRight: '5px'
@@ -126,7 +133,6 @@
                             h('Button', {
                                 props: {
                                     type: 'error',
-                                    size: 'small'
                                 },
                                 on: {
                                     click: () => {
@@ -174,10 +180,9 @@
             },
             show(index) {
                 this.$Modal.info({
-                    title: 'User Info',
-                    content: `应用名：${this.table_data[index].name}<br>所属用户：${this.table_data[index].username}<br>应用使用的内存量：
-                    ${this.table_data[index].memoryUsed}<br>应用状态：${this.table_data[index].statusName}<br>
-                    所属应用组：${this.table_data[index].appGroupId}<br>创建时间：${this.table_data[index].gmtCreate}`
+                    content: `<p class="m">应用名：${this.table_data[index].name}</p><br><p class="m">所属用户：${this.table_data[index].username}</p><br><p class="m">应用使用的内存量：
+                    ${this.table_data[index].memoryUsed}</p><br><p class="m">应用状态：${this.table_data[index].statusName}</p><br>
+                    <p class="m">所属应用组：${this.table_data[index].appGroupId}</p><br><p class="m">创建时间：${this.table_data[index].gmtCreate}</p>`
                 })
             },
             remove(index) {

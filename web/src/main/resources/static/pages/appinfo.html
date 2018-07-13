@@ -32,8 +32,12 @@
         .appInfo {
             float: left;
             min-width: 200px;
-        }
 
+        }
+        .appInfo > button{
+            position: relative;
+            z-index: 100;
+        }
         .appInfo i, h3 {
             display: inline-block;
         }
@@ -41,12 +45,18 @@
         .appButton {
             float: right;
             min-width: 400px;
+
         }
+
 
         .appButton .buttonGroup, button {
             display: inline-block;
+            position: relative;
+            z-index: 100;
         }
-
+        .appButton .el-button{
+            border-radius: 0px;
+        }
 
         .a {
             /*display: inline-block;*/
@@ -107,29 +117,25 @@
             <h3>{{appName}}</h3>
             <!--<i class="el-icon-edit" @click="dialogFormVisible = true"></i>-->
             <el-button type="text" @click="dialogFormVisible = true"><i class="el-icon-edit"></i></el-button>
-            <el-dialog title="修改应用名称" :visible.sync="dialogFormVisible">
-                <el-form :model="nameForm">
-                    <el-form-item>
-                        <el-input v-model="nameForm.name" auto-complete="off"></el-input>
-                    </el-form-item>
-                </el-form>
+            <el-dialog title="修改应用名称" :visible.sync="dialogFormVisible" width="30%">
+                <el-input v-model="appName" auto-complete="off"></el-input>
                 <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                    <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false" size="small">确 定</el-button>
                 </div>
             </el-dialog>
-
         </div>
         <div class="appButton">
             <div class="buttonGroup">
                 <el-tooltip class="item" effect="dark" content="跳转到应用对外访问端口对应的域名地址" placement="top">
                     <el-button>访问</el-button>
                 </el-tooltip>
+                <el-button>开启</el-button>
                 <el-button>关闭</el-button>
                 <el-button>重启</el-button>
                 <el-button>管理容器</el-button>
             </div>
-            <el-button type="primary">重新部署</el-button>
+            <el-button type="primary" style="margin-left: 25px">重新部署</el-button>
         </div>
         <div class="tabs">
             <el-row>
@@ -138,7 +144,6 @@
                         <el-menu-item index="1">总览</el-menu-item>
                         <el-menu-item index="2">监控</el-menu-item>
                         <el-menu-item index="3">日志</el-menu-item>
-                        <!--<el-menu-item index="4">伸缩</el-menu-item>-->
                         <el-menu-item index="4">依赖</el-menu-item>
                         <el-menu-item index="5">存储</el-menu-item>
                         <el-menu-item index="6">端口</el-menu-item>
