@@ -2,7 +2,7 @@ package cn.edu.jit.tianyu_paas.web.websocket_ssh;
 
 import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.util.DockerHelperUtil;
-import cn.edu.jit.tianyu_paas.shared.util.DockerUtil;
+import cn.edu.jit.tianyu_paas.shared.util.DockerClientUtil;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,12 +55,12 @@ public class SSHWebSocket {
         String execId = null;
         Socket socket = null;
 
-        if ((execId = DockerUtil.getExecId(containerId)) == null) {
+        if ((execId = DockerClientUtil.getExecId(containerId)) == null) {
             session.getBasicRemote().sendText("容器创建连接异常！");
             session.close();
         }
 
-        if ((socket = DockerUtil.getExecSocket(execId, containerId)) == null) {
+        if ((socket = DockerClientUtil.getExecSocket(execId)) == null) {
             session.getBasicRemote().sendText("容器连接异常！");
             session.close();
         }

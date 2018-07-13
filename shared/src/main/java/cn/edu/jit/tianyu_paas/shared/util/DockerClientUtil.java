@@ -1,6 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.util;
 
-
+import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import com.alibaba.fastjson.JSONObject;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.messages.ExecCreation;
@@ -11,19 +11,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
-public class DockerUtil {
-    private static final Logger logger = LoggerFactory.getLogger(DockerUtil.class);
+public class DockerClientUtil {
+    private static final Logger logger = LoggerFactory.getLogger(DockerClientUtil.class);
 
 
     /**
-     * ??bash.
+     * 创建bash.
      *
-     * @param containerId ??id
-     * @return ??id
+     * @param containerId 容器id
+     * @return 命令id
      */
     public static String getExecId(String containerId) {
         try {
-            return DockerHelper.query("47.106.37.79", docker -> {
+            return DockerHelperUtil.query(DockerSSHConstants.IP, docker -> {
                 ExecCreation execCreation = docker.execCreate(containerId, new String[]{"/bin/bash"},
                         DockerClient.ExecCreateParam.attachStdin(), DockerClient.ExecCreateParam.attachStdout(), DockerClient.ExecCreateParam.attachStderr(),
                         DockerClient.ExecCreateParam.tty(true));
@@ -38,12 +38,12 @@ public class DockerUtil {
 
     public static Socket getExecSocket(String execId) {
         try {
-            Socket socket = new Socket("47.106.37.79", 2375);
+            Socket socket = new Socket(DockerSSHConstants.IP, 2375);
             socket.setKeepAlive(true);
             OutputStream out = socket.getOutputStream();
             StringBuilder pw = new StringBuilder();
             pw.append("POST /exec/").append(execId).append("/start HTTP/1.1\r\n");
-            pw.append("Host: " + "47.106.37.79" + ":2375\r\n");
+            pw.append("Host: " + DockerSSHConstants.IP + ":2375\r\n");
             pw.append("User-Agent: Docker-Client\r\n");
             pw.append("Content-Type: application/json\r\n");
             pw.append("Connection: Upgrade\r\n");
