@@ -1,15 +1,10 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
 import cn.edu.jit.tianyu_paas.shared.entity.Action;
-import cn.edu.jit.tianyu_paas.shared.entity.ActionDetail;
-import cn.edu.jit.tianyu_paas.shared.enums.ActionEnum;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
-import cn.edu.jit.tianyu_paas.web.service.ActionDetailService;
 import cn.edu.jit.tianyu_paas.web.service.ActionService;
-import cn.edu.jit.tianyu_paas.web.service.AppLogService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,25 +12,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author 天宇小凡
- */
 @RestController
 @RequestMapping("/actions")
 public class ActionController {
-    private final ActionService actionService;
+    private ActionService actionService;
     private HttpSession session;
-    private final AppLogService appLogService;
-    private final ActionDetailService actionDetailService;
 
     @Autowired
-    public ActionController(ActionService actionService, HttpSession session, AppLogService appLogService, ActionDetailService actionDetailService) {
+    public ActionController(ActionService actionService, HttpSession session) {
         this.actionService = actionService;
         this.session = session;
-        this.appLogService = appLogService;
-        this.actionDetailService = actionDetailService;
     }
 
     /**
@@ -44,15 +33,36 @@ public class ActionController {
      * @author 卢越
      * @date 2018/6/29 16:30
      */
-    @ApiOperation("总览页面行为接口")
     @GetMapping("/info")
     public TResult info() {
-        List<Action> lists = actionService.selectList(new EntityWrapper<Action>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)).orderBy("gmt_create", false).last("LIMIT 6"));
+        // TODO 6为测试数据，实际应该改为session.getAttribute(Constants.SESSION_KEY_USER_ID)
+        List<Action> lists = actionService.selectList(new EntityWrapper<Action>().eq("user_id", 6).orderBy("gmt_create", false));
+        List<String> actions = new ArrayList<>();
+        for (Action action : lists) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(action.getUserName());
+            switch (action.getAction()) {
+                case 0:
+                    sb.append("水平升级");
+                    break;
+                case 1:
+                    sb.append("启动");
+                    break;
+                case 2:
+                    sb.append("重启");
+                    break;
+                case 3:
+                    sb.append("部署");
+                    break;
+                default:
+                    break;
+            }
+            sb.append(action.getAppName() + "应用");
+            sb.append(action.getStatus() == 1 ? "完成" : "失败");
+            actions.add(sb.toString());
+        }
 
-        // 添加action的行为名字
-        lists.forEach(action -> action.setActionName(ActionEnum.getMessageBycode(action.getAction())));
-
-        return TResult.success(lists);
+        return TResult.success(actions);
     }
 
     /**
@@ -61,8 +71,7 @@ public class ActionController {
      * @author 汪继友
      * @date 2018/6/30 14:14
      */
-    @ApiOperation("获取应用的操作日志")
-    @GetMapping("/{appId}")
+    @GetMapping("{appId}")
     public TResult listAppAction(@PathVariable long appId) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         return TResult.success(actionService.listAppActionByUserId(userId, appId));
@@ -74,11 +83,12 @@ public class ActionController {
      * @author 汪继友
      * @date 2018/6/30 14:27
      */
-    @ApiOperation("获取应用操作日志的详细日志（info,debug,error)")
-    @GetMapping("/detail")
-    public TResult listActionDetails(long appId, long actionId, int level) {
+    @GetMapping("detail")
+    public TResult listAppInfoLog(long appId, long actionId, int level) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        List<ActionDetail> actionDetails = actionDetailService.selectList(new EntityWrapper<ActionDetail>().eq("action_id", actionId).eq("level", level));
-        return TResult.success(actionDetails);
+        if (actionService.isActionIdExist(userId, appId, actionId)) {
+
+        }
+        return null;
     }
 }
