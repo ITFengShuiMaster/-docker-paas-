@@ -4,10 +4,12 @@ import java.io.File;
 
 /**
  * 检测代码类型
+ *
  * @author 倪龙康
  */
 public class CheckWord {
     private static String language = "null";
+
     public static String existsCheck(String dirPath) {
         File pathFile = new File(dirPath);
         if (!pathFile.exists() || pathFile.isFile()) {
@@ -21,7 +23,7 @@ public class CheckWord {
                 } else if ("index.html".equals(file.getName())) {
                     language = "html";
                     break;
-                } else if ("package.json".equals(file.getName())){
+                } else if ("package.json".equals(file.getName())) {
                     language = "nodejs";
                     break;
                 }
