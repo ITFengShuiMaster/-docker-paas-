@@ -5,10 +5,10 @@
             <el-breadcrumb-item>创建应用</el-breadcrumb-item>
             <el-breadcrumb-item>从Docker镜像创建应用</el-breadcrumb-item>
         </el-breadcrumb>
-
-        <p class="big-text">从Docker镜像创建应用</p>
-        <p class="normal-text">支持从单一镜像、Docker命令、Docker-Compose配置创建应用 </p>
-
+        <div class="titleCode">
+            <p class="big-text">从Docker镜像创建应用</p>
+            <p class="normal-text">支持从单一镜像、Docker命令、Docker-Compose配置创建应用 </p>
+        </div>
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="selectForm">
             <el-menu-item index="1">指定镜像</el-menu-item>
             <el-menu-item index="2">DockerRun命令</el-menu-item>
@@ -74,11 +74,20 @@
     #info {
         padding-top: 10px;
         padding-left: 20px;
+        background: #ffffff;
+        margin-bottom:20px ;
     }
 
     .big-text {
         color: #303133;
         font-size: 20px;
+    }
+    .titleCode{
+         margin-top:25px;
+         margin-bottom: 20px;
+     }
+    .titleCode p{
+        line-height: 2;
     }
 
     .normal-text {

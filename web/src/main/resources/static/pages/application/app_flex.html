@@ -80,12 +80,12 @@
                                 <el-col :span="12" :sm="24" :xs="24" :md="12" :lg="12">
                                     <div class="shensuoLeft">
                                         <label>内存：</label>
-                                        <el-select v-model="value">
+                                        <el-select v-model="value1">
                                             <el-option
                                                     v-for="item in option1"
-                                                    :key="item.value"
+                                                    :key="item.value1"
                                                     :label="item.label"
-                                                    :value="item.value">
+                                                    :value="item.value1">
                                             </el-option>
                                         </el-select>
                                         <el-button type="primary">111</el-button>
@@ -94,12 +94,12 @@
                                 <el-col :span="12" :sm="24" :xs="24" :md="12" :lg="12">
                                     <div class="shensuoRight">
                                         <label>实际数量：</label>
-                                        <el-select v-model="value">
+                                        <el-select v-model="value2">
                                             <el-option
                                                     v-for="item in option2"
-                                                    :key="item.value"
+                                                    :key="item.value2"
                                                     :label="item.label"
-                                                    :value="item.value">
+                                                    :value="item.value2">
                                             </el-option>
                                         </el-select>
                                         <el-button type="primary">222</el-button>
@@ -121,20 +121,20 @@
         el: '#flex',
         data: {
             option1: [{
-                value: '256MB',
+                value1: '256MB',
                 label: '256'
             }, {
-                value: '512MB',
+                value1: '512MB',
                 label: '512MB'
             }, {
-                value: '1GB',
+                value1: '1GB',
                 label: '1GB'
             }],
             option2: [{
-                value: '1',
+                value2: '1',
                 label: '1'
             }, {
-                value: '2',
+                value2: '2',
                 label: '2'
             }],
         },

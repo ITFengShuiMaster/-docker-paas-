@@ -12,6 +12,8 @@
     <style>
         html {
             font-family: sans-serif;
+            height:100%;
+            width:100%;
         }
 
         body {
@@ -26,18 +28,22 @@
 <style>
 
     #test {
-        height: 500px;
+        height: 100%;
     }
 
     .logo_show {
         background: #545C64;
+    }
+    .el-main{
+        height: 880px;
+        overflow: auto;
     }
 
 </style>
 <body>
 <el-container id="app">
 
-    <el-aside>
+    <el-aside >
         <el-header class="logo_show">
             <img src="img/logo.png" style="float: left; margin-top: 12px;padding-right: 10px">
             <div class="logo_text" style="color: white;padding: 20px">Docker</div>
@@ -63,7 +69,6 @@
                 <el-menu-item index="2">从Docker镜像创建</el-menu-item>
                 <el-menu-item index="3">从应用市场安装</el-menu-item>
             </el-submenu>
-
             <el-submenu index="10002">
                 <template slot="title">
                     <i class="el-icon-menu"></i>
@@ -78,14 +83,11 @@
                     </template>
                     <el-menu-item v-for="(app,appIndex) in group.apps" :index="(index+1)*1000+appIndex+''">
                         <div @click="clickApp(app.appId)">
-
                             <span>{{app.name}}</span>
                         </div>
                     </el-menu-item>
                 </el-submenu>
-
             </el-submenu>
-
             <el-menu-item index="5">
                 <i class="el-icon-tickets"></i>
                 <span slot="title">财务中心</span>
@@ -97,7 +99,7 @@
         <el-header style=" margin-top:-7px;padding:0px;width: 100%">
             <el-card shadow="always">
 
-                <el-col :span="8" align="right" style="font-size: 20px; color: #409EFF; margin-top: 0px">
+                <el-col :span="23" align="right" style="font-size: 20px; color: #409EFF; margin-top: 0px">
                     <el-popover
                             placement="bottom"
                             width="200"
@@ -130,11 +132,9 @@
                             </el-tabs>
                         </template>
                     </el-popover>
-                </el-col>
-                <el-col :span="2" align="right">
-                    <img src="">
-                </el-col>
-                <el-col :span="2" align="left">
+                <!--</el-col>-->
+                <!--<el-col :span="12" align="right">-->
+                    <img src="img/logo.png">
                     <el-dropdown @command="handleCommand">
                         <span style="font-size: 16px; color: #409EFF;">{{username}}</span>
                         <el-dropdown-menu slot="dropdown">
@@ -155,6 +155,7 @@
     var vm = new Vue({
         el: '#app',
         data: {
+            bodyHeight:$(window).height(),
             // 左侧导航栏的应用组和组里的app
             groups_apps: [],
             dialogVisible: false,
@@ -162,7 +163,7 @@
             imageUrl: '',
             username: '',
             isCollapse: false,
-            pageArr: ['pages/home.html', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/install.html', 'pages/appinfo.html', 'pages/financialcenter.html'],
+            pageArr: ['pages/home.html', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/create_by_market.html', 'pages/appinfo.html', 'pages/financialcenter.html'],
             teamArr: ['团队一', '团队二'],
             dataArr: ['假数据中心', '真数据中心'],
             activeName: 'second',
@@ -272,7 +273,7 @@
                     callback: action => {
                         vm.setNoticeRead(currentNotice)
                     }
-            })
+                })
             },
             getCurrentMessage(currentMessage) {
                 this.$alert(currentMessage.content, currentMessage.title, {
@@ -280,7 +281,7 @@
                     callback: action => {
                         vm.setMessageRead(currentMessage)
                     }
-            })
+                })
             },
             myAppList(){
                 var that = this;
@@ -344,7 +345,8 @@
                     //基础配置
                     layim.config({
                         brief: true, //是否简约模式（如果true则不显示主面板）
-                        minRight: '10px',
+                        minRight: '20px',
+                        right:'10px',
                         init: {
                             mine: {
                                 username: "纸飞机" //我的昵称
@@ -395,15 +397,18 @@
                 $.get({
                     url: '/tianyu-paas/app-groups/groups-apps',
                     success: function (res) {
-                        console.log('sss' + res.data);
+//                        console.log('sss' + res.data);
                         vm.groups_apps = res.data;
-                        console.log(vm.groups_apps);
+//                        console.log(vm.groups_apps);
                     }
                 })
             },
             clickApp(appId) {
                 console.log(appId + 'appId');
-            }
+            },
+            getWindowHeight() {
+                $("#test").height($(window).height()-60)
+            },
         },
         created() {
             this.myAppList();
@@ -411,11 +416,22 @@
             this.getMessage();
             this.getNotice();
             this.init_gruops();
+//            this.getWindowHeight()
+            $("#test").height(this.bodyHeight-60)
+
         },
         mounted() {
             this.contact_customer_service();
             this.init_gruops();
             this.selectPage(0,'')
+        },
+        beforeMount() {
+            window.onresize = function () {
+                this.bodyHeight = document.documentElement.clientHeight
+                if(document.getElementById('test') != null) {
+                    $("#test").height(this.bodyHeight-60)
+                }
+            }
         }
     });
 </script>
