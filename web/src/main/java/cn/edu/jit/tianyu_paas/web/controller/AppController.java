@@ -4,12 +4,22 @@ package cn.edu.jit.tianyu_paas.web.controller;
 import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.enums.AppCreateMethodEnum;
 import cn.edu.jit.tianyu_paas.shared.enums.AppStatusEnum;
+import cn.edu.jit.tianyu_paas.shared.util.DockerHelperUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.DockerCmdExecFactory;
+import com.github.dockerjava.core.DefaultDockerClientConfig;
+import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.core.DockerClientConfig;
+import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
+import com.spotify.docker.client.LogStream;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author 倪龙康，卢越
@@ -39,13 +48,16 @@ public class AppController {
     private final AppInfoByMarketService appInfoByMarketService;
     private final AppGroupService appGroupService;
     private final MarketAppService marketAppService;
-    private AppVarService appVarService;
-    private AppPortService appPortService;
-
     private final Logger logger = LoggerFactory.getLogger(AppController.class);
+    private final AppVarService appVarService;
+    private final AppPortService appPortService;
+    private final MachinePortService machinePortService;
+    private final MachineService machineService;
+    private final MarketAppPortService marketAppPortService;
+    private final MarketAppVarService marketAppVarService;
 
     @Autowired
-    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService) {
+    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, MachinePortService machinePortService, MachineService machineService, MarketAppPortService marketAppPortService, MarketAppVarService marketAppVarService) {
         this.appService = appService;
         this.appInfoByCustomService = appInfoByCustomService;
         this.session = session;
@@ -58,36 +70,10 @@ public class AppController {
         this.marketAppService = marketAppService;
         this.appVarService = appVarService;
         this.appPortService = appPortService;
-    }
-
-    /**
-     * 获取应用信息
-     *
-     * @param app_id
-     * @return
-     * @author 倪龙康
-     */
-    @GetMapping("{app_id}")
-    public TResult getAppInfo(@PathVariable("app_id") Long app_id) {
-        App app = appService.selectById(app_id);
-        return TResult.success(app);
-    }
-
-    /**
-     * 添加变量
-     *
-     * @return
-     * @author 倪龙康
-     */
-    @PostMapping("vars")
-    public TResult addVar(AppVar appVar) {
-        if (appVarService.selectCount(new EntityWrapper<AppVar>().eq("var_num", appVar.getVarName())) != 0) {
-            return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
-        }
-        appVar.setGmtCreate(new Date());
-        if (!appVarService.insert(appVar))
-            return TResult.failure(TResultCode.FAILURE);
-        return TResult.success();
+        this.machinePortService = machinePortService;
+        this.machineService = machineService;
+        this.marketAppPortService = marketAppPortService;
+        this.marketAppVarService = marketAppVarService;
     }
 
     private void initApp(App app, AppCreateMethodEnum createMethodEnum) {
@@ -99,13 +85,50 @@ public class AppController {
         // TODO 检测仓库，并给应用设置memory, disk等
     }
 
+    private DockerClient getDockerClient() {
+        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                .withDockerHost("tcp://120.77.146.118:2375")
+                .withRegistryUsername("itfengshuimaster")
+                .withRegistryPassword("wxhzq520")
+                .withRegistryEmail("wxhzq520@sina.com")
+                .withRegistryUrl("https://hub.docker.com/r/itfengshuimaster/mydocker/")
+                .build();
+        DockerCmdExecFactory dockerCmdExecFactory = new JerseyDockerCmdExecFactory()
+                .withReadTimeout(100000)
+                .withConnectTimeout(100000)
+                .withMaxTotalConnections(100)
+                .withMaxPerRouteConnections(10);
+
+        return DockerClientBuilder.getInstance(config)
+                .withDockerCmdExecFactory(dockerCmdExecFactory)
+                .build();
+    }
+
+    /**
+     * 获取应用信息----完善过（2018-7-6）
+     *
+     * @param appId
+     * @return
+     * @author 倪龙康, 卢越
+     */
+    @ApiOperation("获取应用信息")
+    @GetMapping("/{appId}")
+    public TResult getAppInfo(@PathVariable Long appId) {
+        App app = appService.selectById(appId);
+        //获取容器的信息
+        app.setInspectContainerResponse(getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
+
+        return TResult.success(app);
+    }
+
     /**
      * 从自定义源码创建应用（git仓库）
      *
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
-    @PostMapping("custom")
+    @ApiOperation("从自定义源码创建应用（git仓库）")
+    @PostMapping("/custom")
     public TResult createAppByCustom(@Validated App app, @Validated AppInfoByCustom custom) {
         initApp(app, AppCreateMethodEnum.CUSTOM);
 
@@ -118,128 +141,6 @@ public class AppController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
-    /**
-     * 修改变量
-     *
-     * @param appVar
-     * @return
-     * @author 倪龙康
-     */
-    @PutMapping("vars")
-    public TResult updateVar(AppVar appVar) {
-        if (!appVarService.update(appVar, new EntityWrapper<AppVar>().eq("app_id", appVar.getAppId()).and().eq("var_name", appVar.getVarName())))
-            return TResult.failure(TResultCode.BUSINESS_ERROR);
-        return TResult.success();
-    }
-
-    /**
-     * 删除变量
-     *
-     * @param var_name
-     * @return
-     * @author 倪龙康
-     */
-    @DeleteMapping("vars/{var_name}")
-    public TResult deleteVar(@PathVariable("var_name") String var_name) {
-        if (!appVarService.delete(new EntityWrapper<AppVar>().eq("var_name", var_name)))
-            return TResult.failure(TResultCode.BUSINESS_ERROR);
-        return TResult.success();
-    }
-
-    /**
-     * 获取变量相关信息
-     *
-     * @param app_id
-     * @return
-     * @author 倪龙康
-     */
-    @GetMapping("vars/{app_id}")
-    public TResult getVarInfo(@PathVariable("app_id") Long app_id) {
-        List<AppVar> appVars = appVarService.selectList(new EntityWrapper<AppVar>().eq("app_id", app_id));
-        if (appVars == null)
-            return TResult.failure(TResultCode.RESULE_DATA_NONE);
-        return TResult.success(appVars);
-    }
-
-    /**
-     * 获取端口号信息
-     *
-     * @param app_id
-     * @return
-     * @author 倪龙康
-     */
-    @GetMapping("ports/{app_id}")
-    public TResult getPortInfo(@PathVariable("app_id") Long app_id) {
-        AppPort appPort = appPortService.selectOne(new EntityWrapper<AppPort>().eq("app_id", app_id));
-        if (appPort == null)
-            return TResult.failure(TResultCode.RESULE_DATA_NONE);
-        return TResult.success(appPort.toString());
-    }
-
-    /**
-     * 新增端口
-     *
-     * @param app_id
-     * @param port
-     * @param protocol
-     * @return
-     * @author 倪龙康
-     */
-    @PostMapping("ports")
-    public TResult addPort(Long app_id, Integer port, Integer protocol,
-                           @RequestParam(required = false, defaultValue = "0") Integer is_inside_open,
-                           @RequestParam(required = false, defaultValue = "xxxxxx") String inside_access_url,
-                           @RequestParam(required = false, defaultValue = "xxxxxx") String inside_alias,
-                           @RequestParam(required = false, defaultValue = "0") Integer is_outside_open,
-                           @RequestParam(required = false, defaultValue = "xxxxxx") String outside_access_url
-    ) {
-        if (appPortService.selectCount(new EntityWrapper<AppPort>().eq("port", port)) != 0) {
-            return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
-        }
-        AppPort appPort = new AppPort();
-        appPort.setAppId(app_id);
-        appPort.setPort(port);
-        appPort.setProtocol(protocol);
-        appPort.setGmtModified(new Date());
-        appPort.setGmtCreate(new Date());
-        appPort.setIsInsideOpen(is_inside_open);
-        appPort.setIsOutsideOpen(is_outside_open);
-        appPort.setInsideAccessUrl(inside_access_url);
-        appPort.setOutsideAccessUrl(outside_access_url);
-        appPort.setInsideAlias(inside_alias);
-        if (!appPortService.insert(appPort))
-            return TResult.failure(TResultCode.FAILURE);
-        return TResult.success();
-    }
-
-    /**
-     * 更新端口相关信息
-     *
-     * @param appPort
-     * @return
-     * @author 倪龙康
-     */
-    @PutMapping("ports")
-    public TResult updatePort(AppPort appPort) {
-        if (!appPortService.update(appPort, new EntityWrapper<AppPort>().eq("app_id", appPort.getAppId()).and().eq("port", appPort.getPort())))
-            return TResult.failure(TResultCode.BUSINESS_ERROR);
-        return TResult.success();
-    }
-
-    /**
-     * 删除端口
-     *
-     * @param port
-     * @return
-     * @author 倪龙康
-     */
-    @DeleteMapping("ports/{port}")
-    public TResult deletePort(@PathVariable("port") Integer port) {
-
-        if (!appPortService.delete(new EntityWrapper<AppPort>().eq("port", port)))
-            return TResult.failure(TResultCode.BUSINESS_ERROR);
-        return TResult.success();
-    }
 
     /**
      * 从官方demo创建应用
@@ -247,7 +148,8 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
-    @PostMapping("demo")
+    @ApiOperation("从官方demo创建应用")
+    @PostMapping("/demo")
     public TResult createAppByDemo(@Validated App app, @Validated AppInfoByDemo infoByDemo) {
         Demo demo = demoService.selectById(infoByDemo.getDemoId());
         // 没有找到demo应用
@@ -270,16 +172,11 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 11:11
      */
-    @PostMapping("docker-image")
+    @ApiOperation("从docker image创建应用")
+    @PostMapping("/docker-image")
     public TResult createAppByDockerImage(@Validated App app, @Validated AppInfoByDockerImage dockerImage) {
         initApp(app, AppCreateMethodEnum.DOCKER_IMAGE);
-
-        if (appService.insert(app)) {
-            dockerImage.setAppId(app.getAppId());
-            appInfoByDockerImageService.insert(dockerImage);
-            return TResult.success();
-        }
-        return TResult.failure(TResultCode.BUSINESS_ERROR);
+        return appService.initContainer(app, dockerImage);
     }
 
     /**
@@ -288,7 +185,8 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 14:41
      */
-    @PostMapping("docker-run")
+    @ApiOperation("用docker run命令创建应用")
+    @PostMapping("/docker-run")
     public TResult createAppByDockerRun(@Validated App app, @Validated AppInfoByDockerRun dockerRun) {
         initApp(app, AppCreateMethodEnum.DOCKER_RUN);
 
@@ -306,7 +204,8 @@ public class AppController {
      * @author 汪继友
      * @date 2018/6/29 14:58
      */
-    @PostMapping("docker-compose")
+    @ApiOperation("根据docker compose创建应用（创建的是应用组）")
+    @PostMapping("/docker-compose")
     public TResult createAppByDockerCompose(@Validated AppGroup appGroup) {
         long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         AppGroup dbGroup = appGroupService.selectOne(new EntityWrapper<AppGroup>().eq("group_name", appGroup.getGroupName()));
@@ -326,22 +225,20 @@ public class AppController {
      * @author 卢越
      * @date 2018/6/29 16:30
      */
-    @GetMapping("/info")
-    public TResult info(@RequestParam(required = false, defaultValue = "") String name, Integer status,
-                        @RequestParam(value = "current", defaultValue = "1") Integer current,
-                        @RequestParam(value = "size", defaultValue = "3") Integer size) {
-
+    @ApiOperation("总览页面应用接口，包含分页，根据名字查询，根据状态查询")
+    @GetMapping("/lists")
+    public TResult listAppByNameAndStatus(@RequestParam(required = false, defaultValue = "") String name, Integer status, Pagination page) {
         App app = new App();
         app.setName(name);
         app.setStatus(status);
-        // TODO 6为测试数据，实际应该改为session.getAttribute(Constants.SESSION_KEY_USER_ID)
-        app.setUserId(Long.parseLong("6"));
-        Page page = appService.selectAppListPage(app, current, size);
+        app.setUserId((Long) session.getAttribute(Constants.SESSION_KEY_USER_ID));
+        Page<App> appPages = appService.listAppsByNameAndStatus(app, page);
 
-        return TResult.success(page);
+        return TResult.success(appPages);
     }
 
-    @PostMapping("market")
+    @ApiOperation("从应用市场创建应用")
+    @PostMapping("/market")
     public TResult createAppByMarket(@Validated App app, @Validated AppInfoByMarket market) {
         MarketApp marketApp = marketAppService.selectById(market.getMarketAppId());
         if (marketApp == null) {
@@ -354,5 +251,25 @@ public class AppController {
             return TResult.success();
         }
         return TResult.failure(TResultCode.BUSINESS_ERROR);
+    }
+
+    @GetMapping("/logs")
+    public TResult listLogs() {
+        try {
+            String reLogs = DockerHelperUtil.query("120.77.146.118", docker ->
+            {
+                final String logs;
+                try (LogStream stream = docker.logs("bcc308e9715b", com.spotify.docker.client.DockerClient.LogsParam.stdout(), com.spotify.docker.client.DockerClient.LogsParam.stderr())) {
+                    logs = stream.readFully();
+                }
+                return logs;
+            });
+
+            return TResult.success(reLogs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
     }
 }

@@ -54,7 +54,7 @@ public class AppPortController {
     @ApiOperation("新增端口")
     @PostMapping
     public TResult addPort(AppPort appPort) {
-        if (appPortService.selectCount(new EntityWrapper<AppPort>().eq("port", appPort.getPort()).eq("app_id", appPort.getAppId())) != 0) {
+        if (appPortService.selectCount(new EntityWrapper<AppPort>().eq("port", appPort.getHostPort()).eq("app_id", appPort.getAppId())) != 0) {
             return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
         }
         appPort.setGmtModified(new Date());
@@ -77,7 +77,7 @@ public class AppPortController {
     @PutMapping
     public TResult updatePort(AppPort appPort) {
         appPort.setGmtModified(new Date());
-        if (!appPortService.update(appPort, new EntityWrapper<AppPort>().eq("app_id", appPort.getAppId()).and().eq("port", appPort.getPort()))) {
+        if (!appPortService.update(appPort, new EntityWrapper<AppPort>().eq("app_id", appPort.getAppId()).and().eq("port", appPort.getHostPort()))) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
         return TResult.success();

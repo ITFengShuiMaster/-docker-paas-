@@ -30,9 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author 卢越
@@ -85,19 +83,20 @@ public class AppService extends ServiceImpl<AppMapper, App> {
      * @param machinePorts
      * @return
      */
-    private List<AppPort> initAppPort(App app, List<MachinePort> machinePorts) {
+    private List<AppPort> initAppPort(App app, Map<MachinePort, Integer> machinePorts) {
         List<AppPort> appPorts = new ArrayList<>();
-        for (MachinePort usedPort : machinePorts) {
+        for (MachinePort hostPort : machinePorts.keySet()) {
             AppPort appPort = new AppPort();
             appPort.setAppId(app.getAppId());
             appPort.setInsideAccessUrl("xxx");
             appPort.setInsideAlias("xxx");
             appPort.setIsInsideOpen(AppPort.INOPEN);
             appPort.setIsOutsideOpen(AppPort.OUTOPEN);
-            appPort.setOutsideAccessUrl(machineService.selectOne(new EntityWrapper<Machine>().eq("machine_id", usedPort.getMachineId())).getMachineIp() + ":" + usedPort.getMachinePort());
-            appPort.setPort(usedPort.getMachinePort());
+            appPort.setOutsideAccessUrl(machineService.selectOne(new EntityWrapper<Machine>().eq("machine_id", hostPort.getMachineId())).getMachineIp() + ":" + hostPort.getMachinePort());
+            appPort.setHostPort(hostPort.getMachinePort());
+            appPort.setContainerPort(machinePorts.get(hostPort));
             appPort.setProtocol(AppPort.MYSQL);
-            appPort.setMachineId(usedPort.getMachineId());
+            appPort.setMachineId(hostPort.getMachineId());
             appPort.setGmtCreate(new Date());
             appPort.setGmtModified(new Date());
             appPorts.add(appPort);
@@ -227,7 +226,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
      * @param usedMachinePortList
      * @return
      */
-    public Ports getPorts(List<ExposedPort> exposedPorts, List<MachinePort> machinePorts, List<MachinePort> usedMachinePortList) {
+    public Ports getPorts(List<ExposedPort> exposedPorts, List<MachinePort> machinePorts, Map<MachinePort, Integer> usedMachinePortList) {
         Ports portBindings = new Ports();
         //保存机器中已使用的端口
         for (ExposedPort exposedPort : exposedPorts) {
@@ -235,7 +234,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
             //将使用过的机器端口添加到集合中
             MachinePort machinePort = machinePorts.remove(0);
             machinePort.setStatus(2);
-            usedMachinePortList.add(machinePort);
+            usedMachinePortList.put(machinePort, exposedPort.getPort());
         }
 
         return portBindings;
@@ -313,7 +312,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
             //获得可用端口信息
             List<MachinePort> machinePorts = getUsablePort();
             //保存机器中已使用的端口
-            List<MachinePort> usedMachinePortList = new ArrayList<>();
+            Map<MachinePort, Integer> usedMachinePortList = new HashMap<>();
             //将可用的机器端口映射到容器端口上
             Ports portBindings = getPorts(exposedPorts, machinePorts, usedMachinePortList);
             //获得容器所需的环境变量
