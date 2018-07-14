@@ -67,19 +67,6 @@
                     {
                         title: '姓名',
                         key: 'name',
-//                        render: (h, params) => {
-//                            return h('div', [
-//                                h('Icon', {
-//                                    props: {
-//                                        type: 'person'
-//                                    },
-//                                    style: {
-//                                        marginRight: '5px'
-//                                    },
-//                                }),
-//                                h('strong', params.row.name)
-//                            ]);
-//                        }
                     },
                     {
                         title: '邮箱',
@@ -181,7 +168,6 @@
             },
             show(index) {
                 this.$Modal.info({
-                    title: '用户信息',
                     content: `<p class="m">姓名：${this.labelArr[index].name}</p><br><p  class="m">邮箱：${this.labelArr[index].email}</p><br><p class="m">手机号：${this.labelArr[index].phone}</p><br><p class="m">注册时间：${this.labelArr[index].gmtCreate}</p>`
                 })
             },
