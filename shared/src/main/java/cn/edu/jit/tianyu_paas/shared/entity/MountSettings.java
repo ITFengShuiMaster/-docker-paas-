@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,22 +16,27 @@ public class MountSettings implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @NotNull
     private Long appId;
     /**
      * 持久化名称
      */
+    @NotNull
     private String persistentName;
     /**
      * 服务器准备挂载的目录
      */
+    @NotNull
     private String serverMountName;
     /**
      * 容器要被挂载的目录
      */
+    @NotNull
     private String containerMountName;
     /**
      * 0 本地存储 1 共享存储 2 内存文件存储
      */
+    @NotNull
     private Integer type;
     private Date gmtCreate;
 

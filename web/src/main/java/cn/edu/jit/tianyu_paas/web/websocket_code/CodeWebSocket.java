@@ -1,8 +1,12 @@
 package cn.edu.jit.tianyu_paas.web.websocket_code;
 
 import cn.edu.jit.tianyu_paas.shared.entity.MachinePort;
+import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.global.SourceCodeConstants;
-import cn.edu.jit.tianyu_paas.shared.util.*;
+import cn.edu.jit.tianyu_paas.shared.util.CheckWord;
+import cn.edu.jit.tianyu_paas.shared.util.DockerClientUtil;
+import cn.edu.jit.tianyu_paas.shared.util.DockerJavaUtil;
+import cn.edu.jit.tianyu_paas.shared.util.GitClone;
 import cn.edu.jit.tianyu_paas.web.service.MachinePortService;
 import cn.edu.jit.tianyu_paas.web.util.SpringBeanFactoryUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -28,7 +32,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author 卢越
+ * @author 倪龙康
  */
 @ServerEndpoint(value = "/websocket-code", configurator = HttpSessionConfigurator.class)
 @Component
@@ -74,7 +78,7 @@ public class CodeWebSocket {
             portBindings.bind(tcp8080, Ports.Binding.bindPort(unUsedPorts.getMachinePort()));
 
             try {
-                DockerClient dockerClient = DockerJavaUtil.getDockerClient();
+                DockerClient dockerClient = DockerJavaUtil.getDockerClient(DockerSSHConstants.N_IP);
                 CreateContainerResponse createContainerResponse = dockerClient.createContainerCmd(SourceCodeConstants.JAVA_CONTAINER_NAME)
                         .withExposedPorts(tcp8080)
                         .withPortBindings(portBindings)
@@ -84,8 +88,8 @@ public class CodeWebSocket {
                 machinePortService.update(unUsedPorts, new EntityWrapper<MachinePort>().eq("machine_id", unUsedPorts.getMachineId()).and().eq("machine_port", unUsedPorts.getMachinePort()));
 
                 //创建bash
-                execId = DockerUtil.getExecId(createContainerResponse.getId());
-                socket = DockerUtil.getExecSocket(execId);
+                execId = DockerClientUtil.getExecId(DockerSSHConstants.N_IP, createContainerResponse.getId());
+                socket = DockerClientUtil.getExecSocket(DockerSSHConstants.N_IP, execId);
 
                 SocketRunable socketRunable = new SocketRunable(socket.getInputStream(), socket, webSocketSession);
                 socketPoolExecutor.execute(socketRunable);
@@ -106,7 +110,7 @@ public class CodeWebSocket {
             portBindings.bind(tcp80, Ports.Binding.bindPort(unUsedPorts.getMachinePort()));
 
             try {
-                DockerClient dockerClient = DockerJavaUtil.getDockerClient();
+                DockerClient dockerClient = DockerJavaUtil.getDockerClient(DockerSSHConstants.N_IP);
                 CreateContainerResponse createContainerResponse = dockerClient.createContainerCmd(SourceCodeConstants.HTML_CONTAINER_NAME)
                         .withExposedPorts(tcp80)
                         .withPortBindings(portBindings)
@@ -116,8 +120,8 @@ public class CodeWebSocket {
                 machinePortService.update(unUsedPorts, new EntityWrapper<MachinePort>().eq("machine_id", unUsedPorts.getMachineId()).and().eq("machine_port", unUsedPorts.getMachinePort()));
 
                 //创建bash
-                execId = DockerUtil.getExecId(createContainerResponse.getId());
-                socket = DockerUtil.getExecSocket(execId);
+                execId = DockerClientUtil.getExecId(DockerSSHConstants.N_IP, createContainerResponse.getId());
+                socket = DockerClientUtil.getExecSocket(DockerSSHConstants.N_IP, execId);
 
                 SocketRunable socketRunable = new SocketRunable(socket.getInputStream(), socket, webSocketSession);
                 socketPoolExecutor.execute(socketRunable);
@@ -138,7 +142,7 @@ public class CodeWebSocket {
             portBindings.bind(tcp5000, Ports.Binding.bindPort(unUsedPorts.getMachinePort()));
 
             try {
-                DockerClient dockerClient = DockerJavaUtil.getDockerClient();
+                DockerClient dockerClient = DockerJavaUtil.getDockerClient(DockerSSHConstants.N_IP);
                 CreateContainerResponse createContainerResponse = dockerClient.createContainerCmd(SourceCodeConstants.NODEJS_CONTAINER_NAME)
                         .withCmd("sh", "-c", "while :; do sleep 1; done")
                         .withExposedPorts(tcp5000)
@@ -149,8 +153,8 @@ public class CodeWebSocket {
                 machinePortService.update(unUsedPorts, new EntityWrapper<MachinePort>().eq("machine_id", unUsedPorts.getMachineId()).and().eq("machine_port", unUsedPorts.getMachinePort()));
 
                 //创建bash
-                execId = DockerUtil.getExecId(createContainerResponse.getId());
-                socket = DockerUtil.getExecSocket(execId);
+                execId = DockerClientUtil.getExecId(DockerSSHConstants.N_IP, createContainerResponse.getId());
+                socket = DockerClientUtil.getExecSocket(DockerSSHConstants.N_IP, execId);
 
                 SocketRunable socketRunable = new SocketRunable(socket.getInputStream(), socket, webSocketSession);
                 socketPoolExecutor.execute(socketRunable);
