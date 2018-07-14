@@ -55,6 +55,7 @@ public class ActionController {
         return TResult.success(lists);
     }
 
+
     /**
      * 获取应用的操作日志
      *
@@ -67,6 +68,7 @@ public class ActionController {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         return TResult.success(actionService.listAppActionByUserId(userId, appId));
     }
+
 
     /**
      * 获取应用操作日志的详细日志（info,debug,error)
