@@ -7,30 +7,25 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * <p>
- *
- * </p>
  *
  * @author 汪继友
  * @since 2018-07-07
  */
-public class Message implements Serializable {
+public class OfflineMessage implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    @TableId(value = "message_id", type = IdType.AUTO)
-    private Long messageId;
+    @TableId(value = "offline_message_id", type = IdType.AUTO)
+    private Long offlineMessageId;
     private Long sender;
     private Long receiver;
     private String content;
     private Date gmtCreate;
 
-    public Long getMessageId() {
-        return messageId;
+    public Long getOfflineMessageId() {
+        return offlineMessageId;
     }
 
-    public void setMessageId(Long messageId) {
-        this.messageId = messageId;
+    public void setOfflineMessageId(Long offlineMessageId) {
+        this.offlineMessageId = offlineMessageId;
     }
 
     public Long getSender() {
@@ -68,7 +63,7 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         return "Message{" +
-                ", messageId=" + messageId +
+                ", offlineMessageId=" + offlineMessageId +
                 ", sender=" + sender +
                 ", receiver=" + receiver +
                 ", content=" + content +

@@ -249,7 +249,7 @@
                     type: "put",
                     url: 'http://localhost:8080/tianyu-paas/userMessages',
                     data: {
-                        messageId: order.messageId,
+                        offlineMessageId: order.offlineMessageId,
                     },
                     success: function (result) {
                         if (result.code) {

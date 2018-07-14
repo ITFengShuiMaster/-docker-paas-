@@ -1,9 +1,19 @@
 package cn.edu.jit.tianyu_paas.im.mina;
 
+import cn.edu.jit.tianyu_paas.im.entity.OfflineMessage;
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
+import cn.edu.jit.tianyu_paas.im.service.MessageService;
+import cn.edu.jit.tianyu_paas.im.service.OfflineMessageService;
+import cn.edu.jit.tianyu_paas.im.service.UserService;
+import cn.edu.jit.tianyu_paas.im.util.SpringBeanFactoryUtil;
+import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
+import cn.edu.jit.tianyu_paas.shared.mina_message.MinaMessage;
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +29,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class GlobalSession {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalSession.class);
+
+    private static MessageService messageService = SpringBeanFactoryUtil.getBean(MessageService.class);
+    private static OfflineMessageService offlineMessageService = SpringBeanFactoryUtil.getBean(OfflineMessageService.class);
     /**
      * 存放所有客服的session和对应的用户，按照分配用户数降序存储
      */
@@ -57,6 +70,7 @@ public class GlobalSession {
      */
     public static void userLogout(IoSession userSession, Long userId) {
         userSessionMap.remove(userId);
+        singleUserSessionList.remove(userSession);
         // 得到对应客服
         IoSession correspondingCustomerService = (IoSession) userSession.getAttribute(MinaConstant.SESSION_KEY_CUSTOMER_SERVICE);
         userSession.removeAttribute(MinaConstant.SESSION_KEY_CUSTOMER_SERVICE);
@@ -74,6 +88,8 @@ public class GlobalSession {
         // 将全部未分配用户，分配给新上线的客服（因为是唯一客服）
         customerServiceAndUsers.userSessions.addAll(singleUserSessionList);
         for (IoSession userSession : singleUserSessionList) {
+            long userId = (long) userSession.getAttribute(MinaConstant.SESSION_KEY_USER_ID);
+            pushOfflineMessageToCustomerService(userId, customerServiceSession);
             userSession.setAttribute(MinaConstant.SESSION_KEY_CUSTOMER_SERVICE, customerServiceSession);
         }
         onlineCustomerServices.add(customerServiceAndUsers);
@@ -110,20 +126,33 @@ public class GlobalSession {
 
     /**
      * 用户发送了消息
+     *
+     * @return 如果用户在线返回true，否则就是离线消息返回false
      */
-    public static void userSendMessage(IoSession userSession, Object message) {
-        // TODO 标记发送者
+    public static boolean userSendMessage(IoSession userSession, CommonMessage message) {
         IoSession correspondingCustomerServiceSession = (IoSession) userSession.getAttribute(MinaConstant.SESSION_KEY_CUSTOMER_SERVICE);
-        correspondingCustomerServiceSession.write(message);
+        if (correspondingCustomerServiceSession != null) {
+            correspondingCustomerServiceSession.write(message);
+            return true;
+        }
+        return false;
     }
 
     /**
      * 客服发送给用户消息
+     *
+     * @return 如果用户在线返回true，否则就是离线消息返回false
      */
-    public static void customerServiceSendMessage(IoSession customerServiceSession, Long receiver, Object message) {
-        // TODO 标记发送者
-        IoSession userSession = userSessionMap.get(receiver);
-        userSession.write(message);
+    public static boolean customerServiceSendMessage(IoSession customerServiceSession, CommonMessage message) {
+        if (message.getReceiver() == null || message.getReceiver() == 0) {
+            LOGGER.error("receiver null");
+        }
+        IoSession userSession = userSessionMap.get(message.getReceiver());
+        if (userSession != null) {
+            userSession.write(message);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -148,8 +177,22 @@ public class GlobalSession {
         return new ArrayList<>();
     }
 
+    /**
+     * 将这个用户的离线消息推送给对应的客服
+     */
+    private static void pushOfflineMessageToCustomerService(long userId, IoSession customerServiceSession) {
+        List<OfflineMessage> offlineMessages = offlineMessageService.selectList(new EntityWrapper<OfflineMessage>().eq("user_id", userId));
+        customerServiceSession.write(JSON.toJSONString(offlineMessages));
+    }
+
     static class CustomerServiceAndUsers {
+        /**
+         * 客服session
+         */
         IoSession customerServiceSession;
+        /**
+         * 负责的用户session
+         */
         List<IoSession> userSessions;
     }
 }

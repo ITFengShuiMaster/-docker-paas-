@@ -1,12 +1,18 @@
 package cn.edu.jit.tianyu_paas.im.mina;
 
+import cn.edu.jit.tianyu_paas.im.entity.Message;
+import cn.edu.jit.tianyu_paas.im.entity.OfflineMessage;
 import cn.edu.jit.tianyu_paas.im.entity.User;
+import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
+import cn.edu.jit.tianyu_paas.im.service.MessageService;
+import cn.edu.jit.tianyu_paas.im.service.OfflineMessageService;
 import cn.edu.jit.tianyu_paas.im.service.UserService;
 import cn.edu.jit.tianyu_paas.shared.mina_message.AuthenticationMessage;
 import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
 import cn.edu.jit.tianyu_paas.shared.mina_message.MinaMessage;
+import cn.edu.jit.tianyu_paas.shared.util.PassUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -14,24 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Date;
 
 /**
  * @author 天宇小凡
  */
 public class MyIoHandler extends IoHandlerAdapter {
 
-    /**
-     * 在线用户列表，session和用户id。线程安全
-     */
-    private static ConcurrentMap<IoSession, Long> onlineUserMap = new ConcurrentHashMap<>();
-    private static ConcurrentMap<Long, User> onlineUserInfo = new ConcurrentHashMap<>();
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MyIoHandler.class);
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private MessageService messageService;
+    @Autowired
+    private OfflineMessageService offlineMessageService;
 
     @Override
     public void sessionCreated(IoSession session) {
@@ -45,7 +48,17 @@ public class MyIoHandler extends IoHandlerAdapter {
 
     @Override
     public void sessionClosed(IoSession session) {
-        LOGGER.info("close");
+        User user = (User) session.getAttribute(MinaConstant.SESSION_KEY_USER);
+        switch (user.getType()) {
+            case User.TYPE_COMMON:
+                GlobalSession.userLogout(session, user.getUserId());
+                break;
+            case User.TYPE_CUSTOMER_SERVICE:
+                GlobalSession.customerServiceLogout(session);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -84,24 +97,69 @@ public class MyIoHandler extends IoHandlerAdapter {
         // LOGGER.info(mina_message.toString());
     }
 
-    /**
-     * 处理普通消息，也就是发送信息给用户
-     */
-    private void handleCommonMessage(IoSession session, CommonMessage commonMessage) {
-        JSONObject jsonObject = new JSONObject();
-//        onlineUserMap.get(commonMessage.getReceiver()).write(jsonObject.toJSONString());
-    }
-
-    /**
-     * 进行用户验证，并把用户信息保存起来
-     */
     private void handleAuthenticationMessage(IoSession ioSession, AuthenticationMessage authenticationMessage) {
-        User user = userService.authenticateUser(authenticationMessage.getUsername(), authenticationMessage.getPaasword());
-        if (user == null) {
-            ioSession.write("authentication failure");
+        User user = userService.selectOne(new EntityWrapper<User>().eq("phone", authenticationMessage.getUsername())
+                .or().eq("email", authenticationMessage.getUsername()));
+        if (!user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPaasword()))) {
             return;
         }
-        onlineUserMap.put(ioSession, user.getUserId());
-        onlineUserInfo.put(user.getUserId(), user);
+        ioSession.setAttribute(MinaConstant.SESSION_KEY_USER_ID, user.getUserId());
+        ioSession.setAttribute(MinaConstant.SESSION_KEY_USER, user);
+        switch (user.getType()) {
+            case User.TYPE_COMMON:
+                GlobalSession.userLogin(ioSession, user.getUserId());
+                break;
+            case User.TYPE_CUSTOMER_SERVICE:
+                GlobalSession.customerServiceLogin(ioSession);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handleCommonMessage(IoSession ioSession, CommonMessage commonMessage) {
+        User user = (User) ioSession.getAttribute(MinaConstant.SESSION_KEY_USER);
+        commonMessage.setSender(user.getUserId());
+        Message message = new Message();
+        boolean online = false;
+        long receiver = MinaConstant.CUSTOMER_SERVICE_ID;
+        switch (user.getType()) {
+            case User.TYPE_COMMON:
+                online = GlobalSession.userSendMessage(ioSession, commonMessage);
+                break;
+            case User.TYPE_CUSTOMER_SERVICE:
+                receiver = commonMessage.getReceiver();
+                online = GlobalSession.customerServiceSendMessage(ioSession, commonMessage);
+                break;
+            default:
+                LOGGER.error("OMG, how can you arrive here");
+                break;
+        }
+        message.setContent(commonMessage.getContent());
+        message.setGmtCreate(new Date());
+        message.setSender(user.getUserId());
+        if (online) {
+            insertOnlineMessage(user.getUserId(), commonMessage.getContent(), receiver);
+        } else {
+            insertOfflineMessage(user.getUserId(), commonMessage.getContent(), receiver);
+        }
+    }
+
+    private void insertOnlineMessage(long sender, String content, long receiver) {
+        Message message = new Message();
+        message.setSender(sender);
+        message.setContent(content);
+        message.setReceiver(receiver);
+        message.setGmtCreate(new Date());
+        messageService.insert(message);
+    }
+
+    private void insertOfflineMessage(long sender, String content, long receiver) {
+        OfflineMessage offlineMessage = new OfflineMessage();
+        offlineMessage.setSender(sender);
+        offlineMessage.setContent(content);
+        offlineMessage.setReceiver(receiver);
+        offlineMessage.setGmtCreate(new Date());
+        offlineMessageService.insert(offlineMessage);
     }
 }
