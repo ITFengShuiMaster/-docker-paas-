@@ -87,6 +87,19 @@ public class AppGroupController {
     }
 
     /**
+     * 根据appGroupId来获取apps
+     *
+     * @param appGroupId
+     * @return
+     * @author 倪龙康
+     */
+    @GetMapping("/{appGroupId}")
+    public TResult listGroupAppsInfo(@PathVariable long appGroupId) {
+        Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_id", appGroupId).eq("user_id", userId));
+        return TResult.success(apps);
+    }
+    /**
      * 获取用户所有用户组以及用户组中的所有应用
      *
      * @return
@@ -97,7 +110,7 @@ public class AppGroupController {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         List<AppGroup> groups = appGroupService.selectList(new EntityWrapper<AppGroup>().eq("user_id", userId));
         for (AppGroup group : groups) {
-            List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_name", group.getGroupName()));
+            List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_id", group.getAppGroupId()));
             group.setApps(apps);
         }
         return TResult.success(groups);
