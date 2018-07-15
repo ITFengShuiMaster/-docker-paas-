@@ -86,6 +86,23 @@ public class AppController {
         // TODO 检测仓库，并给应用设置memory, disk等
     }
 
+    /**
+     * 获取应用信息----完善过（2018-7-6）
+     *
+     * @param appId
+     * @return
+     * @author 倪龙康, 卢越
+     */
+    @ApiOperation("获取应用信息")
+    @GetMapping("/{appId}")
+    public TResult getAppInfo(@PathVariable Long appId) {
+        App app = appService.selectById(appId);
+        //获取容器的信息
+        app.setInspectContainerResponse(getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
+
+        return TResult.success(app);
+    }
+
     private DockerClient getDockerClient() {
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withDockerHost("tcp://120.77.146.118:2375")
