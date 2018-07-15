@@ -123,23 +123,6 @@ public class AppController {
     }
 
     /**
-     * 获取应用信息----完善过（2018-7-6）
-     *
-     * @param appId
-     * @return
-     * @author 倪龙康, 卢越
-     */
-    @ApiOperation("获取应用信息")
-    @GetMapping("/{appId}")
-    public TResult getAppInfo(@PathVariable Long appId) {
-        App app = appService.selectById(appId);
-        //获取容器的信息
-        app.setInspectContainerResponse(getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
-
-        return TResult.success(app);
-    }
-
-    /**
      * 从自定义源码创建应用（git仓库）
      *
      * @author 汪继友
