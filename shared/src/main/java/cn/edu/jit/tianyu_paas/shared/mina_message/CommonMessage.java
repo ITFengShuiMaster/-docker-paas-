@@ -1,7 +1,5 @@
 package cn.edu.jit.tianyu_paas.shared.mina_message;
 
-import cn.edu.jit.tianyu_paas.shared.entity.User;
-
 /**
  * @author 天宇小凡
  */

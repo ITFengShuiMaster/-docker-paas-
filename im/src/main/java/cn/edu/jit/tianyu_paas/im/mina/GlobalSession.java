@@ -4,16 +4,13 @@ import cn.edu.jit.tianyu_paas.im.entity.OfflineMessage;
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
 import cn.edu.jit.tianyu_paas.im.service.MessageService;
 import cn.edu.jit.tianyu_paas.im.service.OfflineMessageService;
-import cn.edu.jit.tianyu_paas.im.service.UserService;
 import cn.edu.jit.tianyu_paas.im.util.SpringBeanFactoryUtil;
 import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
-import cn.edu.jit.tianyu_paas.shared.mina_message.MinaMessage;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,12 +40,18 @@ public class GlobalSession {
 
     private static ConcurrentMap<Long, IoSession> userSessionMap = new ConcurrentHashMap<>();
 
+    private static ConcurrentMap<String, IoSession> customerServiceSessionMap = new ConcurrentHashMap<>();
+
     /**
      * 用户登录，分配客服
      *
      * @param userSession 用户session
      */
     public static void userLogin(IoSession userSession, Long userId) {
+        // 如果重复登录，先让之前的用户下线
+        if (userSessionMap.containsKey(userId)) {
+            userLogout(userSessionMap.get(userId), userId);
+        }
         userSessionMap.put(userId, userSession);
         // 如果没有客服在线，则放到未分配列表中
         if (onlineCustomerServices.size() <= 0) {
@@ -77,26 +80,36 @@ public class GlobalSession {
         // 对应客服负责的用户中删除离线用户
         List<IoSession> userSessions = getCustomerServiceUserSessions(correspondingCustomerService);
         userSessions.remove(userSession);
+        userSession.removeAttribute(MinaConstant.SESSION_KEY_USER);
+        userSession.closeOnFlush();
     }
 
     /**
      * 客服登录，分配用户（指没有分配到客服的用户）
      */
-    public static void customerServiceLogin(IoSession customerServiceSession) {
+    public static void customerServiceLogin(IoSession customerServiceSession, String phone) {
+        // 如果重复登录，先让之前的客服下线
+        if (customerServiceSessionMap.containsKey(phone)) {
+            customerServiceLogout(customerServiceSessionMap.get(phone));
+        }
+        // 将客服放入session表中
+        customerServiceSessionMap.put(phone, customerServiceSession);
         CustomerServiceAndUsers customerServiceAndUsers = new CustomerServiceAndUsers();
         customerServiceAndUsers.customerServiceSession = customerServiceSession;
+        customerServiceAndUsers.userSessions = new ArrayList<>();
         // 将全部未分配用户，分配给新上线的客服（因为是唯一客服）
         customerServiceAndUsers.userSessions.addAll(singleUserSessionList);
+        // 以下几句话时序千万不能乱
         for (IoSession userSession : singleUserSessionList) {
-            long userId = (long) userSession.getAttribute(MinaConstant.SESSION_KEY_USER_ID);
-            pushOfflineMessageToCustomerService(userId, customerServiceSession);
             userSession.setAttribute(MinaConstant.SESSION_KEY_CUSTOMER_SERVICE, customerServiceSession);
         }
-        onlineCustomerServices.add(customerServiceAndUsers);
         // 清除未分配用户
         singleUserSessionList.clear();
+        onlineCustomerServices.add(customerServiceAndUsers);
         // 排序
         sortList();
+        // 将表中的离线消息推送给此客服，方便客服进行回复
+        pushOfflineMessageToCustomerService(customerServiceSession);
     }
 
     /**
@@ -122,6 +135,8 @@ public class GlobalSession {
                 leftUserSession.setAttribute(MinaConstant.SESSION_KEY_CUSTOMER_SERVICE, mostIdleCustomerServiceSession);
             }
         }
+        customerServiceSession.removeAttribute(MinaConstant.SESSION_KEY_USER);
+        customerServiceSession.closeOnFlush();
     }
 
     /**
@@ -173,15 +188,15 @@ public class GlobalSession {
                 return customerServiceAndUsers.userSessions;
             }
         }
-        LOGGER.error("null null null");
+        LOGGER.error("customer services null");
         return new ArrayList<>();
     }
 
     /**
-     * 将这个用户的离线消息推送给对应的客服
+     * 将离线消息推送给对应的客服
      */
-    private static void pushOfflineMessageToCustomerService(long userId, IoSession customerServiceSession) {
-        List<OfflineMessage> offlineMessages = offlineMessageService.selectList(new EntityWrapper<OfflineMessage>().eq("user_id", userId));
+    private static void pushOfflineMessageToCustomerService(IoSession customerServiceSession) {
+        List<OfflineMessage> offlineMessages = offlineMessageService.selectList(new EntityWrapper<OfflineMessage>().eq("receiver", MinaConstant.CUSTOMER_SERVICE_ID));
         customerServiceSession.write(JSON.toJSONString(offlineMessages));
     }
 

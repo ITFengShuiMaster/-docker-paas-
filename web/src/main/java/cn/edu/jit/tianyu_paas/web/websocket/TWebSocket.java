@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentMap;
 @ServerEndpoint(value = "/websocket", configurator = HttpSessionConfigurator.class)
 @Component
 public class TWebSocket {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TWebSocket.class);
     private static int onlineCount = 0;
     /**
      * concurrent包的线程安全Map，用来存放每个登录用户(session）对应的TWebSocket对象。
@@ -43,6 +44,9 @@ public class TWebSocket {
 
     public static boolean sendMessageToUser(String message, Long userId) {
         TWebSocket tWebSocket = webSocketMap.get(userId);
+        if (tWebSocket == null) {
+            LOGGER.info("user not online");
+        }
         return tWebSocket.sendMessage(message);
     }
 

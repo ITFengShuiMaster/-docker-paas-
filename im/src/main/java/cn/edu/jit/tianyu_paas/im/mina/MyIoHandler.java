@@ -7,6 +7,7 @@ import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
 import cn.edu.jit.tianyu_paas.im.service.MessageService;
 import cn.edu.jit.tianyu_paas.im.service.OfflineMessageService;
 import cn.edu.jit.tianyu_paas.im.service.UserService;
+import cn.edu.jit.tianyu_paas.im.util.SpringBeanFactoryUtil;
 import cn.edu.jit.tianyu_paas.shared.mina_message.AuthenticationMessage;
 import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
 import cn.edu.jit.tianyu_paas.shared.mina_message.MinaMessage;
@@ -18,7 +19,6 @@ import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
@@ -29,21 +29,16 @@ public class MyIoHandler extends IoHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MyIoHandler.class);
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private MessageService messageService;
-    @Autowired
-    private OfflineMessageService offlineMessageService;
+    private UserService userService = SpringBeanFactoryUtil.getBean(UserService.class);
+    private MessageService messageService = SpringBeanFactoryUtil.getBean(MessageService.class);
+    private OfflineMessageService offlineMessageService = SpringBeanFactoryUtil.getBean(OfflineMessageService.class);
 
     @Override
     public void sessionCreated(IoSession session) {
-        LOGGER.info("create");
     }
 
     @Override
     public void sessionOpened(IoSession session) {
-        LOGGER.info("open");
     }
 
     @Override
@@ -81,10 +76,10 @@ public class MyIoHandler extends IoHandlerAdapter {
         MinaMessage minaMessage = JSON.parseObject(message.toString(), MinaMessage.class);
         switch (minaMessage.getMessageType()) {
             case COMMON:
-                handleCommonMessage(session, (CommonMessage) minaMessage);
+                handleCommonMessage(session, JSON.parseObject(message.toString(), CommonMessage.class));
                 break;
             case AUTHENTICATION:
-                handleAuthenticationMessage(session, (AuthenticationMessage) minaMessage);
+                handleAuthenticationMessage(session, JSON.parseObject(message.toString(), AuthenticationMessage.class));
                 break;
             default:
                 break;
@@ -103,14 +98,13 @@ public class MyIoHandler extends IoHandlerAdapter {
         if (!user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPaasword()))) {
             return;
         }
-        ioSession.setAttribute(MinaConstant.SESSION_KEY_USER_ID, user.getUserId());
         ioSession.setAttribute(MinaConstant.SESSION_KEY_USER, user);
         switch (user.getType()) {
             case User.TYPE_COMMON:
                 GlobalSession.userLogin(ioSession, user.getUserId());
                 break;
             case User.TYPE_CUSTOMER_SERVICE:
-                GlobalSession.customerServiceLogin(ioSession);
+                GlobalSession.customerServiceLogin(ioSession, user.getPhone());
                 break;
             default:
                 break;
@@ -119,8 +113,13 @@ public class MyIoHandler extends IoHandlerAdapter {
 
     private void handleCommonMessage(IoSession ioSession, CommonMessage commonMessage) {
         User user = (User) ioSession.getAttribute(MinaConstant.SESSION_KEY_USER);
+        // 如果用户未认证，则断开连接
+        if (user == null) {
+            ioSession.write("you are not authenticate");
+            ioSession.closeOnFlush();
+            return;
+        }
         commonMessage.setSender(user.getUserId());
-        Message message = new Message();
         boolean online = false;
         long receiver = MinaConstant.CUSTOMER_SERVICE_ID;
         switch (user.getType()) {
@@ -135,9 +134,6 @@ public class MyIoHandler extends IoHandlerAdapter {
                 LOGGER.error("OMG, how can you arrive here");
                 break;
         }
-        message.setContent(commonMessage.getContent());
-        message.setGmtCreate(new Date());
-        message.setSender(user.getUserId());
         if (online) {
             insertOnlineMessage(user.getUserId(), commonMessage.getContent(), receiver);
         } else {
@@ -145,6 +141,9 @@ public class MyIoHandler extends IoHandlerAdapter {
         }
     }
 
+    /**
+     * 插入到消息表
+     */
     private void insertOnlineMessage(long sender, String content, long receiver) {
         Message message = new Message();
         message.setSender(sender);
@@ -154,6 +153,9 @@ public class MyIoHandler extends IoHandlerAdapter {
         messageService.insert(message);
     }
 
+    /**
+     * 插入到离线消息表
+     */
     private void insertOfflineMessage(long sender, String content, long receiver) {
         OfflineMessage offlineMessage = new OfflineMessage();
         offlineMessage.setSender(sender);

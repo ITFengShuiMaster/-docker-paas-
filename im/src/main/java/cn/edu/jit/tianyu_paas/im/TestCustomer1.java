@@ -2,7 +2,6 @@ package cn.edu.jit.tianyu_paas.im;
 
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
 import cn.edu.jit.tianyu_paas.shared.mina_message.AuthenticationMessage;
-import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
 import com.alibaba.fastjson.JSON;
 import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -16,7 +15,7 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 
-public class TestClient {
+public class TestCustomer1 {
     public static void main(String[] args) {
         IoConnector connector = new NioSocketConnector();
         connector.setConnectTimeoutMillis(30000);
@@ -43,13 +42,13 @@ public class TestClient {
             @Override
             public void sessionOpened(IoSession session) {
                 AuthenticationMessage authenticationMessage = new AuthenticationMessage();
-                authenticationMessage.setUsername("test");
+                authenticationMessage.setUsername("cus1");
                 authenticationMessage.setPaasword("test");
-                CommonMessage commonMessage = new CommonMessage();
+                session.write(JSON.toJSONString(authenticationMessage));
+                /*CommonMessage commonMessage = new CommonMessage();
                 commonMessage.setContent("test");
                 commonMessage.setReceiver(1L);
-                session.write(JSON.toJSONString(authenticationMessage));
-                session.write(JSON.toJSONString(commonMessage));
+                session.write(JSON.toJSONString(commonMessage));*/
             }
 
             @Override
