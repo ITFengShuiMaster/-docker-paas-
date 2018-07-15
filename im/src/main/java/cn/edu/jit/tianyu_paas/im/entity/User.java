@@ -14,9 +14,10 @@ import java.util.Date;
  * @author 汪继友
  * @since 2018-07-07
  */
-public class User implements Serializable {
+public class User {
 
-    private static final long serialVersionUID = 1L;
+    public static final int TYPE_COMMON = 0;
+    public static final int TYPE_CUSTOMER_SERVICE = 1;
 
     @TableId(value = "user_id", type = IdType.AUTO)
     private Long userId;
@@ -37,6 +38,10 @@ public class User implements Serializable {
      */
     private String pwd;
     /**
+     * 用户类型
+     */
+    private Integer type;
+    /**
      * 用户头像,base64编码
      */
     private String headImg;
@@ -46,6 +51,13 @@ public class User implements Serializable {
     private Date gmtCreate;
     private Date gmtModified;
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
     public Long getUserId() {
         return userId;

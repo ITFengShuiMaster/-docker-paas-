@@ -5,17 +5,20 @@
     <title>Index</title>
     <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="lib/element/index.css"/>
-    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+    <!--<link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">-->
     <script src="lib/vue/vue.js"></script>
     <script src="lib/element/index.js"></script>
     <script src="lib/jquery/jquery-3.2.1.js"></script>
     <script src="lib/layui/layui.js"></script>
-    <script src="lib/iView/iView.min.js"></script>
+    <!--<script src="lib/iView/iView.min.js"></script>-->
+    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+    <!-- import iView -->
+    <script src="//unpkg.com/iview/dist/iview.min.js"></script>
     <style>
         html {
             font-family: sans-serif;
-            height:100%;
-            width:100%;
+            height: 100%;
+            width: 100%;
         }
 
         body {
@@ -36,19 +39,22 @@
     .logo_show {
         background: #002140;
     }
-    .el-main{
+
+    .el-main {
         height: 880px;
         overflow: auto;
     }
+
     #test .el-menu-item.is-active {
         background-color: #1890ff !important;
     }
 
-    .el-submenu .el-menu-item{
+    .el-submenu .el-menu-item {
         background-color: #000000 !important;
 
     }
-    .el-submenu .el-menu{
+
+    .el-submenu .el-menu {
         background-color: #000000 !important;
     }
 </style>
@@ -122,16 +128,24 @@
                             </el-badge>
                         </el-button>
                         <template>
-                            <el-tabs v-model="activeName" @tab-click="handleClick()">
-                                <el-tab-pane label="公共" name="first">
-                                    <el-badge is-dot>
-                                        <div @click="dialogVisible = true;getCurrentNotice(notice)"
-                                             v-for="notice in noticerecord"
-                                             style="border: 1px dotted rgb(211,220,230);">
-                                            <span style="font-size: 12px">{{notice.title}}</span>
-                                            <span style="font-size: 8px">{{notice.content}}</span>
-                                        </div>
-                                    </el-badge>
+                            <el-tabs v-model="activeName" @tab-click="handleClick()" stretch="true" :span="12">
+                                <el-tab-pane label="公告" name="first" :span="12">
+                                    <div @click="dialogVisible = true;getCurrentNotice(notice)"
+                                         v-for="notice in noticerecord"
+                                         style="border-bottom: 1px solid #e8e8e8; padding-bottom: 12px; padding-top: 12px">
+                                        <p style="font-size: 14px; margin-bottom: 8px">
+                                            {{notice.title}}
+                                            <el-badge is-dot style="float: right">
+                                            </el-badge>
+                                        </p>
+
+                                        <p style="font-size: 12px; margin-bottom: 5px; color: rgba(0,0,0,.45)">查看详情</p>
+                                        <p style="font-size: 8px; color:rgba(0,0,0,.45)">
+                                            {{notice.createTime}}</p>
+                                    </div>
+                                    <div style="color: rgba(0,0,0,.45); text-align: center; margin-top: 12px; font-size: 14px">
+                                        查看历史消息
+                                    </div>
                                 </el-tab-pane>
                                 <el-tab-pane label="消息" name="second">
                                     <div @click="dialogVisible = true;getCurrentMessage(message)"
@@ -144,8 +158,8 @@
                             </el-tabs>
                         </template>
                     </el-popover>
-                <!--</el-col>-->
-                <!--<el-col :span="12" align="right">-->
+                    <!--</el-col>-->
+                    <!--<el-col :span="12" align="right">-->
                     <img src="img/logo.png">
                     <el-dropdown @command="handleCommand">
                         <span style="font-size: 18px; color: #409EFF;">{{username}}</span>
@@ -167,7 +181,7 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            bodyHeight:$(window).height(),
+            bodyHeight: $(window).height(),
             // 左侧导航栏的应用组和组里的app
             groups_apps: [],
             dialogVisible: false,
@@ -182,11 +196,23 @@
             appList: [],
             appListo: {},
             messagerecord: [],
-            noticerecord: [],
+            noticerecord: [{
+                title: '数据中心维护公告',
+                createTime: '2018-07-17',
+                isRead: false
+            }, {
+                title: '数据中心维护公告',
+                createTime: '2018-07-17',
+                isRead: false
+            }, {
+                title: '数据中心维护公告',
+                createTime: '2018-07-17',
+                isRead: false
+            }]
         },
         methods: {
             openSubMenu(index, indexPath) {
-                console.log("openSubMenu"+index, indexPath);
+                console.log("openSubMenu" + index, indexPath);
             },
             clickGroup(id) {
                 console.log('grousssp' + id);
@@ -249,7 +275,7 @@
                     type: "put",
                     url: 'http://localhost:8080/tianyu-paas/userMessages',
                     data: {
-                        messageId: order.messageId,
+                        offlineMessageId: order.offlineMessageId,
                     },
                     success: function (result) {
                         if (result.code) {
@@ -265,10 +291,10 @@
             setNoticeRead(order) {
                 $.ajax({
                     type: "get",
-                    url: 'http://localhost:8080/tianyu-paas/user-notices/'+ order.noticeId,
+                    url: 'http://localhost:8080/tianyu-paas/user-notices/' + order.noticeId,
 
                     success: function (result) {
-                        if (result.code===1) {
+                        if (result.code === 1) {
 
                         } else {
 
@@ -295,7 +321,7 @@
                     }
                 })
             },
-            myAppList(){
+            myAppList() {
                 var that = this;
                 $.ajax({
                     type: 'get',
@@ -314,16 +340,16 @@
                 })
             },
             handleClick(tab, event) {
-                console.log("handleClick"+tab, event);
+                console.log("handleClick" + tab, event);
             },
             // 选择页面
             selectPage(index, indexPath) {
                 // 主要就是通过jquery的load方法，加内容加载到元素上
-                console.log("index = "+index);
+                console.log("index = " + index);
                 if (index > 999) {
                     $('#content').load("pages/appinfo.html", function (response, message, xhr) {
 
-                        appinfo.getId(index-999)
+                        appinfo.getId(index - 999)
                     });
                 }
                 else {
@@ -358,7 +384,7 @@
                     layim.config({
                         brief: true, //是否简约模式（如果true则不显示主面板）
                         minRight: '20px',
-                        right:'10px',
+                        right: '10px',
                         init: {
                             mine: {
                                 username: "纸飞机" //我的昵称
@@ -419,7 +445,7 @@
                 console.log(appId + 'appId');
             },
             getWindowHeight() {
-                $("#test").height($(window).height()-68)
+                $("#test").height($(window).height() - 68)
             },
         },
         created() {
@@ -429,19 +455,20 @@
             this.getNotice();
             this.init_gruops();
 //            this.getWindowHeight()
-            $("#test").height(this.bodyHeight-68)
+            $("#test").height(this.bodyHeight - 68)
 
         },
         mounted() {
             this.contact_customer_service();
             this.init_gruops();
-            this.selectPage(0,'')
+            this.selectPage(0, '');
+            console.log('hhh');
         },
         beforeMount() {
             window.onresize = function () {
-                this.bodyHeight = document.documentElement.clientHeight
-                if(document.getElementById('test') != null) {
-                    $("#test").height(this.bodyHeight-68)
+                this.bodyHeight = document.documentElement.clientHeight;
+                if (document.getElementById('test') != null) {
+                    $("#test").height(this.bodyHeight - 68)
                 }
             }
         }

@@ -1,51 +1,59 @@
 package cn.edu.jit.tianyu_paas.im.mina;
 
+import cn.edu.jit.tianyu_paas.im.entity.Message;
+import cn.edu.jit.tianyu_paas.im.entity.OfflineMessage;
 import cn.edu.jit.tianyu_paas.im.entity.User;
+import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
+import cn.edu.jit.tianyu_paas.im.service.MessageService;
+import cn.edu.jit.tianyu_paas.im.service.OfflineMessageService;
 import cn.edu.jit.tianyu_paas.im.service.UserService;
+import cn.edu.jit.tianyu_paas.im.util.SpringBeanFactoryUtil;
 import cn.edu.jit.tianyu_paas.shared.mina_message.AuthenticationMessage;
 import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
 import cn.edu.jit.tianyu_paas.shared.mina_message.MinaMessage;
+import cn.edu.jit.tianyu_paas.shared.util.PassUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Date;
 
 /**
  * @author 天宇小凡
  */
 public class MyIoHandler extends IoHandlerAdapter {
 
-    /**
-     * 在线用户列表，session和用户id。线程安全
-     */
-    private static ConcurrentMap<IoSession, Long> onlineUserMap = new ConcurrentHashMap<>();
-    private static ConcurrentMap<Long, User> onlineUserInfo = new ConcurrentHashMap<>();
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MyIoHandler.class);
 
-    @Autowired
-    private UserService userService;
+    private UserService userService = SpringBeanFactoryUtil.getBean(UserService.class);
+    private MessageService messageService = SpringBeanFactoryUtil.getBean(MessageService.class);
+    private OfflineMessageService offlineMessageService = SpringBeanFactoryUtil.getBean(OfflineMessageService.class);
 
     @Override
     public void sessionCreated(IoSession session) {
-        LOGGER.info("create");
     }
 
     @Override
     public void sessionOpened(IoSession session) {
-        LOGGER.info("open");
     }
 
     @Override
     public void sessionClosed(IoSession session) {
-        LOGGER.info("close");
+        User user = (User) session.getAttribute(MinaConstant.SESSION_KEY_USER);
+        switch (user.getType()) {
+            case User.TYPE_COMMON:
+                GlobalSession.userLogout(session, user.getUserId());
+                break;
+            case User.TYPE_CUSTOMER_SERVICE:
+                GlobalSession.customerServiceLogout(session);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -68,10 +76,10 @@ public class MyIoHandler extends IoHandlerAdapter {
         MinaMessage minaMessage = JSON.parseObject(message.toString(), MinaMessage.class);
         switch (minaMessage.getMessageType()) {
             case COMMON:
-                handleCommonMessage(session, (CommonMessage) minaMessage);
+                handleCommonMessage(session, JSON.parseObject(message.toString(), CommonMessage.class));
                 break;
             case AUTHENTICATION:
-                handleAuthenticationMessage(session, (AuthenticationMessage) minaMessage);
+                handleAuthenticationMessage(session, JSON.parseObject(message.toString(), AuthenticationMessage.class));
                 break;
             default:
                 break;
@@ -84,24 +92,76 @@ public class MyIoHandler extends IoHandlerAdapter {
         // LOGGER.info(mina_message.toString());
     }
 
-    /**
-     * 处理普通消息，也就是发送信息给用户
-     */
-    private void handleCommonMessage(IoSession session, CommonMessage commonMessage) {
-        JSONObject jsonObject = new JSONObject();
-//        onlineUserMap.get(commonMessage.getReceiver()).write(jsonObject.toJSONString());
+    private void handleAuthenticationMessage(IoSession ioSession, AuthenticationMessage authenticationMessage) {
+        User user = userService.selectOne(new EntityWrapper<User>().eq("phone", authenticationMessage.getUsername())
+                .or().eq("email", authenticationMessage.getUsername()));
+        if (!user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPaasword()))) {
+            return;
+        }
+        ioSession.setAttribute(MinaConstant.SESSION_KEY_USER, user);
+        switch (user.getType()) {
+            case User.TYPE_COMMON:
+                GlobalSession.userLogin(ioSession, user.getUserId());
+                break;
+            case User.TYPE_CUSTOMER_SERVICE:
+                GlobalSession.customerServiceLogin(ioSession, user.getPhone());
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handleCommonMessage(IoSession ioSession, CommonMessage commonMessage) {
+        User user = (User) ioSession.getAttribute(MinaConstant.SESSION_KEY_USER);
+        // 如果用户未认证，则断开连接
+        if (user == null) {
+            ioSession.write("you are not authenticate");
+            ioSession.closeOnFlush();
+            return;
+        }
+        commonMessage.setSender(user.getUserId());
+        boolean online = false;
+        long receiver = MinaConstant.CUSTOMER_SERVICE_ID;
+        switch (user.getType()) {
+            case User.TYPE_COMMON:
+                online = GlobalSession.userSendMessage(ioSession, commonMessage);
+                break;
+            case User.TYPE_CUSTOMER_SERVICE:
+                receiver = commonMessage.getReceiver();
+                online = GlobalSession.customerServiceSendMessage(ioSession, commonMessage);
+                break;
+            default:
+                LOGGER.error("OMG, how can you arrive here");
+                break;
+        }
+        if (online) {
+            insertOnlineMessage(user.getUserId(), commonMessage.getContent(), receiver);
+        } else {
+            insertOfflineMessage(user.getUserId(), commonMessage.getContent(), receiver);
+        }
     }
 
     /**
-     * 进行用户验证，并把用户信息保存起来
+     * 插入到消息表
      */
-    private void handleAuthenticationMessage(IoSession ioSession, AuthenticationMessage authenticationMessage) {
-        User user = userService.authenticateUser(authenticationMessage.getUsername(), authenticationMessage.getPaasword());
-        if (user == null) {
-            ioSession.write("authentication failure");
-            return;
-        }
-        onlineUserMap.put(ioSession, user.getUserId());
-        onlineUserInfo.put(user.getUserId(), user);
+    private void insertOnlineMessage(long sender, String content, long receiver) {
+        Message message = new Message();
+        message.setSender(sender);
+        message.setContent(content);
+        message.setReceiver(receiver);
+        message.setGmtCreate(new Date());
+        messageService.insert(message);
+    }
+
+    /**
+     * 插入到离线消息表
+     */
+    private void insertOfflineMessage(long sender, String content, long receiver) {
+        OfflineMessage offlineMessage = new OfflineMessage();
+        offlineMessage.setSender(sender);
+        offlineMessage.setContent(content);
+        offlineMessage.setReceiver(receiver);
+        offlineMessage.setGmtCreate(new Date());
+        offlineMessageService.insert(offlineMessage);
     }
 }

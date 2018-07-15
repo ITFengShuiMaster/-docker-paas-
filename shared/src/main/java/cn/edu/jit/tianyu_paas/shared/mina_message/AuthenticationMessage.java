@@ -1,6 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.mina_message;
 
-public class AuthenticationMessage extends MinaMessage{
+public class AuthenticationMessage extends MinaMessage {
     private String username;
     private String paasword;
 
