@@ -2,10 +2,12 @@ package cn.edu.jit.tianyu_paas.web.controller;
 
 
 import cn.edu.jit.tianyu_paas.shared.entity.*;
-import cn.edu.jit.tianyu_paas.shared.util.*;
+import cn.edu.jit.tianyu_paas.shared.util.DockerClientUtil;
+import cn.edu.jit.tianyu_paas.shared.util.StringUtil;
+import cn.edu.jit.tianyu_paas.shared.util.TResult;
+import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.PortBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ import java.util.*;
  * 前端控制器
  * </p>
  *
- * @author 倪龙康
+ * @author 卢越
  * @since 2018-07-13
  */
 @RestController
@@ -54,10 +56,6 @@ public class MountSettingsController {
         return false;
     }
 
-    public String getNewImageName(String image) {
-        return String.valueOf(System.currentTimeMillis()) + "-" + image;
-    }
-
     /**
      * 插入挂载
      *
@@ -72,24 +70,22 @@ public class MountSettingsController {
             return TResult.failure("没有该容器");
         }
 
-        String image = DockerHelperUtil.query("120.77.146.118", docker -> {
-            ContainerInfo containerInfo = docker.inspectContainer(app.getContainerId());
-            return containerInfo.config().image();
-        });
-
-        MarketApp marketApp = marketAppService.selectOne(new EntityWrapper<MarketApp>().eq("name", image));
-        if (marketApp == null) {
-            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        // TODO 还需要判断宿主机挂载的目录是否符合格式
+        List<MarketAppMount> marketAppMounts = marketAppMountService.selectList(new EntityWrapper<MarketAppMount>().eq("market_app_id", app.getMarketAppId()));
+        if (!isMount(marketAppMounts, mountSettings.getContainerMountName())) {
+            return TResult.failure("不能挂载这个目录/文件" + mountSettings.getContainerMountName());
         }
 
-        // TODO 还需要判断宿主机挂载的目录是否符合格式
-        List<MarketAppMount> marketAppMounts = marketAppMountService.selectList(new EntityWrapper<MarketAppMount>().eq("market_app_id", marketApp.getMarketAppId()));
-        if (!isMount(marketAppMounts, mountSettings.getContainerMountName())) {
-            return TResult.failure("系统异常");
+        if (mountSettingsService.selectOne(new EntityWrapper<MountSettings>().eq("app_id", mountSettings.getAppId()).and().eq("container_mount_name", mountSettings.getContainerMountName())) != null) {
+            return TResult.failure("不允许重复挂载" + mountSettings.getContainerMountName());
+        }
+
+        if (mountSettingsService.selectOne(new EntityWrapper<MountSettings>().eq("server_mount_name", mountSettings.getServerMountName())) != null) {
+            return TResult.failure("该挂载点已占用" + mountSettings.getServerMountName());
         }
 
         if (mountSettingsService.selectOne(new EntityWrapper<MountSettings>().eq("app_id", mountSettings.getAppId()).and().eq("persistent_name", mountSettings.getPersistentName())) != null) {
-            return TResult.failure("持久化名称已存在");
+            return TResult.failure("持久化名称已存在" + mountSettings.getPersistentName());
         }
 
         mountSettings.setGmtCreate(new Date());
@@ -156,10 +152,14 @@ public class MountSettingsController {
         List<String> mounts = DockerClientUtil.getContainerMounts(mountSettings);
 
         //获得新镜相id
-        String newImageId = DockerClientUtil.getNewImage(app.getContainerId());
+        String newImageName = DockerClientUtil.getNewImage(app.getContainerId());
+
+        if (StringUtil.isEmpty(newImageName)) {
+            return TResult.failure("重启失败");
+        }
 
         //创建新容器
-        String newContainerId = DockerClientUtil.createNewContainer(app.getContainerId(), newImageId, portBinds, exposePorts, envs, mounts);
+        String newContainerId = DockerClientUtil.createNewContainer(app.getContainerId(), newImageName, portBinds, exposePorts, envs, mounts);
 
         if (StringUtil.isEmpty(newContainerId)) {
             return TResult.failure("重启失败");

@@ -1,10 +1,7 @@
 package cn.edu.jit.tianyu_paas.web.service;
 
 import cn.edu.jit.tianyu_paas.shared.entity.*;
-import cn.edu.jit.tianyu_paas.shared.util.PassUtil;
-import cn.edu.jit.tianyu_paas.shared.util.StringUtil;
-import cn.edu.jit.tianyu_paas.shared.util.TResult;
-import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
+import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.mapper.AppMapper;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -251,7 +248,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
 
         for (MarketAppVar var : marketAppVarList) {
             if (StringUtil.isEmpty(var.getValue())) {
-                var.setValue(PassUtil.getMD5(String.valueOf(System.currentTimeMillis()).substring(0, 6)));
+                var.setValue(PassUtil.getMD5(MailUtil.getRandomEmailCode()));
             }
             envs.add(var.getVarName() + "=" + var.getValue());
         }
@@ -324,6 +321,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
             }
 
             app.setContainerId(createContainerResponse.getId());
+            app.setMarketAppId(marketApp.getMarketAppId());
             if (!this.insert(app)) {
                 dockerClient.stopContainerCmd(createContainerResponse.getId()).exec();
                 return TResult.failure(TResultCode.BUSINESS_ERROR);

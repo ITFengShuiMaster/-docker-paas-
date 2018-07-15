@@ -4,6 +4,7 @@ package cn.edu.jit.tianyu_paas.web.controller;
 import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.enums.AppCreateMethodEnum;
 import cn.edu.jit.tianyu_paas.shared.enums.AppStatusEnum;
+import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.util.DockerHelperUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
@@ -175,6 +176,9 @@ public class AppController {
     @ApiOperation("从docker image创建应用")
     @PostMapping("/docker-image")
     public TResult createAppByDockerImage(@Validated App app, @Validated AppInfoByDockerImage dockerImage) {
+        if (appService.selectOne(new EntityWrapper<App>().eq("name", app.getName())) != null) {
+            return TResult.failure("容器名已存在");
+        }
         initApp(app, AppCreateMethodEnum.DOCKER_IMAGE);
         return appService.initContainer(app, dockerImage);
     }
@@ -253,19 +257,24 @@ public class AppController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
-    @GetMapping("/logs")
-    public TResult listLogs() {
+    @GetMapping("/logs/{appId}")
+    public TResult listLogs(@PathVariable(required = true) Long appId) {
+        App app = appService.selectById(appId);
+        if (app == null) {
+            return TResult.failure("没有该容器");
+        }
+
         try {
-            String reLogs = DockerHelperUtil.query("120.77.146.118", docker ->
+            String reLogs = DockerHelperUtil.query(DockerSSHConstants.IP, docker ->
             {
                 final String logs;
-                try (LogStream stream = docker.logs("bcc308e9715b", com.spotify.docker.client.DockerClient.LogsParam.stdout(), com.spotify.docker.client.DockerClient.LogsParam.stderr())) {
+                try (LogStream stream = docker.logs(app.getContainerId(), com.spotify.docker.client.DockerClient.LogsParam.stdout(), com.spotify.docker.client.DockerClient.LogsParam.stderr())) {
                     logs = stream.readFully();
                 }
                 return logs;
             });
 
-            return TResult.success(reLogs);
+            return TResult.success(reLogs.split("\\n"));
         } catch (Exception e) {
             e.printStackTrace();
             return TResult.failure(TResultCode.BUSINESS_ERROR);

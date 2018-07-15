@@ -37,6 +37,8 @@ public class ActionController {
     public TResult info() {
         // TODO 6为测试数据，实际应该改为session.getAttribute(Constants.SESSION_KEY_USER_ID)
         List<Action> lists = actionService.selectList(new EntityWrapper<Action>().eq("user_id", 6).orderBy("gmt_create", false));
+
+
         List<String> actions = new ArrayList<>();
         for (Action action : lists) {
             StringBuilder sb = new StringBuilder();

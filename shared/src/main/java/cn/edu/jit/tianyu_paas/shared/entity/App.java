@@ -68,6 +68,11 @@ public class App implements Serializable {
     private Date gmtCreate;
 
     /**
+     * 应用市场id
+     */
+    private Long marketAppId;
+
+    /**
      * 应用所属用户的用户名
      */
     @TableField(exist = false)
@@ -173,6 +178,14 @@ public class App implements Serializable {
 
     public void setInspectContainerResponse(InspectContainerResponse inspectContainerResponse) {
         this.inspectContainerResponse = inspectContainerResponse;
+    }
+
+    public Long getMarketAppId() {
+        return marketAppId;
+    }
+
+    public void setMarketAppId(Long marketAppId) {
+        this.marketAppId = marketAppId;
     }
 
     @Override

@@ -16,6 +16,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.*;
 
+/**
+ * @author 卢越
+ */
 public class DockerClientUtil {
     private static final Logger logger = LoggerFactory.getLogger(DockerClientUtil.class);
 
@@ -85,12 +88,13 @@ public class DockerClientUtil {
      */
     public static String getNewImage(String containerId) {
         try {
-            return DockerHelperUtil.query("120.77.146.118", docker -> {
+            return DockerHelperUtil.query(DockerSSHConstants.IP, docker -> {
 
                 //将容器提交为一个新的镜相
                 ContainerInfo containerInfo = docker.inspectContainer(containerId);
-                final ContainerCreation newContainer = docker.commitContainer(containerId, MailUtil.getRandomEmailCode(), "latest", containerInfo.config(), String.format(MountSettingsConstants.COMMIT_CONTENT, containerInfo.image()), "newContainer");
-                return newContainer.id();
+                String imageName = MailUtil.getRandomEmailCode();
+                final ContainerCreation newContainer = docker.commitContainer(containerId, imageName, "latest", containerInfo.config(), String.format(MountSettingsConstants.COMMIT_CONTENT, containerInfo.image()), "newContainer");
+                return imageName;
             });
         } catch (Exception e) {
             e.printStackTrace();
@@ -147,26 +151,22 @@ public class DockerClientUtil {
     }
 
     /**
-     * 提交新镜相，创建新容器
+     * 创建新容器
      *
-     * @param containerId
-     * @param newImageId
+     * @param oldContainerId
+     * @param newImageName
      * @param portBindings
      * @param exposePorts
      * @param envs
      * @param mountSettingsList
      * @return
      */
-    public static String createNewContainer(String containerId, String newImageId, Map<String, List<PortBinding>> portBindings, Set<String> exposePorts, List<String> envs, List<String> mountSettingsList) {
+    public static String createNewContainer(String oldContainerId, String newImageName, Map<String, List<PortBinding>> portBindings, Set<String> exposePorts, List<String> envs, List<String> mountSettingsList) {
         final String[] newContainerId = new String[1];
         try {
             return DockerHelperUtil.query(DockerSSHConstants.IP, docker -> {
-
-                ImageInfo imageInfo = docker.inspectImage(newImageId);
-                String test = imageInfo.config().image();
-
-                //停止容器
-                docker.stopContainer(containerId, 0);
+                //停止旧容器
+                docker.stopContainer(oldContainerId, 0);
 
                 final HostConfig hostConfig =
                         HostConfig.builder().portBindings(portBindings)
@@ -175,20 +175,22 @@ public class DockerClientUtil {
 
                 final ContainerConfig volumeConfig =
                         ContainerConfig.builder()
-                                .image(newImageId).exposedPorts(exposePorts)
+                                .image(newImageName).exposedPorts(exposePorts)
                                 .hostConfig(hostConfig)
                                 .env(envs)
                                 .build();
 
+                //开启新容器
                 ContainerCreation containerCreation = docker.createContainer(volumeConfig);
+                //保存新容器id，以便发生错误后扫尾
                 newContainerId[0] = containerCreation.id();
                 docker.startContainer(containerCreation.id());
 
-                ContainerInfo containerInfo = docker.inspectContainer(containerId);
+                ContainerInfo containerInfo = docker.inspectContainer(oldContainerId);
                 //移除旧镜相
                 docker.removeImage(containerInfo.config().image(), true, true);
                 //移除旧容器
-                docker.removeContainer(containerId);
+                docker.removeContainer(oldContainerId);
                 // TODO 旧镜相删不掉
 
                 return containerCreation.id();
@@ -196,9 +198,16 @@ public class DockerClientUtil {
         } catch (Exception e) {
             try {
                 DockerHelperUtil.execute(DockerSSHConstants.IP, docker -> {
-                    docker.stopContainer(newContainerId[0], 0);
-                    docker.removeContainer(newContainerId[0]);
-                    docker.startContainer(containerId);
+                    //如果新容器启动成功，停止并删除镜相
+                    if (!StringUtil.isEmpty(newContainerId[0])) {
+                        docker.stopContainer(newContainerId[0], 0);
+                        docker.removeContainer(newContainerId[0]);
+                    }
+
+                    //开启旧容器
+                    docker.startContainer(oldContainerId);
+                    //移除新镜相
+                    docker.removeImage(newImageName, true, true);
                 });
             } catch (Exception e1) {
                 e1.printStackTrace();

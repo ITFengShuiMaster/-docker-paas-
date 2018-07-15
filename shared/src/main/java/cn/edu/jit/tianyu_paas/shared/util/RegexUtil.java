@@ -28,4 +28,15 @@ public class RegexUtil {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
+
+    public static boolean isRightPath(String path) {
+        String regEx = "^/\\S{1,}$";
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(path);
+        return matcher.matches();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(isRightPath("/y"));
+    }
 }
