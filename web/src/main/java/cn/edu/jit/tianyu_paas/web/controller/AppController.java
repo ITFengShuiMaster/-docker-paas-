@@ -4,7 +4,6 @@ package cn.edu.jit.tianyu_paas.web.controller;
 import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.enums.AppCreateMethodEnum;
 import cn.edu.jit.tianyu_paas.shared.enums.AppStatusEnum;
-import cn.edu.jit.tianyu_paas.shared.util.DockerHelperUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
@@ -18,7 +17,6 @@ import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
-import com.spotify.docker.client.LogStream;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +83,23 @@ public class AppController {
         // TODO 检测仓库，并给应用设置memory, disk等
     }
 
+    /**
+     * 获取应用信息----完善过（2018-7-6）
+     *
+     * @param appId
+     * @return
+     * @author 倪龙康, 卢越
+     */
+    @ApiOperation("获取应用信息")
+    @GetMapping("/{appId}")
+    public TResult getAppInfo(@PathVariable Long appId) {
+        App app = appService.selectById(appId);
+        //获取容器的信息
+        app.setInspectContainerResponse(getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
+
+        return TResult.success(app);
+    }
+
     private DockerClient getDockerClient() {
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withDockerHost("tcp://120.77.146.118:2375")
@@ -102,23 +117,6 @@ public class AppController {
         return DockerClientBuilder.getInstance(config)
                 .withDockerCmdExecFactory(dockerCmdExecFactory)
                 .build();
-    }
-
-    /**
-     * 获取应用信息----完善过（2018-7-6）
-     *
-     * @param appId
-     * @return
-     * @author 倪龙康, 卢越
-     */
-    @ApiOperation("获取应用信息")
-    @GetMapping("/{appId}")
-    public TResult getAppInfo(@PathVariable Long appId) {
-        App app = appService.selectById(appId);
-        //获取容器的信息
-        app.setInspectContainerResponse(getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
-
-        return TResult.success(app);
     }
 
     /**
@@ -251,25 +249,5 @@ public class AppController {
             return TResult.success();
         }
         return TResult.failure(TResultCode.BUSINESS_ERROR);
-    }
-
-    @GetMapping("/logs")
-    public TResult listLogs() {
-        try {
-            String reLogs = DockerHelperUtil.query("120.77.146.118", docker ->
-            {
-                final String logs;
-                try (LogStream stream = docker.logs("bcc308e9715b", com.spotify.docker.client.DockerClient.LogsParam.stdout(), com.spotify.docker.client.DockerClient.LogsParam.stderr())) {
-                    logs = stream.readFully();
-                }
-                return logs;
-            });
-
-            return TResult.success(reLogs);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return TResult.failure(TResultCode.BUSINESS_ERROR);
-        }
-
     }
 }

@@ -7,6 +7,7 @@ import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.ActionDetailService;
 import cn.edu.jit.tianyu_paas.web.service.ActionService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +35,7 @@ public class ActionDetailController {
      * @author 汪继友
      * @date 2018/6/30 14:27
      */
+    @ApiOperation(" 获取应用操作日志的详细日志（info,debug,error)")
     @GetMapping("detail")
     public TResult listAppInfoLog(long appId, long actionId, int level) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
