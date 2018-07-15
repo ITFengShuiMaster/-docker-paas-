@@ -3,6 +3,7 @@ package cn.edu.jit.tianyu_paas.web.controller;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,11 @@ public class AppLogController {
     private final AppInfoByMarketService appInfoByMarketService;
     private final AppGroupService appGroupService;
     private final MarketAppService marketAppService;
+    private final ActionService actionService;
+    private final Logger logger = LoggerFactory.getLogger(AppLogController.class);
     private AppVarService appVarService;
     private AppPortService appPortService;
     private AppLogService appLogService;
-    private final ActionService actionService;
-
-    private final Logger logger = LoggerFactory.getLogger(AppLogController.class);
 
     @Autowired
     public AppLogController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, ActionService actionService) {
@@ -54,7 +54,8 @@ public class AppLogController {
         this.actionService = actionService;
     }
 
-    @GetMapping("{appId}")
+    @ApiOperation("根据appId获取applog信息")
+    @GetMapping("/{appId}")
     public TResult listAppLog(@PathVariable String appId) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         return TResult.success();
