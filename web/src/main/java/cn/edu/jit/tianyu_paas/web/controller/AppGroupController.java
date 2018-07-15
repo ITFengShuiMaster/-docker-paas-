@@ -97,7 +97,7 @@ public class AppGroupController {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         List<AppGroup> groups = appGroupService.selectList(new EntityWrapper<AppGroup>().eq("user_id", userId));
         for (AppGroup group : groups) {
-            List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_id", group.getAppGroupId()));
+            List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_name", group.getGroupName()));
             group.setApps(apps);
         }
         return TResult.success(groups);
