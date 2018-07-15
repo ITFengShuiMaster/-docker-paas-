@@ -9,9 +9,9 @@ import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
 
 public class DockerJavaUtil {
 
-    public static DockerClient getDockerClient() {
+    public static DockerClient getDockerClient(String ip) {
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("tcp://47.106.37.79:2375")
+                .withDockerHost("tcp://" + ip + ":2375")
                 .withRegistryUsername("itfengshuimaster")
                 .withRegistryPassword("wxhzq520")
                 .withRegistryEmail("wxhzq520@sina.com")

@@ -55,12 +55,12 @@ public class SSHWebSocket {
         String execId = null;
         Socket socket = null;
 
-        if ((execId = DockerClientUtil.getExecId(containerId)) == null) {
+        if ((execId = DockerClientUtil.getExecId(DockerSSHConstants.IP, containerId)) == null) {
             session.getBasicRemote().sendText("容器创建连接异常！");
             session.close();
         }
 
-        if ((socket = DockerClientUtil.getExecSocket(execId)) == null) {
+        if ((socket = DockerClientUtil.getExecSocket(DockerSSHConstants.IP, execId)) == null) {
             session.getBasicRemote().sendText("容器连接异常！");
             session.close();
         }

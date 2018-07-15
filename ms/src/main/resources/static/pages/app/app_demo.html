@@ -34,21 +34,6 @@
         <p class="text">查询条件:</p>
         <i-input v-model="app_name" placeholder="请输入应用名" style="width: 300px; margin-right: 15px"></i-input>
         <i-button type="primary" style:>查询</i-button>
-        <!--<i-button type="success" style="margin-left: 300px" @click="modal1 = true">添加公告</i-button>-->
-        <!--<Modal-->
-                <!--v-model="modal1"-->
-                <!--title="发布新公告"-->
-                <!--@on-ok="ok"-->
-                <!--@on-cancel="cancel">-->
-            <!--<div style="display: inline-flex;margin-right: 10px;margin-bottom: 10px">-->
-                <!--<div style="font-size: 14px;">请输入标题：</div>-->
-                <!--<i-input v-model="input_title" style="width: 60%" size="small"></i-input>-->
-            <!--</div>-->
-            <!--<div style="margin-right: 10px">-->
-                <!--<div style="font-size: 14px;margin-bottom: 5px">请输入内容：</div>-->
-                <!--<i-input v-model="input_content" style="width: 70%"></i-input>-->
-            <!--</div>-->
-        <!--</Modal>-->
     </div>
     <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px"></i-table>
 
@@ -103,7 +88,7 @@
                                         app_demo.show(params.index)
                                     }
                                 }
-                            }, '查询'),
+                            }, '查看'),
                             h('Button', {
                                 props: {
                                     type: 'error',
@@ -172,7 +157,6 @@
 
             show(index) {
                 this.$Modal.info({
-                    title: 'User Info',
                     content: `<p class="m">应用名称：${this.data1[index].demoId}</p><br><p class="m">应用所使用的语言：
                     ${this.data1[index].languageType}</p><br><p class="m">分支：${this.data1[index].branch}</p><br>
                     <p class="m">创建时间：${this.data1[index].gmtCreate}</p>`
@@ -239,7 +223,9 @@
                     type:'delete',
                     url:'demos/'+demo_id,
                     success:function (data) {
-
+                        if(data.code) {
+                            that.$Message.info('delete successfully');
+                        }
                     },
                     error:function (err) {
                         console.log(err);

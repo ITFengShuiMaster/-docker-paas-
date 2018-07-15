@@ -336,8 +336,7 @@ public class AppController {
         app.setStatus(status);
         // TODO 6为测试数据，实际应该改为session.getAttribute(Constants.SESSION_KEY_USER_ID)
         app.setUserId(Long.parseLong("6"));
-//        Page page = appService.selectAppListPage(app, current, size);
-        Page page = null;
+        Page page = appService.selectAppListPage(app, current, size);
 
         return TResult.success(page);
     }

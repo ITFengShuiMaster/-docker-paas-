@@ -26,9 +26,13 @@ public class AppPort implements Serializable {
 
     private Long appId;
     /**
-     * 端口
+     * 主机端口
      */
-    private Integer port;
+    private Integer hostPort;
+    /**
+     * 容器端口
+     */
+    private Integer containerPort;
     /**
      * 协议，0http，1mysql,2tcp,3udp
      */
@@ -70,12 +74,20 @@ public class AppPort implements Serializable {
         this.appId = appId;
     }
 
-    public Integer getPort() {
-        return port;
+    public Integer getHostPort() {
+        return hostPort;
     }
 
-    public void setPort(Integer port) {
-        this.port = port;
+    public void setHostPort(Integer hostPort) {
+        this.hostPort = hostPort;
+    }
+
+    public Integer getContainerPort() {
+        return containerPort;
+    }
+
+    public void setContainerPort(Integer containerPort) {
+        this.containerPort = containerPort;
     }
 
     public Integer getProtocol() {
@@ -153,16 +165,18 @@ public class AppPort implements Serializable {
     @Override
     public String toString() {
         return "AppPort{" +
-                ", appId=" + appId +
-                ", port=" + port +
+                "appId=" + appId +
+                ", hostPort=" + hostPort +
+                ", containerPort=" + containerPort +
                 ", protocol=" + protocol +
                 ", isInsideOpen=" + isInsideOpen +
-                ", insideAccessUrl=" + insideAccessUrl +
-                ", insideAlias=" + insideAlias +
+                ", insideAccessUrl='" + insideAccessUrl + '\'' +
+                ", insideAlias='" + insideAlias + '\'' +
                 ", isOutsideOpen=" + isOutsideOpen +
-                ", outsideAccessUrl=" + outsideAccessUrl +
+                ", outsideAccessUrl='" + outsideAccessUrl + '\'' +
                 ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +
-                "}";
+                ", machineId=" + machineId +
+                '}';
     }
 }

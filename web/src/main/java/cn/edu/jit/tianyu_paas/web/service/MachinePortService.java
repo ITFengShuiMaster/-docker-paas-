@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -25,8 +25,8 @@ public class MachinePortService extends ServiceImpl<MachinePortMapper, MachinePo
      * @param usedMachinePortList
      * @return
      */
-    public boolean updateMachinePortStatusByIdAndPort(List<MachinePort> usedMachinePortList) {
-        for (MachinePort usedPort : usedMachinePortList) {
+    public boolean updateMachinePortStatusByIdAndPort(Map<MachinePort, Integer> usedMachinePortList) {
+        for (MachinePort usedPort : usedMachinePortList.keySet()) {
             if (baseMapper.update(usedPort, new EntityWrapper<MachinePort>().eq("machine_id", usedPort.getMachineId()).and().eq("machine_port", usedPort.getMachinePort())) == 0) {
                 return false;
             }

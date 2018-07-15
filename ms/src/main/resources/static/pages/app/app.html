@@ -129,7 +129,7 @@
                                         app_management.show(params.index)
                                     }
                                 }
-                            }, '查询'),
+                            }, '查看'),
                             h('Button', {
                                 props: {
                                     type: 'error',
@@ -240,9 +240,11 @@
                     url:'apps/'+ app_id
                     ,
                     success:function (data) {
-                        console.log(data)
+                        if(data.code) {
+                            that.$Message.info('delete successfully');
+                        }
                     },
-                    error:function (err) {o
+                    error:function (err) {
                         console.log(err);
                     }
                 })

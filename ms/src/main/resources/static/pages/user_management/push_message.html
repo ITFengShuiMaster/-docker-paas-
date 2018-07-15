@@ -36,11 +36,11 @@
                     title="消息推送">
                 <div style="margin: 20px">
                     <span>推送内容</span>
-                    <i-input v-model="value" placeholder="请输入推送内容" style="width: 60%;margin-left: 15px"></i-input>
+                    <i-input v-model="value" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入推送内容" style="width: 60%;margin-left: 15px"></i-input>
                 </div>
                 <div style="margin: 20px">
                     <span>被推送人</span>
-                    <i-select :model.sync="modelselect" style="width:200px;margin-left: 15px">
+                    <i-select :model.sync="modelselect" filterables multiple  style="width:200px;margin-left: 15px">
                         <i-option v-for="item in data2" :value="item.name">{{item.name}}</i-option>
                     </i-select>
                 </div>
@@ -60,7 +60,7 @@
         el: '#push_message',
         data() {
             return {
-                modelselect:'',
+                modelselect:[],
                 modal1: false,
                 value: '',
                 columns1: [
