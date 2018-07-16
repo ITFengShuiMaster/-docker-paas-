@@ -147,7 +147,7 @@ public class GlobalSession {
     public static boolean userSendMessage(IoSession userSession, CommonMessage message) {
         IoSession correspondingCustomerServiceSession = (IoSession) userSession.getAttribute(MinaConstant.SESSION_KEY_CUSTOMER_SERVICE);
         if (correspondingCustomerServiceSession != null) {
-            correspondingCustomerServiceSession.write(message);
+            correspondingCustomerServiceSession.write(JSON.toJSONString(message));
             return true;
         }
         return false;
@@ -164,7 +164,7 @@ public class GlobalSession {
         }
         IoSession userSession = userSessionMap.get(message.getReceiver());
         if (userSession != null) {
-            userSession.write(message);
+            userSession.write(JSON.toJSONString(message));
             return true;
         }
         return false;

@@ -95,7 +95,9 @@ public class MyIoHandler extends IoHandlerAdapter {
     private void handleAuthenticationMessage(IoSession ioSession, AuthenticationMessage authenticationMessage) {
         User user = userService.selectOne(new EntityWrapper<User>().eq("phone", authenticationMessage.getUsername())
                 .or().eq("email", authenticationMessage.getUsername()));
-        if (!user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPaasword()))) {
+        if (user == null || !user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPaasword()))) {
+            ioSession.write("user not exsit or password incorrect");
+            ioSession.closeOnFlush();
             return;
         }
         ioSession.setAttribute(MinaConstant.SESSION_KEY_USER, user);
