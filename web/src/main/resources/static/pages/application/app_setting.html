@@ -1,77 +1,76 @@
+<style>
+    html, body {
+        font-family: sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        background: #f0f2f5 !important;
+        color: rgba(0, 0, 0, .65);
+    }
 
-    <style>
-        html, body {
-            font-family: sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            background: #f0f2f5 !important;
-            color: rgba(0, 0, 0, .65);
-        }
+    .a {
+        /*display: inline-block;*/
+        margin: 10px;
+        min-height: 170px;
+        border: 1px solid #e8e8e8;
+        padding: 16px 32px 0;
+        background-color: #fff;
 
-        .a {
-            /*display: inline-block;*/
-            margin: 10px;
-            min-height: 170px;
-            border: 1px solid #e8e8e8;
-            padding: 16px 32px 0;
-            background-color: #fff;
+    }
 
-        }
+    .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+        padding: 40px 0 40px 0;
+        margin: 20px;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
-            padding: 40px 0 40px 0;
-            margin: 20px;
-            border-bottom: 1px solid #e8e8e8;
-        }
+    .text {
+        text-align: center;
+    }
 
-        .text {
-            text-align: center;
-        }
+    .infos div {
+        float: left;
+        padding: 20px;
+        margin: 10px;
+    }
 
-        .infos div {
-            float: left;
-            padding: 20px;
-            margin: 10px;
-        }
+    .infoinfos {
+        border: 1px solid #e8e8e8;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        min-width: 800px;
+        margin-left: 100px;
+    }
 
-        .infoinfos {
-            border: 1px solid #e8e8e8;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            min-width: 800px;
-            margin-left: 100px;
-        }
+    .bottom {
+        padding: 20px;
+        margin: 10px;
+        background: #fff;
+        min-height: 150px;
+    }
 
-        .bottom {
-            padding: 20px;
-            margin: 10px;
-            background: #fff;
-            min-height: 150px;
-        }
+    .makeInfo {
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e8;
+        margin-bottom: 15px;
+    }
 
-        .makeInfo {
-            padding: 20px;
-            background: #fff;
-            border-bottom: 1px solid #e8e8e8;
-            margin-bottom: 15px;
-        }
+    .baseInfo span {
+        line-height: 1.8;
+        margin: 10px;
+    }
 
-        .baseInfo span {
-            line-height: 1.8;
-            margin: 10px;
-        }
+    .baseInfo div {
+        margin: 20px;
+    }
 
-        .baseInfo div {
-            margin: 20px;
-        }
-
-        .button {
-            text-align: right;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-    </style>
+    .button {
+        text-align: right;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+</style>
 
 <div id="setting">
     <div class="shezhi">
@@ -141,7 +140,7 @@
         </div>
         <el-dialog title="添加变量" :visible.sync="dialogFormVisible" width="30%">
             <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
-                     label-position="left" label-width="80px" >
+                     label-position="left" label-width="80px">
                 <el-form-item label="变量名" prop="var_name">
                     <el-input placeholder="请输入变量名称 格式/^[A-Z][A-Z0-9_]*$/" v-model="ruleForm.var_name"></el-input>
                 </el-form-item>
@@ -247,8 +246,8 @@
             pathInfo: '',
             ruleForm: {
                 var_name: '',
-                var_val:'',
-                var_des:''
+                var_val: '',
+                var_des: ''
             },
             dialogFormVisible: false,
 
@@ -256,28 +255,26 @@
         methods: {
             settingInit() {
                 $.ajax({
-                    type:'get',
-                    url:'',
-                    data : {
-
-                    }
+                    type: 'get',
+                    url: '',
+                    data: {}
                 })
             },
             addVar() {
                 $.ajax({
-                    type:'post',
-                    url:'/tianyu-paas/app-vars/',
+                    type: 'post',
+                    url: '/tianyu-paas/app-vars/',
                     data: {
                         appId: appinfo.app_id,
-                        varName:this.ruleForm.var_name,
-                        varValue:this.ruleForm.var_val,
-                        varExplain:this.ruleForm.var_des
+                        varName: this.ruleForm.var_name,
+                        varValue: this.ruleForm.var_val,
+                        varExplain: this.ruleForm.var_des
 
                     },
-                    success:function () {
+                    success: function () {
 
                     },
-                    error:function () {
+                    error: function () {
 
                     }
                 })
