@@ -2,6 +2,8 @@ package cn.edu.jit.tianyu_paas.web.mapper;
 
 import cn.edu.jit.tianyu_paas.shared.entity.ActionDetail;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>

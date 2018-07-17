@@ -2,6 +2,7 @@ package cn.edu.jit.tianyu_paas.im.controller;
 
 
 import cn.edu.jit.tianyu_paas.im.entity.User;
+import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
 import cn.edu.jit.tianyu_paas.im.service.UserService;
 import cn.edu.jit.tianyu_paas.shared.util.PassUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
@@ -16,9 +17,6 @@ import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 /**
- * <p>
- * 前端控制器
- * </p>
  *
  * @author 汪继友
  * @since 2018-07-07
@@ -37,13 +35,11 @@ public class UserController {
     }
 
     /**
-     * @param userId
-     * @return
      * @author 张万平
      * @since 2018-07-07
      */
     @ApiOperation("获取用户信息")
-    @GetMapping("/info/{userId}")
+    @GetMapping("/{userId}")
     public TResult userInfo(@PathVariable String userId) {
         User user = userService.selectOne(new EntityWrapper<User>().eq("user_id", userId));
         if (user == null) {
@@ -54,7 +50,6 @@ public class UserController {
 
     /**
      *
-     * @return
      * @author 张万平
      * @since 2018-07-07
      */
@@ -71,8 +66,6 @@ public class UserController {
 
     /**
      *
-     * @param userId
-     * @return
      * @author 张万平
      * @since 2018-07-07
      */
@@ -87,8 +80,6 @@ public class UserController {
 
     /**
      *
-     * @param user
-     * @return
      * @author 张万平
      * @since 2018-07-07
      */

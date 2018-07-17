@@ -15,7 +15,8 @@ import java.util.ResourceBundle;
  */
 public class GeneratorUtil {
 
-    private static final boolean GENERATOR_SERVICE_INTERFACE = false;
+    public static final String AUTHOR = "汪继友";
+    public static final String OUTPUT_DIR = "E:/codeGen";
 
     private static String username;
     private static String password;
@@ -25,7 +26,7 @@ public class GeneratorUtil {
     public static void main(String[] args) {
         String packageName = "cn.edu.jit.tianyu_paas.shared";
         initDataSource();
-        generateByTables(packageName, "market_app_mount");
+        generateByTables(packageName, "ticket");
     }
 
     private static void initDataSource() {
@@ -55,9 +56,9 @@ public class GeneratorUtil {
                 .setInclude(tableNames);
         config.setActiveRecord(false)
                 .setEnableCache(false)
-                .setAuthor("倪龙康")
+                .setAuthor(AUTHOR)
                 .setBaseResultMap(true)
-                .setOutputDir("D:/codeGen")
+                .setOutputDir(OUTPUT_DIR)
                 .setFileOverride(true);
         new AutoGenerator().setGlobalConfig(config)
                 .setDataSource(dataSourceConfig)

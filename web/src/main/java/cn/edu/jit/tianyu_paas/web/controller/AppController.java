@@ -6,13 +6,21 @@ import cn.edu.jit.tianyu_paas.shared.enums.AppCreateMethodEnum;
 import cn.edu.jit.tianyu_paas.shared.enums.AppStatusEnum;
 import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.util.DockerHelperUtil;
+import cn.edu.jit.tianyu_paas.shared.util.DockerJavaUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
+import cn.edu.jit.tianyu_paas.web.util.YmSocket;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.DockerCmdExecFactory;
+import com.github.dockerjava.core.DefaultDockerClientConfig;
+import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.core.DockerClientConfig;
+import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
 import com.spotify.docker.client.LogStream;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -33,6 +41,8 @@ import java.util.Date;
 @RequestMapping("/apps")
 public class AppController {
 
+    private final ActionService actionService;
+    private final UserService userService;
     private final AppService appService;
     private final AppInfoByCustomService appInfoByCustomService;
     private final HttpSession session;
@@ -52,7 +62,7 @@ public class AppController {
     private final MarketAppVarService marketAppVarService;
 
     @Autowired
-    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, MachinePortService machinePortService, MachineService machineService, MarketAppPortService marketAppPortService, MarketAppVarService marketAppVarService) {
+    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, MachinePortService machinePortService, MachineService machineService, MarketAppPortService marketAppPortService, MarketAppVarService marketAppVarService, UserService userService, ActionService actionService) {
         this.appService = appService;
         this.appInfoByCustomService = appInfoByCustomService;
         this.session = session;
@@ -69,6 +79,8 @@ public class AppController {
         this.machineService = machineService;
         this.marketAppPortService = marketAppPortService;
         this.marketAppVarService = marketAppVarService;
+        this.userService = userService;
+        this.actionService = actionService;
     }
 
     private void initApp(App app, AppCreateMethodEnum createMethodEnum) {
@@ -107,11 +119,38 @@ public class AppController {
     @PostMapping("/custom")
     public TResult createAppByCustom(@Validated App app, @Validated AppInfoByCustom custom) {
         initApp(app, AppCreateMethodEnum.CUSTOM);
-
+        Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        app.setGmtCreate(new Date());
+        app.setStatus(1);
+        app.setCreateMethod(1);
         if (appService.insert(app)) {
             custom.setAppId(app.getAppId());
             // 插入创建方式
             appInfoByCustomService.insert(custom);
+            User user = userService.selectById(userId);
+            Action action = new Action();
+            action.setUserId(userId);
+            action.setActionName("创建应用");
+            action.setUserName(user.getName());
+            action.setAppId(app.getAppId());
+            action.setAppName(app.getName());
+            action.setAction(1);
+            action.setStatus(1);
+            action.setGmtCreate(new Date());
+            if (!actionService.insert(action)){
+                return TResult.failure(TResultCode.BUSINESS_ERROR);
+            }
+            YmSocket.createByYm(custom.getRepositoryUrl(),custom.getBranch(),userId,action.getActionId(),app);
+            Action action1 = new Action();
+            action1.setUserId(userId);
+            action1.setActionName("部署完成");
+            action1.setUserName(user.getName());
+            action1.setAppId(app.getAppId());
+            action1.setAppName(app.getName());
+            action1.setAction(3);
+            action1.setStatus(1);
+            action1.setGmtCreate(new Date());
+            actionService.insert(action);
             return TResult.success();
         }
         return TResult.failure(TResultCode.BUSINESS_ERROR);
@@ -255,5 +294,24 @@ public class AppController {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
 
+    }
+
+    /**
+     * 更新app信息，主要用来资源伸缩
+     * @param app
+     * @return
+     * @author 倪龙康
+     */
+    @PutMapping
+    public TResult updateApp(App app){
+        long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        DockerClient dockerClient = DockerJavaUtil.getDockerClient(DockerSSHConstants.N_IP);
+        if (dockerClient.updateContainerCmd(app.getContainerId()).withMemory((long)(app.getMemoryUsed()*1024*1024))
+                .withMemorySwap((long) -1).exec()!= null) {
+            if (appService.update(app,new EntityWrapper<App>().eq("app_id",app.getAppId()).eq("user_id",userId))){
+                return TResult.success();
+            }
+        }
+        return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 }

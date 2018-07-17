@@ -1,9 +1,6 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
-import cn.edu.jit.tianyu_paas.shared.entity.PhoneVerificationCode;
-import cn.edu.jit.tianyu_paas.shared.entity.User;
-import cn.edu.jit.tianyu_paas.shared.entity.UserActive;
-import cn.edu.jit.tianyu_paas.shared.entity.UserDynamic;
+import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.global.SendPhoneCodeConstants;
 import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
@@ -35,9 +32,10 @@ public class UserController {
     private final UserActiveService userActiveService;
     private final PhoneVerificationCodeService phoneVerificationCodeService;
     private HttpSession session;
+    private final TicketService ticketService;
 
     @Autowired
-    public UserController(UserService userService, UserDynamicService userDynamicService, HttpSession session, UserLoginLogService userLoginLogService, MailUtilService mailUtilService, UserActiveService userActiveService, PhoneVerificationCodeService phoneVerificationCodeService) {
+    public UserController(UserService userService, UserDynamicService userDynamicService, HttpSession session, UserLoginLogService userLoginLogService, MailUtilService mailUtilService, UserActiveService userActiveService, PhoneVerificationCodeService phoneVerificationCodeService, TicketService ticketService) {
         this.userService = userService;
         this.session = session;
         this.userDynamicService = userDynamicService;
@@ -45,6 +43,7 @@ public class UserController {
         this.mailUtilService = mailUtilService;
         this.userActiveService = userActiveService;
         this.phoneVerificationCodeService = phoneVerificationCodeService;
+        this.ticketService = ticketService;
     }
 
     private void initUser(User user) {
@@ -103,7 +102,14 @@ public class UserController {
         //用户登录成功，将登录成功信息插入数据表
         userLoginLogService.insert(UserLoginLogUtil.getUserLoginLog(user.getUserId(), 1));
 
-        return TResult.success();
+        // 将token插入ticket表
+        Ticket ticket = new Ticket();
+        ticket.setUserId(user.getUserId());
+        ticket.setToken(PassUtil.generatorToken(user.getUserId()));
+        if(ticketService.insertOrUpdate(ticket)) {
+            return TResult.success(ticket.getToken());
+        }
+        return TResult.failure("后台token发生错误");
     }
 
     /**

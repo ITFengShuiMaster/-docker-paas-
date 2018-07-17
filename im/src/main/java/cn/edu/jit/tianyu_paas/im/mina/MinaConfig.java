@@ -37,7 +37,7 @@ public class MinaConfig {
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
 
         acceptor.bind(new InetSocketAddress(MinaConstant.MINA_SERVER_PORT));
-        LOGGER.info("mina 服务器在端口：" + "已经启动");
+        LOGGER.info("mina 服务器在端口：" + MinaConstant.MINA_SERVER_PORT + "已经启动");
         return acceptor;
     }
 }
