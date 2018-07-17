@@ -3,6 +3,7 @@ package cn.edu.jit.tianyu_paas.im.entity;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -24,18 +25,22 @@ public class User {
     /**
      * 姓名或昵称
      */
+    @NotEmpty
     private String name;
     /**
      * 手机号
      */
+    @NotEmpty
     private String phone;
     /**
      * 邮箱地址
      */
+    @NotEmpty
     private String email;
     /**
      * 密码
      */
+    @NotEmpty
     private String pwd;
     /**
      * 用户类型
