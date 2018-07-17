@@ -1,6 +1,5 @@
 package cn.edu.jit.tianyu_paas.im.mapper;
 
-import cn.edu.jit.tianyu_paas.im.entity.Message;
 import cn.edu.jit.tianyu_paas.im.entity.OfflineMessage;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 

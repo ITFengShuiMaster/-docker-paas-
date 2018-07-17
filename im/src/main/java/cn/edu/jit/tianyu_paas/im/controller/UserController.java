@@ -2,7 +2,6 @@ package cn.edu.jit.tianyu_paas.im.controller;
 
 
 import cn.edu.jit.tianyu_paas.im.entity.User;
-import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
 import cn.edu.jit.tianyu_paas.im.service.UserService;
 import cn.edu.jit.tianyu_paas.shared.util.PassUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;

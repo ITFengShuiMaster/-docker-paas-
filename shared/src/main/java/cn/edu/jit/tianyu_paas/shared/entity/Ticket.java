@@ -3,11 +3,10 @@ package cn.edu.jit.tianyu_paas.shared.entity;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 
-import java.util.Date;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
- *
  * @author 汪继友
  * @since 2018-07-17
  */
@@ -57,10 +56,10 @@ public class Ticket implements Serializable {
     @Override
     public String toString() {
         return "Ticket{" +
-        ", token=" + token +
-        ", userId=" + userId +
-        ", gmtCreate=" + gmtCreate +
-        ", gmtModified=" + gmtModified +
-        "}";
+                ", token=" + token +
+                ", userId=" + userId +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                "}";
     }
 }

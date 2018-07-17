@@ -16,11 +16,6 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.DockerCmdExecFactory;
-import com.github.dockerjava.core.DefaultDockerClientConfig;
-import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.core.DockerClientConfig;
-import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
 import com.spotify.docker.client.LogStream;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -104,28 +99,9 @@ public class AppController {
     public TResult getAppInfo(@PathVariable Long appId) {
         App app = appService.selectById(appId);
         //获取容器的信息
-        app.setInspectContainerResponse(getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
+        app.setInspectContainerResponse(appService.getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
 
         return TResult.success(app);
-    }
-
-    private DockerClient getDockerClient() {
-        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("tcp://120.77.146.118:2375")
-                .withRegistryUsername("itfengshuimaster")
-                .withRegistryPassword("wxhzq520")
-                .withRegistryEmail("wxhzq520@sina.com")
-                .withRegistryUrl("https://hub.docker.com/r/itfengshuimaster/mydocker/")
-                .build();
-        DockerCmdExecFactory dockerCmdExecFactory = new JerseyDockerCmdExecFactory()
-                .withReadTimeout(100000)
-                .withConnectTimeout(100000)
-                .withMaxTotalConnections(100)
-                .withMaxPerRouteConnections(10);
-
-        return DockerClientBuilder.getInstance(config)
-                .withDockerCmdExecFactory(dockerCmdExecFactory)
-                .build();
     }
 
     /**
@@ -156,10 +132,10 @@ public class AppController {
             action.setAction(1);
             action.setStatus(1);
             action.setGmtCreate(new Date());
-            if (!actionService.insert(action)){
+            if (!actionService.insert(action)) {
                 return TResult.failure(TResultCode.BUSINESS_ERROR);
             }
-            YmSocket.createByYm(custom.getRepositoryUrl(),custom.getBranch(),userId,action.getActionId(),app);
+            YmSocket.createByYm(custom.getRepositoryUrl(), custom.getBranch(), userId, action.getActionId(), app);
             Action action1 = new Action();
             action1.setUserId(userId);
             action1.setActionName("部署完成");
@@ -317,17 +293,18 @@ public class AppController {
 
     /**
      * 更新app信息，主要用来资源伸缩
+     *
      * @param app
      * @return
      * @author 倪龙康
      */
     @PutMapping
-    public TResult updateApp(App app){
+    public TResult updateApp(App app) {
         long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         DockerClient dockerClient = DockerJavaUtil.getDockerClient(DockerSSHConstants.N_IP);
-        if (dockerClient.updateContainerCmd(app.getContainerId()).withMemory((long)(app.getMemoryUsed()*1024*1024))
-                .withMemorySwap((long) -1).exec()!= null) {
-            if (appService.update(app,new EntityWrapper<App>().eq("app_id",app.getAppId()).eq("user_id",userId))){
+        if (dockerClient.updateContainerCmd(app.getContainerId()).withMemory((long) (app.getMemoryUsed() * 1024 * 1024))
+                .withMemorySwap((long) -1).exec() != null) {
+            if (appService.update(app, new EntityWrapper<App>().eq("app_id", app.getAppId()).eq("user_id", userId))) {
                 return TResult.success();
             }
         }
