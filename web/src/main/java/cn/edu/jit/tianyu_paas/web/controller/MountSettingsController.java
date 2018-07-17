@@ -9,6 +9,7 @@ import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.spotify.docker.client.messages.PortBinding;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,6 +64,7 @@ public class MountSettingsController {
      * @return
      * @throws Exception
      */
+    @ApiOperation("插入挂载")
     @PostMapping
     public TResult insertMountSetting(MountSettings mountSettings) throws Exception {
         App app = appService.selectById(mountSettings.getAppId());
@@ -102,6 +104,7 @@ public class MountSettingsController {
      * @param appId
      * @return
      */
+    @ApiOperation("获得挂载")
     @GetMapping("/{appId}")
     public TResult listMountSettings(@PathVariable(required = true) Long appId) {
         return TResult.success(mountSettingsService.selectList(new EntityWrapper<MountSettings>().eq("app_id", appId)));
@@ -114,6 +117,7 @@ public class MountSettingsController {
      * @param persistentName
      * @return
      */
+    @ApiOperation("删除挂载")
     @DeleteMapping
     public TResult deleteMountSettings(@RequestParam(required = true) Long appId, @RequestParam(required = true) String persistentName) {
         if (!mountSettingsService.delete(new EntityWrapper<MountSettings>().eq("app_id", appId).and().eq("persistent_name", persistentName))) {
@@ -129,6 +133,7 @@ public class MountSettingsController {
      * @return
      * @throws Exception
      */
+    @ApiOperation("容器重启")
     @GetMapping("/restart-container/{appId}")
     public TResult restartContainer(@PathVariable(required = true) Long appId) throws Exception {
         App app = appService.selectById(appId);

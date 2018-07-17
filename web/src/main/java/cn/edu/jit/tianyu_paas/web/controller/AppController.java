@@ -266,6 +266,7 @@ public class AppController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    @ApiOperation("获取app日志")
     @GetMapping("/logs/{appId}")
     public TResult listLogs(@PathVariable(required = true) Long appId) {
         App app = appService.selectById(appId);
@@ -298,6 +299,7 @@ public class AppController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("更新app信息")
     @PutMapping
     public TResult updateApp(App app) {
         long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);

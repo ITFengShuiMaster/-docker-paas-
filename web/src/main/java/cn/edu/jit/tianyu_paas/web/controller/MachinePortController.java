@@ -4,6 +4,7 @@ package cn.edu.jit.tianyu_paas.web.controller;
 import cn.edu.jit.tianyu_paas.shared.entity.MachinePort;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.web.service.MachinePortService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +42,7 @@ public class MachinePortController {
      * @return
      * @author 卢越
      */
+    @ApiOperation("初始化机器的可用端口")
     @GetMapping
     public TResult insertPortLists(@RequestParam(required = true) Long machineId) {
         MachinePortService machinePortService = new MachinePortService();

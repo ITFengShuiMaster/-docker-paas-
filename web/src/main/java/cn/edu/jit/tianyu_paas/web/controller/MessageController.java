@@ -4,6 +4,7 @@ import cn.edu.jit.tianyu_paas.shared.entity.Message;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.web.service.MessageService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ public class MessageController {
         this.messageService = messageService;
     }
 
+    @ApiOperation("获取消息列表")
     @GetMapping
     public TResult listMessages() {
         return TResult.success(messageService.selectList(new EntityWrapper<Message>().setSqlSelect("message_id as messageId", "content", "gmt_create as gmtCreate")));

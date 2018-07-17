@@ -195,6 +195,7 @@ public class UserController {
         return TResult.success();
     }
 
+    @ApiOperation("重新发送email")
     @GetMapping("/re-email")
     public TResult reSendEmailCode(@RequestParam(required = true) String email) {
         if (RegexUtil.isEmail(email)) {
@@ -280,6 +281,7 @@ public class UserController {
         return TResult.failure("链接无效或已过期");
     }
 
+    @ApiOperation("发送验证码")
     @GetMapping("phone-code/{phone}")
     public TResult sendPhoneCode(@PathVariable(required = true) String phone) {
         if (RegexUtil.isPhoneNumber(phone)) {
@@ -311,6 +313,7 @@ public class UserController {
         return TResult.failure("手机号码格式不正确！");
     }
 
+    @ApiOperation("修改用户信息")
     @PutMapping
     public TResult updateUser(@RequestParam(required = true) Long userId, String name, String headImg) {
         User user = new User();
