@@ -2,6 +2,7 @@ package cn.edu.jit.tianyu_paas.shared.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 /**
  * 加密解密工具类
@@ -47,6 +48,15 @@ public class PassUtil {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 根据userId，当前时间戳和随机字符串，再通过md5加密生成token
+     * @param userId
+     * @return
+     */
+    public static String generatorToken(long userId) {
+        return getMD5(userId + System.currentTimeMillis() + UUID.randomUUID().toString());
     }
 
     public static String getMD5(Object obj) {
