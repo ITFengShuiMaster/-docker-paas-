@@ -106,7 +106,7 @@ public class UserController {
         Ticket ticket = new Ticket();
         ticket.setUserId(user.getUserId());
         ticket.setToken(PassUtil.generatorToken(user.getUserId()));
-        if(ticketService.insertOrUpdate(ticket)) {
+        if (ticketService.insertOrUpdate(ticket)) {
             return TResult.success(ticket.getToken());
         }
         return TResult.failure("后台token发生错误");

@@ -3,7 +3,6 @@ package cn.edu.jit.tianyu_paas.web.service;
 import cn.edu.jit.tianyu_paas.shared.entity.Ticket;
 import cn.edu.jit.tianyu_paas.web.mapper.TicketMapper;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

@@ -20,5 +20,5 @@ public interface AppLogMapper extends BaseMapper<AppLog> {
     @Select("select al.* from app, app_log as al" +
             "where app.user_id = #{userId} and app.app_id = #{appId}" +
             "and al.app_id = app.app_id")
-    public List<AppLog> listAppLogByUserIdAndAppId(@Param("userId")long userId, @Param("appId") long appId);
+    List<AppLog> listAppLogByUserIdAndAppId(@Param("userId") long userId, @Param("appId") long appId);
 }

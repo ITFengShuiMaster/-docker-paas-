@@ -8,11 +8,10 @@ public class CommonMessage extends MinaMessage {
     private Long receiver;
     private Long sender;
 
-    public Long getSender() {
-        return sender;
-    }
-
-    public void setSender(Long sender) {
+    public CommonMessage(String content, Long receiver, Long sender) {
+        this();
+        this.content = content;
+        this.receiver = receiver;
         this.sender = sender;
     }
 
@@ -20,10 +19,11 @@ public class CommonMessage extends MinaMessage {
         super.setMessageType(MinaMessageType.COMMON);
     }
 
-    public CommonMessage(String content, Long receiver, Long sender) {
-        this();
-        this.content = content;
-        this.receiver = receiver;
+    public Long getSender() {
+        return sender;
+    }
+
+    public void setSender(Long sender) {
         this.sender = sender;
     }
 

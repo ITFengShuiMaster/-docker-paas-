@@ -25,7 +25,6 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -41,7 +40,7 @@ public class YmSocket {
     private static AppPortService appPortService = SpringBeanFactoryUtil.getBean(AppPortService.class);
 
 
-    public static void createByYm(String gitUrl, String branch, long userId, long actionId, App app){
+    public static void createByYm(String gitUrl, String branch, long userId, long actionId, App app) {
 
         MachinePortService machinePortService = SpringBeanFactoryUtil.getBean(MachinePortService.class);
 
@@ -76,7 +75,7 @@ public class YmSocket {
                 machinePortService.update(unUsedPorts, new EntityWrapper<MachinePort>().eq("machine_id", unUsedPorts.getMachineId()).and().eq("machine_port", unUsedPorts.getMachinePort()));
 
                 InspectContainerResponse inspectContainerResponse = dockerClient.inspectContainerCmd(createContainerResponse.getId()).exec();
-                memoryUsed =(int)(inspectContainerResponse.getHostConfig().getMemory()/(1024*1024));
+                memoryUsed = (int) (inspectContainerResponse.getHostConfig().getMemory() / (1024 * 1024));
                 app.setContainerId(createContainerResponse.getId());
                 app.setMemoryUsed(memoryUsed);
                 appService.updateById(app);
@@ -96,18 +95,18 @@ public class YmSocket {
                 appPortService.insert(appPort);
 
                 //创建bash
-                execId = DockerClientUtil.getExecId(DockerSSHConstants.N_IP,createContainerResponse.getId());
-                socket = DockerClientUtil.getExecSocket(DockerSSHConstants.N_IP,execId);
+                execId = DockerClientUtil.getExecId(DockerSSHConstants.N_IP, createContainerResponse.getId());
+                socket = DockerClientUtil.getExecSocket(DockerSSHConstants.N_IP, execId);
 
-                SocketRunable socketRunable = new SocketRunable(socket.getInputStream(), socket,userId,actionId);
+                SocketRunable socketRunable = new SocketRunable(socket.getInputStream(), socket, userId, actionId);
                 socketPoolExecutor.execute(socketRunable);
 
                 OutputStream out = socket.getOutputStream();
-                out.write(("sh maven.sh " + gitUrl +" "+ branch + "\n").getBytes());
+                out.write(("sh maven.sh " + gitUrl + " " + branch + "\n").getBytes());
                 out.flush();
             } catch (Exception e) {
                 logger.error("容器创建失败");
-                TWebSocket.sendMessageToUser("容器创建失败",userId);
+                TWebSocket.sendMessageToUser("容器创建失败", userId);
                 e.printStackTrace();
             }
         } else if ("html".equals(language)) {
@@ -130,7 +129,7 @@ public class YmSocket {
                 machinePortService.update(unUsedPorts, new EntityWrapper<MachinePort>().eq("machine_id", unUsedPorts.getMachineId()).and().eq("machine_port", unUsedPorts.getMachinePort()));
 
                 InspectContainerResponse inspectContainerResponse = dockerClient.inspectContainerCmd(createContainerResponse.getId()).exec();
-                memoryUsed =(int)(inspectContainerResponse.getHostConfig().getMemory()/(1024*1024));
+                memoryUsed = (int) (inspectContainerResponse.getHostConfig().getMemory() / (1024 * 1024));
                 app.setContainerId(createContainerResponse.getId());
                 app.setMemoryUsed(memoryUsed);
                 appService.updateById(app);
@@ -149,18 +148,18 @@ public class YmSocket {
                 appPort.setInsideAccessUrl("xxxxx");
                 appPortService.insert(appPort);
                 //创建bash
-                execId = DockerClientUtil.getExecId(DockerSSHConstants.N_IP,createContainerResponse.getId());
-                socket = DockerClientUtil.getExecSocket(DockerSSHConstants.N_IP,execId);
+                execId = DockerClientUtil.getExecId(DockerSSHConstants.N_IP, createContainerResponse.getId());
+                socket = DockerClientUtil.getExecSocket(DockerSSHConstants.N_IP, execId);
 
-                SocketRunable socketRunable = new SocketRunable(socket.getInputStream(), socket,userId,actionId);
+                SocketRunable socketRunable = new SocketRunable(socket.getInputStream(), socket, userId, actionId);
                 socketPoolExecutor.execute(socketRunable);
 
                 OutputStream out = socket.getOutputStream();
-                out.write(("sh html.sh " + gitUrl +" "+branch + "\n").getBytes());
+                out.write(("sh html.sh " + gitUrl + " " + branch + "\n").getBytes());
                 out.flush();
             } catch (Exception e) {
                 logger.error("容器创建失败");
-                TWebSocket.sendMessageToUser("容器创建失败",userId);
+                TWebSocket.sendMessageToUser("容器创建失败", userId);
                 e.printStackTrace();
             }
         } else if ("nodejs".equals(language)) {
@@ -184,7 +183,7 @@ public class YmSocket {
                 machinePortService.update(unUsedPorts, new EntityWrapper<MachinePort>().eq("machine_id", unUsedPorts.getMachineId()).and().eq("machine_port", unUsedPorts.getMachinePort()));
 
                 InspectContainerResponse inspectContainerResponse = dockerClient.inspectContainerCmd(createContainerResponse.getId()).exec();
-                memoryUsed =(int)(inspectContainerResponse.getHostConfig().getMemory()/(1024*1024));
+                memoryUsed = (int) (inspectContainerResponse.getHostConfig().getMemory() / (1024 * 1024));
                 app.setContainerId(createContainerResponse.getId());
                 app.setMemoryUsed(memoryUsed);
                 appService.updateById(app);
@@ -204,23 +203,24 @@ public class YmSocket {
                 appPortService.insert(appPort);
 
                 //创建bash
-                execId = DockerClientUtil.getExecId(DockerSSHConstants.N_IP,createContainerResponse.getId());
-                socket = DockerClientUtil.getExecSocket(DockerSSHConstants.N_IP,execId);
+                execId = DockerClientUtil.getExecId(DockerSSHConstants.N_IP, createContainerResponse.getId());
+                socket = DockerClientUtil.getExecSocket(DockerSSHConstants.N_IP, execId);
 
-                SocketRunable socketRunable = new SocketRunable(socket.getInputStream(), socket,userId,actionId);
+                SocketRunable socketRunable = new SocketRunable(socket.getInputStream(), socket, userId, actionId);
                 socketPoolExecutor.execute(socketRunable);
 
                 OutputStream out = socket.getOutputStream();
-                out.write(("sh nodejs.sh " + gitUrl +" "+ branch + "\n").getBytes());
+                out.write(("sh nodejs.sh " + gitUrl + " " + branch + "\n").getBytes());
                 out.flush();
             } catch (Exception e) {
                 logger.error("容器创建失败");
-                TWebSocket.sendMessageToUser("容器创建失败",userId);
+                TWebSocket.sendMessageToUser("容器创建失败", userId);
                 e.printStackTrace();
             }
         }
 
     }
+
     public static class SocketRunable implements Runnable {
         private Socket socket;
         private InputStream inputStream;
@@ -245,13 +245,13 @@ public class YmSocket {
                         int n = inputStream.read(bytes);
                         String msg = new String(bytes, 0, n);
                         String[] lineMsgs = msg.split("\\n");
-                        for (String m: lineMsgs) {
+                        for (String m : lineMsgs) {
                             if (m.contains("success") || m.contains("fail")) {
                                 m = new Date() + " " + m;
                             }
                             //TWebSocket.sendMessageToUser(new Date() + " " + msg.replace("%", " "),userId);
-                           // System.out.print(new Date() + " " + m.replace("%", ""));
-                            m=m.replace("%", "");
+                            // System.out.print(new Date() + " " + m.replace("%", ""));
+                            m = m.replace("%", "");
                             ActionDetail actionDetail = new ActionDetail();
                             actionDetail.setActionId(actionId);
                             actionDetail.setGmtCreate(new Date());
@@ -263,7 +263,7 @@ public class YmSocket {
                             }
                             actionDetailService.insert(actionDetail);
                         }
-                        if (msg.contains("success:run")){
+                        if (msg.contains("success:run")) {
                             break;
                         }
                         bytes = new byte[1024];

@@ -52,6 +52,7 @@ public class PassUtil {
 
     /**
      * 根据userId，当前时间戳和随机字符串，再通过md5加密生成token
+     *
      * @param userId
      * @return
      */

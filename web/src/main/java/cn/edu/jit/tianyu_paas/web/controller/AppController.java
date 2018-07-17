@@ -156,10 +156,10 @@ public class AppController {
             action.setAction(1);
             action.setStatus(1);
             action.setGmtCreate(new Date());
-            if (!actionService.insert(action)){
+            if (!actionService.insert(action)) {
                 return TResult.failure(TResultCode.BUSINESS_ERROR);
             }
-            YmSocket.createByYm(custom.getRepositoryUrl(),custom.getBranch(),userId,action.getActionId(),app);
+            YmSocket.createByYm(custom.getRepositoryUrl(), custom.getBranch(), userId, action.getActionId(), app);
             Action action1 = new Action();
             action1.setUserId(userId);
             action1.setActionName("部署完成");
@@ -317,17 +317,18 @@ public class AppController {
 
     /**
      * 更新app信息，主要用来资源伸缩
+     *
      * @param app
      * @return
      * @author 倪龙康
      */
     @PutMapping
-    public TResult updateApp(App app){
+    public TResult updateApp(App app) {
         long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         DockerClient dockerClient = DockerJavaUtil.getDockerClient(DockerSSHConstants.N_IP);
-        if (dockerClient.updateContainerCmd(app.getContainerId()).withMemory((long)(app.getMemoryUsed()*1024*1024))
-                .withMemorySwap((long) -1).exec()!= null) {
-            if (appService.update(app,new EntityWrapper<App>().eq("app_id",app.getAppId()).eq("user_id",userId))){
+        if (dockerClient.updateContainerCmd(app.getContainerId()).withMemory((long) (app.getMemoryUsed() * 1024 * 1024))
+                .withMemorySwap((long) -1).exec() != null) {
+            if (appService.update(app, new EntityWrapper<App>().eq("app_id", app.getAppId()).eq("user_id", userId))) {
                 return TResult.success();
             }
         }

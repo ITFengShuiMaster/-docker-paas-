@@ -3,7 +3,6 @@ package cn.edu.jit.tianyu_paas.im.entity;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
