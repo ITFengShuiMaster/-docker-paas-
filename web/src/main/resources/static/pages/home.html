@@ -14,6 +14,7 @@
             padding: 20px;
             margin: 10px;
             background: #fff;
+            height: 80px;
         }
 
         .homeRight {
@@ -67,6 +68,7 @@
 
     </style>
 
+
 <div id="home">
     <div class="homeTop">
         <div class="bread">
@@ -79,7 +81,7 @@
         </el-row>
         <div class="userInfo">
             <div class="img">
-                <img src="../../static/img/team.png" alt="" style="height: 50px;width: 50px;display: block;">
+                <img src="img/team.png" style="height: 50px;width: 50px;display: block;"/>
             </div>
             <div class="imginfo">
                 <div class="name">
@@ -139,7 +141,7 @@
             <el-form-item label="应用名称:">
                 <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="应用状态:">
+                <el-form-item label="应用状态:">
                 <el-select v-model="form.region" placeholder="应用状态">
                     <el-option label="全部" value="all"></el-option>
                     <el-option label="运行中" value="being"></el-option>
@@ -147,7 +149,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary">查询</el-button>
+                <el-button type="primary" @click="search">查询</el-button>
                 <el-button>重置</el-button>
             </el-form-item>
         </el-form>
@@ -216,6 +218,7 @@
             balance: '1',
             usedMemory: '326',
             usedDisk: '500',
+            status: 1,
 
         },
         methods: {
@@ -226,40 +229,80 @@
                     url:'/tianyu-paas/apps/lists',
                     data: {
                         current:1,
-                        size:100
+                        size:100,
                     },
                     success:function (data) {
                         if(data.code === 1) {
-                            console.log(data)
-                            var result = data.data.records
-                            for(var i = 0;i<data.data.total;i++) {
-                                that.tableData.push(result[i])
+                            let result = data.data.records;
+                            for(let i = 0;i<data.data.total;i++) {
+                                that.tableData.push(result[i]);
                                 if(that.tableData[i].status === 1) {
                                     that.tableData[i].status = '运行中'
                                 } else {
                                     that.tableData[i].status = '已关闭'
                                 }
                             }
-                            that.currentPage = data.data.current
-                            console.log(that.tableData)
+                            that.currentPage = data.data.current;
                         } else {
                             console.log(data.message)
                         }
 
                     },
                     error:function (data) {
-                        
+
                     }
                 })
             },
             search() {
+                if(home.form.region === "all") {
+                    home.status = null;
+                } else if(home.form.region === "being") {
+                    home.status = 1
+                } else {
+                    home.status = 0
+                }
+                console.log(home.status);
+                console.log(home.form.name)
 
+                $.ajax({
+                    type:'get',
+                    url:'/tianyu-paas/apps/lists',
+                    data: {
+                        current:1,
+                        size:100,
+                        status: home.status,
+                        name: home.form.name,
+                    },
+                    success:function (data) {
+                        console.log(data);
+                        if(data.code === 1) {
+                            let result = data.data.records;
+                            home.tableData = [];
+                            for(let i = 0;i<data.data.total;i++) {
+                                home.tableData.push(result[i]);
+                                if(data.data.records[i].status === 1) {
+                                    home.tableData[i].status = '运行中'
+                                } else {
+                                    home.tableData[i].status = '已关闭'
+                                }
+                            }
+                            home.currentPage = data.data.current;
+                            console.log(home.tableData);
+                        } else {
+                            console.log(home.message)
+                        }
+
+                    },
+                    error:function (data) {
+
+                    }
+                })
             },
             handleCurrentChange: function(currentPage){
                 this.currentPage = currentPage;
             }
         },
-        mounted() {
+        created() {
             this.homeInit()
         }
 

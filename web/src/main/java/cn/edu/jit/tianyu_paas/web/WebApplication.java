@@ -26,8 +26,8 @@ public class WebApplication implements WebMvcConfigurer {
                 .excludePathPatterns("/user/login", "/user/register")
                 .excludePathPatterns("/error");
 
-        /*registry.addInterceptor(appInterceptor())
-                .addPathPatterns("/apps/**");*/
+        registry.addInterceptor(appInterceptor())
+                .addPathPatterns("/apps/**");
     }
 
     /**
