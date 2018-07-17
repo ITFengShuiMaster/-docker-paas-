@@ -311,4 +311,16 @@ public class UserController {
         return TResult.failure("手机号码格式不正确！");
     }
 
+    @PutMapping
+    public TResult updateUser(@RequestParam(required = true) Long userId, String name, String headImg) {
+        User user = new User();
+        user.setUserId(userId);
+        user.setName(name);
+        user.setHeadImg(headImg);
+        user.setGmtModified(new Date());
+        if (!userService.update(user, new EntityWrapper<User>().eq("user_id", user.getUserId()))) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+        return TResult.success();
+    }
 }

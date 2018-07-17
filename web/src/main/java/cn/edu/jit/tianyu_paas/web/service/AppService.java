@@ -5,6 +5,7 @@ import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.mapper.AppMapper;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -21,12 +22,16 @@ import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -46,9 +51,10 @@ public class AppService extends ServiceImpl<AppMapper, App> {
     private AppVarService appVarService;
     private AppPortService appPortService;
     private AppInfoByDockerImageService appInfoByDockerImageService;
+    private RedisTemplate redisTemplate;
 
     @Autowired
-    public AppService(HttpSession session, MachineService machineService, MachinePortService machinePortService, AppInfoByDockerImageService appInfoByDockerImageService, MarketAppService marketAppService, MarketAppPortService marketAppPortService, MarketAppVarService marketAppVarService, AppVarService appVarService, AppPortService appPortService) {
+    public AppService(HttpSession session, MachineService machineService, MachinePortService machinePortService, AppInfoByDockerImageService appInfoByDockerImageService, MarketAppService marketAppService, MarketAppPortService marketAppPortService, MarketAppVarService marketAppVarService, AppVarService appVarService, AppPortService appPortService, RedisTemplate redisTemplate) {
         this.session = session;
         this.machineService = machineService;
         this.machinePortService = machinePortService;
@@ -58,6 +64,46 @@ public class AppService extends ServiceImpl<AppMapper, App> {
         this.marketAppVarService = marketAppVarService;
         this.appVarService = appVarService;
         this.appPortService = appPortService;
+        this.redisTemplate = redisTemplate;
+    }
+
+    @Cacheable(value = "app", key = "#id.toString()")
+    @Override
+    public App selectById(Serializable id) {
+        return super.selectById(id);
+    }
+
+    @Override
+    public boolean insert(App entity) {
+        if (super.insert(entity)) {
+            redisTemplate.opsForValue().set("app::" + entity.getAppId().toString(), baseMapper.selectById(entity.getAppId()));
+            return true;
+        }
+        return false;
+    }
+
+    @CacheEvict(value = "app", key = "#id.toString()")
+    @Override
+    public boolean deleteById(Serializable id) {
+        return super.deleteById(id);
+    }
+
+    @Override
+    public boolean update(App entity, Wrapper<App> wrapper) {
+        if (super.update(entity, wrapper)) {
+            redisTemplate.opsForValue().set("app::" + entity.getAppId().toString(), baseMapper.selectById(entity.getAppId()));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateById(App entity) {
+        if (super.updateById(entity)) {
+            redisTemplate.opsForValue().set("app::" + entity.getAppId().toString(), baseMapper.selectById(entity.getAppId()));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -181,7 +227,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
      *
      * @return
      */
-    private DockerClient getDockerClient() {
+    public DockerClient getDockerClient() {
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withDockerHost("tcp://120.77.146.118:2375")
                 .withRegistryUsername("itfengshuimaster")

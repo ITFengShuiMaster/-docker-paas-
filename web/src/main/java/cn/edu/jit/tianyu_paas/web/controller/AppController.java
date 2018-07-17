@@ -104,28 +104,9 @@ public class AppController {
     public TResult getAppInfo(@PathVariable Long appId) {
         App app = appService.selectById(appId);
         //获取容器的信息
-        app.setInspectContainerResponse(getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
+        app.setInspectContainerResponse(appService.getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
 
         return TResult.success(app);
-    }
-
-    private DockerClient getDockerClient() {
-        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("tcp://120.77.146.118:2375")
-                .withRegistryUsername("itfengshuimaster")
-                .withRegistryPassword("wxhzq520")
-                .withRegistryEmail("wxhzq520@sina.com")
-                .withRegistryUrl("https://hub.docker.com/r/itfengshuimaster/mydocker/")
-                .build();
-        DockerCmdExecFactory dockerCmdExecFactory = new JerseyDockerCmdExecFactory()
-                .withReadTimeout(100000)
-                .withConnectTimeout(100000)
-                .withMaxTotalConnections(100)
-                .withMaxPerRouteConnections(10);
-
-        return DockerClientBuilder.getInstance(config)
-                .withDockerCmdExecFactory(dockerCmdExecFactory)
-                .build();
     }
 
     /**
