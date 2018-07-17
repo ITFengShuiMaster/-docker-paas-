@@ -1,61 +1,60 @@
+<style>
+    html, body {
+        font-family: sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        background: #f0f2f5 !important;
+        color: rgba(0, 0, 0, .65);
+    }
 
-    <style>
-        html, body {
-            font-family: sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            background: #f0f2f5 !important;
-            color: rgba(0, 0, 0, .65);
-        }
+    .a {
+        /*display: inline-block;*/
+        margin: 10px;
+        min-height: 170px;
+        border: 1px solid #e8e8e8;
+        padding: 16px 32px 0;
+        background-color: #fff;
 
-        .a {
-            /*display: inline-block;*/
-            margin: 10px;
-            min-height: 170px;
-            border: 1px solid #e8e8e8;
-            padding: 16px 32px 0;
-            background-color: #fff;
+    }
 
-        }
+    .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+        padding: 40px 0 40px 0;
+        margin: 10px;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
-            padding: 40px 0 40px 0;
-            margin: 20px;
-            border-bottom: 1px solid #e8e8e8;
-        }
+    .text {
+        text-align: center;
+    }
 
-        .text {
-            text-align: center;
-        }
+    .infos div {
+        float: left;
+        padding: 20px;
+        margin: 10px;
+    }
 
-        .infos div {
-            float: left;
-            padding: 20px;
-            margin: 10px;
-        }
+    .infoinfos {
+        border: 1px solid #e8e8e8;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        min-width: 800px;
+        margin-left: 100px;
+    }
 
-        .infoinfos {
-            border: 1px solid #e8e8e8;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            min-width: 800px;
-            margin-left: 100px;
-        }
+    .bottom {
+        padding: 20px;
+        margin: 10px;
+        background: #fff;
+        min-height: 150px;
+    }
 
-        .bottom {
-            padding: 20px;
-            margin: 10px;
-            background: #fff;
-            min-height: 150px;
-        }
-
-        .makeInfo {
-            padding: 20px;
-            background: #fff;
-            border-bottom: 1px solid #e8e8e8;
-        }
-    </style>
+    .makeInfo {
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e8;
+    }
+</style>
 
 <div id="overview">
     <div class="top">
@@ -64,9 +63,11 @@
                 <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
                     <div class="first a">
                         <span>应用状态</span>
-                        <div class="statusFirst" ></div>
+                        <div class="statusFirst">
+                            <span>正在运行</span>
+                        </div>
                         <div class="text">
-                            <span>运行中</span>
+
                         </div>
                     </div>
                 </el-col>
@@ -74,7 +75,7 @@
                     <div class="second a">
                         <span>平均响应时间(ms)</span>
                         <div class="timeSecond">
-
+                            <span>{{runningState}}</span>
                         </div>
                     </div>
                 </el-col>
@@ -82,15 +83,15 @@
                     <div class="third a">
                         <span>吞吐率(dps)</span>
                         <div class="dpsThird">
-
+                            <span>12dps</span>
                         </div>
                     </div>
                 </el-col>
                 <el-col :span="6" :sm="12" :xs="24" :md="6" :lg="6">
                     <div class="fourth a">
-                        <span>资源使用</span>
+                        <span>内存使用</span>
                         <div class="resoureFourth">
-
+                            <span>{{memoryUsed}}</span>
                         </div>
                     </div>
                 </el-col>
@@ -103,35 +104,22 @@
                 <div class="makeInfo">
                     <span>操作日志</span>
                 </div>
-                <el-collapse>
-                    <el-collapse-item v-for="(item , index) in actionTitle" :title="item" :key="index">
-                            <el-button label="Info日志" size="small" @click="getInfoLog(app_id[index])">Info日志</el-button>
-                            <el-button label="Debug日志" size="small" @click="getDebugLog(app_id[index])">Debug日志</el-button>
-                            <el-button label="Error日志" size="small" @click="getErrorLog(app_id[index])">Error日志</el-button>
-                            <p>{{actionLog}}</p>
-                    </el-collapse-item>
-                </el-collapse>
-                <!--<div class="infos" v-for="item in actionList" :key="item">-->
-                    <!--<div class="timeinfos">-->
-                        <!--{{item.gmtCreate}}-->
-                    <!--</div>-->
-                    <!--<div class="infoinfos">-->
-                        <!--<span>{{item.actionName}}@{{item.userName}}</span>-->
-                    <!--</div>-->
-                    <!--<div class="loadInfo">-->
-                        <!--<el-button></el-button>-->
-                    <!--</div>-->
-                    <!--<div class="logGroup">-->
+                <el-steps direction="vertical" :active="1" align-centerx style="margin-top: 10px">
+                    <el-step v-for="(item , index) in actionTitle">
+                        <el-collapse slot="title">
+                            <el-collapse-item :title="item" :key="index">
 
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="infos">-->
-                    <!--<div class="timeinfos">14:32:19</div>-->
-                    <!--<div class="infoinfos">-->
-                        <!--<span>部署完成@陈秋凡</span>-->
-                        <!--<span>{{}}</span>-->
-                    <!--</div>-->
-                <!--</div>-->
+                                <el-button label="Info日志" size="small" @click="getInfoLog(app_id[index])">Info日志
+                                </el-button>
+                                <el-button label="Debug日志" size="small" @click="getDebugLog(app_id[index])">Debug日志
+                                </el-button>
+                                <el-button label="Error日志" size="small" @click="getErrorLog(app_id[index])">Error日志
+                                </el-button>
+                                <p v-for="item in actionInfo">{{item.content}}</p>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </el-step>
+                </el-steps>
             </el-col>
         </el-row>
     </div>
@@ -141,35 +129,40 @@
     var overview = new Vue({
         el: '#overview',
         data: {
-            appId:'',
-            actionId:'',
-            actionList:{
+            id: '',
+            appId: [],
+            actionId: '',
+            actionList: {},
+            actionTitle: [],
+            app_id: [],
+            runningState: '',
+            memoryUsed: '',
+            actionInfo: '',
 
-            },
-            actionTitle:[],
-            app_id:[],
-            actionLog:''
 
         },
         methods: {
+            initAppInfo(appId) {
+
+            },
             //加载操作日志的条数及信息
             overviewInit() {
                 var that = this
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/actions/info',
-                    data:{},
+                    data: {},
                     success: function (data) {
-                        console.log(data)
+//                        console.log(data)
                         var result = data.data
-                        if(data.code === 1) {
+                        if (data.code === 1) {
                             that.actionList = result
-                            $.each(result,function (index, val) {
-                                var res = val.actionName+'@'+ val.userName
+                            $.each(result, function (index, val) {
+                                var res = val.actionName + '@' + val.userName
                                 that.actionTitle.push(res)
                                 that.app_id.push(val.actionId)
                             })
-                            console.log(data.message)
+//                            console.log(data.message)
                             that.appId = result.appId
                             that.actionId = result.actionId
                         }
@@ -183,17 +176,18 @@
             //获取单个操作日志的Info日志
             getInfoLog(action_id) {
                 $.ajax({
-                    type:'get',
-                    url:'/tianyu-paas/actions/detail',
-                    data:{
-                        appId:appinfo.app_id,
-                        actionId:action_id,
-                        level:'0'
+                    type: 'get',
+                    url: '/tianyu-paas/actions/detail',
+                    data: {
+                        appId: overview.id,
+                        actionId: action_id,
+                        level: '0'
                     },
-                    success:function (data) {
-
+                    success: function (data) {
+                        console.log(data)
+                        overview.actionInfo = data.data
                     },
-                    error:function () {
+                    error: function () {
 
                     }
                 })
@@ -201,17 +195,17 @@
             //获取单个操作日志的Debug日志
             getDebugLog(action_id) {
                 $.ajax({
-                    type:'get',
-                    url:'/tianyu-paas/actions/detail',
-                    data:{
-                        appId:appinfo.app_id,
-                        actionId:action_id,
-                        level:'1'
+                    type: 'get',
+                    url: '/tianyu-paas/actions/detail',
+                    data: {
+                        appId: overview.id,
+                        actionId: action_id,
+                        level: '1'
                     },
-                    success:function (data) {
-
+                    success: function (data) {
+                        overview.actionInfo = data.data
                     },
-                    error:function () {
+                    error: function () {
 
                     }
                 })
@@ -219,45 +213,72 @@
             //获取单个操作日志的Error日志
             getErrorLog(action_id) {
                 $.ajax({
-                    type:'get',
-                    url:'/tianyu-paas/actions/detail',
-                    data:{
-                        appId:appinfo.app_id,
-                        actionId:action_id,
-                        level:'2'
+                    type: 'get',
+                    url: '/tianyu-paas/actions/detail',
+                    data: {
+                        appId: overview.id,
+                        actionId: action_id,
+                        level: '2'
                     },
-                    success:function (data) {
-
+                    success: function (data) {
+                        overview.actionInfo = data.data;
                     },
-                    error:function () {
+                    error: function () {
 
                     }
                 })
             },
             getActionDetail() {
                 $.ajax({
-                    type:'get',
-                    url:'/tianyu-paas/actions/detail',
+                    type: 'get',
+                    url: '/tianyu-paas/actions/detail',
                     data: {
-                        appId:appinfo.app_id,
-                        actionId:'1',
-                        level:'1'
+                        appId: appinfo.app_id,
+                        actionId: '1',
+                        level: '1'
                     },
-                    success:function (data) {
-                        console.log(data)
+                    success: function (data) {
+//                        console.log(data)
                     },
-                    error:function (data) {
+                    error: function (data) {
 
                     }
 
                 })
-            }
+            },
+            getId(id) {
+                overview.id = id;
+                overview.infoInit();
+            },
+            infoInit() {
+                var that = this;
+                $.ajax({
+                    type: 'get',
+                    url: '/tianyu-paas/apps/' + overview.id,
+                    success: function (result) {
+//                        console.log(result);
+                        //获取运行状态
+                        if (result.data.status === 0) {
+                            overview.runningState = "正在运行";
+                        } else if (result.data.status === 1) {
+                            overview.runningState = "停止运行";
+                        } else {
+                            overview.runningState = "异常";
+                        }
+                        //获取内存使用状态
+                        overview.memoryUsed = result.data.memoryUsed + "MB";
+                    },
+                    error: function () {
+
+                    }
+                })
+            },
         },
         mounted() {
             this.overviewInit()
 //            this.getAction()
             this.getActionDetail()
-            console.log("overview:"+appinfo.app_id)
+//            console.log("overview:" + appinfo.app_id)
         }
     });
 </script>

@@ -121,7 +121,7 @@
                 <el-input v-model="appName" auto-complete="off"></el-input>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false" size="small">确 定</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false;modify_appName" size="small">确 定</el-button>
                 </div>
             </el-dialog>
         </div>
@@ -263,24 +263,24 @@
         },
         methods: {
             selectPage1(index, indexPath) {
-                console.log(this.pageArr[index - 1]);
+//                console.log(this.pageArr[index - 1]);
                 // 主要就是通过jquery的load方法，加内容加载到元素上
                 $('#con').load(this.pageArr[index - 1], function (response, status, xhr) {
+                    overview.getId(appinfo.app_id);
                 });
             },
             getId(id) {
                 appinfo.app_id = id;
-                appinfo.infoInit()
-            },
+                appinfo.infoInit(id)
+    },
             infoInit() {
                 var that = this;
                 $.ajax({
                     type:'get',
-                    url:'/tianyu-paas/apps/'+that.app_id,
-                    success:function (data) {
-                        that.appName = data.data.name;
-                        console.log("success");
-                        console.log(data)
+                    url:'/tianyu-paas/apps/'+appinfo.app_id,
+                    success:function (result) {
+//                        console.log(result);
+                        that.appName = result.data.name;
                     },
                     error:function () {
 
@@ -292,7 +292,9 @@
                 var r = window.location.search.substr(1).match(reg); //匹配目标参数
                 if (r != null) return unescape(r[2]);
                 return null; //返回参数值
-            }
+            },
+            //修改用户信息
+            modify_appName() {}
         },
         mounted() {
             this.selectPage1(1, '');

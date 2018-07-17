@@ -101,7 +101,7 @@
                 <el-form :model="form">
                     <el-form-item label="选择分组" :label-width="formLabelWidth">
                         <el-select v-model="form.region" placeholder="请选择分组">
-                            <el-option :label="item.id" :value="item" v-for="item in groupNames"
+                            <el-option :label="select_group" :value="item" v-for="item in groupNames"
                                        :key="item.id"></el-option>
                         </el-select>
                     </el-form-item>
@@ -125,6 +125,7 @@
     var install = new Vue({
         el: '#install',
         data: {
+            select_group:'',
             form: {
                 name: '',
                 region: '',
@@ -170,6 +171,23 @@
             ],
         },
         methods: {
+            //创建应用
+            create_by_market() {
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:8080/tianyu-paas/apps/market",
+                    data: {},
+                    success: function (result) {
+                        if (result.code) {
+                            for (i in result.data) {
+                                install.groupNames.push(result.data[i].groupName)
+                            }
+                        } else {
+
+                        }
+                    }
+                })
+            },
             add_group() {
                 $.ajax({
                     type: "post",
@@ -208,13 +226,13 @@
             onSubmit() {
             },
             handleClick(tab, event) {
-                console.log(tab, event);
+//                console.log(tab, event);
             },
             handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
+//                console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
+//                console.log(`当前页: ${val}`);
             },
         },
 
