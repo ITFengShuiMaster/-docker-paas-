@@ -178,9 +178,6 @@
             },
             //创建应用
             create_by_market() {
-                console.log(install.select_group);
-                console.log(install.currentapp);
-                console.log(install.currentapp.name)
                 $.ajax({
                     type: "POST",
                     url: "http://localhost:8080/tianyu-paas/apps/market",
@@ -190,7 +187,9 @@
                         name: install.currentapp.name,
                     },
                     success: function (result) {
-                        console.log(result);
+                        if(result.code === 1) {
+                            alert("创建成功")
+                        }
                     }
                 })
             },
@@ -220,7 +219,6 @@
                     url: "http://localhost:8080/tianyu-paas/app-groups",
                     data: {},
                     success: function (result) {
-                        console.log(result);
                         if (result.code === 1) {
                             install.groupNames = result.data;
 //                            for (i in result.data) {

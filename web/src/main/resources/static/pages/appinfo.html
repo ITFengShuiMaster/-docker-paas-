@@ -130,9 +130,9 @@
                 <el-tooltip class="item" effect="dark" content="跳转到应用对外访问端口对应的域名地址" placement="top">
                     <el-button>访问</el-button>
                 </el-tooltip>
-                <el-button>开启</el-button>
-                <el-button>关闭</el-button>
-                <el-button>重启</el-button>
+                <el-button @click="open">开启</el-button>
+                <el-button @click="close">关闭</el-button>
+                <el-button @click="restart">重启</el-button>
                 <el-button>管理容器</el-button>
             </div>
             <el-button type="primary" style="margin-left: 25px">重新部署</el-button>
@@ -294,7 +294,16 @@
                 return null; //返回参数值
             },
             //修改用户信息
-            modify_appName() {}
+            modify_appName() {},
+            open() {
+
+            },
+            close() {
+
+            },
+            restart() {
+
+            }
         },
         mounted() {
             this.selectPage1(1, '');
