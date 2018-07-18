@@ -1,0 +1,183 @@
+<div id="customer-service">
+    <Breadcrumb>
+        <breadcrumb-item to="index.html">首页</breadcrumb-item>
+        <breadcrumb-item>用户管理</breadcrumb-item>
+    </Breadcrumb>
+    <i-table stripe border show-header highlight-row height="200" style="margin-top: 20px"
+             :columns="column_customer" :data="customer_services_data"></i-table>
+    <div style="margin: 10px;overflow: hidden">
+        <div style="float: right;">
+            <Page :total=customer_services_data.length :current="1" show-sizer show-elevator show-total
+                  @on-change="changePage"></Page>
+        </div>
+    </div>
+    <Modal v-model="show_modal">
+        <p slot="header" style="text-align:center; color: #2D8CF0">
+            <Icon type="information-circled"></Icon>
+            <span>编辑客服信息</span>
+        </p>
+        <div style="text-align:center;">
+            <div style="margin-top: 20px"><span>编号： &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input style="width: 300px" v-model="current_customer_service.customerServiceStaffId"
+                         disabled></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>邮箱： &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input style="width: 300px" v-model="current_customer_service.email" :disabled="!editing"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>昵称： &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input style="width: 300px" v-model="current_customer_service.nick" :disabled="!editing"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>电话： &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input style="width: 300px" v-model="current_customer_service.phone" :disabled="!editing"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>真实姓名：</span>
+                <i-input style="width: 300px" v-model="current_customer_service.realName"
+                         :disabled="!editing"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>创建时间：</span>
+                <i-input style="width: 300px" v-model="current_customer_service.gmtCreate" disabled></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>修改时间：</span>
+                <i-input style="width: 300px" v-model="current_customer_service.gmtModified" disabled></i-input>
+            </div>
+        </div>
+    </Modal>
+
+    <Modal v-model="show_delete" width="360">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="information-circled"></Icon>
+            <span>提示</span>
+        </p>
+        <div style="text-align:center">
+            <h3>是否确认删除此客服</h3>
+            <h3>删除后无法恢复</h3>
+        </div>
+        <div slot="footer">
+            <i-button type="error" size="large" long :loading="deleting" @click="deleteCustomerService">确认
+            </i-button>
+        </div>
+    </Modal>
+</div>
+<script>
+    var customer_service = new Vue({
+        el: '#customer-service',
+        data: {
+            deleting: false,
+            editing: false,
+            // 当前要查看的客服信息，因为render的代码太长，所以用v-model
+            current_customer_service: {},
+            show_modal: false,
+            show_delete: false,
+            // 列名（表头）
+            column_customer: [
+                {
+                    type: 'selection',
+                    width: 60,
+                    align: 'center'
+                },
+                {
+                    title: '编号',
+                    key: 'customerServiceStaffId'
+                }, {
+                    title: '手机号',
+                    key: 'phone'
+                }, {
+                    title: '邮箱',
+                    key: 'email'
+                }, {
+                    title: '昵称',
+                    key: 'nick',
+                    render: (h, params) => {
+                        return h('div', [
+                            h('Icon', {
+                                props: {
+                                    type: 'person'
+                                }
+                            }),
+                            h('strong', params.row.nick)
+                        ]);
+                    }
+                }, {
+                    title: '真实姓名',
+                    key: 'realName'
+                }, {
+                    title: '创建时间',
+                    key: 'gmtCreate'
+                }, {
+                    title: '修改时间',
+                    key: 'gmtModified'
+                }, {
+                    title: '操作',
+                    key: 'action',
+                    width: 320,
+                    align: 'center',
+                    render: (h, params) => {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'success',
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        customer_service.editing = true;
+                                        customer_service.current_customer_service = params.row;
+                                        customer_service.show_modal = true;
+                                    }
+                                }
+                            }, '编辑'),
+                            h('Button', {
+                                props: {
+                                    type: 'error',
+                                },
+                                on: {
+                                    click: () => {
+                                        customer_service.current_customer_service = params.row;
+                                        customer_service.show_delete = true;
+                                    }
+                                }
+                            }, '删除')
+                        ]);
+                    }
+                }
+            ],
+            // 数据
+            customer_services_data: [],
+        },
+        methods: {
+            initCustomerServicesList() {
+                ms.ajax({
+                    url: ms.url.listCustomerServices,
+                    data: {
+                        size: 10,
+                        current: 1
+                    },
+                    success: function (res) {
+                        console.log(res);
+                        if (res.code === ms.result.success) {
+                            customer_service.customer_services_data = res.data.records;
+                        }
+                    },
+                }, this);
+            },
+            deleteCustomerService() {
+                this.deleting = true;
+                ms.ajax({
+                    url: ms.url.deleteCustomerService + customer_service.current_customer_service.customerServiceId,
+                    type: 'delete',
+                    success: function () {
+                        customer_service.deleting = false;
+                    }
+                }, this);
+            },
+            changePage(index) {
+
+            }
+        },
+        mounted() {
+            this.initCustomerServicesList();
+        }
+    });
+</script>
