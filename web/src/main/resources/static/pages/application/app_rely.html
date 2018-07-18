@@ -183,13 +183,13 @@
         },
         methods:{
             relyInit() {
-                var that = this
+                let that = this;
                 $.ajax({
                     type:'get',
                     url:'/tianyu-paas/app-vars/'+appinfo.app_id,
                     success:function (data) {
-                        var result = data.data
-                        for(var i = 0;i<result.length;i++) {
+                        let result = data.data;
+                        for(let i = 0;i<result.length;i++) {
                             that.connectInfo.push(result[i])
                         }
                         console.log(data)
@@ -200,14 +200,14 @@
                 })
             },
             addVar() {
-                var that = this
-                var val = [{
+                let that = this;
+                let val = [{
                     appId: appinfo.app_id, varName: this.ruleForm.var_name,
                     varValue: this.ruleForm.var_val,
                     varExplain: this.ruleForm.var_des,
                     gmtCreate:''
-                }]
-                console.log(val)
+                }];
+                console.log(val);
                 $.ajax({
                     type:'post',
                     url:'/tianyu-paas/app-vars/',
@@ -218,7 +218,7 @@
                         varExplain:this.ruleForm.var_des
                     },
                     success:function (data) {
-                        console.log(data)
+                        console.log(data);
                         that.connectInfo.push(val[0])
 
                     },

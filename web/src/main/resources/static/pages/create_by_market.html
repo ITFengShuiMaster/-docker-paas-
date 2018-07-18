@@ -12,7 +12,8 @@
     .bottom {
         margin-bottom: -21px;
     }
-    #install{
+
+    #install {
         overflow: hidden;
     }
 </style>
@@ -48,37 +49,38 @@
 
         <div>
             <el-row :gutter="60">
-                <el-col :span="8" :xs="24" :sm="11" :md="9" :lg="8" v-for="(o, index) in 9" :key="o"
+                <el-col :span="8" :xs="24" :sm="11" :md="9" :lg="8" v-for="item in apps" :key="item.marketAppId"
                         style="height: 160px;margin: 30px 0;">
-                            <el-card :body-style="{ padding: '0px' }">
-                                <img :src="imageUrl" style="width: 28%; float: left;">
-                                <div style="padding: 20px;">
-                                    简介<br>
-                                    <span style="font-size: 3px">
-                                        <p>xxx</p>
-                                        <p>xxx</p>
-                                    </span>
-                                    <div class="bottom clearfix">
-                                        <el-button class="button" type="text" @click="outerVisible = true"
-                                                   style="margin-left: -10%; width: 120%; background: #d3dce6">安装
-                                        </el-button>
-                                    </div>
-                                </div>
-                            </el-card>
-                        </el-col>
-                    </el-row>
-                </div>
-                <div class="block">
-                    <el-pagination
-                            @size-change="handleSizeChange"
-                            @current-change="handleCurrentChange"
-                            :current-page="currentPage"
-                            :page-sizes="[10, 20, 30, 40]"
-                            :page-size="10"
-                            layout="total, sizes, prev, pager, next, jumper"
-                            :total="pagenum">
-                    </el-pagination>
-                </div>
+                    <el-card :body-style="{ padding: '0px' }">
+                        <img :src="item.imageBase64" style="width: 28%; float: left;">
+                        <div style="padding: 20px;">
+                            <span style="font-size: 22px;margin-left: 50px">
+                                {{item.name}}
+                            </span><br>
+                            <span style="font-size: 16px;margin-left: 100px">
+                                version{{item.version}}
+                            </span>
+                            <div class="bottom clearfix">
+                                <el-button class="button" type="text" @click="outerVisible = true;getapp(item)"
+                                           style="margin-left: -10%; width: 120%; background: #d3dce6">安装
+                                </el-button>
+                            </div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
+        <div class="block">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[10, 20, 30, 40]"
+                    :page-size="10"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="pagenum">
+            </el-pagination>
+        </div>
 
     </div>
     <el-dialog :visible.sync="outerVisible">
@@ -98,11 +100,11 @@
         </el-dialog>
         <el-row>
             <el-col :span="17">
-                <el-form :model="form">
+                <el-form>
                     <el-form-item label="选择分组" :label-width="formLabelWidth">
-                        <el-select v-model="form.region" placeholder="请选择分组">
-                            <el-option :label="select_group" :value="item" v-for="item in groupNames"
-                                       :key="item.id"></el-option>
+                        <el-select v-model="select_group" placeholder="请选择分组">
+                            <el-option :label="item.groupName" :value="item.appGroupId" v-for="item in groupNames"
+                                       :key="item.appGroupId"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-form>
@@ -114,7 +116,7 @@
 
         <div slot="footer" class="dialog-footer">
             <el-button @click="outerVisible = false">取 消</el-button>
-            <el-button type="primary" @click="outerVisible = false">安装</el-button>
+            <el-button type="primary" @click="create_by_market();outerVisible = false">安装</el-button>
         </div>
     </el-dialog>
 
@@ -125,7 +127,8 @@
     var install = new Vue({
         el: '#install',
         data: {
-            select_group:'',
+            apps: [],
+            select_group: '',
             form: {
                 name: '',
                 region: '',
@@ -136,7 +139,7 @@
                 resource: '',
                 desc: ''
             },
-            inputname:'',
+            inputname: '',
             groupNames: [],
             formLabelWidth: '120px',
             outerVisible: false,
@@ -146,10 +149,8 @@
             currentPage: 1,
             pagenum: 100,
             activeName: 'first',
-            options4: [],
-            value9: [],
-            list: [],
             test: ['1', '2', '3', '4', '5', '6'],
+            currentapp: '',
 
             classify: [
                 {
@@ -171,20 +172,25 @@
             ],
         },
         methods: {
+            //获取当前选中的app
+            getapp(data) {
+                install.currentapp = data;
+            },
             //创建应用
             create_by_market() {
+                console.log(install.select_group);
+                console.log(install.currentapp);
+                console.log(install.currentapp.name)
                 $.ajax({
                     type: "POST",
                     url: "http://localhost:8080/tianyu-paas/apps/market",
-                    data: {},
+                    data: {
+                        appGroupId: install.select_group,
+                        market: install.currentapp,
+                        name: install.currentapp.name,
+                    },
                     success: function (result) {
-                        if (result.code) {
-                            for (i in result.data) {
-                                install.groupNames.push(result.data[i].groupName)
-                            }
-                        } else {
-
-                        }
+                        console.log(result);
                     }
                 })
             },
@@ -193,6 +199,7 @@
                     type: "post",
                     url: 'app-groups',
                     data: {
+                        appGroupId: install.select_group,
                         groupName: install.inputname,
                     },
                     success: function (result) {
@@ -213,16 +220,43 @@
                     url: "http://localhost:8080/tianyu-paas/app-groups",
                     data: {},
                     success: function (result) {
-                        if (result.code) {
-                            for (i in result.data) {
-                                install.groupNames.push(result.data[i].groupName)
-                            }
+                        console.log(result);
+                        if (result.code === 1) {
+                            install.groupNames = result.data;
+//                            for (i in result.data) {
+//                                install.groupNames.push(result.data[i].groupName)
+//                            }
                         } else {
 
                         }
                     }
                 })
             },
+            init_market() {
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8080/tianyu-paas/marketApps",
+                    data: {},
+                    success: function (result) {
+                        if (result.code) {
+                            install.apps = result.data.records;
+                        } else {
+
+                        }
+                    }
+                })
+            },
+            convertBase64UrlToBlob(urlData) {
+                const bytes = window.atob(urlData.split(',')[1]);        // 去掉url的头，并转换为byte
+                // 处理异常,将ascii码小于0的转换为大于0
+                const ab = new ArrayBuffer(bytes.length);
+                const ia = new Uint8Array(ab);
+                for (let i = 0; i < bytes.length; i++) {
+                    ia[i] = bytes.charCodeAt(i);
+                }
+                return new Blob([ab], {type: 'image/png'});
+            },
+
             onSubmit() {
             },
             handleClick(tab, event) {
@@ -238,6 +272,7 @@
 
         mounted() {
             this.init_appGroup();
+            this.init_market();
         },
 //
         created() {

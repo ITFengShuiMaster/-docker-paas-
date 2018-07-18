@@ -1,67 +1,66 @@
+<style>
+    html, body {
+        font-family: sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        background: #f0f2f5 !important;
+        color: rgba(0, 0, 0, .65);
+    }
 
-    <style>
-        html, body {
-            font-family: sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            background: #f0f2f5 !important;
-            color: rgba(0, 0, 0, .65);
-        }
+    .a {
+        /*display: inline-block;*/
+        margin: 10px;
+        min-height: 170px;
+        border: 1px solid #e8e8e8;
+        padding: 16px 32px 0;
+        background-color: #fff;
 
-        .a {
-            /*display: inline-block;*/
-            margin: 10px;
-            min-height: 170px;
-            border: 1px solid #e8e8e8;
-            padding: 16px 32px 0;
-            background-color: #fff;
+    }
 
-        }
+    .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+        padding: 40px 0 40px 0;
+        margin: 20px;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
-            padding: 40px 0 40px 0;
-            margin: 20px;
-            border-bottom: 1px solid #e8e8e8;
-        }
+    .text {
+        text-align: center;
+    }
 
-        .text {
-            text-align: center;
-        }
+    .infos div {
+        float: left;
+        padding: 20px;
+        margin: 10px;
+    }
 
-        .infos div {
-            float: left;
-            padding: 20px;
-            margin: 10px;
-        }
+    .infoinfos {
+        border: 1px solid #e8e8e8;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        min-width: 800px;
+        margin-left: 100px;
+    }
 
-        .infoinfos {
-            border: 1px solid #e8e8e8;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            min-width: 800px;
-            margin-left: 100px;
-        }
+    .bottom {
+        padding: 20px;
+        margin: 10px;
+        background: #fff;
+        min-height: 150px;
+    }
 
-        .bottom {
-            padding: 20px;
-            margin: 10px;
-            background: #fff;
-            min-height: 150px;
-        }
+    .makeInfo {
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .makeInfo {
-            padding: 20px;
-            background: #fff;
-            border-bottom: 1px solid #e8e8e8;
-        }
-
-        .button {
-            text-align: right;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-    </style>
+    .button {
+        text-align: right;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+</style>
 
 <div id="port">
     <div class="button">
@@ -69,7 +68,7 @@
     </div>
     <el-dialog title="添加端口" :visible.sync="dialogFormVisible" width="25%">
         <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
-                 label-position="left" label-width="80px" >
+                 label-position="left" label-width="80px">
             <el-form-item label="端口号" prop="var_name">
                 <el-input placeholder="请填写端口，范围1025-65535" v-model="ruleForm.port" style="width: 300px"></el-input>
             </el-form-item>
@@ -98,10 +97,10 @@
                     <div class="first a">
                         <div>
                             <el-table
-                                    :data="portInfo"
+                                    :data="tableData"
                                     style="width: 100%;">
                                 <el-table-column
-                                        prop="num"
+                                        prop="hostPort"
                                         label="端口号"
                                         width="180">
                                 </el-table-column>
@@ -111,12 +110,12 @@
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="serviceinfo"
+                                        prop=""
                                         label="服务信息"
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="domain"
+                                        prop="outsideAccessUrl"
                                         label="绑定域名"
                                         width="180">
                                 </el-table-column>
@@ -141,10 +140,18 @@
     var port = new Vue({
         el: '#port',
         data: {
-            portInfo: [],
+            portInfo: [
+                {
+                    num: null,
+                    protocol: "",
+                    serviceinfo: "",
+                    domain: ""
+                }
+            ],
+            tableData: [],
             ruleForm: {
                 port: '',
-                protocol:''
+                protocol: ''
             },
             dialogFormVisible: false,
             options: [{
@@ -165,15 +172,29 @@
         methods: {
             portInit() {
                 $.ajax({
-                    type:'get',
+                    type: 'get',
                     url: '/tianyu-paas/app-ports/' + appinfo.app_id,
-                    data: {
+                    data: {},
+                    success: function (data) {
+                        console.log(data);
+                        if (data.code === 1) {
+                            port.tableData = data.data;
+                            for(let i=0; i<port.tableData.length; i++) {
+                                if(port.tableData[i].protocol === 0) {
+                                    port.tableData[i].protocol = "http"
+                                } else if(port.tableData[i].protocol === 1) {
+                                    port.tableData[i].protocol = "mysql"
+                                } else if(port.tableData[i].protocol === 2) {
+                                    port.tableData[i].protocol = "tcp"
+                                } else {
+                                    port.tableData[i].protocol = "udp"
+                                }
+                            }
 
+                            console.log(port.tableData);
+                        }
                     },
-                    success:function (data) {
-                        console.log(data)
-                    },
-                    error:function () {
+                    error: function () {
 
                     }
 
@@ -181,17 +202,18 @@
             },
             addPort() {
                 $.ajax({
-                    type:'post',
-                    url:'/tianyu-paas/app-ports',
+                    type: 'post',
+                    url: '/tianyu-paas/app-ports',
                     data: {
-                        appId:appinfo.app_id,
-                        port:this.ruleForm.port,
-                        protocol:this.ruleForm.protocol
+                        appId: appinfo.app_id,
+                        port: this.ruleForm.port,
+                        protocol: this.ruleForm.protocol
                     },
-                    success:function (data) {
-                        console.log(data)
+                    success: function (data) {
+                        console.log(data);
+
                     },
-                    error:function () {
+                    error: function () {
 
                     }
                 })
