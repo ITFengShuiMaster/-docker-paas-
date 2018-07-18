@@ -4,6 +4,7 @@ import cn.edu.jit.tianyu_paas.shared.entity.Notice;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.web.service.NoticeService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ public class NoticeController {
         this.noticeService = noticeService;
     }
 
+    @ApiOperation("获取公告列表")
     @GetMapping
     public TResult listNotices() {
         return TResult.success(noticeService.selectList(new EntityWrapper<Notice>().setSqlSelect("notice_id as noticeId", "title", "content", "gmt_create as gmtCreate")));

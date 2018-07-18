@@ -99,6 +99,7 @@ public class AppGroupController {
      * @return
      * @author 倪龙康
      */
+    @ApiOperation("根据appGroupId来获取app")
     @GetMapping("/{appGroupId}")
     public TResult listGroupAppsInfo(@PathVariable long appGroupId) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);

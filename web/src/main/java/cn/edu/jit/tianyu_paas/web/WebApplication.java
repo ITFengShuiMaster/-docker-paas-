@@ -9,8 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
+@EnableSwagger2
 @MapperScan("cn.edu.jit.tianyu_paas.web.mapper")
 public class WebApplication implements WebMvcConfigurer {
 
@@ -22,6 +24,7 @@ public class WebApplication implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(globalInterceptor())
                 .addPathPatterns("/**")
+                .excludePathPatterns("swagger**")
                 .excludePathPatterns("/user/login", "/user/register")
                 .excludePathPatterns("/error");
 

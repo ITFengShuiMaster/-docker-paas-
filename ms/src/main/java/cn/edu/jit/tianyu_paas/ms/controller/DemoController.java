@@ -5,6 +5,7 @@ import cn.edu.jit.tianyu_paas.shared.entity.Demo;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,16 +28,19 @@ public class DemoController {
         this.session = session;
     }
 
+    @ApiOperation("获取demo列表")
     @GetMapping
     public TResult listDemos() {
         return TResult.success(demoService.selectList(new EntityWrapper<Demo>()));
     }
 
+    @ApiOperation("根据id获取demo")
     @GetMapping("{demoId}")
     public TResult getDemoById(@PathVariable(required = true) Long demoId) {
         return TResult.success(demoService.selectById(demoId));
     }
 
+    @ApiOperation("插入demo")
     @PostMapping
     public TResult insertDemo(Demo demo) {
         demo.setGmtCreate(new Date());
@@ -47,6 +51,7 @@ public class DemoController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    @ApiOperation("更新demo")
     @PutMapping
     public TResult updateDemoById(Demo demo) {
         if (demoService.update(demo, new EntityWrapper<Demo>().eq("demo_id", demo.getDemoId()))) {
@@ -56,6 +61,7 @@ public class DemoController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    @ApiOperation("删除demo")
     @DeleteMapping("{demoId}")
     public TResult deleteDemoById(@PathVariable(required = true) Long demoId) {
         if (demoService.deleteById(demoId)) {

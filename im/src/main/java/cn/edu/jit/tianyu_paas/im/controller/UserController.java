@@ -10,18 +10,18 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 /**
- *
  * @author 汪继友
  * @since 2018-07-07
  */
-@Controller
-@RequestMapping("/user")
+@RestController
+@RequestMapping("/users")
 public class UserController {
 
     private UserService userService;
@@ -48,15 +48,22 @@ public class UserController {
     }
 
     /**
-     *
      * @author 张万平
      * @since 2018-07-07
      */
     @ApiOperation("添加用户")
     @PostMapping
-    public TResult userAdd(User user) {
+    public TResult userAdd(@Validated User user) {
         user.setGmtCreate(new Date());
+        user.setGmtModified(new Date());
         user.setPwd(PassUtil.getMD5(user.getPwd()));
+        if (user.getType() == null) {
+            user.setType(User.TYPE_COMMON);
+        }
+        int dbCount = userService.selectCount(new EntityWrapper<User>().eq("phone", user.getPhone()).or().eq("email", user.getEmail()));
+        if (dbCount > 0) {
+            return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
+        }
         if (!userService.insert(user)) {
             return TResult.failure(TResultCode.FAILURE);
         }
@@ -64,7 +71,6 @@ public class UserController {
     }
 
     /**
-     *
      * @author 张万平
      * @since 2018-07-07
      */
@@ -78,7 +84,6 @@ public class UserController {
     }
 
     /**
-     *
      * @author 张万平
      * @since 2018-07-07
      */
@@ -89,7 +94,7 @@ public class UserController {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
         }
         user.setGmtModified(new Date());
-        if (!userService.updateById(user)){
+        if (!userService.updateById(user)) {
             return TResult.failure(TResultCode.FAILURE);
         }
         return TResult.success(user);

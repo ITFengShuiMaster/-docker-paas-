@@ -23,10 +23,10 @@ public class GlobalInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) {
         logger.debug(httpServletRequest.getRequestURI());
         HttpSession session = httpServletRequest.getSession();
-        logger.debug("paas web runtime: " + runtime);
         if (!runtime) {
             logger.debug("debug mode test user: " + testUserId);
             session.setAttribute(Constants.SESSION_KEY_ADMIN_ID, testUserId);
+            return true;
         }
         if (session == null || session.getAttribute(Constants.SESSION_KEY_ADMIN_ID) == null) {
             logger.warn("session null");
