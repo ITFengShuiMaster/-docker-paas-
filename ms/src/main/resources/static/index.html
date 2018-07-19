@@ -3,6 +3,7 @@
     <meta charset="utf-8">
     <title>iview example</title>
     <script src="lib/vue/vue.min.js"></script>
+    <script src="lib/echarts/echarts.js"></script>
     <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
     <script src="lib/iView/iView.min.js"></script>
     <script src="lib/jquery/jquery_3.3.1.js"></script>
@@ -86,9 +87,9 @@
                                 <Icon type="ios-pulse"></Icon>
                                 访问量查询
                             </template>
-                            <menu-item name="5">当前访问量查询</menu-item>
-                            <menu-item name="6">各天平均访问量查询</menu-item>
-                            <menu-item name="7">本月每天访问量查询</menu-item>
+                            <menu-item name="5">总览</menu-item>
+                            <menu-item name="6">当月每天</menu-item>
+                            <menu-item name="7">今年每月</menu-item>
                             <menu-item name="8">本年每月访问量查询</menu-item>
                         </Submenu>
                         <Submenu name="1000">
@@ -137,7 +138,7 @@
         data() {
             return {
                 pageArr: ['pages/user_management/user_info.html', 'pages/user_management/push_message.html', 'pages/user_management/long_time_without_login.html',
-                    'pages/user_management/arrearage_user.html', 'pages/notice_push.html', '', '', '', '', 'pages/app/app.html', 'pages/app/app_demo.html'],
+                    'pages/user_management/arrearage_user.html', 'pages/notice_push.html', 'pages/visits_overview.html', 'pages/visits_by_year.html', 'pages/visits_by_month.html', 'echart_test2.html', 'pages/app/app.html', 'pages/app/app_demo.html'],
                 name: 'ltl',
                 isCollapsed: false
             };

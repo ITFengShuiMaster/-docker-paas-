@@ -267,6 +267,9 @@
                 // 主要就是通过jquery的load方法，加内容加载到元素上
                 $('#con').load(this.pageArr[index - 1], function (response, status, xhr) {
                     overview.getId(appinfo.app_id);
+                    if(index == 3) {
+                        log.getId(appinfo.app_id)
+                    }
                 });
             },
             getId(id) {
