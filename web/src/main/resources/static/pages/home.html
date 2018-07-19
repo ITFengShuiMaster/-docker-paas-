@@ -222,7 +222,7 @@
         },
         methods: {
             homeInit() {
-                var that = this
+                var that = this;
                 $.ajax({
                     type:'get',
                     url:'/tianyu-paas/apps/lists',
@@ -261,7 +261,7 @@
                     home.status = 0
                 }
                 console.log(home.status);
-                console.log(home.form.name)
+                console.log(home.form.name);
 
                 $.ajax({
                     type:'get',

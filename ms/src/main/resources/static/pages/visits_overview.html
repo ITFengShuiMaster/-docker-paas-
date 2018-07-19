@@ -16,7 +16,7 @@
                 let chart2 = echarts.init(document.getElementById('scatter'));
                 chart2.title = '单轴散点图';
 
-                let hours = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+                let hours = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
                 let days = ['Saturday', 'Friday', 'Thursday',
                     'Wednesday', 'Tuesday', 'Monday', 'Sunday'];
 
@@ -52,7 +52,7 @@
                         type: 'scatter',
                         data: [],
                         symbolSize: function (dataItem) {
-                            return dataItem[1] * 4*3;
+                            return dataItem[1] * 4 * 3;
                         }
                     });
                 });
@@ -75,7 +75,7 @@
                             for (let i in result.data) {
                                 for (let j in result.data[i]) {
                                     let tempArr = [];
-                                    tempArr.push(parseInt(i),parseInt(j),result.data[i][j]);
+                                    tempArr.push(parseInt(i), parseInt(j), result.data[i][j]);
                                     resArr.push(tempArr);
                                 }
                             }
@@ -91,7 +91,7 @@
                 })
             },
         },
-        mounted(){
+        mounted() {
             this.getViewsDayOfWeekAvg();
         }
     })

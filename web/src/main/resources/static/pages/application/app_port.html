@@ -179,12 +179,12 @@
                         console.log(data);
                         if (data.code === 1) {
                             port.tableData = data.data;
-                            for(let i=0; i<port.tableData.length; i++) {
-                                if(port.tableData[i].protocol === 0) {
+                            for (let i = 0; i < port.tableData.length; i++) {
+                                if (port.tableData[i].protocol === 0) {
                                     port.tableData[i].protocol = "http"
-                                } else if(port.tableData[i].protocol === 1) {
+                                } else if (port.tableData[i].protocol === 1) {
                                     port.tableData[i].protocol = "mysql"
-                                } else if(port.tableData[i].protocol === 2) {
+                                } else if (port.tableData[i].protocol === 2) {
                                     port.tableData[i].protocol = "tcp"
                                 } else {
                                     port.tableData[i].protocol = "udp"

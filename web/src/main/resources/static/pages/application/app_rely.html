@@ -189,7 +189,7 @@
                     url:'/tianyu-paas/app-vars/'+appinfo.app_id,
                     success:function (data) {
                         let result = data.data;
-                        for(let i = 0;i<result.length;i++) {
+                        for (let i = 0; i < result.length; i++) {
                             that.connectInfo.push(result[i])
                         }
                         console.log(data)

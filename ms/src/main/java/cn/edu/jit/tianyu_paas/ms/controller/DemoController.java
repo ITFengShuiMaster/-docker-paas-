@@ -37,7 +37,7 @@ public class DemoController {
     @ApiOperation("根据id获取demo")
     @GetMapping("{demoId}")
     public TResult getDemoById(@PathVariable(required = true) Long demoId) {
-        if (demoService.selectCount(new EntityWrapper<Demo>().eq("demo_id",demoId))==0){
+        if (demoService.selectCount(new EntityWrapper<Demo>().eq("demo_id", demoId)) == 0) {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
         }
         return TResult.success(demoService.selectById(demoId));
