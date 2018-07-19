@@ -1,0 +1,98 @@
+<body>
+<div id="visits_overvidew">
+    <div id="scatter" style="width: 100%;height: 90%"></div>
+</div>
+</body>
+
+<script>
+    var visits_overvidew = new Vue({
+        el: "#visits_overvidew",
+        data: {
+            data: [],
+        },
+        methods: {
+            // 加载echarts，单轴散点图，每月每周几的访问量展示
+            initScatterOnSingleAxis() {
+                let chart2 = echarts.init(document.getElementById('scatter'));
+                chart2.title = '单轴散点图';
+
+                let hours = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+                let days = ['Saturday', 'Friday', 'Thursday',
+                    'Wednesday', 'Tuesday', 'Monday', 'Sunday'];
+
+                option = {
+                    tooltip: {
+                        position: 'top'
+                    },
+                    title: [],
+                    singleAxis: [],
+                    series: []
+                };
+
+                echarts.util.each(days, function (day, idx) {
+                    option.title.push({
+                        textBaseline: 'middle',
+                        top: (idx + 0.5) * 100 / 7 + '%',
+                        text: day
+                    });
+                    option.singleAxis.push({
+                        left: 150,
+                        type: 'category',
+                        boundaryGap: false,
+                        data: hours,
+                        top: (idx * 100 / 7 + 5) + '%',
+                        height: (100 / 7 - 10) + '%',
+                        axisLabel: {
+                            interval: 2
+                        }
+                    });
+                    option.series.push({
+                        singleAxisIndex: idx,
+                        coordinateSystem: 'singleAxis',
+                        type: 'scatter',
+                        data: [],
+                        symbolSize: function (dataItem) {
+                            return dataItem[1] * 4*3;
+                        }
+                    });
+                });
+
+                echarts.util.each(this.data, function (dataItem) {
+                    option.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+                });
+
+                chart2.setOption(option);
+            },
+
+            getViewsDayOfWeekAvg() {
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8081/ms/logs/views-days-month-of-year',
+                    success: function (result) {
+                        if (result.code === 1) {
+                            console.log(result);
+                            let resArr = [];
+                            for (let i in result.data) {
+                                for (let j in result.data[i]) {
+                                    let tempArr = [];
+                                    tempArr.push(parseInt(i),parseInt(j),result.data[i][j]);
+                                    resArr.push(tempArr);
+                                }
+                            }
+                            visits_overvidew.data = resArr;
+                            visits_overvidew.initScatterOnSingleAxis();
+
+                        } else {
+                        }
+                    },
+                    error: function () {
+                        console.log("失败")
+                    }
+                })
+            },
+        },
+        mounted(){
+            this.getViewsDayOfWeekAvg();
+        }
+    })
+</script>

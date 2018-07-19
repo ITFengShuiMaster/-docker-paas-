@@ -1,6 +1,7 @@
 package cn.edu.jit.tianyu_paas.ms.controller;
 
 
+import cn.edu.jit.tianyu_paas.ms.global.Constants;
 import cn.edu.jit.tianyu_paas.ms.service.MessageService;
 import cn.edu.jit.tianyu_paas.ms.service.UserMessageService;
 import cn.edu.jit.tianyu_paas.shared.entity.Message;
@@ -59,6 +60,8 @@ public class MessageController {
     @ApiOperation("插入一条message记录")
     @PostMapping
     public TResult insertMessage(@Valid Message message, Long[] userIds) {
+        Long adminId = (Long) session.getAttribute(Constants.SESSION_KEY_ADMIN_ID);
+        message.setAdminId(adminId);
         message.setGmtCreate(new Date());
         message.setGmtModified(new Date());
         if (!messageService.insert(message)) {

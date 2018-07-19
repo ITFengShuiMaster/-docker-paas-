@@ -44,12 +44,12 @@ public class UserMessageController {
     }
 
     /**
-     * 返回用户未读消息
+     * 返回用户所有消息
      * @author 卢越
      * @since 2018-07-01
      * @return
      */
-    @ApiOperation("返回用户未读消息")
+    @ApiOperation("返回用户所有消息")
     @GetMapping
     public TResult listUserMessages() {
         List<UserMessage> lists = userMessageService.selectList(new EntityWrapper<UserMessage>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)));

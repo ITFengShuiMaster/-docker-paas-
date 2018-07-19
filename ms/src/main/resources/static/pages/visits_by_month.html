@@ -1,0 +1,165 @@
+<body>
+<div id="visits_month">
+    <div id="echart_table" style="width: 100%;height: 90%"></div>
+</div>
+</body>
+
+<script>
+    var visits_month = new Vue({
+        el: "#visits_month",
+        data: {
+            table_data_days: [],
+            table_data_views: [],
+        },
+        methods: {
+            init_table() {
+                var mycharts = echarts.init(document.getElementById('echart_table'));
+                var dates = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+                    values = [4, 3, 5, 2, 3, 6, 2];
+                option = {
+                    title: {
+                        text: ''
+                    },
+                    tooltip: {
+                        triggerOn: 'onmousemove',
+                        formatter: function (params) {
+                            return '时间: ' + params.name + '<br>浏览量: ' + params.value + '人';
+                        }
+                    },
+                    xAxis: {
+                        boundaryGap: false,
+                        data: this.table_data_days,
+                        axisLabel: {
+                            color: '#000000'
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#BFBFBF'
+                            }
+                        }
+                    },
+                    yAxis: {
+                        axisLabel: {
+                            color: '#000000'
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#BFBFBF'
+                            }
+                        }
+                    },
+                    visualMap: {
+                        top: 100,
+                        right: 0,
+                        pieces: [{
+                            gt: 0,
+                            lte: 5,
+                            color: '#096'
+                        }, {
+                            gt: 5,
+                            lte: 10,
+                            color: '#ffde33'
+                        }, {
+                            gt: 10,
+                            lte: 15,
+                            color: '#ff9933'
+                        }, {
+                            gt: 15,
+                            lte: 20,
+                            color: '#cc0033'
+                        }, {
+                            gt: 20,
+                            lte: 25,
+                            color: '#660099'
+                        }, {
+                            gt: 20,
+                            color: '#7e0023'
+                        }],
+                        outOfRange: {
+                            color: '#999'
+                        }
+                    },
+                    dataZoom: [{
+                        startValue: '星期一'
+                    }, {
+                        type: 'inside'
+                    }],
+                    series: [{
+                        type: 'line',
+                        data: visits_month.table_data_views,
+                        markLine: {
+                            silent: true,
+                            data: [{
+                                yAxis: 5
+                            }, {
+                                yAxis: 10
+                            }, {
+                                yAxis: 15
+                            }, {
+                                yAxis: 20
+                            }, {
+                                yAxis: 25
+                            }]
+                        }
+
+                        /*,
+                    label:{
+                        normal:{
+                            show:true//圆点上显示值
+                        }
+                    }*/
+                    }
+                    ]
+
+                };
+
+                mycharts.setOption(option);
+            },
+            get_views_day_of_month() {
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8081/ms/logs/views-day-of-month',
+                    success: function (result) {
+                        console.log(result);
+                        if (result.code) {
+                            for (i in result.data) {
+                                visits_month.table_data_days.push(result.data[i].day + "日");
+                                visits_month.table_data_views.push(result.data[i].views);
+                            }
+                        } else {
+                        }
+                        visits_month.init_table();
+                    },
+                    error: function () {
+                        console.log("失败")
+                    }
+                })
+            },
+            get_views_month_of_year() {
+                $.ajax({
+                    type: "get",
+                    url: 'http://localhost:8081/ms/logs/views-month-of-year',
+                    success: function (result) {
+                        console.log(result);
+                        if (result.code) {
+                            for (i in result.data) {
+                                visits_month.table_data_days.push(result.data[i].month + "月");
+                                visits_month.table_data_views.push(result.data[i].views);
+                            }
+                            console.log(visits_month.table_data_days);
+                        } else {
+                        }
+                        visits_month.init_table();
+                    },
+                    error: function () {
+                        console.log("失败")
+                    }
+                })
+            },
+        },
+        mounted(){
+            this.get_views_day_of_month();
+//            this.get_views_month_of_year();
+        },
+    })
+</script>

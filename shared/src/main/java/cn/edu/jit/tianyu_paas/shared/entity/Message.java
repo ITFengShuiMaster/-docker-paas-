@@ -23,7 +23,6 @@ public class Message implements Serializable {
 
     @TableId(value = "message_id", type = IdType.AUTO)
     private Long messageId;
-    @NotNull
     private Long adminId;
     @NotBlank
     private String content;

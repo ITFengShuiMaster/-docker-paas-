@@ -79,7 +79,6 @@
                         </div>
                     </div>
                 </el-col>
-
             </el-row>
         </div>
 
@@ -94,24 +93,23 @@
 
         },
         methods :{
-            logInit() {
+            getId(id) {
                 $.ajax({
                     type:'get',
-                    url:'/tianyu-paas/app-log/'+appinfo.app_id,
+                    url:'/tianyu-paas/app-log/'+ id,
                     data: {
 
                     },
                     success:function (data) {
-                        console.log(data)
+                        console.log(data);
                     },
                     error:function (data) {
 
                     }
                 })
-            }
+            },
         },
         mounted() {
-            this.logInit()
         }
 
 
