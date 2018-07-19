@@ -253,11 +253,16 @@ public class AppController {
     @ApiOperation("从应用市场创建应用")
     @PostMapping("/market")
     public TResult createAppByMarket(@Validated App app, @Validated AppInfoByMarket market) {
+        long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         MarketApp marketApp = marketAppService.selectById(market.getMarketAppId());
         if (marketApp == null) {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
         }
         initApp(app, AppCreateMethodEnum.MARKET);
+        app.setUserId(userId);
+        app.setGmtCreate(new Date());
+        app.setStatus(1);
+        app.setCreateMethod(1);
         if (appService.insert(app)) {
             market.setAppId(app.getAppId());
             appInfoByMarketService.insert(market);

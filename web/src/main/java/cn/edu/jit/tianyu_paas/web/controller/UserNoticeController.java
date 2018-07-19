@@ -26,7 +26,7 @@ import java.util.List;
  * @since 2018-07-02
  */
 @RestController
-@RequestMapping("user-notices")
+@RequestMapping("/user-notices")
 public class UserNoticeController {
 
     private final HttpSession session;

@@ -10,6 +10,7 @@ import cn.edu.jit.tianyu_paas.im.service.UserService;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +50,14 @@ public class MessageController {
      *
      * @return
      */
+    @ApiOperation("列出用户的所有消息")
     @GetMapping
     public TResult listMessages() {
         long userId = ((User) session.getAttribute(MinaConstant.SESSION_KEY_USER)).getUserId();
         return TResult.success(messageService.selectList(new EntityWrapper<Message>().eq("sender", userId)));
     }
 
+    @ApiOperation("获取一个用户的所有消息")
     @GetMapping("/{userId}")
     public TResult listMessagesWithUser(@PathVariable long userId) {
         User user = (User) session.getAttribute(MinaConstant.SESSION_KEY_USER);
