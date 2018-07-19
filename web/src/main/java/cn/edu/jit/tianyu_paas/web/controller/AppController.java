@@ -5,10 +5,7 @@ import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.enums.AppCreateMethodEnum;
 import cn.edu.jit.tianyu_paas.shared.enums.AppStatusEnum;
 import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
-import cn.edu.jit.tianyu_paas.shared.util.DockerHelperUtil;
-import cn.edu.jit.tianyu_paas.shared.util.DockerJavaUtil;
-import cn.edu.jit.tianyu_paas.shared.util.TResult;
-import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
+import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
 import cn.edu.jit.tianyu_paas.web.util.YmSocket;
@@ -16,16 +13,17 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.github.dockerjava.api.DockerClient;
-import com.spotify.docker.client.LogStream;
+import com.spotify.docker.client.messages.PortBinding;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author 倪龙康，卢越
@@ -55,9 +53,17 @@ public class AppController {
     private final MachineService machineService;
     private final MarketAppPortService marketAppPortService;
     private final MarketAppVarService marketAppVarService;
+    private final MountSettingsService mountSettingsService;
+    @Value("${docker_run.host.address}")
+    private String hostName;
+    @Value("${docker_run.host.username}")
+    private String userName;
+    @Value("${docker_run.host.pwd}")
+    private String pwd;
+
 
     @Autowired
-    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, MachinePortService machinePortService, MachineService machineService, MarketAppPortService marketAppPortService, MarketAppVarService marketAppVarService, UserService userService, ActionService actionService) {
+    public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, MachinePortService machinePortService, MachineService machineService, MarketAppPortService marketAppPortService, MarketAppVarService marketAppVarService, UserService userService, ActionService actionService, MountSettingsService mountSettingsService) {
         this.appService = appService;
         this.appInfoByCustomService = appInfoByCustomService;
         this.session = session;
@@ -76,6 +82,7 @@ public class AppController {
         this.marketAppVarService = marketAppVarService;
         this.userService = userService;
         this.actionService = actionService;
+        this.mountSettingsService = mountSettingsService;
     }
 
     private void initApp(App app, AppCreateMethodEnum createMethodEnum) {
@@ -85,6 +92,15 @@ public class AppController {
         app.setStatus(AppStatusEnum.SHUTDOWN.getCode());
         app.setCreateMethod(createMethodEnum.getCode());
         // TODO 检测仓库，并给应用设置memory, disk等
+    }
+
+    private void initAction(Action action, App app) {
+        User user = userService.selectById((Long) session.getAttribute(Constants.SESSION_KEY_USER_ID));
+        action.setUserId(user.getUserId());
+        action.setUserName(user.getName());
+        action.setAppId(app.getAppId());
+        action.setAppName(app.getName());
+        action.setGmtCreate(new Date());
     }
 
     /**
@@ -185,11 +201,33 @@ public class AppController {
     @ApiOperation("从docker image创建应用")
     @PostMapping("/docker-image")
     public TResult createAppByDockerImage(@Validated App app, @Validated AppInfoByDockerImage dockerImage) {
+        Action action = new Action();
         if (appService.selectOne(new EntityWrapper<App>().eq("name", app.getName())) != null) {
             return TResult.failure("容器名已存在");
         }
         initApp(app, AppCreateMethodEnum.DOCKER_IMAGE);
-        return appService.initContainer(app, dockerImage);
+
+        TResult tResult = appService.initContainer(app, dockerImage.getImage());
+
+        if (tResult.getCode() == 1) {
+            dockerImage.setAppId(app.getAppId());
+            appInfoByDockerImageService.insert(dockerImage);
+
+            Machine machine = machineService.selectById(app.getMachineId());
+            initAction(action, app);
+            action.setAction(3);
+
+            if (DockerClientUtil.isRunning(machine.getMachineIp(), app.getContainerId())) {
+                action.setStatus(0);
+            } else {
+                action.setStatus(1);
+            }
+
+            actionService.insert(action);
+            return tResult;
+        }
+
+        return tResult;
     }
 
     /**
@@ -201,14 +239,39 @@ public class AppController {
     @ApiOperation("用docker run命令创建应用")
     @PostMapping("/docker-run")
     public TResult createAppByDockerRun(@Validated App app, @Validated AppInfoByDockerRun dockerRun) {
+        Action action = new Action();
         initApp(app, AppCreateMethodEnum.DOCKER_RUN);
 
-        if (appService.insert(app)) {
+        if (!dockerRun.getCmd().contains("-d")) {
+            return TResult.failure("请添加-d参数以保证容器后台正常运行");
+        }
+
+        String res = DockerRunUtils.dockerRunCmd(hostName, userName, pwd, dockerRun.getCmd()).trim();
+
+        if (!StringUtil.isEmpty(res)) {
+            app.setContainerId(res);
+            app.setMachineId(Long.parseLong("1"));
+            app.setMarketAppId(Long.parseLong("1"));
+
+            if (DockerClientUtil.isRunning(hostName, res)) {
+                app.setStatus(1);
+                action.setStatus(0);
+            } else {
+                app.setStatus(0);
+                action.setStatus(1);
+            }
+
+            appService.insert(app);
+            initAction(action, app);
+            action.setAction(3);
+            actionService.insert(action);
             dockerRun.setAppId(app.getAppId());
             appInfoByDockerRunService.insert(dockerRun);
+
             return TResult.success();
         }
-        return TResult.failure(TResultCode.BUSINESS_ERROR);
+
+        return TResult.failure("运行命令有误，请重新尝试！");
     }
 
     /**
@@ -253,43 +316,34 @@ public class AppController {
     @ApiOperation("从应用市场创建应用")
     @PostMapping("/market")
     public TResult createAppByMarket(@Validated App app, @Validated AppInfoByMarket market) {
+        Action action = new Action();
+
         MarketApp marketApp = marketAppService.selectById(market.getMarketAppId());
         if (marketApp == null) {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
         }
         initApp(app, AppCreateMethodEnum.MARKET);
-        if (appService.insert(app)) {
+
+        TResult tResult = appService.initContainer(app, marketApp.getName());
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (tResult.getCode() == 1) {
             market.setAppId(app.getAppId());
             appInfoByMarketService.insert(market);
-            return TResult.success();
-        }
-        return TResult.failure(TResultCode.BUSINESS_ERROR);
-    }
 
-    @ApiOperation("获取app日志")
-    @GetMapping("/logs/{appId}")
-    public TResult listLogs(@PathVariable(required = true) Long appId) {
-        App app = appService.selectById(appId);
-        if (app == null) {
-            return TResult.failure("没有该容器");
-        }
+            initAction(action, app);
+            action.setAction(3);
 
-        try {
-            String reLogs = DockerHelperUtil.query(DockerSSHConstants.IP, docker ->
-            {
-                final String logs;
-                try (LogStream stream = docker.logs(app.getContainerId(), com.spotify.docker.client.DockerClient.LogsParam.stdout(), com.spotify.docker.client.DockerClient.LogsParam.stderr())) {
-                    logs = stream.readFully();
-                }
-                return logs;
-            });
+            if (DockerClientUtil.isRunning(machine.getMachineIp(), app.getContainerId())) {
+                action.setStatus(0);
+            } else {
+                action.setStatus(1);
+            }
 
-            return TResult.success(reLogs.split("\\n"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return TResult.failure(TResultCode.BUSINESS_ERROR);
+            actionService.insert(action);
+            return tResult;
         }
 
+        return tResult;
     }
 
     /**
@@ -311,5 +365,154 @@ public class AppController {
             }
         }
         return TResult.failure(TResultCode.BUSINESS_ERROR);
+    }
+
+    /**
+     * 启动容器
+     *
+     * @param appId
+     * @return
+     */
+    @GetMapping("/start/{appId}")
+    public TResult startContainer(@PathVariable Long appId) {
+        App app = appService.selectById(appId);
+        if (app == null) {
+            return TResult.failure(TResultCode.RESULE_DATA_NONE);
+        }
+
+        if (app.getStatus() == 1) {
+            return TResult.failure("容器已经启动");
+        }
+
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (machine == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
+        Action action = new Action();
+        initAction(action, app);
+        action.setAction(1);
+
+        if (!DockerClientUtil.startContainer(machine.getMachineIp(), app.getContainerId())) {
+            action.setStatus(1);
+            actionService.insert(action);
+            return TResult.failure("启动失败");
+        }
+
+        if (!DockerClientUtil.isRunning(machine.getMachineIp(), app.getContainerId())) {
+            action.setStatus(1);
+            actionService.insert(action);
+            return TResult.failure("启动失败");
+        }
+
+        action.setStatus(0);
+        actionService.insert(action);
+
+        app.setStatus(1);
+        appService.updateById(app);
+        return TResult.success();
+    }
+
+    @GetMapping("/stop/{appId}")
+    public TResult stopContainer(@PathVariable Long appId) {
+        App app = appService.selectById(appId);
+        if (app == null) {
+            return TResult.failure(TResultCode.RESULE_DATA_NONE);
+        }
+
+        if (app.getStatus() == 0) {
+            return TResult.failure("容器已经关闭");
+        }
+
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (machine == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
+        if (!DockerClientUtil.stopContainer(machine.getMachineIp(), app.getContainerId())) {
+            return TResult.failure("关闭失败");
+        }
+
+        app.setStatus(0);
+        appService.updateById(app);
+        return TResult.success();
+    }
+
+    /**
+     * 容器重启
+     *
+     * @param appId
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation("容器重启")
+    @GetMapping("/restart-container/{appId}")
+    public TResult restartContainer(@PathVariable(required = true) Long appId) throws Exception {
+        App app = appService.selectById(appId);
+        Machine machine = machineService.selectById(app.getMachineId());
+        List<MarketApp> marketApps = marketAppService.selectList(new EntityWrapper<MarketApp>());
+
+        if (app == null) {
+            return TResult.failure("没有该容器");
+        }
+
+        List<AppVar> appVars = appVarService.selectList(new EntityWrapper<AppVar>().eq("app_id", appId));
+        List<AppPort> appPorts = appPortService.selectList(new EntityWrapper<AppPort>().eq("app_id", appId));
+        List<MountSettings> mountSettings = mountSettingsService.selectList(new EntityWrapper<MountSettings>().eq("app_id", appId));
+
+        //获得绑定端口和对外暴露的端口
+        Set<String> exposePorts = new HashSet<>();
+        Map<String, List<PortBinding>> portBinds = DockerClientUtil.getContainerPortBinds(appPorts, exposePorts);
+
+        //获得容器变量
+        List<String> envs = DockerClientUtil.getContainerEnvs(appVars);
+
+        //获得挂载
+        List<String> mounts = DockerClientUtil.getContainerMounts(mountSettings);
+
+        //获得新镜相id
+        String newImageName = DockerClientUtil.getNewImage(app.getContainerId());
+
+        Action action = new Action();
+        initAction(action, app);
+        action.setAction(2);
+
+        if (StringUtil.isEmpty(newImageName)) {
+            action.setStatus(1);
+            actionService.insert(action);
+            return TResult.failure("重启失败");
+        }
+
+        //创建新容器
+        String newContainerId = DockerClientUtil.createNewContainer(app.getContainerId(), newImageName, portBinds, exposePorts, envs, mounts, marketApps);
+
+        if (StringUtil.isEmpty(newContainerId)) {
+            action.setStatus(1);
+            actionService.insert(action);
+
+            return TResult.failure("重启失败");
+        }
+
+        if (!DockerClientUtil.isRunning(machine.getMachineIp(), newContainerId)) {
+            app.setStatus(0);
+            appService.updateById(app);
+
+            action.setStatus(1);
+            actionService.insert(action);
+
+            return TResult.failure("容器创建成功，重启失败，请手动重启");
+        }
+
+        app.setContainerId(newContainerId);
+        if (!appService.updateById(app)) {
+            action.setStatus(1);
+            actionService.insert(action);
+            return TResult.failure("重启失败");
+        }
+
+        action.setStatus(0);
+        actionService.insert(action);
+
+        return TResult.success();
     }
 }

@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -24,18 +25,22 @@ public class AppPort implements Serializable {
     public static final int OUTOPEN = 1;
     public static final int OUTCLOSE = 0;
 
+    @NotNull
     private Long appId;
     /**
      * 主机端口
      */
+    @NotNull
     private Integer hostPort;
     /**
      * 容器端口
      */
+    @NotNull
     private Integer containerPort;
     /**
      * 协议，0http，1mysql,2tcp,3udp
      */
+    @NotNull
     private Integer protocol;
     /**
      * 对内服务是否开启，0关闭，1开启

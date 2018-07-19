@@ -46,6 +46,7 @@ public class TWebSocket {
         TWebSocket tWebSocket = webSocketMap.get(userId);
         if (tWebSocket == null) {
             LOGGER.info("user not online");
+            return false;
         }
         return tWebSocket.sendMessage(message);
     }

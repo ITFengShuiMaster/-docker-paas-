@@ -106,6 +106,8 @@ public class UserController {
         Ticket ticket = new Ticket();
         ticket.setUserId(user.getUserId());
         ticket.setToken(PassUtil.generatorToken(user.getUserId()));
+        ticket.setGmtCreate(new Date());
+        ticket.setGmtModified(new Date());
         if (ticketService.insertOrUpdate(ticket)) {
             return TResult.success(ticket.getToken());
         }
@@ -313,11 +315,21 @@ public class UserController {
         return TResult.failure("手机号码格式不正确！");
     }
 
+    /**
+     * 修改用户信息
+     *
+     * @param userId
+     * @param name
+     * @param headImg
+     * @return TResult
+     */
     @ApiOperation("修改用户信息")
     @PutMapping
     public TResult updateUser(@RequestParam(required = true) Long userId, String name, String headImg) {
-        User user = new User();
-        user.setUserId(userId);
+        User user = userService.selectById(userId);
+        if (user == null) {
+            return TResult.failure("用户不存在");
+        }
         user.setName(name);
         user.setHeadImg(headImg);
         user.setGmtModified(new Date());

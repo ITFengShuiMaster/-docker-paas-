@@ -1,20 +1,21 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
 
-import cn.edu.jit.tianyu_paas.shared.entity.*;
-import cn.edu.jit.tianyu_paas.shared.util.DockerClientUtil;
-import cn.edu.jit.tianyu_paas.shared.util.StringUtil;
+import cn.edu.jit.tianyu_paas.shared.entity.App;
+import cn.edu.jit.tianyu_paas.shared.entity.MarketAppMount;
+import cn.edu.jit.tianyu_paas.shared.entity.MountSettings;
+import cn.edu.jit.tianyu_paas.shared.util.RegexUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.spotify.docker.client.messages.PortBinding;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -72,7 +73,10 @@ public class MountSettingsController {
             return TResult.failure("没有该容器");
         }
 
-        // TODO 还需要判断宿主机挂载的目录是否符合格式
+        if (!RegexUtil.isRightPath(mountSettings.getServerMountName())) {
+            return TResult.failure("挂载格式错误：" + mountSettings.getServerMountName());
+        }
+
         List<MarketAppMount> marketAppMounts = marketAppMountService.selectList(new EntityWrapper<MarketAppMount>().eq("market_app_id", app.getMarketAppId()));
         if (!isMount(marketAppMounts, mountSettings.getContainerMountName())) {
             return TResult.failure("不能挂载这个目录/文件" + mountSettings.getContainerMountName());
@@ -125,58 +129,5 @@ public class MountSettingsController {
         }
         return TResult.success();
     }
-
-    /**
-     * 容器重启
-     *
-     * @param appId
-     * @return
-     * @throws Exception
-     */
-    @ApiOperation("容器重启")
-    @GetMapping("/restart-container/{appId}")
-    public TResult restartContainer(@PathVariable(required = true) Long appId) throws Exception {
-        App app = appService.selectById(appId);
-
-        if (app == null) {
-            return TResult.failure("没有该容器");
-        }
-
-        List<AppVar> appVars = appVarService.selectList(new EntityWrapper<AppVar>().eq("app_id", appId));
-        List<AppPort> appPorts = appPortService.selectList(new EntityWrapper<AppPort>().eq("app_id", appId));
-        List<MountSettings> mountSettings = mountSettingsService.selectList(new EntityWrapper<MountSettings>().eq("app_id", appId));
-
-        //获得绑定端口和对外暴露的端口
-        Set<String> exposePorts = new HashSet<>();
-        Map<String, List<PortBinding>> portBinds = DockerClientUtil.getContainerPortBinds(appPorts, exposePorts);
-
-        //获得容器变量
-        List<String> envs = DockerClientUtil.getContainerEnvs(appVars);
-
-        //获得挂载
-        List<String> mounts = DockerClientUtil.getContainerMounts(mountSettings);
-
-        //获得新镜相id
-        String newImageName = DockerClientUtil.getNewImage(app.getContainerId());
-
-        if (StringUtil.isEmpty(newImageName)) {
-            return TResult.failure("重启失败");
-        }
-
-        //创建新容器
-        String newContainerId = DockerClientUtil.createNewContainer(app.getContainerId(), newImageName, portBinds, exposePorts, envs, mounts);
-
-        if (StringUtil.isEmpty(newContainerId)) {
-            return TResult.failure("重启失败");
-        }
-
-        app.setContainerId(newContainerId);
-        if (!appService.updateById(app)) {
-            return TResult.failure("重启失败");
-        }
-
-        return TResult.success();
-    }
-
 }
 

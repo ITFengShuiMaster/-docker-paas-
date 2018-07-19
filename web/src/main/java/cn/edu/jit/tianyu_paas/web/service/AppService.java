@@ -1,8 +1,8 @@
 package cn.edu.jit.tianyu_paas.web.service;
 
 import cn.edu.jit.tianyu_paas.shared.entity.*;
+import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.util.*;
-import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.mapper.AppMapper;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
@@ -25,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
@@ -178,22 +175,23 @@ public class AppService extends ServiceImpl<AppMapper, App> {
     }
 
     /**
-     * 拉取镜相
+     * 创建容器之后失败的扫尾工作
      *
-     * @return
+     * @param dockerClient
+     * @param containerId
+     * @param appId
      */
-    private Boolean pullImage(String imageName) {
-        RestTemplate template = new RestTemplate();
-
-        ResponseEntity<String> responseEntity = template.exchange(String.format(Constants.CREATE_IMAGE, imageName),
-                HttpMethod.POST, null, String.class);
-
-        if (responseEntity.getStatusCodeValue() != 200) {
-            return false;
+    private void free(DockerClient dockerClient, String containerId, Long appId, List<AppVar> varList, List<AppPort> portList) {
+        this.deleteById(appId);
+        if (varList != null) {
+            appVarService.deleteBatchIds(varList);
         }
 
-        //还需要判断返回结果中是否存在error，存在则说明镜相不存在，拉取失败
-        return StringUtil.isEmpty(responseEntity.getBody()) || !responseEntity.getBody().contains("error");
+        if (portList != null) {
+            appPortService.deleteBatchIds(portList);
+        }
+        dockerClient.stopContainerCmd(containerId).exec();
+        dockerClient.removeContainerCmd(containerId).exec();
     }
 
     /**
@@ -206,20 +204,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
     private void free(DockerClient dockerClient, String containerId, Long appId) {
         this.deleteById(appId);
         dockerClient.stopContainerCmd(containerId).exec();
-    }
-
-    /**
-     * 创建容器之后失败的扫尾工作
-     *
-     * @param dockerClient
-     * @param containerId
-     * @param appId
-     * @param image
-     */
-    private void free(DockerClient dockerClient, String containerId, Long appId, String image) {
-        this.deleteById(appId);
-        appInfoByDockerImageService.delete(new EntityWrapper<AppInfoByDockerImage>().eq("app_id", appId).and().eq("image", image));
-        dockerClient.stopContainerCmd(containerId).exec();
+        dockerClient.removeContainerCmd(containerId).exec();
     }
 
     /**
@@ -294,7 +279,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
 
         for (MarketAppVar var : marketAppVarList) {
             if (StringUtil.isEmpty(var.getValue())) {
-                var.setValue(PassUtil.getMD5(MailUtil.getRandomEmailCode()));
+                var.setValue(PassUtil.getMD5("123456"));
             }
             envs.add(var.getVarName() + "=" + var.getValue());
         }
@@ -336,14 +321,13 @@ public class AppService extends ServiceImpl<AppMapper, App> {
      * @param dockerImage
      * @return
      */
-    public TResult initContainer(App app, AppInfoByDockerImage dockerImage) {
-
+    public TResult initContainer(App app, String dockerImage) {
         DockerClient dockerClient = getDockerClient();
 
-        MarketApp marketApp = marketAppService.selectOne(new EntityWrapper<MarketApp>().eq("name", dockerImage.getImage()));
+        MarketApp marketApp = marketAppService.selectOne(new EntityWrapper<MarketApp>().eq("name", dockerImage));
         if (marketApp != null) {
             //拉取镜相
-            if (!pullImage(dockerImage.getImage())) {
+            if (!DockerClientUtil.pullImage(DockerSSHConstants.IP, dockerImage, "latest")) {
                 return TResult.failure("没有该镜像");
             }
             //判断容器所需端口和所需的变量
@@ -361,21 +345,22 @@ public class AppService extends ServiceImpl<AppMapper, App> {
             //获得容器所需的环境变量
             List<String> envs = listEnvs(marketAppVarList);
 
-            CreateContainerResponse createContainerResponse = createContainerResponse(exposedPorts, portBindings, envs, dockerImage.getImage());
+            CreateContainerResponse createContainerResponse = createContainerResponse(exposedPorts, portBindings, envs, dockerImage);
             if (createContainerResponse == null) {
                 return TResult.failure(TResultCode.BUSINESS_ERROR);
             }
 
             app.setContainerId(createContainerResponse.getId());
             app.setMarketAppId(marketApp.getMarketAppId());
+            app.setMachineId(Long.parseLong("1"));
+            if (DockerClientUtil.isRunning(DockerSSHConstants.IP, app.getContainerId())) {
+                app.setStatus(1);
+            } else {
+                app.setStatus(0);
+            }
             if (!this.insert(app)) {
                 dockerClient.stopContainerCmd(createContainerResponse.getId()).exec();
-                return TResult.failure(TResultCode.BUSINESS_ERROR);
-            }
-
-            dockerImage.setAppId(app.getAppId());
-            if (!appInfoByDockerImageService.insert(dockerImage)) {
-                free(dockerClient, createContainerResponse.getId(), dockerImage.getAppId());
+                dockerClient.removeContainerCmd(createContainerResponse.getId()).exec();
                 return TResult.failure(TResultCode.BUSINESS_ERROR);
             }
 
@@ -383,7 +368,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
             List<AppVar> varList = initAppVar(app, marketAppVarList);
             if (varList.size() != 0) {
                 if (!appVarService.insertBatch(varList)) {
-                    free(dockerClient, createContainerResponse.getId(), dockerImage.getAppId(), dockerImage.getImage());
+                    free(dockerClient, createContainerResponse.getId(), app.getAppId());
                     return TResult.failure(TResultCode.BUSINESS_ERROR);
                 }
             }
@@ -392,14 +377,14 @@ public class AppService extends ServiceImpl<AppMapper, App> {
             List<AppPort> portList = initAppPort(app, usedMachinePortList);
             if (portList.size() != 0) {
                 if (!appPortService.insertBatch(portList)) {
-                    free(dockerClient, createContainerResponse.getId(), dockerImage.getAppId(), dockerImage.getImage());
+                    free(dockerClient, createContainerResponse.getId(), app.getAppId(), varList, null);
                     return TResult.failure(TResultCode.BUSINESS_ERROR);
                 }
             }
 
             //更新机器被占用端口的状态
             if (!machinePortService.updateMachinePortStatusByIdAndPort(usedMachinePortList)) {
-                free(dockerClient, createContainerResponse.getId(), dockerImage.getAppId(), dockerImage.getImage());
+                free(dockerClient, createContainerResponse.getId(), app.getAppId(), varList, portList);
                 return TResult.failure(TResultCode.BUSINESS_ERROR);
             }
 

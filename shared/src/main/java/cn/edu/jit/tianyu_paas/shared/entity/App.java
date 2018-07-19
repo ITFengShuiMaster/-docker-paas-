@@ -78,6 +78,11 @@ public class App implements Serializable {
     @TableField(exist = false)
     private String username;
 
+    /**
+     * 机器id
+     */
+    private Long machineId;
+
     public String getUsername() {
         return username;
     }
@@ -186,6 +191,14 @@ public class App implements Serializable {
 
     public void setMarketAppId(Long marketAppId) {
         this.marketAppId = marketAppId;
+    }
+
+    public Long getMachineId() {
+        return machineId;
+    }
+
+    public void setMachineId(Long machineId) {
+        this.machineId = machineId;
     }
 
     @Override

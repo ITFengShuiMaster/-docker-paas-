@@ -5,7 +5,7 @@ import java.util.Random;
 public class RandomPhoneCodeUtil {
 
     public static String getRandomCode() {
-        String codeTable = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789";
+        String codeTable = "0123456789";
 
         Random random = new Random();
         StringBuilder code = new StringBuilder();

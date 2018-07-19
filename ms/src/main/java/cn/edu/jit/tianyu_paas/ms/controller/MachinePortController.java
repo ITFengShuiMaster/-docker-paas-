@@ -1,51 +1,34 @@
-package cn.edu.jit.tianyu_paas.web.controller;
+package cn.edu.jit.tianyu_paas.ms.controller;
 
-
+import cn.edu.jit.tianyu_paas.ms.service.MachinePortService;
 import cn.edu.jit.tianyu_paas.shared.entity.MachinePort;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
-import cn.edu.jit.tianyu_paas.web.service.MachinePortService;
-import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * <p>
- * 前端控制器
- * </p>
- *
  * @author 卢越
- * @since 2018-07-08
  */
 @RestController
-@RequestMapping("/machinePort")
+@RequestMapping("/machineports")
 public class MachinePortController {
 
     private final MachinePortService machinePortService;
-    private HttpSession session;
 
-    public MachinePortController(HttpSession session, MachinePortService machinePortService) {
-        this.session = session;
+    @Autowired
+    public MachinePortController(MachinePortService machinePortService) {
         this.machinePortService = machinePortService;
     }
 
-    /**
-     * 初始化机器的可用端口
-     *
-     * @param machineId
-     * @return
-     * @author 卢越
-     */
-    @ApiOperation("初始化机器的可用端口")
-    @GetMapping
-    public TResult insertPortLists(@RequestParam(required = true) Long machineId) {
-        MachinePortService machinePortService = new MachinePortService();
+    @GetMapping("/{machineId}")
+    public TResult insertPortLists(@PathVariable Long machineId) {
         List<MachinePort> ports = new ArrayList<>();
 
         for (int i = 10000; i <= 60000; i++) {
@@ -62,4 +45,3 @@ public class MachinePortController {
         return TResult.success();
     }
 }
-

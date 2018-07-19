@@ -1,8 +1,12 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
+import cn.edu.jit.tianyu_paas.shared.entity.App;
+import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
+import cn.edu.jit.tianyu_paas.shared.util.DockerHelperUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
-import cn.edu.jit.tianyu_paas.web.global.Constants;
+import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.service.*;
+import com.spotify.docker.client.LogStream;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +22,7 @@ import javax.servlet.http.HttpSession;
 /**
  * @author 天宇小凡
  */
-@RequestMapping("app-log")
+@RequestMapping("/app-log")
 @RestController
 public class AppLogController {
     private final AppService appService;
@@ -56,8 +60,26 @@ public class AppLogController {
 
     @ApiOperation("根据appId获取applog信息")
     @GetMapping("/{appId}")
-    public TResult listAppLog(@PathVariable String appId) {
-        long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        return TResult.success();
+    public TResult listAppLog(@PathVariable Long appId) {
+        App app = appService.selectById(appId);
+        if (app == null) {
+            return TResult.failure("没有该容器");
+        }
+
+        try {
+            String reLogs = DockerHelperUtil.query(DockerSSHConstants.IP, docker ->
+            {
+                final String logs;
+                try (LogStream stream = docker.logs(app.getContainerId(), com.spotify.docker.client.DockerClient.LogsParam.stdout(), com.spotify.docker.client.DockerClient.LogsParam.stderr())) {
+                    logs = stream.readFully();
+                }
+                return logs;
+            });
+
+            return TResult.success(reLogs.split("\\n"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
     }
 }

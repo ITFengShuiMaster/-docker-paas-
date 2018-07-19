@@ -54,7 +54,7 @@ public class AppPortController {
     @ApiOperation("新增端口")
     @PostMapping
     public TResult addPort(AppPort appPort) {
-        if (appPortService.selectCount(new EntityWrapper<AppPort>().eq("port", appPort.getHostPort()).eq("app_id", appPort.getAppId())) != 0) {
+        if (appPortService.selectCount(new EntityWrapper<AppPort>().eq("host_port", appPort.getHostPort())) != 0) {
             return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
         }
         appPort.setGmtModified(new Date());
@@ -77,7 +77,7 @@ public class AppPortController {
     @PutMapping
     public TResult updatePort(AppPort appPort) {
         appPort.setGmtModified(new Date());
-        if (!appPortService.update(appPort, new EntityWrapper<AppPort>().eq("app_id", appPort.getAppId()).and().eq("port", appPort.getHostPort()))) {
+        if (!appPortService.update(appPort, new EntityWrapper<AppPort>().eq("app_id", appPort.getAppId()).and().eq("host_port", appPort.getHostPort()))) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
         return TResult.success();
@@ -87,14 +87,14 @@ public class AppPortController {
      * 删除端口
      *
      * @param appId
-     * @param port
+     * @param hostPort
      * @return
      * @author 倪龙康
      */
     @ApiOperation("删除端口")
     @DeleteMapping("/{appId}")
-    public TResult deletePort(@PathVariable long appId, Integer port) {
-        if (!appPortService.delete(new EntityWrapper<AppPort>().eq("port", port).eq("app_id", appId))) {
+    public TResult deletePort(@PathVariable long appId, Integer hostPort) {
+        if (!appPortService.delete(new EntityWrapper<AppPort>().eq("host_port", hostPort).eq("app_id", appId))) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
         return TResult.success();

@@ -1,7 +1,6 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,7 +14,7 @@ public class Ticket implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String token;
-    @TableId(value = "user_id", type = IdType.AUTO)
+    @TableId(value = "user_id")
     private Long userId;
     private Date gmtCreate;
     private Date gmtModified;

@@ -36,7 +36,14 @@ public class RegexUtil {
         return matcher.matches();
     }
 
+    public static boolean isRightVar(String var) {
+        String regEx = "^[A-Z]+[A-Z0-9]{1,}(\\S{0,}[A-Z]+[A-Z0-9]{1,}){0,}$";
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(var);
+        return matcher.matches();
+    }
+
     public static void main(String[] args) {
-        System.out.println(isRightPath("/y"));
+        System.out.println(isRightVar("MYSQL_"));
     }
 }

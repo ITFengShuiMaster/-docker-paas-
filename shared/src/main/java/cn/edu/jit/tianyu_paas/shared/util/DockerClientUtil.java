@@ -2,6 +2,7 @@ package cn.edu.jit.tianyu_paas.shared.util;
 
 import cn.edu.jit.tianyu_paas.shared.entity.AppPort;
 import cn.edu.jit.tianyu_paas.shared.entity.AppVar;
+import cn.edu.jit.tianyu_paas.shared.entity.MarketApp;
 import cn.edu.jit.tianyu_paas.shared.entity.MountSettings;
 import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.global.MountSettingsConstants;
@@ -111,8 +112,9 @@ public class DockerClientUtil {
      */
     public static Map<String, List<PortBinding>> getContainerPortBinds(List<AppPort> appPorts, Set<String> exposePorts) {
         final Map<String, List<PortBinding>> portBindings = new HashMap<>(16);
-        List<PortBinding> hostPorts = new ArrayList<>();
+
         for (AppPort port : appPorts) {
+            List<PortBinding> hostPorts = new ArrayList<>();
             hostPorts.add(PortBinding.of("0.0.0.0", port.getHostPort()));
             portBindings.put(port.getContainerPort().toString(), hostPorts);
             if (port.getIsOutsideOpen() == 1) {
@@ -150,6 +152,15 @@ public class DockerClientUtil {
         return mountSettingsList;
     }
 
+    public static boolean isInMarketApp(List<MarketApp> marketApps, String image) {
+        for (MarketApp app : marketApps) {
+            if (image.equals(app.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 创建新容器
      *
@@ -161,7 +172,7 @@ public class DockerClientUtil {
      * @param mountSettingsList
      * @return
      */
-    public static String createNewContainer(String oldContainerId, String newImageName, Map<String, List<PortBinding>> portBindings, Set<String> exposePorts, List<String> envs, List<String> mountSettingsList) {
+    public static String createNewContainer(String oldContainerId, String newImageName, Map<String, List<PortBinding>> portBindings, Set<String> exposePorts, List<String> envs, List<String> mountSettingsList, List<MarketApp> marketApps) {
         final String[] newContainerId = new String[1];
         try {
             return DockerHelperUtil.query(DockerSSHConstants.IP, docker -> {
@@ -188,10 +199,11 @@ public class DockerClientUtil {
 
                 ContainerInfo containerInfo = docker.inspectContainer(oldContainerId);
                 //移除旧镜相
-                docker.removeImage(containerInfo.config().image(), true, true);
+                if (!isInMarketApp(marketApps, containerInfo.config().image())) {
+                    docker.removeImage(containerInfo.config().image(), true, true);
+                }
                 //移除旧容器
                 docker.removeContainer(oldContainerId);
-                // TODO 旧镜相删不掉
 
                 return containerCreation.id();
             });
@@ -215,5 +227,58 @@ public class DockerClientUtil {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static boolean startContainer(String ip, String containerId) {
+        try {
+            DockerHelperUtil.execute(ip, docker -> {
+                docker.startContainer(containerId);
+            });
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean stopContainer(String ip, String containerId) {
+        try {
+            DockerHelperUtil.execute(ip, docker -> {
+                docker.stopContainer(containerId, 0);
+            });
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean isRunning(String ip, String containerId) {
+        try {
+            return DockerHelperUtil.query(ip, docker -> {
+                ContainerInfo containerInfo = docker.inspectContainer(containerId);
+                return containerInfo.state().running();
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean pullImage(String ip, String image, String tag) {
+        try {
+            DockerHelperUtil.execute(ip, docker -> {
+                docker.pull(image + ":" + tag);
+            });
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(pullImage(DockerSSHConstants.IP, "mysql", "latest"));
     }
 }

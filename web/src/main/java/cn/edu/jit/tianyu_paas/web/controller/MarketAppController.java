@@ -25,7 +25,7 @@ public class MarketAppController {
         this.marketAppService = marketAppService;
     }
 
-    @ApiOperation("获取应用市场的资源信息")
+    @ApiOperation("获取应用市场信息")
     @GetMapping
     public TResult listMarketApps(@RequestParam(defaultValue = "1") Integer current, @RequestParam(defaultValue = "9") Integer size) {
         return TResult.success(marketAppService.selectPage(new Page<MarketApp>(current, size)));
