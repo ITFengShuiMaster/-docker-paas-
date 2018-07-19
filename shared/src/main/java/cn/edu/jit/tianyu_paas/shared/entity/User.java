@@ -2,7 +2,6 @@ package cn.edu.jit.tianyu_paas.shared.entity;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.enums.IdType;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -20,8 +19,10 @@ import java.util.List;
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final int TYPE_CUSTOMER_SERVICE = 1;
+    public static final int TYPE_COMMON_USER = 0;
 
-    @TableId(value = "user_id", type = IdType.AUTO)
+    @TableId(value = "user_id")
     private Long userId;
     /**
      * 姓名或昵称

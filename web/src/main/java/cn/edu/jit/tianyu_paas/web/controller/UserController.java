@@ -4,17 +4,19 @@ import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.global.SendPhoneCodeConstants;
 import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
+import cn.edu.jit.tianyu_paas.web.im.FeignTianyuIm;
 import cn.edu.jit.tianyu_paas.web.service.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.util.Date;
 
 /**
@@ -33,9 +35,10 @@ public class UserController {
     private final PhoneVerificationCodeService phoneVerificationCodeService;
     private HttpSession session;
     private final TicketService ticketService;
+    private final FeignTianyuIm feignTianyuIm;
 
     @Autowired
-    public UserController(UserService userService, UserDynamicService userDynamicService, HttpSession session, UserLoginLogService userLoginLogService, MailUtilService mailUtilService, UserActiveService userActiveService, PhoneVerificationCodeService phoneVerificationCodeService, TicketService ticketService) {
+    public UserController(UserService userService, UserDynamicService userDynamicService, HttpSession session, UserLoginLogService userLoginLogService, MailUtilService mailUtilService, UserActiveService userActiveService, PhoneVerificationCodeService phoneVerificationCodeService, TicketService ticketService, FeignTianyuIm feignTianyuIm) {
         this.userService = userService;
         this.session = session;
         this.userDynamicService = userDynamicService;
@@ -44,44 +47,30 @@ public class UserController {
         this.userActiveService = userActiveService;
         this.phoneVerificationCodeService = phoneVerificationCodeService;
         this.ticketService = ticketService;
-    }
-
-    private void initUser(User user) {
-        user.setGmtCreate(new Date());
-        user.setGmtModified(new Date());
-        user.setPwd(PassUtil.getMD5(user.getPwd()));
-        user.setActive(0);
-    }
-
-    private UserActive initUserActive(User user, String emailCode) {
-        UserActive userActive = new UserActive();
-        userActive.setUserEmail(user.getEmail());
-        userActive.setEmailCode(emailCode);
-        userActive.setEmailCodeGtmCreate(new Date());
-        return userActive;
+        this.feignTianyuIm = feignTianyuIm;
     }
 
     /**
-     * @author 卢越
-     * @since 2018-06-29
-     * @param account
+     * @param username
      * @param pwd
      * @return
+     * @author 卢越
+     * @since 2018-06-29
      */
     @ApiOperation("登录接口")
     @PostMapping("/login")
-    public TResult login(String account, String pwd) {
-        if (StringUtil.isAnyEmpty(account, pwd)) {
+    public TResult login(String username, String pwd) {
+        if (StringUtil.isAnyEmpty(username, pwd)) {
             return TResult.failure(TResultCode.PARAM_NOT_COMPLETE);
         }
 
         User user = null;
-        if (RegexUtil.isPhoneNumber(account)) {
+        if (RegexUtil.isPhoneNumber(username)) {
             //如果传入账号是手机号，通过手机号查询
-            user = userService.selectOne(new EntityWrapper<User>().eq("phone", account));
+            user = userService.selectOne(new EntityWrapper<User>().eq("phone", username));
         } else {
             //如果传入账号是邮箱，通过邮箱查询
-            user = userService.selectOne(new EntityWrapper<User>().eq("email", account));
+            user = userService.selectOne(new EntityWrapper<User>().eq("email", username));
         }
 
         if (user == null) {
@@ -113,91 +102,38 @@ public class UserController {
     }
 
     /**
-     * @author 卢越
-     * @since 2018-06-29
      * @param user
      * @return
+     * @author 卢越
+     * @since 2018-06-29
      */
     @ApiOperation("注册接口")
     @PostMapping("/register")
-    public TResult register(@Valid User user, String phoneCode, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return TResult.failure(bindingResult.getFieldError().getDefaultMessage());
+    public TResult register(@Valid User user, @RequestParam(required = false) String phoneVerifyCode, int activeMethod) {
+
+        TResult result = userService.checkUser(user);
+        if (!result.getCode().equals(TResultCode.SUCCESS.getCode())) {
+            return result;
+        }
+        user.setGmtCreate(new Date());
+        user.setGmtModified(new Date());
+        user.setPwd(PassUtil.getMD5(user.getPwd()));
+        user.setActive(0);
+        // 先插入用户，未激活状态
+        if (userService.insert(user)) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
 
-        if (StringUtil.isAllEmpty(user.getPhone(), user.getEmail())) {
-            return TResult.failure("邮箱和手机号必填一个");
+        if (activeMethod == Constants.ACTIVE_PHONE) {
+            return userService.registerAndActiveUserByPhone(user, phoneVerifyCode);
+        } else {
+            return userService.registerUserByEmailAndSendMail(user);
         }
-
-        if (userService.selectCount(new EntityWrapper<User>().eq("name", user.getName())) != 0) {
-            return TResult.failure("名字已存在");
-        }
-
-        if (!StringUtil.isEmpty(user.getPhone()) && !RegexUtil.isPhoneNumber(user.getPhone())) {
-            return TResult.failure("手机号不合法");
-        }
-
-        if (!StringUtil.isEmpty(user.getEmail()) && !RegexUtil.isEmail(user.getEmail())) {
-            return TResult.failure("邮箱格式不合法");
-        }
-
-        //如果查询出邮箱的结果不为0
-        if (userService.selectCount(new EntityWrapper<User>().eq("email", user.getEmail())) != 0 && !StringUtil.isEmpty(user.getEmail())) {
-            return TResult.failure("用户邮箱已注册");
-        }
-
-        //如果查询出的结果不为0且注册的用户手机号不为空
-        if (userService.selectCount(new EntityWrapper<User>().eq("phone", user.getPhone())) != 0 && !StringUtil.isEmpty(user.getPhone())) {
-            return TResult.failure("用户手机号已注册");
-        }
-
-        if (!StringUtil.isEmpty(user.getEmail())) {
-            initUser(user);
-
-            if (!userService.insert(user)) {
-                return TResult.failure(TResultCode.BUSINESS_ERROR);
-            }
-
-            //发送邮箱验证
-            String emailCode = MailUtil.getRandomEmailCode();
-
-            if (!mailUtilService.sendRegisterMail(user.getUserId(), user.getEmail(), emailCode)) {
-                return TResult.failure("邮箱验证发送失败，请重试：" + String.format(Constants.RE_SEND_EMAIL, user.getEmail()));
-            }
-
-            //插入邮箱验证码
-            UserActive userActive = initUserActive(user, emailCode);
-
-            if (!userActiveService.insert(userActive)) {
-                return TResult.failure("邮箱验证码发送失败，请重试: " + String.format(Constants.RE_SEND_EMAIL, user.getEmail()));
-            }
-        } else if (!StringUtil.isEmpty(user.getPhone())) {
-            if (StringUtil.isEmpty(phoneCode)) {
-                return TResult.failure("请填写手机验证码");
-            }
-            initUser(user);
-
-            if (phoneVerificationCodeService.selectOne(new EntityWrapper<PhoneVerificationCode>().eq("phone", user.getPhone()).and().eq("phone_code", phoneCode).and().ge("gmt_create", new Date(System.currentTimeMillis() - 60000))) != null) {
-                user.setActive(1);
-                if (!userService.insert(user)) {
-                    return TResult.failure(TResultCode.BUSINESS_ERROR);
-                }
-            } else {
-                return TResult.failure("手机验证码已过期");
-            }
-        }
-
-        //对新注册用户绑定UserDynamic
-        UserDynamic userDynamic = new UserDynamic();
-        userDynamic.setUserId(user.getUserId());
-        userDynamicService.insert(userDynamic);
-
-        return TResult.success();
     }
 
     @ApiOperation("重新发送email")
     @GetMapping("/re-email")
-    public TResult reSendEmailCode(@RequestParam(required = true) String email) {
+    public TResult reSendEmailCode(@Validated @Email String email) {
         if (RegexUtil.isEmail(email)) {
             User user = userService.selectOne(new EntityWrapper<User>().eq("email", email));
             if (user == null) {
@@ -210,7 +146,10 @@ public class UserController {
             }
 
             //插入邮箱验证码
-            UserActive userActive = initUserActive(user, emailCode);
+            UserActive userActive = new UserActive();
+            userActive.setUserEmail(user.getEmail());
+            userActive.setEmailCode(emailCode);
+            userActive.setEmailCodeGtmCreate(new Date());
             if (!userActiveService.insert(userActive)) {
                 return TResult.failure("邮箱验证码发送失败，请重试: " + String.format(Constants.RE_SEND_EMAIL, user.getEmail()));
             }
@@ -221,11 +160,13 @@ public class UserController {
         return TResult.failure("邮箱格式不合法！");
     }
 
-    /**返回用户个人信息
-     * @author 卢越
-     * @since 2018-06-29
+    /**
+     * 返回用户个人信息
+     *
      * @param userId
      * @return
+     * @author 卢越
+     * @since 2018-06-29
      */
     @ApiOperation("返回用户个人信息")
     @GetMapping("/info/{userId}")
@@ -240,11 +181,13 @@ public class UserController {
         return TResult.success(user);
     }
 
-    /**返回用户个人的动态：如余额，内存使用情况等
-     * @author 卢越
-     * @since 2018-06-29
+    /**
+     * 返回用户个人的动态：如余额，内存使用情况等
+     *
      * @param userId
      * @return
+     * @author 卢越
+     * @since 2018-06-29
      */
     @ApiOperation("返回用户个人的动态：如余额，内存使用情况等")
     @GetMapping("/dynamic/{userId}")
