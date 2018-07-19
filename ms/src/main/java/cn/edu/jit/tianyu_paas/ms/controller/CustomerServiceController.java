@@ -3,6 +3,7 @@ package cn.edu.jit.tianyu_paas.ms.controller;
 import cn.edu.jit.tianyu_paas.ms.im.FeignTianyuIm;
 import cn.edu.jit.tianyu_paas.ms.service.CustomerServiceStaffService;
 import cn.edu.jit.tianyu_paas.shared.entity.CustomerServiceStaff;
+import cn.edu.jit.tianyu_paas.shared.entity.User;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -36,7 +37,7 @@ public class CustomerServiceController {
     @PostMapping
     public TResult createCustomerService(@Validated CustomerServiceStaff customerServiceStaff) {
         TResult tResult = feignTianyuIm.createCustomerService(customerServiceStaff.getNick(), customerServiceStaff.getPhone(), customerServiceStaff.getEmail(),
-                customerServiceStaff.getPwd(), CustomerServiceStaff.TYPE_CUSTOMER_SERVICE, "");
+                customerServiceStaff.getPwd(), User.TYPE_CUSTOMER_SERVICE, "");
         if (tResult.getCode().equals(TResultCode.SUCCESS.getCode())) {
             if (customerServiceStaffService.insert(customerServiceStaff)) {
                 return TResult.success();
@@ -60,7 +61,7 @@ public class CustomerServiceController {
 
     @ApiOperation("删除某个客服人员")
     @DeleteMapping("/{customerServiceId}")
-    public TResult deleteCustomerService(@PathVariable("customerServiceId") String customerServiceId) {
+    public TResult deleteCustomerService(@PathVariable("customerServiceId") long customerServiceId) {
         TResult result = feignTianyuIm.deleteUser(customerServiceId);
         if (result.getCode().equals(TResultCode.SUCCESS.getCode())) {
             if (customerServiceStaffService.deleteById(customerServiceId)) {
@@ -74,8 +75,8 @@ public class CustomerServiceController {
     @ApiOperation("更新客服人员信息")
     @PutMapping
     public TResult updateCustomerService(@Validated CustomerServiceStaff customerServiceStaff) {
-        TResult tResult = feignTianyuIm.updateCustomerService(customerServiceStaff.getNick(), customerServiceStaff.getPhone(), customerServiceStaff.getEmail(),
-                customerServiceStaff.getPwd(), CustomerServiceStaff.TYPE_CUSTOMER_SERVICE, "");
+        TResult tResult = feignTianyuIm.updateCustomerService(customerServiceStaff.getCustomerServiceStaffId(), customerServiceStaff.getNick(), customerServiceStaff.getPhone(),
+                customerServiceStaff.getEmail(), customerServiceStaff.getPwd(), User.TYPE_CUSTOMER_SERVICE, "");
         if (tResult.getCode().equals(TResultCode.SUCCESS.getCode())) {
             if (customerServiceStaffService.updateById(customerServiceStaff)) {
                 return TResult.success();

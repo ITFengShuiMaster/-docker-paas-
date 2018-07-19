@@ -1,16 +1,16 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>iview example</title>
-    <script src="lib/vue/vue.min.js"></script>
-    <script src="lib/echarts/echarts.js"></script>
-    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
-    <script src="lib/iView/iView.min.js"></script>
+    <title>tianyu paas平台 管理后台</title>
     <script src="lib/jquery/jquery_3.3.1.js"></script>
-
-
+    <script src="lib/echarts/echarts.js"></script>
+    <script src="lib/vue/vue.min.js"></script>
+    <link rel="stylesheet" href="lib/iview/iview.css">
+    <!--<link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">-->
+    <script src="lib/iview/iview.js"></script>
+    <script src="js/common.js"></script>
 </head>
-<style scoped>
+<!--<style scoped>
     body {
         font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 
@@ -59,7 +59,7 @@
         vertical-align: middle;
         font-size: 22px;
     }
-</style>
+</style>-->
 <body>
 <div id="app">
     <template>
@@ -95,11 +95,15 @@
                         <Submenu name="1000">
                             <template slot="title">
                                 <Icon type="android-apps"></Icon>
-                                应用查询
+                                应用管理
                             </template>
                             <menu-item name="9">用户新建应用</menu-item>
                             <menu-item name="10">官方应用</menu-item>
                         </Submenu>
+                        <menu-item name="11">
+                            <Icon type="clipboard"></Icon>
+                            <span>客服管理</span>
+                        </menu-item>
                     </i-menu>
                     <div slot="trigger"></div>
                 </Sider>
@@ -138,7 +142,8 @@
         data() {
             return {
                 pageArr: ['pages/user_management/user_info.html', 'pages/user_management/push_message.html', 'pages/user_management/long_time_without_login.html',
-                    'pages/user_management/arrearage_user.html', 'pages/notice_push.html', 'pages/visits_overview.html', 'pages/visits_by_year.html', 'pages/visits_by_month.html', 'echart_test2.html', 'pages/app/app.html', 'pages/app/app_demo.html'],
+                    'pages/user_management/arrearage_user.html', 'pages/notice_push.html', 'pages/visits_overview.html', 'pages/visits_by_year.html', 'pages/visits_by_month.html', 'echart_test2.html', '
+                    'pages/app/app.html', 'pages/app/app_demo.html', 'pages/customer-service-manager.html'],
                 name: 'ltl',
                 isCollapsed: false
             };
@@ -146,7 +151,6 @@
         methods: {
             selectPage(index, indexPath) {
                 // 主要就是通过jquery的load方法，加内容加载到元素上
-                console.log('select');
                 if (index < 998) {
                     $('#content').load(this.pageArr[index], function (response, message, xhr) {
                     });

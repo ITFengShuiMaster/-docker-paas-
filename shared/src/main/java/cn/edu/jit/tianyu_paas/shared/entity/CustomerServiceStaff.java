@@ -1,12 +1,11 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -20,12 +19,10 @@ public class CustomerServiceStaff implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final int TYPE_CUSTOMER_SERVICE = 1;
-
     /**
-     * 客服人员的id
+     * 客服人员的id，是im中用户的id
      */
-    @TableId(value = "customer_service_staff_id", type = IdType.AUTO)
+    @TableId(value = "customer_service_staff_id")
     private Long customerServiceStaffId;
     @NotEmpty
     private String phone;

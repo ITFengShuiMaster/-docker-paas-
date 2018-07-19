@@ -17,9 +17,9 @@ public interface FeignTianyuIm {
                                   @RequestParam("pwd") String pwd, @RequestParam("type") Integer type, @RequestParam("headImg") String headImg);
 
     @PutMapping("/users")
-    TResult updateCustomerService(@RequestParam("name") String name, @RequestParam("phone") String phone, @RequestParam("email") String email,
+    TResult updateCustomerService(@RequestParam("userId") long userId, @RequestParam("name") String name, @RequestParam("phone") String phone, @RequestParam("email") String email,
                                   @RequestParam("pwd") String pwd, @RequestParam("type") Integer type, @RequestParam("headImg") String headImg);
 
     @DeleteMapping("/users/{userId}")
-    TResult deleteUser(@PathVariable("userId") String userId);
+    TResult deleteUser(@PathVariable("userId") long userId);
 }

@@ -16,4 +16,9 @@ public class Constants {
      * token过期时间
      */
     public static final long TOKEN_MAX_VALID = 60 * 60 * 1000;
+
+    public static final int ACTIVE_PHONE = 0;
+    public static final int ACTIVE_EMAIL = 1;
+
+    public static final int PHONE_VERIFY_CODE_MAX_VALID = 60 * 1000;
 }

@@ -1,0 +1,229 @@
+<div id="customer-service">
+    <Breadcrumb>
+        <breadcrumb-item to="index.html">首页</breadcrumb-item>
+        <breadcrumb-item>用户管理</breadcrumb-item>
+    </Breadcrumb>
+    <div style="margin: 10px 20px">
+        <p style="font-size: 20px; color: black">用户信息汇总查询</p>
+        <p>查询所有用户信息，根据搜索条件进行排序</p>
+    </div>
+    <div style="margin: 10px 20px; display: inline-flex">
+        <p class="text">查询条件:</p>
+        <i-input v-model="inputSearchContent" placeholder="请输入查询内容" style="width: 400px"></i-input>
+
+        <i-select v-model="selectOption" style="width:150px; height: 30px; margin-right: 15px; margin-left: 15px">
+            <i-option v-for="item in search_options" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+        </i-select>
+        <i-button type="primary" @click="searchCustomerService">搜索</i-button>
+    </div>
+    <i-table stripe border show-header highlight-row height="200" style="margin-top: 20px"
+             :columns="column_customer" :data="customer_services_data"></i-table>
+    <div style="margin: 10px;overflow: hidden">
+        <div style="float: right;">
+            <Page :total=customer_services_data.length :current="1" show-elevator show-total
+                  @on-change="changePage"></Page>
+        </div>
+    </div>
+    <Modal v-model="show_customer_service" :loading="updating" @on-ok="updating=true;updateCustomerService()">
+        <p slot="header" style="text-align:center; color: #2D8CF0">
+            <Icon type="information-circled"></Icon>
+            <span>编辑客服信息</span>
+        </p>
+        <div style="text-align:center;">
+            <div style="margin-top: 20px"><span>编号： &nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input style="width: 300px" v-model="current_customer_service.customerServiceStaffId"
+                         disabled></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>邮箱： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input type="email" style="width: 300px" v-model="current_customer_service.email"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>昵称： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input style="width: 300px" v-model="current_customer_service.nick"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>电话： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input style="width: 300px" v-model="current_customer_service.phone"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>真实姓名：</span>
+                <i-input style="width: 300px" v-model="current_customer_service.realName"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>密码：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input type="password" style="width: 300px" v-model="current_customer_service.pwd"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>创建时间：</span>
+                <i-input style="width: 300px" v-model="current_customer_service.gmtCreate" disabled></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>修改时间：</span>
+                <i-input style="width: 300px" v-model="current_customer_service.gmtModified" disabled></i-input>
+            </div>
+        </div>
+    </Modal>
+</div>
+<script>
+    var customer_service = new Vue({
+        el: '#customer-service',
+        data: {
+            inputSearchContent: '',
+            selectOption: '',
+            search_options: [
+                {
+                    value: '1',
+                    label: '用户名'
+                },
+                {
+                    value: '2',
+                    label: '邮箱'
+                },
+                {
+                    value: '3',
+                    label: '手机号'
+                }
+            ],
+            // 当前要查看的客服信息，因为render的代码太长，所以用v-model
+            current_customer_service: {},
+            show_customer_service: false,
+            updating: false,
+            // 列名（表头）
+            column_customer: [
+                {
+                    type: 'selection',
+                    width: 60,
+                    align: 'center'
+                },
+                {
+                    title: '编号',
+                    key: 'customerServiceStaffId'
+                }, {
+                    title: '手机号',
+                    key: 'phone'
+                }, {
+                    title: '邮箱',
+                    key: 'email'
+                }, {
+                    title: '昵称',
+                    key: 'nick',
+                    render: (h, params) => {
+                        return h('div', [
+                            h('Icon', {
+                                props: {
+                                    type: 'person'
+                                }
+                            }),
+                            h('strong', params.row.nick)
+                        ]);
+                    }
+                }, {
+                    title: '真实姓名',
+                    key: 'realName'
+                }, {
+                    title: '创建时间',
+                    key: 'gmtCreate'
+                }, {
+                    title: '修改时间',
+                    key: 'gmtModified'
+                }, {
+                    title: '操作',
+                    key: 'action',
+                    width: 320,
+                    align: 'center',
+                    render: (h, params) => {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'success',
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        customer_service.current_customer_service = params.row;
+                                        customer_service.show_customer_service = true;
+                                    }
+                                }
+                            }, '编辑'),
+                            h('Button', {
+                                props: {
+                                    type: 'error',
+                                },
+                                on: {
+                                    click: () => {
+                                        customer_service.$Modal.confirm({
+                                            title: 'Title',
+                                            content: '是否确认删除客服信息？<p>删除后无法恢复!</p>',
+                                            loading: true,
+                                            onOk: () => {
+                                                customer_service.deleteCustomerService(params.row.customerServiceStaffId);
+                                            },
+                                            onCancel: () => {
+                                            }
+                                        });
+                                    }
+                                }
+                            }, '删除')
+                        ]);
+                    }
+                }
+            ],
+            // 数据
+            customer_services_data: [],
+        },
+        methods: {
+            searchCustomerService() {
+                //TODO
+                // console.log(this.selectOption);
+                // console.log(this.inputSearchContent);
+            },
+            initCustomerServicesList() {
+                ms.ajax({
+                    url: ms.url.listCustomerServices,
+                    data: {
+                        size: 10,
+                        current: 1
+                    },
+                    success: function (res) {
+                        if (res.code === ms.result.success) {
+                            customer_service.customer_services_data = res.data.records;
+                        }
+                    },
+                }, this);
+            },
+            deleteCustomerService(id) {
+                ms.ajax({
+                    url: ms.url.deleteCustomerService + id,
+                    type: 'delete',
+                    success: function () {
+                        customer_service.$Message.success('删除成功');
+                        customer_service.initCustomerServicesList();
+                    }
+                }, this);
+            },
+            updateCustomerService() {
+                ms.ajax({
+                    url: ms.url.updateCustomerService,
+                    type: 'put',
+                    dateType: 'json',
+                    data: {
+                        customerServiceStaffId: customer_service.current_customer_service.customerServiceStaffId,
+                        phone: customer_service.current_customer_service.phone,
+                        email: customer_service.current_customer_service.email,
+                        nick: customer_service.current_customer_service.nick,
+                        realName: customer_service.current_customer_service.realName,
+                        pwd: customer_service.current_customer_service.pwd,
+                    },
+                    success: function (res) {
+                        if (res.code === ms.result.success) {
+                            customer_service.$Message.success(res.message);
+                            customer_service.initCustomerServicesList();
+                        }
+                    }
+                }, this);
+            },
+            changePage(index) {
+
+            }
+        },
+        mounted() {
+            this.initCustomerServicesList();
+        }
+    });
+</script>
