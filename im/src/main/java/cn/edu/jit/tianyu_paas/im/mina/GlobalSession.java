@@ -198,6 +198,8 @@ public class GlobalSession {
     private static void pushOfflineMessageToCustomerService(IoSession customerServiceSession) {
         List<OfflineMessage> offlineMessages = offlineMessageService.selectList(new EntityWrapper<OfflineMessage>().eq("receiver", MinaConstant.CUSTOMER_SERVICE_ID));
         customerServiceSession.write(JSON.toJSONString(offlineMessages));
+        // 将离线 消息删掉
+        offlineMessageService.delete(new EntityWrapper<OfflineMessage>().eq("receiver", MinaConstant.CUSTOMER_SERVICE_ID));
     }
 
     static class CustomerServiceAndUsers {
