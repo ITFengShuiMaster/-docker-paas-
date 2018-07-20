@@ -122,7 +122,7 @@ public class UserController {
         user.setPwd(PassUtil.getMD5(user.getPwd()));
         user.setActive(0);
         // 先插入用户，未激活状态
-        if (userService.insert(user)) {
+        if (!userService.insert(user)) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
 
