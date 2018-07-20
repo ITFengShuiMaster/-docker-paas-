@@ -61,7 +61,7 @@
         <div class="homeMiddle">
             <el-row :gutter="20">
                 <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
+                    <div class="first a" @click="getdata()">
                         <div class="rizhiTop">
                             <div class="rizhiLeft">
                                 <el-button>暂停推送</el-button>
@@ -71,11 +71,9 @@
                                 <el-button type="text">最近1000条日志</el-button>
                             </div>
                         </div>
-                        <hr width="1512px">
+                        <hr width="1512px" >
                         <div class="logs">
-                            <p>539b9c229678:Version: '5.5.46-37.5-log' socket: '/tmp/mysql.sock' port: 3306 Percona
-                                Server (GPL), Release 37.5, Revision 684ce54</p>
-                            <p>539b9c229678:180628 16:26:49 [Note] mysqld: ready for connections.</p>
+                            <p v-for="item in log_data">{{item}}</p>
                         </div>
                     </div>
                 </el-col>
@@ -90,10 +88,12 @@
     var log = new Vue({
         el: '#log',
         data: {
-
+            appId: null,
+            log_data: [],
         },
         methods :{
             getId(id) {
+                log.appId = id;
                 $.ajax({
                     type:'get',
                     url: '/tianyu-paas/app-log/' + id,
@@ -101,13 +101,30 @@
 
                     },
                     success:function (data) {
-                        console.log(data);
+                        log.log_data= data.data;
                     },
                     error:function (data) {
 
                     }
                 })
             },
+            getdata() {
+                $.ajax({
+                    type:'get',
+                    url: '/tianyu-paas/app-log/' + log.appId,
+                    data: {
+
+                    },
+                    success:function (data) {
+                        console.log(data);
+                        log.log_data = [],
+                        log.log_data= data.data;
+                    },
+                    error:function (data) {
+
+                    }
+                })
+            }
         },
         mounted() {
         }

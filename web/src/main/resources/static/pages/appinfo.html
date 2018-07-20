@@ -128,11 +128,11 @@
         <div class="appButton">
             <div class="buttonGroup">
                 <el-tooltip class="item" effect="dark" content="跳转到应用对外访问端口对应的域名地址" placement="top">
-                    <el-button>访问</el-button>
+                    <el-button @click="open_ssh()">访问</el-button>
                 </el-tooltip>
-                <el-button @click="open">开启</el-button>
-                <el-button @click="close">关闭</el-button>
-                <el-button @click="restart">重启</el-button>
+                <el-button @click="open()">开启</el-button>
+                <el-button @click="close()">关闭</el-button>
+                <el-button @click="restart()">重启</el-button>
                 <el-button>管理容器</el-button>
             </div>
             <el-button type="primary" style="margin-left: 25px">重新部署</el-button>
@@ -299,14 +299,53 @@
             //修改用户信息
             modify_appName() {
             },
+            open_ssh() {
+                window.open('/tianyu-paas/pages/webssh.html');
+            },
             open() {
-
+                $.ajax({
+                    type: "get",
+                    url: "/tianyu-paas/apps/start/" + appinfo.app_id,
+                    success: function (result) {
+                        if(result.code === 1) {
+                            alert("开启成功");
+                        } else if (result.code === 2) {
+                            alert(result.message);
+                        } else {
+                            alert(result.message);
+                        }
+                    }
+                })
             },
             close() {
-
+                $.ajax({
+                    type: "get",
+                    url: "/tianyu-paas/apps/stop/" + appinfo.app_id,
+                    success: function (result) {
+                        if(result.code === 1) {
+                            alert("关闭成功");
+                        } else if (result.code === 2) {
+                            alert(result.message);
+                        } else {
+                            alert(result.message);
+                        }
+                    }
+                })
             },
             restart() {
-
+                $.ajax({
+                    type: "get",
+                    url: "/tianyu-paas/apps/restart-container/" + appinfo.app_id,
+                    success: function (result) {
+                        if(result.code === 1) {
+                            alert("重启启成功");
+                        } else if (result.code === 2) {
+                            alert(result.message);
+                        } else {
+                            alert(result.message);
+                        }
+                    }
+                })
             }
         },
         mounted() {
