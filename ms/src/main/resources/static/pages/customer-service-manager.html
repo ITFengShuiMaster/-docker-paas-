@@ -7,7 +7,7 @@
         <p style="font-size: 20px; color: black">用户信息汇总查询</p>
         <p>查询所有用户信息，根据搜索条件进行排序</p>
     </div>
-    <div style="margin: 10px 20px; display: inline-flex">
+    <div style="margin: 10px 20px;  width: 95%">
         <p class="text">查询条件:</p>
         <i-input v-model="inputSearchContent" placeholder="请输入查询内容" style="width: 400px"></i-input>
 
@@ -25,7 +25,7 @@
                   @on-change="changePage"></Page>
         </div>
     </div>
-    <Modal v-model="show_customer_service" :loading="updating" @on-ok="updateCustomerService()">
+    <!--<Modal v-model="show_customer_service" :loading="updating" @on-ok="updateCustomerService()">
         <p slot="header" style="text-align:center; color: #2D8CF0">
             <Icon type="information-circled"></Icon>
             <span>编辑客服信息</span>
@@ -57,8 +57,8 @@
                 <i-input style="width: 300px" v-model="current_customer_service.gmtModified" disabled></i-input>
             </div>
         </div>
-    </Modal>
-    <Modal v-model="addCustomerService" :loading="updating" @on-ok="addCustomerService">
+    </Modal>-->
+    <!--<Modal v-model="addCustomerService" :loading="updating" @on-ok="addCustomerService">
         <p slot="header" style="text-align:center; color: #2D8CF0">
             <Icon type="information-circled"></Icon>
             <span>添加客服信息</span>
@@ -85,7 +85,7 @@
                          v-model="current_customer_service.pwd"></i-input>
             </div>
         </div>
-    </Modal>
+    </Modal>-->
 </div>
 <script>
     var customer_service = new Vue({
@@ -203,8 +203,11 @@
                     url: ms.url.addCustomerService,
                     type: 'post',
                     data: {
-                        size: 10,
-                        current: 1
+                        phone: customer_service.current_customer_service.phone,
+                        email: customer_service.current_customer_service.email,
+                        nick: customer_service.current_customer_service.nick,
+                        realName: customer_service.current_customer_service.realName,
+                        pwd: customer_service.current_customer_service.pwd,
                     },
                     success: function (res) {
                         if (res.code === ms.result.success) {
@@ -222,11 +225,8 @@
                 ms.ajax({
                     url: ms.url.listCustomerServices,
                     data: {
-                        phone: customer_service.current_customer_service.phone,
-                        email: customer_service.current_customer_service.email,
-                        nick: customer_service.current_customer_service.nick,
-                        realName: customer_service.current_customer_service.realName,
-                        pwd: customer_service.current_customer_service.pwd,
+                        size: 10,
+                        current: 1
                     },
                     success: function (res) {
                         if (res.code === ms.result.success) {
