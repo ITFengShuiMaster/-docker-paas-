@@ -15,6 +15,7 @@
             <i-option v-for="item in search_options" :value="item.value" :key="item.value">{{ item.label }}</i-option>
         </i-select>
         <i-button type="primary" @click="searchCustomerService">搜索</i-button>
+        <i-button type="success" style="float: right;" @click="addCustomerService" size="large">添加客服</i-button>
     </div>
     <i-table stripe border show-header highlight-row height="200" style="margin-top: 20px"
              :columns="column_customer" :data="customer_services_data"></i-table>
@@ -24,7 +25,7 @@
                   @on-change="changePage"></Page>
         </div>
     </div>
-    <Modal v-model="show_customer_service" :loading="updating" @on-ok="updating=true;updateCustomerService()">
+    <Modal v-model="show_customer_service" :loading="updating" @on-ok="updateCustomerService()">
         <p slot="header" style="text-align:center; color: #2D8CF0">
             <Icon type="information-circled"></Icon>
             <span>编辑客服信息</span>
@@ -57,11 +58,40 @@
             </div>
         </div>
     </Modal>
+    <Modal v-model="addCustomerService" :loading="updating" @on-ok="addCustomerService">
+        <p slot="header" style="text-align:center; color: #2D8CF0">
+            <Icon type="information-circled"></Icon>
+            <span>添加客服信息</span>
+        </p>
+        <div style="text-align:center;">
+            <div style="margin-top: 20px"><span>邮箱： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input type="email" style="width: 300px" clearable v-model="current_customer_service.email"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>昵称： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input style="width: 300px" clearable v-model="current_customer_service.nick"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>电话： &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input style="width: 300px" clearable v-model="current_customer_service.phone"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>真实姓名：</span>
+                <i-input style="width: 300px" clearable v-model="current_customer_service.realName"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>密码：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <i-input type="password" style="width: 300px" clearable
+                         v-model="current_customer_service.pwd"></i-input>
+            </div>
+            <div style="margin-top: 20px"><span>确认密码：</span>
+                <i-input type="password" style="width: 300px" clearable
+                         v-model="current_customer_service.pwd"></i-input>
+            </div>
+        </div>
+    </Modal>
 </div>
 <script>
     var customer_service = new Vue({
         el: '#customer-service',
         data: {
+            addCustomerService: false,
             inputSearchContent: '',
             selectOption: '',
             search_options: [
@@ -168,6 +198,21 @@
             customer_services_data: [],
         },
         methods: {
+            addCustomerService() {
+                ms.ajax({
+                    url: ms.url.addCustomerService,
+                    type: 'post',
+                    data: {
+                        size: 10,
+                        current: 1
+                    },
+                    success: function (res) {
+                        if (res.code === ms.result.success) {
+                            customer_service.customer_services_data = res.data.records;
+                        }
+                    },
+                }, this);
+            },
             searchCustomerService() {
                 //TODO
                 // console.log(this.selectOption);
@@ -177,8 +222,11 @@
                 ms.ajax({
                     url: ms.url.listCustomerServices,
                     data: {
-                        size: 10,
-                        current: 1
+                        phone: customer_service.current_customer_service.phone,
+                        email: customer_service.current_customer_service.email,
+                        nick: customer_service.current_customer_service.nick,
+                        realName: customer_service.current_customer_service.realName,
+                        pwd: customer_service.current_customer_service.pwd,
                     },
                     success: function (res) {
                         if (res.code === ms.result.success) {

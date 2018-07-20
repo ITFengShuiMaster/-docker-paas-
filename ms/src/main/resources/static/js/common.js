@@ -8,6 +8,7 @@ ms.url = {
     listCustomerServices: ms.baseUrl + 'customer-services/list',
     deleteCustomerService: ms.baseUrl + 'customer-services/',
     updateCustomerService: ms.baseUrl + 'customer-services/',
+    addCustomerService: ms.baseUrl + 'customer-services/',
 
     websocket: "ws://123.207.169.68:8080/ms/websocket"
 }
