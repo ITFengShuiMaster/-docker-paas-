@@ -30,7 +30,10 @@ public class MinaConfig {
         IoAcceptor acceptor = new NioSocketAcceptor();
         acceptor.getFilterChain().addLast("logger", new LoggingFilter());
         // 如果传byte[] 可以去掉
-        acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
+        TextLineCodecFactory textLineCodecFactory = new TextLineCodecFactory(Charset.forName("UTF-8"));
+        textLineCodecFactory.setDecoderMaxLineLength(1024 * 1024);
+        textLineCodecFactory.setEncoderMaxLineLength(1024 * 1024);
+        acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(textLineCodecFactory));
         acceptor.setHandler(new MyIoHandler());
 
         acceptor.getSessionConfig().setReadBufferSize(2048);

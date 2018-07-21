@@ -49,7 +49,7 @@ public class MyIoHandler extends IoHandlerAdapter {
                 GlobalSession.userLogout(session, user.getUserId());
                 break;
             case User.TYPE_CUSTOMER_SERVICE:
-                GlobalSession.customerServiceLogout(session);
+                GlobalSession.customerServiceLogout(session, user.getUserId());
                 break;
             default:
                 break;
@@ -106,7 +106,7 @@ public class MyIoHandler extends IoHandlerAdapter {
                 GlobalSession.userLogin(ioSession, user.getUserId());
                 break;
             case User.TYPE_CUSTOMER_SERVICE:
-                GlobalSession.customerServiceLogin(ioSession, user.getPhone());
+                GlobalSession.customerServiceLogin(ioSession, user.getUserId());
                 break;
             default:
                 break;

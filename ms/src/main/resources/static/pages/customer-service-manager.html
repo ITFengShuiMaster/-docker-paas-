@@ -7,16 +7,7 @@
         <p style="font-size: 20px; color: black">用户信息汇总查询</p>
         <p>查询所有用户信息，根据搜索条件进行排序</p>
     </div>
-    <div style="margin: 10px 20px;  width: 95%">
-        <p class="text">查询条件:</p>
-        <i-input v-model="inputSearchContent" placeholder="请输入查询内容" style="width: 400px"></i-input>
-
-        <i-select v-model="selectOption" style="width:150px; height: 30px; margin-right: 15px; margin-left: 15px">
-            <i-option v-for="item in search_options" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-        </i-select>
-        <i-button type="primary" @click="searchCustomerService">搜索</i-button>
-        <i-button type="success" style="float: right;" @click="addCustomerService" size="large">添加客服</i-button>
-    </div>
+    <i-button type="success" style="margin-left: 20px" @click="addFlag=true" size="large">添加客服</i-button>
     <i-table stripe border show-header highlight-row height="200" style="margin-top: 20px"
              :columns="column_customer" :data="customer_services_data"></i-table>
     <div style="margin: 10px;overflow: hidden">
@@ -25,7 +16,7 @@
                   @on-change="changePage"></Page>
         </div>
     </div>
-    <!--<Modal v-model="show_customer_service" :loading="updating" @on-ok="updateCustomerService()">
+    <Modal v-model="show_customer_service" :loading="updating" @on-ok="updateCustomerService()">
         <p slot="header" style="text-align:center; color: #2D8CF0">
             <Icon type="information-circled"></Icon>
             <span>编辑客服信息</span>
@@ -57,8 +48,8 @@
                 <i-input style="width: 300px" v-model="current_customer_service.gmtModified" disabled></i-input>
             </div>
         </div>
-    </Modal>-->
-    <!--<Modal v-model="addCustomerService" :loading="updating" @on-ok="addCustomerService">
+    </Modal>
+    <Modal v-model="addFlag" :loading="updating" @on-ok="addCustomerService()">
         <p slot="header" style="text-align:center; color: #2D8CF0">
             <Icon type="information-circled"></Icon>
             <span>添加客服信息</span>
@@ -82,16 +73,16 @@
             </div>
             <div style="margin-top: 20px"><span>确认密码：</span>
                 <i-input type="password" style="width: 300px" clearable
-                         v-model="current_customer_service.pwd"></i-input>
+                         v-model="current_customer_service.pwd2"></i-input>
             </div>
         </div>
-    </Modal>-->
+    </Modal>
 </div>
 <script>
     var customer_service = new Vue({
         el: '#customer-service',
         data: {
-            addCustomerService: false,
+            addFlag: false,
             inputSearchContent: '',
             selectOption: '',
             search_options: [
@@ -199,6 +190,10 @@
         },
         methods: {
             addCustomerService() {
+                if (this.current_customer_service.pwd !== this.current_customer_service.pwd2) {
+                    this.$Message.error('两次密码输入不一致');
+                    return;
+                }
                 ms.ajax({
                     url: ms.url.addCustomerService,
                     type: 'post',
@@ -260,9 +255,10 @@
                     },
                     success: function (res) {
                         if (res.code === ms.result.success) {
-                            customer_service.$Message.success(res.message);
+                            // customer_service.$Message.success(res.message);
                             customer_service.initCustomerServicesList();
                         }
+                        customer_service.$Message.info(res.message);
                     }
                 }, this);
             },

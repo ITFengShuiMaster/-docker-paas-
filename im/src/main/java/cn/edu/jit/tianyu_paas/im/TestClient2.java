@@ -15,6 +15,7 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+import java.util.Scanner;
 
 public class TestClient2 {
     public static void main(String[] args) {
@@ -38,6 +39,17 @@ public class TestClient2 {
             @Override
             public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
                 super.sessionIdle(session, status);
+                Scanner sc = new Scanner(System.in);
+                System.out.println("input:   ");
+                String input = sc.nextLine();
+
+                while (true) {
+                    CommonMessage commonMessage = new CommonMessage();
+                    commonMessage.setContent(input);
+                    session.write(JSON.toJSONString(commonMessage));
+                    System.out.println("input:   ");
+                    input = sc.nextLine();
+                }
             }
 
             @Override
@@ -68,5 +80,6 @@ public class TestClient2 {
         });
 
         connector.connect(new InetSocketAddress(MinaConstant.MINA_SERVER_PORT));
+
     }
 }
