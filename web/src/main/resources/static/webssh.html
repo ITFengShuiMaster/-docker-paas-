@@ -1,0 +1,23 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>容器cmd</title>
+    <link rel="stylesheet" href="/tianyu-paas/webjars/xterm/2.9.2/dist/xterm.css"/>
+    <script type="application/javascript" src="/tianyu-paas/webjars/xterm/2.9.2/dist/xterm.js"></script>
+    <script type="application/javascript" src="/tianyu-paas/webjars/xterm/2.9.2/dist/addons/attach/attach.js"></script>
+</head>
+<body>
+<div style="width:100%;" id="xterm"></div>
+<script>
+    var url = window.location.href;
+    var containerId = url.substring(url.lastIndexOf("/") + 1);
+    console.log("containerId= " + containerId);
+
+    var term = new Terminal();
+    term.open(document.getElementById('xterm'));
+    var socket = new WebSocket('ws://localhost:8080/tianyu-paas/websocket-ssh?containerId=' + containerId);
+    term.attach(socket);
+    term.focus();
+</script>
+</body>
+</html>

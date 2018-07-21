@@ -4,6 +4,7 @@ import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
 import cn.edu.jit.tianyu_paas.shared.mina_message.AuthenticationMessage;
 import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
 import com.alibaba.fastjson.JSON;
+import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
@@ -15,6 +16,7 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+import java.util.Scanner;
 
 public class TestClient {
     public static void main(String[] args) {
@@ -42,13 +44,7 @@ public class TestClient {
 
             @Override
             public void sessionOpened(IoSession session) {
-                AuthenticationMessage authenticationMessage = new AuthenticationMessage();
-                authenticationMessage.setUsername("test1");
-                authenticationMessage.setPaasword("test");
-                CommonMessage commonMessage = new CommonMessage();
-                commonMessage.setContent("test");
-                session.write(JSON.toJSONString(authenticationMessage));
-                session.write(JSON.toJSONString(commonMessage));
+
             }
 
             @Override
@@ -67,6 +63,20 @@ public class TestClient {
             }
         });
 
-        connector.connect(new InetSocketAddress(MinaConstant.MINA_SERVER_PORT));
+        ConnectFuture cf = connector.connect(new InetSocketAddress(MinaConstant.MINA_SERVER_PORT));
+        cf.awaitUninterruptibly();
+        IoSession session = cf.getSession();
+        AuthenticationMessage authenticationMessage = new AuthenticationMessage();
+        authenticationMessage.setUsername("test1");
+        authenticationMessage.setPaasword("test");
+        session.write(JSON.toJSONString(authenticationMessage));
+        CommonMessage commonMessage = new CommonMessage();
+        while (true) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("input");
+            String line = scanner.nextLine();
+            commonMessage.setContent(line);
+            session.write(JSON.toJSONString(commonMessage));
+        }
     }
 }
