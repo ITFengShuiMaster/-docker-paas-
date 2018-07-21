@@ -43,7 +43,7 @@
     </style>
 </head>
 <body>
-<div id="app">
+<div id="login">
     <div class="login-page-container">
         <div class="demo-login">
             <div class="login-form">
@@ -76,14 +76,14 @@
     var validatePass = (rule, value, callback) => {
         if (value === '') {
             callback(new Error('密码不能为空'));
-        } else if (vm.test) {
+        } else if (login.test) {
             callback(new Error('密码错误'));
         } else {
             callback();
         }
     };
-    const vm = new Vue({
-        el: '#app',
+    const login = new Vue({
+        el: '#login',
         data: {
             User: {
                 name: '',
@@ -101,19 +101,24 @@
             test: false
         },
         methods: {
+            setCookie(name, value) {
+                var exp = new Date();
+                exp.setTime(exp.getTime() + 60 * 60 * 1000);
+                document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";path=/";
+            },
+
             login() {
                 $.ajax({
                     type: "post",
                     url: 'users/login',
                     data: {
-                        account: this.User.name,
+                        username: this.User.name,
                         pwd: this.User.pass
                     },
                     success: function (TResultCode) {
-                        console.log("the result is " + TResultCode.code);
-                        if (TResultCode.code == 1) {
+                        if (TResultCode.code === 1) {
+                            login.setCookie("name", login.User.name);
                             location.href = 'index.html'
-
                         }
                         else {
                             alert(TResultCode.message)

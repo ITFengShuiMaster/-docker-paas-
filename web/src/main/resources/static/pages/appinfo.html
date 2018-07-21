@@ -1,110 +1,111 @@
+<style>
+    .homeTop {
+        background: #ffffff;
+        padding: 16px 32px 0;
+        border: 1px solid #e8e8e8;
+        margin-bottom: 15px;
+        min-height: 100px;
+        min-width: 100px;
+    }
 
-    <style>
-        .homeTop {
-            background: #ffffff;
-            padding: 16px 32px 0;
-            border: 1px solid #e8e8e8;
-            margin-bottom: 15px;
-            min-height: 100px;
-            min-width: 100px;
-        }
+    .homeMiddle {
+        padding: 20px;
+        margin: 10px;
+        background: #fff;
+        min-height: 150px;
+    }
 
-        .homeMiddle {
-            padding: 20px;
-            margin: 10px;
-            background: #fff;
-            min-height: 150px;
-        }
+    .homeBottom {
+        padding: 20px;
+        margin: 10px;
+        background: #fff;
+        min-height: 150px;
+    }
 
-        .homeBottom {
-            padding: 20px;
-            margin: 10px;
-            background: #fff;
-            min-height: 150px;
-        }
+    .makeInfo {
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .makeInfo {
-            padding: 20px;
-            background: #fff;
-            border-bottom: 1px solid #e8e8e8;
-        }
+    .appInfo {
+        float: left;
+        min-width: 200px;
 
-        .appInfo {
-            float: left;
-            min-width: 200px;
+    }
 
-        }
-        .appInfo > button{
-            position: relative;
-            z-index: 100;
-        }
-        .appInfo i, h3 {
-            display: inline-block;
-        }
+    .appInfo > button {
+        position: relative;
+        z-index: 100;
+    }
 
-        .appButton {
-            float: right;
-            min-width: 400px;
+    .appInfo i, h3 {
+        display: inline-block;
+    }
 
-        }
+    .appButton {
+        float: right;
+        min-width: 400px;
 
+    }
 
-        .appButton .buttonGroup, button {
-            display: inline-block;
-            position: relative;
-            z-index: 100;
-        }
-        .appButton .el-button{
-            border-radius: 0px;
-        }
+    .appButton .buttonGroup, button {
+        display: inline-block;
+        position: relative;
+        z-index: 100;
+    }
 
-        .a {
-            /*display: inline-block;*/
-            margin: 10px;
-            min-height: 170px;
-            border: 1px solid #e8e8e8;
-            padding: 16px 32px 0;
+    .appButton .el-button {
+        border-radius: 0px;
+    }
 
-        }
+    .a {
+        /*display: inline-block;*/
+        margin: 10px;
+        min-height: 170px;
+        border: 1px solid #e8e8e8;
+        padding: 16px 32px 0;
 
-        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
-            padding: 40px 0 40px 0;
-            margin: 20px;
-            border-bottom: 1px solid #e8e8e8;
-        }
+    }
 
-        .text {
-            text-align: center;
-        }
+    .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+        padding: 40px 0 40px 0;
+        margin: 20px;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .infos {
-            padding: 20px;
-        }
+    .text {
+        text-align: center;
+    }
 
-        .infos div {
-            float: left;
-            padding: 20px;
-        }
+    .infos {
+        padding: 20px;
+    }
 
-        .infoinfos {
-            border: 1px solid #e8e8e8;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            min-width: 500px;
-            margin-left: 100px;
-        }
+    .infos div {
+        float: left;
+        padding: 20px;
+    }
 
-        .buttonGroup button {
-            margin: 0 -15px;
-        }
+    .infoinfos {
+        border: 1px solid #e8e8e8;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        min-width: 500px;
+        margin-left: 100px;
+    }
 
-        .logs p {
-            margin-bottom: 0;
-            color: #999;
-        }
+    .buttonGroup button {
+        margin: 0 -15px;
+    }
 
-    </style>
+    .logs p {
+        margin-bottom: 0;
+        color: #999;
+    }
+
+</style>
 
 <div id="appinfo">
     <div class="homeTop">
@@ -121,7 +122,8 @@
                 <el-input v-model="appName" auto-complete="off"></el-input>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false;modify_appName" size="small">确 定</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false;modify_appName" size="small">确 定
+                    </el-button>
                 </div>
             </el-dialog>
         </div>
@@ -166,7 +168,8 @@
         el: '#appinfo',
         data: {
             app_id: '',
-            appName:'MySQL',
+            appName: 'MySQL',
+            containerId: '',
             dialogTableVisible: false,
             dialogFormVisible: false,
             form: {
@@ -275,18 +278,21 @@
             getId(id) {
                 appinfo.app_id = id;
                 appinfo.infoInit(id)
-    },
+            },
             infoInit() {
                 var that = this;
                 $.ajax({
-                    type:'get',
-                    url:'/tianyu-paas/apps/'+appinfo.app_id,
-                    success:function (result) {
-//                        console.log(result);
-                        that.appName = result.data.name;
+                    type: 'get',
+                    url: '/tianyu-paas/apps/' + appinfo.app_id,
+                    success: function (result) {
+                        if (result.code === 1) {
+                            console.log(result);
+                            that.appName = result.data.name;
+                            that.containerId = result.data.containerId;
+                        }
                     },
-                    error:function () {
-
+                    error: function () {
+                        alert("容器已关闭")
                     }
                 })
             },
@@ -300,14 +306,14 @@
             modify_appName() {
             },
             open_ssh() {
-                window.open('/tianyu-paas/pages/webssh.html');
+                window.open('/tianyu-paas/pages/webssh.html/' + appinfo.containerId);
             },
             open() {
                 $.ajax({
                     type: "get",
                     url: "/tianyu-paas/apps/start/" + appinfo.app_id,
                     success: function (result) {
-                        if(result.code === 1) {
+                        if (result.code === 1) {
                             alert("开启成功");
                         } else if (result.code === 2) {
                             alert(result.message);
@@ -322,7 +328,7 @@
                     type: "get",
                     url: "/tianyu-paas/apps/stop/" + appinfo.app_id,
                     success: function (result) {
-                        if(result.code === 1) {
+                        if (result.code === 1) {
                             alert("关闭成功");
                         } else if (result.code === 2) {
                             alert(result.message);
@@ -337,7 +343,7 @@
                     type: "get",
                     url: "/tianyu-paas/apps/restart-container/" + appinfo.app_id,
                     success: function (result) {
-                        if(result.code === 1) {
+                        if (result.code === 1) {
                             alert("重启启成功");
                         } else if (result.code === 2) {
                             alert(result.message);

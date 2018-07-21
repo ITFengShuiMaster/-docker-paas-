@@ -1,0 +1,28 @@
+<div id="examine">
+    <div margin>
+        <i class="el-icon-check" style="font-size: 200px; color: #00aaaa; margin-left: 48%; margin-top: 5%"></i>
+    </div>
+    <div style="margin-left: 50%; font-size: 24px">
+        <span> {{status}} </span>
+    </div>
+    <div style="width: 80%; margin-left: 10%; margin-top: 2%; font-size: 16px; background: #DCDFE6">
+        <div style="margin-left: 8%;">
+            {{info}}<br>
+            {{info}}<br>
+        </div>
+    </div>
+</div>
+
+<script>
+    var examine = new Vue({
+        el: "#examine",
+        data: {
+            status: "检测完成",
+            info: "代码信息"
+        },
+        method: {},
+        created() {
+
+        }
+    })
+</script>
