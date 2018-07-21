@@ -38,9 +38,9 @@ public class GlobalSession {
      */
     private static List<IoSession> singleUserSessionList = Collections.synchronizedList(new ArrayList<>());
 
-    private static ConcurrentMap<Long, IoSession> userSessionMap = new ConcurrentHashMap<>();
+    private static ConcurrentMap<Long, IoSession> onlineUserSessionMap = new ConcurrentHashMap<>();
 
-    private static ConcurrentMap<String, IoSession> customerServiceSessionMap = new ConcurrentHashMap<>();
+    private static ConcurrentMap<Long, IoSession> onlineCustomerServiceSessionMap = new ConcurrentHashMap<>();
 
     /**
      * 用户登录，分配客服
@@ -49,10 +49,10 @@ public class GlobalSession {
      */
     public static void userLogin(IoSession userSession, Long userId) {
         // 如果重复登录，先让之前的用户下线
-        if (userSessionMap.containsKey(userId)) {
-            userLogout(userSessionMap.get(userId), userId);
+        if (onlineUserSessionMap.containsKey(userId)) {
+            userLogout(onlineUserSessionMap.get(userId), userId);
         }
-        userSessionMap.put(userId, userSession);
+        onlineUserSessionMap.put(userId, userSession);
         // 如果没有客服在线，则放到未分配列表中
         if (onlineCustomerServices.size() <= 0) {
             singleUserSessionList.add(userSession);
@@ -72,7 +72,7 @@ public class GlobalSession {
      * 用户离线，释放客服
      */
     public static void userLogout(IoSession userSession, Long userId) {
-        userSessionMap.remove(userId);
+        onlineUserSessionMap.remove(userId);
         singleUserSessionList.remove(userSession);
         // 得到对应客服
         IoSession correspondingCustomerService = (IoSession) userSession.getAttribute(MinaConstant.SESSION_KEY_CUSTOMER_SERVICE);
@@ -87,13 +87,13 @@ public class GlobalSession {
     /**
      * 客服登录，分配用户（指没有分配到客服的用户）
      */
-    public static void customerServiceLogin(IoSession customerServiceSession, String phone) {
+    public static void customerServiceLogin(IoSession customerServiceSession, Long userId) {
         // 如果重复登录，先让之前的客服下线
-        if (customerServiceSessionMap.containsKey(phone)) {
-            customerServiceLogout(customerServiceSessionMap.get(phone));
+        if (onlineCustomerServiceSessionMap.containsKey(userId)) {
+            customerServiceLogout(onlineCustomerServiceSessionMap.get(userId), userId);
         }
         // 将客服放入session表中
-        customerServiceSessionMap.put(phone, customerServiceSession);
+        onlineCustomerServiceSessionMap.put(userId, customerServiceSession);
         CustomerServiceAndUsers customerServiceAndUsers = new CustomerServiceAndUsers();
         customerServiceAndUsers.customerServiceSession = customerServiceSession;
         customerServiceAndUsers.userSessions = new ArrayList<>();
@@ -115,7 +115,8 @@ public class GlobalSession {
     /**
      * 客服离线，释放用户，并分配给其他客服
      */
-    public static void customerServiceLogout(IoSession customerServiceSession) {
+    public static void customerServiceLogout(IoSession customerServiceSession, Long userId) {
+        onlineCustomerServiceSessionMap.remove(userId);
         // 客服离线后，对应的剩下的用户
         List<IoSession> leftUserSessions = getCustomerServiceUserSessions(customerServiceSession);
         for (CustomerServiceAndUsers customerServiceAndUsers : onlineCustomerServices) {
@@ -123,6 +124,9 @@ public class GlobalSession {
                 onlineCustomerServices.remove(customerServiceAndUsers);
                 break;
             }
+        }
+        for (IoSession leftUserSession : leftUserSessions) {
+            leftUserSession.removeAttribute(MinaConstant.SESSION_KEY_CUSTOMER_SERVICE);
         }
         // 如果没有客服在线
         if (onlineCustomerServices.size() <= 0) {
@@ -134,6 +138,7 @@ public class GlobalSession {
             for (IoSession leftUserSession : leftUserSessions) {
                 leftUserSession.setAttribute(MinaConstant.SESSION_KEY_CUSTOMER_SERVICE, mostIdleCustomerServiceSession);
             }
+            sortList();
         }
         customerServiceSession.removeAttribute(MinaConstant.SESSION_KEY_USER);
         customerServiceSession.closeOnFlush();
@@ -162,7 +167,7 @@ public class GlobalSession {
         if (message.getReceiver() == null || message.getReceiver() == 0) {
             LOGGER.error("receiver null");
         }
-        IoSession userSession = userSessionMap.get(message.getReceiver());
+        IoSession userSession = onlineUserSessionMap.get(message.getReceiver());
         if (userSession != null) {
             userSession.write(JSON.toJSONString(message));
             return true;
@@ -197,6 +202,9 @@ public class GlobalSession {
      */
     private static void pushOfflineMessageToCustomerService(IoSession customerServiceSession) {
         List<OfflineMessage> offlineMessages = offlineMessageService.selectList(new EntityWrapper<OfflineMessage>().eq("receiver", MinaConstant.CUSTOMER_SERVICE_ID));
+        if (offlineMessages.size() <= 0) {
+            return;
+        }
         customerServiceSession.write(JSON.toJSONString(offlineMessages));
         // 将离线 消息删掉
         offlineMessageService.delete(new EntityWrapper<OfflineMessage>().eq("receiver", MinaConstant.CUSTOMER_SERVICE_ID));

@@ -84,5 +84,20 @@ public class TestClient {
             commonMessage.setContent(str);
             session.write(JSON.toJSONString(commonMessage));
         }
+        ConnectFuture cf = connector.connect(new InetSocketAddress(MinaConstant.MINA_SERVER_PORT));
+        cf.awaitUninterruptibly();
+        IoSession session = cf.getSession();
+        AuthenticationMessage authenticationMessage = new AuthenticationMessage();
+        authenticationMessage.setUsername("test1");
+        authenticationMessage.setPaasword("test");
+        session.write(JSON.toJSONString(authenticationMessage));
+        CommonMessage commonMessage = new CommonMessage();
+        while (true) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("input");
+            String line = scanner.nextLine();
+            commonMessage.setContent(line);
+            session.write(JSON.toJSONString(commonMessage));
+        }
     }
 }
