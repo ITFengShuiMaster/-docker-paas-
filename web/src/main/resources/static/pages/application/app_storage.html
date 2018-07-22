@@ -1,68 +1,67 @@
+<style>
+    html, body {
+        font-family: sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        background: #f0f2f5 !important;
+        color: rgba(0, 0, 0, .65);
+    }
 
-    <style>
-        html, body {
-            font-family: sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            background: #f0f2f5 !important;
-            color: rgba(0, 0, 0, .65);
-        }
+    .a {
+        /*display: inline-block;*/
+        margin: 10px;
+        min-height: 170px;
+        border: 1px solid #e8e8e8;
+        padding: 16px 32px 0;
+        background-color: #fff;
 
-        .a {
-            /*display: inline-block;*/
-            margin: 10px;
-            min-height: 170px;
-            border: 1px solid #e8e8e8;
-            padding: 16px 32px 0;
-            background-color: #fff;
+    }
 
-        }
+    .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+        padding: 40px 0 40px 0;
+        margin: 20px;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
-            padding: 40px 0 40px 0;
-            margin: 20px;
-            border-bottom: 1px solid #e8e8e8;
-        }
+    .text {
+        text-align: center;
+    }
 
-        .text {
-            text-align: center;
-        }
+    .infos div {
+        float: left;
+        padding: 20px;
+        margin: 10px;
+    }
 
-        .infos div {
-            float: left;
-            padding: 20px;
-            margin: 10px;
-        }
+    .infoinfos {
+        border: 1px solid #e8e8e8;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        min-width: 800px;
+        margin-left: 100px;
+    }
 
-        .infoinfos {
-            border: 1px solid #e8e8e8;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            min-width: 800px;
-            margin-left: 100px;
-        }
+    .bottom {
+        padding: 15px;
+        margin: 10px;
+        background: #fff;
+        min-height: 150px;
+    }
 
-        .bottom {
-            padding: 15px;
-            margin: 10px;
-            background: #fff;
-            min-height: 150px;
-        }
+    .makeInfo {
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e8;
+        margin-bottom: 10px;
+    }
 
-        .makeInfo {
-            padding: 20px;
-            background: #fff;
-            border-bottom: 1px solid #e8e8e8;
-            margin-bottom: 10px;
-        }
-
-        .button {
-            text-align: right;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-    </style>
+    .button {
+        text-align: right;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+</style>
 
 <div id="storage">
     <div class="cunchu">
@@ -88,6 +87,11 @@
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
+                                        prop="list"
+                                        label="主机目录"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
                                         prop="type"
                                         label="持久化类型"
                                         width="180">
@@ -105,7 +109,7 @@
                         <div>
                             <el-dialog title="添加持久化" :visible.sync="dialogFormVisible" width="30%">
                                 <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
-                                         label-position="left" label-width="80px" >
+                                         label-position="left" label-width="80px">
                                     <el-form-item label="名称" prop="var_name">
                                         <el-input placeholder="请输入持久化名称" v-model="ruleForm.var_name"></el-input>
                                     </el-form-item>
@@ -122,7 +126,8 @@
                                 </el-form>
                                 <div slot="footer" class="dialog-footer">
                                     <el-button @click="dialogFormVisible = false">取 消</el-button>
-                                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="addVar">确 定
+                                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="addVar">
+                                        确 定
                                     </el-button>
                                 </div>
                             </el-dialog>
@@ -197,33 +202,48 @@
                 list: '/data',
                 type: 'share-file'
             }],
-            fileStorage:[],
+            fileStorage: [],
             ruleForm: {
                 var_name: '',
-                var_val:'',
-                var_des:''
+                var_val: '',
+                var_des: ''
             },
             dialogFormVisible: false,
 
         },
-        methods:{
+        methods: {
+            getId(id) {
+                $.ajax({
+                    type: 'get',
+                    url: '/tianyu-paas/apps/' + id,
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function () {
+                        alert("容器已关闭")
+                    }
+                })
+            },
             addPersistence() {
                 $.ajax({
-                    type:'post',
-                    url:'/tianyu-paas/app-vars/',
+                    type: 'post',
+                    url: '/tianyu-paas/app-vars/',
                     data: {
-                        appId:appinfo.app_id,
-                        varName:this.ruleForm.var_name,
-                        varValue:this.ruleForm.var_val,
-                        varExplain:this.ruleForm.var_des
+                        appId: appinfo.app_id,
+                        varName: this.ruleForm.var_name,
+                        varValue: this.ruleForm.var_val,
+                        varExplain: this.ruleForm.var_des
                     },
-                    success:function (data) {
+                    success: function (data) {
                         console.log(data)
                     },
-                    error:function () {
+                    error: function () {
 
                     }
                 })
+            },
+            getId(id) {
+
             }
         },
         mounted() {
