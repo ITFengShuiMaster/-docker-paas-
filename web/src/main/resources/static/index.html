@@ -188,9 +188,12 @@
             clickApp(id) {
                 $('#content').load("pages/appinfo.html", function (response, message, xhr) {
                     appinfo.getId(id);
-                });;
+                });
             },
             clickGroup(id) {
+                $('#content').load('pages/app-group.html', function (response, message, xhr) {
+                    appGroup.getIcon(id);
+                });
             },
             getCookie(name) {
                 var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
