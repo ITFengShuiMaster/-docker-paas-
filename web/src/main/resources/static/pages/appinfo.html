@@ -130,12 +130,12 @@
         <div class="appButton">
             <div class="buttonGroup">
                 <el-tooltip class="item" effect="dark" content="跳转到应用对外访问端口对应的域名地址" placement="top">
-                    <el-button @click="open_ssh()">访问</el-button>
+                    <el-button >访问</el-button>
                 </el-tooltip>
                 <el-button @click="open()">开启</el-button>
                 <el-button @click="close()">关闭</el-button>
                 <el-button @click="restart()">重启</el-button>
-                <el-button>管理容器</el-button>
+                <el-button @click="open_ssh()">命令行</el-button>
             </div>
             <el-button type="primary" style="margin-left: 25px">重新部署</el-button>
         </div>
@@ -146,7 +146,7 @@
                         <el-menu-item index="1">总览</el-menu-item>
                         <el-menu-item index="2">监控</el-menu-item>
                         <el-menu-item index="3">日志</el-menu-item>
-                        <el-menu-item index="4">依赖</el-menu-item>
+                        <el-menu-item index="4">伸缩</el-menu-item>
                         <el-menu-item index="5">存储</el-menu-item>
                         <el-menu-item index="6">端口</el-menu-item>
                         <el-menu-item index="7">扩展</el-menu-item>
@@ -262,16 +262,22 @@
                 label: '2'
             }],
             activeIndex: '1',
-            pageArr: ['pages/application/app_overview.html', 'pages/application/app_monitor.html', 'pages/application/app_log.html', 'pages/application/app_extend.html', 'pages/application/app_storage.html', 'pages/application/app_port.html', 'pages/application/app_rely.html', 'pages/application/app_setting.html'],
+            pageArr: ['pages/application/app_overview.html', 'pages/application/app_monitor.html', 'pages/application/app_log.html', 'pages/application/app_flex.html', 'pages/application/app_storage.html', 'pages/application/app_port.html', 'pages/application/app_rely.html', 'pages/application/app_setting.html'],
         },
         methods: {
             selectPage1(index, indexPath) {
-//                console.log(this.pageArr[index - 1]);
+                console.log(index);
+
                 // 主要就是通过jquery的load方法，加内容加载到元素上
                 $('#con').load(this.pageArr[index - 1], function (response, status, xhr) {
                     overview.getId(appinfo.app_id);
-                    if (index == 3) {
+                    console.log(index);
+
+                    if (index === '3') {
                         log.getId(appinfo.app_id)
+                    }
+                    if (index === '4') {
+                        flex.getId(appinfo.app_id)
                     }
                 });
             },

@@ -328,13 +328,11 @@
                 })
             },
             // 选择页面
-            selectPage(index, indexPath) {
+            selectPage(index) {
                 // 主要就是通过jquery的load方法，加内容加载到元素上
-                /*if (index > 10000) {
-                    $('#content').load("pages/appinfo.html", function (response, message, xhr) {
-                        appinfo.getId(index - 10000);
-                    });
-                }*/
+                if (index > 300) {
+                    return;
+                }
                 $('#content').load(this.pageArr[index], function (response, message, xhr) {
                 });
             },
