@@ -77,18 +77,23 @@
                                     :data="lastingSet"
                                     style="width: 100%;">
                                 <el-table-column
-                                        prop="name"
+                                        prop="persistentName"
                                         label="持久化名称"
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="list"
-                                        label="持久化目录"
+                                        prop="containerMountName"
+                                        label="容器持久化目录"
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="list"
-                                        label="主机目录"
+                                        prop="serverMountName"
+                                        label="主机持久化目录"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="gmtCreate"
+                                        label="创建时间"
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
@@ -98,7 +103,10 @@
                                 </el-table-column>
                                 <el-table-column
                                         label="操作">
-                                    <el-button type="text" size="small">删除</el-button>
+                                    <template slot-scope="scope">
+                                        <el-button type="primary" size="small" @click='exported(scope.row)'>导出</el-button>
+                                        <el-button type="danger" size="small" @click='delete_mount(scope.row)' >删除</el-button>
+                                    </template>
                                 </el-table-column>
                             </el-table>
                         </div>
@@ -110,23 +118,19 @@
                             <el-dialog title="添加持久化" :visible.sync="dialogFormVisible" width="30%">
                                 <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
                                          label-position="left" label-width="80px">
-                                    <el-form-item label="名称" prop="var_name">
-                                        <el-input placeholder="请输入持久化名称" v-model="ruleForm.var_name"></el-input>
+                                    <el-form-item label="名称" prop="persistentName">
+                                        <el-input placeholder="请输入持久化名称" v-model="ruleForm.persistentName"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="目录" prop="var_val">
-                                        <el-input placeholder="请输入持久化目录" v-model="ruleForm.var_val"></el-input>
+                                    <el-form-item label="本机目录" prop="serverMountName">
+                                        <el-input placeholder="请输入持久化目录" v-model="ruleForm.serverMountName"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="类型" prop="var_des">
-                                        <el-radio-group v-model="ruleForm.var_des">
-                                            <el-radio label="共享存储（文件）"></el-radio>
-                                            <el-radio label="内存文件存储"></el-radio>
-                                            <el-radio label="本地存储"></el-radio>
-                                        </el-radio-group>
+                                    <el-form-item label="容器目录" prop="containerMountName">
+                                        <el-input placeholder="请输入持久化目录" v-model="ruleForm.containerMountName"></el-input>
                                     </el-form-item>
                                 </el-form>
                                 <div slot="footer" class="dialog-footer">
                                     <el-button @click="dialogFormVisible = false">取 消</el-button>
-                                    <el-button type="primary" @click="dialogFormVisible = false" @click.native="addVar">
+                                    <el-button type="primary" @click="dialogFormVisible = false;addPersistence()">
                                         确 定
                                     </el-button>
                                 </div>
@@ -136,115 +140,99 @@
                 </el-col>
             </el-row>
         </div>
-
-        <div class="homeBottom">
-            <el-row :gutter="20">
-                <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
-                    <div class="first a">
-                        <div class="makeInfo">
-                            <span>应用连接信息</span>
-                        </div>
-                        <div>
-                            <el-table
-                                    :data="fileStorage"
-                                    style="width: 100%;">
-                                <el-table-column
-                                        prop="localList"
-                                        label="本地持久化目录"
-                                        width="150">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="targetName"
-                                        label="目标持久化名称"
-                                        width="150">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="targetList"
-                                        label="目标持久化目录"
-                                        width="150">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="targetType"
-                                        label="目标持久化类型"
-                                        width="150">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="targetApp"
-                                        label="目标持久化目录"
-                                        width="150">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="targetGroup"
-                                        label="目标持久化目录"
-                                        width="150">
-                                </el-table-column>
-                                <el-table-column
-                                        label="操作">
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                        <div class="button">
-                            <el-button><i class="el-icon-plus"></i>挂载目录</el-button>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
     </div>
-
 </div>
 <script>
     var storage = new Vue({
         el: '#storage',
         data: {
-            lastingSet: [{
-                name: 'ba464ae',
-                list: '/data',
-                type: 'share-file'
-            }],
+            appId: '',
+            lastingSet: [],
             fileStorage: [],
             ruleForm: {
-                var_name: '',
-                var_val: '',
-                var_des: ''
+                persistentName: '',
+                containerMountName: '',
+                serverMountName: ''
             },
             dialogFormVisible: false,
 
         },
         methods: {
-            getId(id) {
+            exported(row) {
+                console.log(storage.appId);
+                console.log(row.containerMountName);
                 $.ajax({
-                    type: 'get',
-                    url: '/tianyu-paas/apps/' + id,
+                    type: 'post',
+                    url: '/tianyu-paas/apps/mount-export',
+                    data: {
+                        appId: storage.appId,
+                        containerMount: row.containerMountName
+                    },
                     success: function (result) {
+                        window.open(result.data);
                         console.log(result);
                     },
                     error: function () {
-                        alert("容器已关闭")
+
+                    }
+                })
+            },
+            delete_mount(row) {
+                console.log(row);
+                $.ajax({
+                    type: 'delete',
+                    url: '/tianyu-paas/mountSettings/' + storage.appId,
+                    data: {
+                        appId: storage.appId,
+                        persistentName: row.persistentName,
+                        containerMountName: row.containerMountName,
+                        serverMountName: row.serverMountName,
+                        type: 0
+                    },
+                    success: function (result) {
+                        alert("删除成功")
+                    },
+                    error: function () {
+
+                    }
+                })
+            },
+            getId(id) {
+                $.ajax({
+                    type: 'get',
+                    url: '/tianyu-paas/mountSettings/' + id,
+                    success: function (result) {
+                        storage.lastingSet = result.data;
+                        storage.appId = id;
+                    },
+                    error: function () {
+
                     }
                 })
             },
             addPersistence() {
                 $.ajax({
                     type: 'post',
-                    url: '/tianyu-paas/app-vars/',
+                    url: '/tianyu-paas/mountSettings',
                     data: {
-                        appId: appinfo.app_id,
-                        varName: this.ruleForm.var_name,
-                        varValue: this.ruleForm.var_val,
-                        varExplain: this.ruleForm.var_des
+                        appId: storage.appId,
+                        persistentName: this.ruleForm.persistentName,
+                        containerMountName: this.ruleForm.containerMountName,
+                        serverMountName: this.ruleForm.serverMountName,
+                        type: 0
                     },
                     success: function (data) {
-                        console.log(data)
+                        console.log(data);
+                        if (data.code === 1) {
+
+                        } else {
+                            alert(data.message);
+                        }
                     },
                     error: function () {
-
                     }
                 })
             },
-            getId(id) {
-
-            }
         },
         mounted() {
 

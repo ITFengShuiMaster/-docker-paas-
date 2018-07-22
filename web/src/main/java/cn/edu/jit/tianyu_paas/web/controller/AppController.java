@@ -4,6 +4,8 @@ package cn.edu.jit.tianyu_paas.web.controller;
 import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.enums.AppCreateMethodEnum;
 import cn.edu.jit.tianyu_paas.shared.enums.AppStatusEnum;
+import cn.edu.jit.tianyu_paas.shared.global.DockerConstants;
+import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
@@ -558,5 +560,33 @@ public class AppController {
         }
 
         return appService.batchReStartContainer(apps);
+    }
+
+    @PostMapping("/mount-export")
+    public TResult getMountExportUrl(@RequestParam(required = true) Long appId, @RequestParam(required = true) String containerMount) {
+        App app = appService.selectById(appId);
+        if (app == null) {
+            return TResult.failure(TResultCode.DATA_IS_WRONG);
+        }
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (machine == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
+        return TResult.success(String.format(DockerConstants.mountUrl, machine.getMachineIp(), app.getContainerId(), containerMount));
+    }
+
+    @PostMapping("/container-export")
+    public TResult getContainerExportUrl(@RequestParam(required = true) Long appId) {
+        App app = appService.selectById(appId);
+        if (app == null) {
+            return TResult.failure(TResultCode.DATA_IS_WRONG);
+        }
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (machine == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
+        return TResult.success(String.format(DockerConstants.containerUrl, machine.getMachineIp(), app.getContainerId()));
     }
 }
