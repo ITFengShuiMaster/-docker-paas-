@@ -1,7 +1,7 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
 import cn.edu.jit.tianyu_paas.shared.entity.App;
-import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
+import cn.edu.jit.tianyu_paas.shared.entity.Machine;
 import cn.edu.jit.tianyu_paas.shared.util.DockerHelperUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
@@ -37,12 +37,12 @@ public class AppLogController {
     private final MarketAppService marketAppService;
     private final ActionService actionService;
     private final Logger logger = LoggerFactory.getLogger(AppLogController.class);
-    private AppVarService appVarService;
-    private AppPortService appPortService;
-    private AppLogService appLogService;
+    private final AppVarService appVarService;
+    private final AppPortService appPortService;
+    private final MachineService machineService;
 
     @Autowired
-    public AppLogController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, ActionService actionService) {
+    public AppLogController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, ActionService actionService, MachineService machineService) {
         this.appService = appService;
         this.appInfoByCustomService = appInfoByCustomService;
         this.session = session;
@@ -56,6 +56,7 @@ public class AppLogController {
         this.appVarService = appVarService;
         this.appPortService = appPortService;
         this.actionService = actionService;
+        this.machineService = machineService;
     }
 
     @ApiOperation("根据appId获取applog信息")
@@ -65,9 +66,13 @@ public class AppLogController {
         if (app == null) {
             return TResult.failure("没有该容器");
         }
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (machine == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
 
         try {
-            String reLogs = DockerHelperUtil.query(DockerSSHConstants.IP, docker ->
+            String reLogs = DockerHelperUtil.query(machine.getMachineIp(), docker ->
             {
                 final String logs;
                 try (LogStream stream = docker.logs(app.getContainerId(), com.spotify.docker.client.DockerClient.LogsParam.stdout(), com.spotify.docker.client.DockerClient.LogsParam.stderr())) {

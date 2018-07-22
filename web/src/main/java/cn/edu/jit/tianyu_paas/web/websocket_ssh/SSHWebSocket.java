@@ -1,8 +1,11 @@
 package cn.edu.jit.tianyu_paas.web.websocket_ssh;
 
+import cn.edu.jit.tianyu_paas.shared.entity.Machine;
 import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.util.DockerClientUtil;
 import cn.edu.jit.tianyu_paas.shared.util.DockerHelperUtil;
+import cn.edu.jit.tianyu_paas.web.service.MachineService;
+import cn.edu.jit.tianyu_paas.web.util.SpringBeanFactoryUtil;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +25,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author 卢越
  */
-@ServerEndpoint(value = "/websocket-ssh", configurator = HttpSessionConfigurator.class)
+@ServerEndpoint(value = "/websocketssh", configurator = HttpSessionConfigurator.class)
 @Component
 public class SSHWebSocket {
 
     private static ThreadPoolExecutor socketPoolExecutor = new ThreadPoolExecutor(10, 100, 10, TimeUnit.MINUTES, new LinkedBlockingDeque<>(), new DefaultThreadFactory(SocketRunable.class));
     private final Logger logger = LoggerFactory.getLogger(SSHWebSocket.class);
+    private final MachineService machineService = SpringBeanFactoryUtil.getBean(MachineService.class);
     private Socket socket;
     /**
      * http的session
@@ -47,20 +51,23 @@ public class SSHWebSocket {
         this.webSocketSession = session;
         httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
 
+        String machineId = (String) config.getUserProperties().get(DockerSSHConstants.MACHINE_ID);
         String containerId = (String) config.getUserProperties().get(DockerSSHConstants.CONTAINER_ID);
         String width = (String) config.getUserProperties().get(DockerSSHConstants.WIDTH);
         String height = (String) config.getUserProperties().get(DockerSSHConstants.HEIGHT);
+
+        Machine machine = machineService.selectById(machineId);
 
         //创建bash
         String execId = null;
         Socket socket = null;
 
-        if ((execId = DockerClientUtil.getExecId(DockerSSHConstants.IP, containerId)) == null) {
+        if ((execId = DockerClientUtil.getExecId(machine.getMachineIp(), containerId)) == null) {
             session.getBasicRemote().sendText("容器创建连接异常！");
             session.close();
         }
 
-        if ((socket = DockerClientUtil.getExecSocket(DockerSSHConstants.IP, execId)) == null) {
+        if ((socket = DockerClientUtil.getExecSocket(machine.getMachineIp(), execId)) == null) {
             session.getBasicRemote().sendText("容器连接异常！");
             session.close();
         }

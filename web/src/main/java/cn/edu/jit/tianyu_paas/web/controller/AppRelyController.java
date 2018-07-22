@@ -8,6 +8,7 @@ import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.service.AppRelyService;
 import cn.edu.jit.tianyu_paas.web.service.AppService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,11 +40,13 @@ public class AppRelyController {
         this.appService = appService;
     }
 
+    @ApiOperation("根据appId获取依赖列表")
     @GetMapping("{appId}")
     public TResult listRelys(@PathVariable Long appId) {
         return TResult.success(appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", appId)));
     }
 
+    @ApiOperation("添加依赖")
     @PostMapping
     public TResult insertRelys(AppRely appRely) {
         appRely.setGmtCreate(new Date());
@@ -53,6 +56,7 @@ public class AppRelyController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    @ApiOperation("更新依赖")
     @PutMapping
     public TResult updateRelys(AppRely appRely) {
         if (appRelyService.updateById(appRely)) {
@@ -61,6 +65,7 @@ public class AppRelyController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    @ApiOperation("删除依赖")
     @DeleteMapping("{appId}")
     public TResult deleteRelys(@PathVariable Long appId, @RequestParam(required = true) Long relyId) {
         if (appRelyService.delete(new EntityWrapper<AppRely>().eq("app_id", appId).and().eq("rely_id", relyId))) {
@@ -68,7 +73,7 @@ public class AppRelyController {
         }
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
-
+    @ApiOperation("返回零阶矩阵")
     @GetMapping("/rely/{groupId}")
     public TResult getAdjacencyMatrix(@PathVariable Long groupId) {
         List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_id", groupId));

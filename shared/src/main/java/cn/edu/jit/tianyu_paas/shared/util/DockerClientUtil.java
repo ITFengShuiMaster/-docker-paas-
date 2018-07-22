@@ -4,7 +4,6 @@ import cn.edu.jit.tianyu_paas.shared.entity.AppPort;
 import cn.edu.jit.tianyu_paas.shared.entity.AppVar;
 import cn.edu.jit.tianyu_paas.shared.entity.MarketApp;
 import cn.edu.jit.tianyu_paas.shared.entity.MountSettings;
-import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.global.MountSettingsConstants;
 import com.alibaba.fastjson.JSONObject;
 import com.spotify.docker.client.DockerClient;
@@ -87,9 +86,9 @@ public class DockerClientUtil {
      * @param containerId
      * @return
      */
-    public static String getNewImage(String containerId) {
+    public static String getNewImage(String ip, String containerId) {
         try {
-            return DockerHelperUtil.query(DockerSSHConstants.IP, docker -> {
+            return DockerHelperUtil.query(ip, docker -> {
 
                 //将容器提交为一个新的镜相
                 ContainerInfo containerInfo = docker.inspectContainer(containerId);
@@ -172,10 +171,10 @@ public class DockerClientUtil {
      * @param mountSettingsList
      * @return
      */
-    public static String createNewContainer(String oldContainerId, String newImageName, Map<String, List<PortBinding>> portBindings, Set<String> exposePorts, List<String> envs, List<String> mountSettingsList, List<MarketApp> marketApps) {
+    public static String createNewContainer(String ip, String oldContainerId, String newImageName, Map<String, List<PortBinding>> portBindings, Set<String> exposePorts, List<String> envs, List<String> mountSettingsList, List<MarketApp> marketApps) {
         final String[] newContainerId = new String[1];
         try {
-            return DockerHelperUtil.query(DockerSSHConstants.IP, docker -> {
+            return DockerHelperUtil.query(ip, docker -> {
                 //停止旧容器
                 docker.stopContainer(oldContainerId, 0);
 
@@ -209,7 +208,7 @@ public class DockerClientUtil {
             });
         } catch (Exception e) {
             try {
-                DockerHelperUtil.execute(DockerSSHConstants.IP, docker -> {
+                DockerHelperUtil.execute(ip, docker -> {
                     //如果新容器启动成功，停止并删除镜相
                     if (!StringUtil.isEmpty(newContainerId[0])) {
                         docker.stopContainer(newContainerId[0], 0);
@@ -229,6 +228,13 @@ public class DockerClientUtil {
         }
     }
 
+    /**
+     * 开启应用
+     *
+     * @param ip
+     * @param containerId
+     * @return
+     */
     public static boolean startContainer(String ip, String containerId) {
         try {
             DockerHelperUtil.execute(ip, docker -> {
@@ -241,10 +247,35 @@ public class DockerClientUtil {
         }
     }
 
+    /**
+     * 关闭应用
+     * @param ip
+     * @param containerId
+     * @return
+     */
     public static boolean stopContainer(String ip, String containerId) {
         try {
             DockerHelperUtil.execute(ip, docker -> {
                 docker.stopContainer(containerId, 0);
+            });
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 重启应用
+     *
+     * @param ip
+     * @param containerId
+     * @return
+     */
+    public static boolean reStartContainer(String ip, String containerId) {
+        try {
+            DockerHelperUtil.execute(ip, docker -> {
+                docker.restartContainer(containerId);
             });
             return true;
         } catch (Exception e) {
@@ -279,6 +310,5 @@ public class DockerClientUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(pullImage(DockerSSHConstants.IP, "mysql", "latest"));
     }
 }
