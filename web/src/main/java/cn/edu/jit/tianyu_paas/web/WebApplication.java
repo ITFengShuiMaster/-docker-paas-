@@ -8,14 +8,19 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
 @MapperScan("cn.edu.jit.tianyu_paas.web.mapper")
+@EnableWebSocket
 @EnableFeignClients
+@ComponentScan
 public class WebApplication implements WebMvcConfigurer {
 
     public static void main(String[] args) {
@@ -32,6 +37,11 @@ public class WebApplication implements WebMvcConfigurer {
 
 //        registry.addInterceptor(appInterceptor())
 //                .addPathPatterns("/apps/**");
+    }
+
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+        return new ServerEndpointExporter();
     }
 
     /**

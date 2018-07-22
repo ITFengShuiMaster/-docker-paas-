@@ -393,6 +393,90 @@ public class AppService extends ServiceImpl<AppMapper, App> {
         return TResult.failure("数据库中无该应用！");
     }
 
+    /**
+     * 判断容器Id数据是否有误
+     *
+     * @param appIds
+     * @return
+     */
+    public List<App> isDataRight(Long[] appIds) {
+        List<App> apps = new ArrayList<>();
+        for (Long appId : appIds) {
+            App app = this.selectById(appId);
+            if (app == null) {
+                return null;
+            }
+            apps.add(app);
+        }
+        return apps;
+    }
 
+    /**
+     * 批量启动app
+     *
+     * @param apps
+     * @return
+     */
+    public TResult batchStartContainer(List<App> apps) {
+        for (int i = 0; i < apps.size(); i++) {
+            Machine machine = machineService.selectById(apps.get(i).getMachineId());
+            if (!DockerClientUtil.isRunning(machine.getMachineIp(), apps.get(i).getContainerId())) {
+                DockerClientUtil.startContainer(machine.getMachineIp(), apps.get(i).getContainerId());
+                apps.get(i).setStatus(1);
+            }
+        }
 
+        if (!this.updateBatchById(apps)) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+        return TResult.success();
+    }
+
+    /**
+     * 批量关闭app
+     *
+     * @param apps
+     * @return
+     */
+    public TResult batchStopContainer(List<App> apps) {
+        for (int i = 0; i < apps.size(); i++) {
+            Machine machine = machineService.selectById(apps.get(i).getMachineId());
+            if (DockerClientUtil.isRunning(machine.getMachineIp(), apps.get(i).getContainerId())) {
+                DockerClientUtil.stopContainer(machine.getMachineIp(), apps.get(i).getContainerId());
+                apps.get(i).setStatus(0);
+            }
+        }
+
+        if (!this.updateBatchById(apps)) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+        return TResult.success();
+    }
+
+    /**
+     * 批量重启app
+     *
+     * @param apps
+     * @return
+     */
+    public TResult batchReStartContainer(List<App> apps) {
+        List<String> failNames = new ArrayList<>();
+        for (int i = 0; i < apps.size(); i++) {
+            Machine machine = machineService.selectById(apps.get(i).getMachineId());
+            if (!DockerClientUtil.reStartContainer(machine.getMachineIp(), apps.get(i).getContainerId())) {
+                apps.get(i).setStatus(0);
+                failNames.add(apps.get(i).getName());
+            }
+        }
+
+        if (!this.updateBatchById(apps)) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
+        if (!failNames.isEmpty()) {
+            return TResult.failure("部分容器重启失败" + failNames);
+        }
+
+        return TResult.success();
+    }
 }
