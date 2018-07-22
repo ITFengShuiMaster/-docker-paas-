@@ -233,11 +233,7 @@
                                 if (port.tableData[i].protocol === 3) {
                                     port.tableData[i].protocol = "udp";
                                 }
-                                if (port.tableData[i].isOutsideOpen === 1) {
-//                                    port.tableData[i].isOutsideOpen = true;
-                                } else {
-//                                    port.tableData[i].isOutsideOpen = false;
-                                }
+                                port.switch_value = port.tableData[i].isOutsideOpen;
 
                             }
 //                            console.log(port.tableData);
