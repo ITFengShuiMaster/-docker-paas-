@@ -11,7 +11,7 @@
     <script src="../lib/jquery/jquery-3.2.1.js"></script>
     <script src="../lib/layui/layui.js"></script>
     <script src="../lib/echarts/echarts.js"></script>
-    <script src="../js/js"></script>
+    <script src="../js/common.js"></script>
 </head>
 
 <body>
@@ -35,9 +35,9 @@
                 </div>
                 <div style="margin-left: 20px; display: inline-block;">
                     <el-button-group>
-                        <el-button :type="typeTopo" @click="typeList=''; typeTopo='primary'; selectTopo=true">拓扑图
+                        <el-button :type="typeTopo" @click="clickTopo">拓扑图
                         </el-button>
-                        <el-button :type="typeList" @click="typeTopo=''; typeList='primary'; selectTopo=false">列表
+                        <el-button :type="typeList" @click="clickList">列表
                         </el-button>
                     </el-button-group>
                 </div>
@@ -47,11 +47,12 @@
         </div>
         <div v-else style="background: white; margin: 30px; height: 500px;">
             <div style="margin-top: 20px">
-                <el-button :disabled="selectApps.length === 0">批量重启</el-button>
-                <el-button :disabled="selectApps.length === 0">批量关闭</el-button>
-                <el-button :disabled="selectApps.length === 0">批量启动</el-button>
+                <el-button @click="startBatch" :disabled="selectAppsId.length === 0">批量启动</el-button>
+                <el-button @click="stopBatch" :disabled="selectAppsId.length === 0">批量关闭</el-button>
+                <el-button @click="restartBatch" :disabled="selectAppsId.length === 0">批量重启</el-button>
             </div>
             <el-table
+                    @selection-change="selectionChange"
                     stripe
                     :data="groupApps"
                     style="width: 100%">
@@ -60,40 +61,53 @@
                         width="55">
                 </el-table-column>
                 <el-table-column
-                        prop="date"
+                        prop="name"
                         label="应用名称">
+                    <template slot-scope="scope">
+                        <p style="color: #1890ff">{{scope.row.name}}</p>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                        prop="date"
-                        label="应用类型">
+                        prop="appCreateMethodName"
+                        label="创建方式">
                 </el-table-column>
                 <el-table-column
-                        prop="date"
+                        prop="memoryUsed"
                         label="内存">
+                    <template slot-scope="scope">
+                        <p>{{scope.row.memoryUsed}}MB</p>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                        prop="date"
+                        prop="status"
                         label="状态">
                     <template slot-scope="scope">
-                        <el-tag :type="scope.row.tag === '家' ? 'primary' : 'success'"
-                                disable-transitions>{{scope.row.tag}}
+                        <el-tag :type="scope.row.status === 0 ? 'info' : scope.row.status === 1 ? 'success':'danger'">
+                            {{scope.row.appStatusName}}
                         </el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop="date"
-                        label="更新时间">
+                        prop="gmtCreate"
+                        label="创建时间">
+                    <template slot-scope="scope">
+                        <i class="el-icon-time"></i>
+                        <span style="margin-left: 10px">{{ scope.row.gmtCreate }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button
-                                size="mini"
-                                @click="handleEdit(scope.$index, scope.row)">编辑
+                        <el-button size="mini" type="primary"
+                                   @click="startApp(scope.row.appId)">启动
                         </el-button>
-                        <el-button
-                                size="mini"
-                                type="danger"
-                                @click="handleDelete(scope.$index, scope.row)">删除
+                        <el-button size="mini" type="success"
+                                   @click="handleDelete(scope.$index, scope.row)">重启
+                        </el-button>
+                        <el-button size="mini" type="warning"
+                                   @click="handleEdit(scope.$index, scope.row)">关闭
+                        </el-button>
+                        <el-button size="mini" type="danger"
+                                   @click="handleDelete(scope.$index, scope.row)">删除
                         </el-button>
                     </template>
                 </el-table-column>
@@ -110,15 +124,71 @@
             typeList: '',
             selectTopo: true,
             groupApps: [],
-            selectApps: []
+            selectAppsId: []
         },
         methods: {
             getId(groupId) {
                 console.log(groupId);
+            },
+            selectionChange(selection) {
+                console.log(selection);
+                this.selectAppsId = [];
+                for (let i in selection) {
+                    this.selectAppsId.push(selection[i].appId);
+                }
+            },
+            clickTopo() {
+                this.typeList = '';
+                this.typeTopo = 'primary';
+                this.selectTopo = true;
+            },
+            clickList() {
+                this.typeTopo = '';
+                this.typeList = 'primary';
+                this.selectTopo = false;
+                this.listGroupApps(4);
+            },
+            listGroupApps(groupId) {
+                web.ajax({
+                    url: web.url.listGroupApps + groupId,
+                    type: 'get',
+                    success: function (res) {
+                        // console.log(res.data);
+                        for (let i in res.data) {
+                            // console.log(i + '  ' + res.data[i].status);
+                            res.data[i].appStatusName = web.appStatusNames[res.data[i].status];
+                            res.data[i].appCreateMethodName = web.appCreateMethodNames[res.data[i].createMethod];
+                        }
+                        appGroup.groupApps = res.data;
+                    }
+                }, this);
+            },
+            startBatch() {
+
+            },
+            stopBatch() {
+
+            },
+            restartBatch() {
+
+            },
+            startApp(id) {
+                web.ajax({
+                    url: web.url.startApp + id,
+                    type: 'get',
+                    success: function (res) {
+
+                    }
+                }, this);
+            },
+            stopApp(id) {
+                web.stopApp(id);
+            },
+            restartApp(id) {
+                web.restartApp(id);
             }
         },
         created() {
-
         }
     });
 </script>
