@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <link rel="stylesheet" href="../lib/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../lib/element/index.css"/>
+    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+    <script src="../lib/vue/vue.js"></script>
+    <script src="../lib/element/index.js"></script>
+    <script src="../lib/jquery/jquery-3.2.1.js"></script>
+    <script src="../lib/layui/layui.js"></script>
+</head>
+
+<body>
+<div id="appGroup">
+    <div>
+        <el-breadcrumb separator="/">
+            <el-breadcrumb-item :to="{ path: '/index.html' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item><a href="#">我的应用</a></el-breadcrumb-item>
+            <el-breadcrumb-item>应用组</el-breadcrumb-item>
+        </el-breadcrumb>
+
+    </div>
+</div>
+<script>
+
+    var appGroup = new Vue({
+        el: '#appGroup',
+        data: {},
+        methods: {
+            getId(groupId) {
+                console.log(groupId);
+            }
+        },
+        created() {
+
+        }
+    });
+</script>
+</body>
+</html>

@@ -357,7 +357,9 @@ public class AppController {
     @PutMapping
     public TResult updateApp(App app) {
         long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        DockerClient dockerClient = DockerJavaUtil.getDockerClient(DockerSSHConstants.N_IP);
+
+        Machine machine = machineService.selectById(app.getMachineId());
+        DockerClient dockerClient = DockerJavaUtil.getDockerClient(machine.getMachineIp());
         if (dockerClient.updateContainerCmd(app.getContainerId()).withMemory((long) (app.getMemoryUsed() * 1024 * 1024))
                 .withMemorySwap((long) -1).exec() != null) {
             if (appService.update(app, new EntityWrapper<App>().eq("app_id", app.getAppId()).eq("user_id", userId))) {

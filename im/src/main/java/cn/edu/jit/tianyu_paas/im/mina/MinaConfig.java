@@ -1,6 +1,7 @@
 package cn.edu.jit.tianyu_paas.im.mina;
 
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
+import cn.edu.jit.tianyu_paas.im.mina.websocket.WebSocketCodecFactory;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
@@ -34,6 +35,8 @@ public class MinaConfig {
         textLineCodecFactory.setDecoderMaxLineLength(1024 * 1024);
         textLineCodecFactory.setEncoderMaxLineLength(1024 * 1024);
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(textLineCodecFactory));
+        // websocket解码器
+        acceptor.getFilterChain().addLast("websocket", new ProtocolCodecFilter(new WebSocketCodecFactory()));
         acceptor.setHandler(new MyIoHandler());
 
         acceptor.getSessionConfig().setReadBufferSize(2048);
