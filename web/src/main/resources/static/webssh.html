@@ -15,7 +15,7 @@
 
     var term = new Terminal();
     term.open(document.getElementById('xterm'));
-    var socket = new WebSocket('ws://localhost:8080/tianyu-paas/websocket-ssh?containerId=' + containerId );
+    var socket = new WebSocket('ws://localhost:8080/tianyu-paas/websocket-ssh?containerId=' + containerId);
     term.attach(socket);
     term.focus();
 </script>

@@ -147,23 +147,23 @@
             },
             //加载操作日志的条数及信息
             overviewInit() {
-                var that = this
+                var that = this;
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/actions/info',
                     data: {},
                     success: function (data) {
 //                        console.log(data)
-                        var result = data.data
+                        var result = data.data;
                         if (data.code === 1) {
-                            that.actionList = result
+                            that.actionList = result;
                             $.each(result, function (index, val) {
-                                var res = val.actionName + '@' + val.userName
-                                that.actionTitle.push(res)
+                                var res = val.actionName + '@' + val.userName;
+                                that.actionTitle.push(res);
                                 that.app_id.push(val.actionId)
-                            })
+                            });
 //                            console.log(data.message)
-                            that.appId = result.appId
+                            that.appId = result.appId;
                             that.actionId = result.actionId
                         }
 
@@ -184,7 +184,7 @@
                         level: '0'
                     },
                     success: function (data) {
-                        console.log(data)
+                        console.log(data);
                         overview.actionInfo = data.data
                     },
                     error: function () {
@@ -275,7 +275,7 @@
             },
         },
         mounted() {
-            this.overviewInit()
+            this.overviewInit();
 //            this.getAction()
             this.getActionDetail()
 //            console.log("overview:" + appinfo.app_id)

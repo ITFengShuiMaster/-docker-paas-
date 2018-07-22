@@ -10,6 +10,10 @@ web.url = {
     startApp: web.baseUrl + 'apps/start/',
     stopApp: web.baseUrl + 'apps/stop/',
     restartApp: web.baseUrl + 'apps/restart-container/',
+    deleteApp: web.baseUrl + 'apps/delete/',
+    batchStartApp: web.baseUrl + 'apps/batch-start',
+    batchStopApp: web.baseUrl + 'apps/batch-stop',
+    batchRestartApp: web.baseUrl + 'apps/batch-restart',
 
     websocket: "ws://123.207.169.68:8080/web/websocket"
 };

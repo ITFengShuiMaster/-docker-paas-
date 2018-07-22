@@ -1,66 +1,66 @@
 <style>
-    html, body {
-        font-family: sans-serif;
-        font-size: 14px;
-        line-height: 1.5;
-        background: #f0f2f5 !important;
-        color: rgba(0, 0, 0, .65);
-    }
+	html, body {
+		font-family: sans-serif;
+		font-size: 14px;
+		line-height: 1.5;
+		background: #f0f2f5 !important;
+		color: rgba(0, 0, 0, .65);
+	}
 
-    .a {
-        /*display: inline-block;*/
-        margin: 10px;
-        min-height: 170px;
-        border: 1px solid #e8e8e8;
-        padding: 16px 32px 0;
-        background-color: #fff;
+	.a {
+		/*display: inline-block;*/
+		margin: 10px;
+		min-height: 170px;
+		border: 1px solid #e8e8e8;
+		padding: 16px 32px 0;
+		background-color: #fff;
 
-    }
+	}
 
-    .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
-        padding: 40px 0 40px 0;
-        margin: 20px;
-        border-bottom: 1px solid #e8e8e8;
-    }
+	.statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+		padding: 40px 0 40px 0;
+		margin: 20px;
+		border-bottom: 1px solid #e8e8e8;
+	}
 
-    .text {
-        text-align: center;
-    }
+	.text {
+		text-align: center;
+	}
 
-    .infos div {
-        float: left;
-        padding: 20px;
-        margin: 10px;
-    }
+	.infos div {
+		float: left;
+		padding: 20px;
+		margin: 10px;
+	}
 
-    .infoinfos {
-        border: 1px solid #e8e8e8;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        min-width: 800px;
-        margin-left: 100px;
-    }
+	.infoinfos {
+		border: 1px solid #e8e8e8;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		min-width: 800px;
+		margin-left: 100px;
+	}
 
-    .bottom {
-        padding: 15px;
-        margin: 10px;
-        background: #fff;
-        min-height: 150px;
-    }
+	.bottom {
+		padding: 15px;
+		margin: 10px;
+		background: #fff;
+		min-height: 150px;
+	}
 
-    .makeInfo {
-        padding: 20px;
-        background: #fff;
-        border-bottom: 1px solid #e8e8e8;
-        margin-bottom: 10px;
-    }
+	.makeInfo {
+		padding: 20px;
+		background: #fff;
+		border-bottom: 1px solid #e8e8e8;
+		margin-bottom: 10px;
+	}
 
-    .button {
-        text-align: right;
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
+	.button {
+		text-align: right;
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
 </style>
 
 <div id="storage">
@@ -77,23 +77,23 @@
                                     :data="lastingSet"
                                     style="width: 100%;">
                                 <el-table-column
-                                        prop="persistentName"
-                                        label="持久化名称"
-                                        width="180">
+										prop="persistentName"
+										label="持久化名称"
+										width="180">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="containerMountName"
-                                        label="容器持久化目录"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="serverMountName"
-                                        label="主机持久化目录"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="gmtCreate"
-                                        label="创建时间"
+										prop="containerMountName"
+										label="容器持久化目录"
+										width="180">
+								</el-table-column>
+								<el-table-column
+										prop="serverMountName"
+										label="主机持久化目录"
+										width="180">
+								</el-table-column>
+								<el-table-column
+										prop="gmtCreate"
+										label="创建时间"
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
@@ -103,10 +103,12 @@
                                 </el-table-column>
                                 <el-table-column
                                         label="操作">
-                                    <template slot-scope="scope">
-                                        <el-button type="primary" size="small" @click='exported(scope.row)'>导出</el-button>
-                                        <el-button type="danger" size="small" @click='delete_mount(scope.row)' >删除</el-button>
-                                    </template>
+									<template slot-scope="scope">
+										<el-button type="primary" size="small" @click='exported(scope.row)'>导出
+										</el-button>
+										<el-button type="danger" size="small" @click='delete_mount(scope.row)'>删除
+										</el-button>
+									</template>
                                 </el-table-column>
                             </el-table>
                         </div>
@@ -117,21 +119,22 @@
                         <div>
                             <el-dialog title="添加持久化" :visible.sync="dialogFormVisible" width="30%">
                                 <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
-                                         label-position="left" label-width="80px">
-                                    <el-form-item label="名称" prop="persistentName">
-                                        <el-input placeholder="请输入持久化名称" v-model="ruleForm.persistentName"></el-input>
+										 label-position="left" label-width="80px">
+									<el-form-item label="名称" prop="persistentName">
+										<el-input placeholder="请输入持久化名称" v-model="ruleForm.persistentName"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="本机目录" prop="serverMountName">
-                                        <el-input placeholder="请输入持久化目录" v-model="ruleForm.serverMountName"></el-input>
+									<el-form-item label="本机目录" prop="serverMountName">
+										<el-input placeholder="请输入持久化目录" v-model="ruleForm.serverMountName"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="容器目录" prop="containerMountName">
-                                        <el-input placeholder="请输入持久化目录" v-model="ruleForm.containerMountName"></el-input>
+									<el-form-item label="容器目录" prop="containerMountName">
+										<el-input placeholder="请输入持久化目录"
+												  v-model="ruleForm.containerMountName"></el-input>
                                     </el-form-item>
                                 </el-form>
                                 <div slot="footer" class="dialog-footer">
                                     <el-button @click="dialogFormVisible = false">取 消</el-button>
-                                    <el-button type="primary" @click="dialogFormVisible = false;addPersistence()">
-                                        确 定
+									<el-button type="primary" @click="dialogFormVisible = false;addPersistence()">
+										确 定
                                     </el-button>
                                 </div>
                             </el-dialog>
@@ -140,7 +143,7 @@
                 </el-col>
             </el-row>
         </div>
-    </div>
+	</div>
 </div>
 <script>
     var storage = new Vue({

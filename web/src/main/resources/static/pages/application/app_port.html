@@ -197,35 +197,35 @@
             getId(id) {
                 console.log(id);
                 $.ajax({
-                        type: 'get',
-                        url: '/tianyu-paas/app-ports/' + id,
-                        data: {},
-                        success: function (data) {
-                            if (data.code === 1) {
-                                port.tableData = data.data;
-                                for (let i = 0; i < port.tableData.length; i++) {
-                                    if (port.tableData[i].protocol === 0) {
-                                        port.tableData[i].protocol = "http";
-                                    }
-                                    if (port.tableData[i].protocol === 1) {
-                                        port.tableData[i].protocol = "mysql";
-                                    }
-                                    if (port.tableData[i].protocol === 2) {
-                                        port.tableData[i].protocol = "tcp";
-                                    }
-                                    if (port.tableData[i].protocol === 3) {
-                                        port.tableData[i].protocol = "udp";
-                                    }
-
+                    type: 'get',
+                    url: '/tianyu-paas/app-ports/' + id,
+                    data: {},
+                    success: function (data) {
+                        if (data.code === 1) {
+                            port.tableData = data.data;
+                            for (let i = 0; i < port.tableData.length; i++) {
+                                if (port.tableData[i].protocol === 0) {
+                                    port.tableData[i].protocol = "http";
                                 }
-                            console.log(port.tableData);
+                                if (port.tableData[i].protocol === 1) {
+                                    port.tableData[i].protocol = "mysql";
+                                }
+                                if (port.tableData[i].protocol === 2) {
+                                    port.tableData[i].protocol = "tcp";
+                                }
+                                if (port.tableData[i].protocol === 3) {
+                                    port.tableData[i].protocol = "udp";
+                                }
+
                             }
-                        },
-                        error: function () {
-
+                            console.log(port.tableData);
                         }
+                    },
+                    error: function () {
 
-                    })
+                    }
+
+                })
             },
             switch_change(row) {
                 console.log(row);
