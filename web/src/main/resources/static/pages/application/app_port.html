@@ -119,8 +119,10 @@
                                                         style="display: block"
                                                         v-model="switch_value"
                                                         active-color="#13ce66"
+                                                        active-value="1"
                                                         inactive-color="#ff4949"
-                                                        :change="switch_change()">
+                                                        inactive-value="0"
+                                                        :change="switch_change(scope.row)">
                                                 </el-switch>
                                             </el-col>
                                         </el-row>
@@ -191,8 +193,23 @@
             value: ''
         },
         methods: {
-            switch_change() {
-                console.log(port.switch_value)
+            switch_change(row) {
+                console.log(port.switch_value);
+                console.log(row);
+
+                $.ajax({
+                    type: 'put',
+                    url: '/tianyu-paas/app-ports',
+                    data: {
+                        appId: row.appId,
+                        hostPort: row.hostPort,
+                        containerPort: row.containerPort,
+                        isOutsideOpen: port.switch_value,
+                    },
+                    success: function (result) {
+                        console.log(result);
+                    }
+                });
             },
             portInit() {
                 $.ajax({
@@ -205,16 +222,20 @@
                             port.tableData = data.data;
                             for (let i = 0; i < port.tableData.length; i++) {
                                 if (port.tableData[i].protocol === 0) {
-                                    port.tableData[i].protocol = "http"
-                                } else if (port.tableData[i].protocol === 1) {
-                                    port.tableData[i].protocol = "mysql"
-                                } else if (port.tableData[i].protocol === 2) {
-                                    port.tableData[i].protocol = "tcp"
-                                } else {
-                                    port.tableData[i].protocol = "udp"
+                                    port.tableData[i].protocol = "http";
                                 }
-                            }
+                                if (port.tableData[i].protocol === 1) {
+                                    port.tableData[i].protocol = "mysql";
+                                }
+                                if (port.tableData[i].protocol === 2) {
+                                    port.tableData[i].protocol = "tcp";
+                                }
+                                if (port.tableData[i].protocol === 3) {
+                                    port.tableData[i].protocol = "udp";
+                                }
+                                port.switch_value = port.tableData[i].isOutsideOpen;
 
+                            }
 //                            console.log(port.tableData);
                         }
                     },
@@ -224,6 +245,17 @@
 
                 })
             },
+            setOutSideOpen() {
+                $.ajax({
+                    type: 'put',
+                    url: '/tianyu-paas/app-ports/' + appinfo.app_id,
+                    data: {},
+                });
+            },
+            setOutSideClose() {
+
+            },
+
             addPort() {
                 $.ajax({
                     type: 'post',
@@ -243,6 +275,7 @@
                 })
             }
         },
+
         mounted() {
             this.portInit()
         }

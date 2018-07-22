@@ -15,6 +15,9 @@ import cn.edu.jit.tianyu_paas.web.service.AppPortService;
 import cn.edu.jit.tianyu_paas.web.service.AppService;
 import cn.edu.jit.tianyu_paas.web.service.MachinePortService;
 import cn.edu.jit.tianyu_paas.web.websocket.TWebSocket;
+import cn.edu.jit.tianyu_paas.web.websocket.WebSocketMessage;
+import cn.edu.jit.tianyu_paas.web.websocket.WebSocketMessageType;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
@@ -78,6 +81,7 @@ public class YmSocket {
                 memoryUsed = (int) (inspectContainerResponse.getHostConfig().getMemory() / (1024 * 1024));
                 app.setContainerId(createContainerResponse.getId());
                 app.setMemoryUsed(memoryUsed);
+                app.setMachineId((long) 2);
                 appService.updateById(app);
 
                 AppPort appPort = new AppPort();
@@ -86,7 +90,8 @@ public class YmSocket {
                 appPort.setGmtCreate(new Date());
                 appPort.setGmtModified(new Date());
                 appPort.setMachineId((long) 1);
-                appPort.setOutsideAccessUrl(DockerSSHConstants.IP);
+                appPort.setContainerPort(8080);
+                appPort.setOutsideAccessUrl(DockerSSHConstants.N_IP);
                 appPort.setIsOutsideOpen(AppPort.OUTOPEN);
                 appPort.setIsInsideOpen(AppPort.INCLOSE);
                 appPort.setHostPort(unUsedPorts.getMachinePort());
@@ -106,7 +111,10 @@ public class YmSocket {
                 out.flush();
             } catch (Exception e) {
                 logger.error("容器创建失败");
-                TWebSocket.sendMessageToUser("容器创建失败", userId);
+                WebSocketMessage webSocketMessage = new WebSocketMessage();
+                webSocketMessage.setData(0);
+                webSocketMessage.setMessageType(WebSocketMessageType.BUILD_APPLICATION_RESULT);
+                TWebSocket.sendMessageToUser(JSON.toJSONString(webSocketMessage), userId);
                 e.printStackTrace();
             }
         } else if ("html".equals(language)) {
@@ -132,6 +140,7 @@ public class YmSocket {
                 memoryUsed = (int) (inspectContainerResponse.getHostConfig().getMemory() / (1024 * 1024));
                 app.setContainerId(createContainerResponse.getId());
                 app.setMemoryUsed(memoryUsed);
+                app.setMachineId((long) 2);
                 appService.updateById(app);
 
                 AppPort appPort = new AppPort();
@@ -140,7 +149,8 @@ public class YmSocket {
                 appPort.setGmtCreate(new Date());
                 appPort.setGmtModified(new Date());
                 appPort.setMachineId((long) 1);
-                appPort.setOutsideAccessUrl(DockerSSHConstants.IP);
+                appPort.setContainerPort(80);
+                appPort.setOutsideAccessUrl(DockerSSHConstants.N_IP);
                 appPort.setIsOutsideOpen(AppPort.OUTOPEN);
                 appPort.setIsInsideOpen(AppPort.INCLOSE);
                 appPort.setHostPort(unUsedPorts.getMachinePort());
@@ -159,7 +169,10 @@ public class YmSocket {
                 out.flush();
             } catch (Exception e) {
                 logger.error("容器创建失败");
-                TWebSocket.sendMessageToUser("容器创建失败", userId);
+                WebSocketMessage webSocketMessage = new WebSocketMessage();
+                webSocketMessage.setData(0);
+                webSocketMessage.setMessageType(WebSocketMessageType.BUILD_APPLICATION_RESULT);
+                TWebSocket.sendMessageToUser(JSON.toJSONString(webSocketMessage), userId);
                 e.printStackTrace();
             }
         } else if ("nodejs".equals(language)) {
@@ -186,6 +199,7 @@ public class YmSocket {
                 memoryUsed = (int) (inspectContainerResponse.getHostConfig().getMemory() / (1024 * 1024));
                 app.setContainerId(createContainerResponse.getId());
                 app.setMemoryUsed(memoryUsed);
+                app.setMachineId((long) 2);
                 appService.updateById(app);
 
                 AppPort appPort = new AppPort();
@@ -194,7 +208,8 @@ public class YmSocket {
                 appPort.setGmtCreate(new Date());
                 appPort.setGmtModified(new Date());
                 appPort.setMachineId((long) 1);
-                appPort.setOutsideAccessUrl(DockerSSHConstants.IP);
+                appPort.setContainerPort(5000);
+                appPort.setOutsideAccessUrl(DockerSSHConstants.N_IP);
                 appPort.setIsOutsideOpen(AppPort.OUTOPEN);
                 appPort.setIsInsideOpen(AppPort.INCLOSE);
                 appPort.setHostPort(unUsedPorts.getMachinePort());
@@ -214,7 +229,10 @@ public class YmSocket {
                 out.flush();
             } catch (Exception e) {
                 logger.error("容器创建失败");
-                TWebSocket.sendMessageToUser("容器创建失败", userId);
+                WebSocketMessage webSocketMessage = new WebSocketMessage();
+                webSocketMessage.setData(0);
+                webSocketMessage.setMessageType(WebSocketMessageType.BUILD_APPLICATION_RESULT);
+                TWebSocket.sendMessageToUser(JSON.toJSONString(webSocketMessage), userId);
                 e.printStackTrace();
             }
         }
@@ -239,7 +257,7 @@ public class YmSocket {
         @Override
         public void run() {
             try {
-                byte[] bytes = new byte[1024];
+                byte[] bytes = new byte[10240];
                 while (true) {
                     try {
                         int n = inputStream.read(bytes);
@@ -249,9 +267,13 @@ public class YmSocket {
                             if (m.contains("success") || m.contains("fail")) {
                                 m = new Date() + " " + m;
                             }
-                            //TWebSocket.sendMessageToUser(new Date() + " " + msg.replace("%", " "),userId);
-                            // System.out.print(new Date() + " " + m.replace("%", ""));
-                            m = m.replace("%", "");
+                            WebSocketMessage webSocketMessage = new WebSocketMessage();
+                            webSocketMessage.setData(new Date() + " " + msg.replace("%", " "));
+                            webSocketMessage.setMessageType(WebSocketMessageType.BUILD_APPLICATION);
+                            TWebSocket.sendMessageToUser(JSON.toJSONString(webSocketMessage), userId);
+
+//                            m = m.replace("%", "");
+//                            System.out.print(m);
                             ActionDetail actionDetail = new ActionDetail();
                             actionDetail.setActionId(actionId);
                             actionDetail.setGmtCreate(new Date());
@@ -264,9 +286,13 @@ public class YmSocket {
                             actionDetailService.insert(actionDetail);
                         }
                         if (msg.contains("success:run")) {
+                            WebSocketMessage webSocketMessage = new WebSocketMessage();
+                            webSocketMessage.setData(1);
+                            webSocketMessage.setMessageType(WebSocketMessageType.BUILD_APPLICATION_RESULT);
+                            TWebSocket.sendMessageToUser(JSON.toJSONString(webSocketMessage), userId);
                             break;
                         }
-                        bytes = new byte[1024];
+                        bytes = new byte[10240];
                     } catch (Exception e) {
                         e.printStackTrace();
                         break;
