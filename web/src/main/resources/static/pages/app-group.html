@@ -177,15 +177,39 @@
                     url: web.url.startApp + id,
                     type: 'get',
                     success: function (res) {
-
+                        if(res.data.code === web.result.success) {
+                            appGroup.$message.success(res.data.message);
+                        }else{
+                            appGroup.$message.error(res.data.message);
+                        }
                     }
                 }, this);
             },
             stopApp(id) {
-                web.stopApp(id);
+                web.ajax({
+                    url: web.url.stopApp + id,
+                    type: 'get',
+                    success: function (res) {
+                        if(res.data.code === web.result.success) {
+                            appGroup.$message.success(res.data.message);
+                        }else{
+                            appGroup.$message.error(res.data.message);
+                        }
+                    }
+                }, this);
             },
             restartApp(id) {
-                web.restartApp(id);
+                web.ajax({
+                    url: web.url.restartApp + id,
+                    type: 'get',
+                    success: function (res) {
+                        if(res.data.code === web.result.success) {
+                            appGroup.$message.success(res.data.message);
+                        }else{
+                            appGroup.$message.error(res.data.message);
+                        }
+                    }
+                }, this);
             }
         },
         created() {

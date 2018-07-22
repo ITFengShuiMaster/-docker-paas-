@@ -7,9 +7,9 @@ web.url = {
 
     // 获取组下面所有的app
     listGroupApps: web.baseUrl + 'app-groups/',
-    startApp: web.baseUrl + 'apps/',
-    stopApp: web.baseUrl + 'apps/',
-    restartApp: web.baseUrl + 'apps/',
+    startApp: web.baseUrl + 'apps/start/',
+    stopApp: web.baseUrl + 'apps/stop/',
+    restartApp: web.baseUrl + 'apps/restart-container/',
 
     websocket: "ws://123.207.169.68:8080/web/websocket"
 };
