@@ -64,19 +64,40 @@ public class TestClient {
         });
 
         ConnectFuture cf = connector.connect(new InetSocketAddress(MinaConstant.MINA_SERVER_PORT));
+        // 等待连接创建完成
         cf.awaitUninterruptibly();
+//        cf.getSession().getCloseFuture().awaitUninterruptibly();
+//        connector.dispose();
+
         IoSession session = cf.getSession();
+        Scanner scanner = new Scanner(System.in);
         AuthenticationMessage authenticationMessage = new AuthenticationMessage();
         authenticationMessage.setUsername("test1");
         authenticationMessage.setPaasword("test");
-        session.write(JSON.toJSONString(authenticationMessage));
         CommonMessage commonMessage = new CommonMessage();
+        commonMessage.setContent("test");
+        session.write(JSON.toJSONString(authenticationMessage));
+        session.write(JSON.toJSONString(commonMessage));
         while (true) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("input");
-            String line = scanner.nextLine();
-            commonMessage.setContent(line);
+            System.out.println("input content");
+            String str = scanner.nextLine();
+            commonMessage.setContent(str);
             session.write(JSON.toJSONString(commonMessage));
         }
+//        ConnectFuture cf = connector.connect(new InetSocketAddress(MinaConstant.MINA_SERVER_PORT));
+//        cf.awaitUninterruptibly();
+//        IoSession session = cf.getSession();
+//        AuthenticationMessage authenticationMessage = new AuthenticationMessage();
+//        authenticationMessage.setUsername("test1");
+//        authenticationMessage.setPaasword("test");
+//        session.write(JSON.toJSONString(authenticationMessage));
+//        CommonMessage commonMessage = new CommonMessage();
+//        while (true) {
+//            Scanner scanner = new Scanner(System.in);
+//            System.out.println("input");
+//            String line = scanner.nextLine();
+//            commonMessage.setContent(line);
+//            session.write(JSON.toJSONString(commonMessage));
+//        }
     }
 }

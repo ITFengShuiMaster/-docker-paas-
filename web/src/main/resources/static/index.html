@@ -47,14 +47,16 @@
                     <i class="el-icon-menu"></i>
                     <span slot="title">我的应用</span>
                 </template>
-                <el-submenu v-for="(group,index) in groups_apps" :index="'300'+index">
+                <el-submenu @click="clickGroup(group.appGroupId)" v-for="(group,index) in groups_apps"
+                            :index="'300'+index">
                     <template slot="title">
-                        <div>
+                        <div @click="clickGroup(group.appGroupId)">
                             <i class="el-icon-plus"></i>
                             <span>{{group.groupName}}</span>
                         </div>
                     </template>
-                    <el-menu-item v-for="(app,appIndex) in group.apps" :index="app.appId+10000+''">
+                    <el-menu-item @click="clickApp(app.appId)" v-for="(app,appIndex) in group.apps"
+                                  :index="app.appId+10000+''">
                         <div>
                             <span>{{app.name}}</span>
                         </div>
@@ -183,6 +185,30 @@
             currentdata: "",
         },
         methods: {
+            clickApp(id) {
+                $('#content').load("pages/appinfo.html", function (response, message, xhr) {
+                    appinfo.getId(id);
+                });;
+            },
+            clickGroup(id) {
+            },
+            getCookie(name) {
+                var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+
+                if (arr = document.cookie.match(reg))
+                    return unescape(arr[2]);
+                else
+                    return null;
+            },
+
+            delCookie(name) {
+                var exp = new Date();
+                exp.setTime(exp.getTime() - 60 * 60 * 1000);
+                var cval = vm.getCookie(name);
+                if (cval != null)
+                    document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString() + ";path=/";
+            },
+
             openSubMenu(index, indexPath) {
                 console.log("openSubMenu" + index, indexPath);
             },
@@ -198,6 +224,8 @@
                     success: function (result) {
                         if (result.code === 1) {
                             vm.username = result.data.name;
+                            vm.getCookie("name");
+                            vm.delCookie("name")
                         } else {
                         }
                     },
@@ -300,17 +328,13 @@
                 })
             },
             // 选择页面
-            selectPage(index, indexPath) {
+            selectPage(index) {
                 // 主要就是通过jquery的load方法，加内容加载到元素上
-                if (index > 10000) {
-                    $('#content').load("pages/appinfo.html", function (response, message, xhr) {
-                        appinfo.getId(index - 10000);
-                    });
+                if (index > 300) {
+                    return;
                 }
-                else {
-                    $('#content').load(this.pageArr[index], function (response, message, xhr) {
-                    });
-                }
+                $('#content').load(this.pageArr[index], function (response, message, xhr) {
+                });
             },
             //TODO 登出
             logout() {

@@ -1,110 +1,111 @@
+<style>
+    .homeTop {
+        background: #ffffff;
+        padding: 16px 32px 0;
+        border: 1px solid #e8e8e8;
+        margin-bottom: 15px;
+        min-height: 100px;
+        min-width: 100px;
+    }
 
-    <style>
-        .homeTop {
-            background: #ffffff;
-            padding: 16px 32px 0;
-            border: 1px solid #e8e8e8;
-            margin-bottom: 15px;
-            min-height: 100px;
-            min-width: 100px;
-        }
+    .homeMiddle {
+        padding: 20px;
+        margin: 10px;
+        background: #fff;
+        min-height: 150px;
+    }
 
-        .homeMiddle {
-            padding: 20px;
-            margin: 10px;
-            background: #fff;
-            min-height: 150px;
-        }
+    .homeBottom {
+        padding: 20px;
+        margin: 10px;
+        background: #fff;
+        min-height: 150px;
+    }
 
-        .homeBottom {
-            padding: 20px;
-            margin: 10px;
-            background: #fff;
-            min-height: 150px;
-        }
+    .makeInfo {
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .makeInfo {
-            padding: 20px;
-            background: #fff;
-            border-bottom: 1px solid #e8e8e8;
-        }
+    .appInfo {
+        float: left;
+        min-width: 200px;
 
-        .appInfo {
-            float: left;
-            min-width: 200px;
+    }
 
-        }
-        .appInfo > button{
-            position: relative;
-            z-index: 100;
-        }
-        .appInfo i, h3 {
-            display: inline-block;
-        }
+    .appInfo > button {
+        position: relative;
+        z-index: 100;
+    }
 
-        .appButton {
-            float: right;
-            min-width: 400px;
+    .appInfo i, h3 {
+        display: inline-block;
+    }
 
-        }
+    .appButton {
+        float: right;
+        min-width: 400px;
 
+    }
 
-        .appButton .buttonGroup, button {
-            display: inline-block;
-            position: relative;
-            z-index: 100;
-        }
-        .appButton .el-button{
-            border-radius: 0px;
-        }
+    .appButton .buttonGroup, button {
+        display: inline-block;
+        position: relative;
+        z-index: 100;
+    }
 
-        .a {
-            /*display: inline-block;*/
-            margin: 10px;
-            min-height: 170px;
-            border: 1px solid #e8e8e8;
-            padding: 16px 32px 0;
+    .appButton .el-button {
+        border-radius: 0px;
+    }
 
-        }
+    .a {
+        /*display: inline-block;*/
+        margin: 10px;
+        min-height: 170px;
+        border: 1px solid #e8e8e8;
+        padding: 16px 32px 0;
 
-        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
-            padding: 40px 0 40px 0;
-            margin: 20px;
-            border-bottom: 1px solid #e8e8e8;
-        }
+    }
 
-        .text {
-            text-align: center;
-        }
+    .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+        padding: 40px 0 40px 0;
+        margin: 20px;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .infos {
-            padding: 20px;
-        }
+    .text {
+        text-align: center;
+    }
 
-        .infos div {
-            float: left;
-            padding: 20px;
-        }
+    .infos {
+        padding: 20px;
+    }
 
-        .infoinfos {
-            border: 1px solid #e8e8e8;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            min-width: 500px;
-            margin-left: 100px;
-        }
+    .infos div {
+        float: left;
+        padding: 20px;
+    }
 
-        .buttonGroup button {
-            margin: 0 -15px;
-        }
+    .infoinfos {
+        border: 1px solid #e8e8e8;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        min-width: 500px;
+        margin-left: 100px;
+    }
 
-        .logs p {
-            margin-bottom: 0;
-            color: #999;
-        }
+    .buttonGroup button {
+        margin: 0 -15px;
+    }
 
-    </style>
+    .logs p {
+        margin-bottom: 0;
+        color: #999;
+    }
+
+</style>
 
 <div id="appinfo">
     <div class="homeTop">
@@ -121,19 +122,20 @@
                 <el-input v-model="appName" auto-complete="off"></el-input>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false;modify_appName" size="small">确 定</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false;modify_appName" size="small">确 定
+                    </el-button>
                 </div>
             </el-dialog>
         </div>
         <div class="appButton">
             <div class="buttonGroup">
                 <el-tooltip class="item" effect="dark" content="跳转到应用对外访问端口对应的域名地址" placement="top">
-                    <el-button @click="open_ssh()">访问</el-button>
+                    <el-button >访问</el-button>
                 </el-tooltip>
                 <el-button @click="open()">开启</el-button>
                 <el-button @click="close()">关闭</el-button>
                 <el-button @click="restart()">重启</el-button>
-                <el-button>管理容器</el-button>
+                <el-button @click="open_ssh()">命令行</el-button>
             </div>
             <el-button type="primary" style="margin-left: 25px">重新部署</el-button>
         </div>
@@ -144,7 +146,7 @@
                         <el-menu-item index="1">总览</el-menu-item>
                         <el-menu-item index="2">监控</el-menu-item>
                         <el-menu-item index="3">日志</el-menu-item>
-                        <el-menu-item index="4">依赖</el-menu-item>
+                        <el-menu-item index="4">伸缩</el-menu-item>
                         <el-menu-item index="5">存储</el-menu-item>
                         <el-menu-item index="6">端口</el-menu-item>
                         <el-menu-item index="7">扩展</el-menu-item>
@@ -166,7 +168,8 @@
         el: '#appinfo',
         data: {
             app_id: '',
-            appName:'MySQL',
+            appName: 'MySQL',
+            containerId: '',
             dialogTableVisible: false,
             dialogFormVisible: false,
             form: {
@@ -259,34 +262,43 @@
                 label: '2'
             }],
             activeIndex: '1',
-            pageArr: ['pages/application/app_overview.html', 'pages/application/app_monitor.html', 'pages/application/app_log.html', 'pages/application/app_extend.html', 'pages/application/app_storage.html', 'pages/application/app_port.html', 'pages/application/app_rely.html', 'pages/application/app_setting.html'],
+            pageArr: ['pages/application/app_overview.html', 'pages/application/app_monitor.html', 'pages/application/app_log.html', 'pages/application/app_flex.html', 'pages/application/app_storage.html', 'pages/application/app_port.html', 'pages/application/app_rely.html', 'pages/application/app_setting.html'],
         },
         methods: {
             selectPage1(index, indexPath) {
-//                console.log(this.pageArr[index - 1]);
+                console.log(index);
+
                 // 主要就是通过jquery的load方法，加内容加载到元素上
                 $('#con').load(this.pageArr[index - 1], function (response, status, xhr) {
                     overview.getId(appinfo.app_id);
-                    if (index == 3) {
+                    console.log(index);
+
+                    if (index === '3') {
                         log.getId(appinfo.app_id)
+                    }
+                    if (index === '4') {
+                        flex.getId(appinfo.app_id)
                     }
                 });
             },
             getId(id) {
                 appinfo.app_id = id;
                 appinfo.infoInit(id)
-    },
+            },
             infoInit() {
                 var that = this;
                 $.ajax({
-                    type:'get',
-                    url:'/tianyu-paas/apps/'+appinfo.app_id,
-                    success:function (result) {
-//                        console.log(result);
-                        that.appName = result.data.name;
+                    type: 'get',
+                    url: '/tianyu-paas/apps/' + appinfo.app_id,
+                    success: function (result) {
+                        if (result.code === 1) {
+                            console.log(result);
+                            that.appName = result.data.name;
+                            that.containerId = result.data.containerId;
+                        }
                     },
-                    error:function () {
-
+                    error: function () {
+                        alert("容器已关闭")
                     }
                 })
             },
@@ -300,14 +312,14 @@
             modify_appName() {
             },
             open_ssh() {
-                window.open('/tianyu-paas/pages/webssh.html');
+                window.open('/tianyu-paas/pages/webssh.html/' + appinfo.containerId);
             },
             open() {
                 $.ajax({
                     type: "get",
                     url: "/tianyu-paas/apps/start/" + appinfo.app_id,
                     success: function (result) {
-                        if(result.code === 1) {
+                        if (result.code === 1) {
                             alert("开启成功");
                         } else if (result.code === 2) {
                             alert(result.message);
@@ -322,7 +334,7 @@
                     type: "get",
                     url: "/tianyu-paas/apps/stop/" + appinfo.app_id,
                     success: function (result) {
-                        if(result.code === 1) {
+                        if (result.code === 1) {
                             alert("关闭成功");
                         } else if (result.code === 2) {
                             alert(result.message);
@@ -337,7 +349,7 @@
                     type: "get",
                     url: "/tianyu-paas/apps/restart-container/" + appinfo.app_id,
                     success: function (result) {
-                        if(result.code === 1) {
+                        if (result.code === 1) {
                             alert("重启启成功");
                         } else if (result.code === 2) {
                             alert(result.message);

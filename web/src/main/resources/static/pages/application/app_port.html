@@ -110,9 +110,29 @@
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
-                                        prop=""
-                                        label="服务信息"
-                                        width="180">
+                                        label="服务信息">
+                                    <template slot-scope="scope">
+                                        <el-row>
+                                            <el-col :span="8">对外服务:</el-col>
+                                            <el-col :span="16">
+                                                <el-switch
+                                                        style="display: block"
+                                                        v-model="switch_value"
+                                                        active-color="#13ce66"
+                                                        inactive-color="#ff4949"
+                                                        :change="switch_change()">
+                                                </el-switch>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col :span="8">
+                                                访问地址:
+                                            </el-col>
+                                            <el-col :span="16">
+                                                aaaaa
+                                            </el-col>
+                                        </el-row>
+                                    </template>
                                 </el-table-column>
                                 <el-table-column
                                         prop="outsideAccessUrl"
@@ -148,6 +168,7 @@
                     domain: ""
                 }
             ],
+            switch_value: '',
             tableData: [],
             ruleForm: {
                 port: '',
@@ -170,6 +191,9 @@
             value: ''
         },
         methods: {
+            switch_change() {
+                console.log(port.switch_value)
+            },
             portInit() {
                 $.ajax({
                     type: 'get',
@@ -191,7 +215,7 @@
                                 }
                             }
 
-                            console.log(port.tableData);
+//                            console.log(port.tableData);
                         }
                     },
                     error: function () {

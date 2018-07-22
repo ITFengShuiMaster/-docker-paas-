@@ -80,7 +80,7 @@
                                 <el-col :span="12" :sm="24" :xs="24" :md="12" :lg="12">
                                     <div class="shensuoLeft">
                                         <label>内存：</label>
-                                        <el-select v-model="value1">
+                                        <el-select v-model="select_memoryUsed">
                                             <el-option
                                                     v-for="item in option1"
                                                     :key="item.value1"
@@ -88,13 +88,13 @@
                                                     :value="item.value1">
                                             </el-option>
                                         </el-select>
-                                        <el-button type="primary">111</el-button>
+                                        <el-button type="primary" @click="flex()">设置</el-button>
                                     </div>
                                 </el-col>
                                 <el-col :span="12" :sm="24" :xs="24" :md="12" :lg="12">
                                     <div class="shensuoRight">
                                         <label>实际数量：</label>
-                                        <el-select v-model="value2">
+                                        <el-select v-model="option2">
                                             <el-option
                                                     v-for="item in option2"
                                                     :key="item.value2"
@@ -120,15 +120,19 @@
     var flex = new Vue({
         el: '#flex',
         data: {
+            select_memoryUsed: "",
+            appId: "",
+            appName: "",
+            machineId :"",
             option1: [{
-                value1: '256MB',
-                label: '256'
+                value1: 100,
+                label: '100MB'
             }, {
-                value1: '512MB',
-                label: '512MB'
+                value1: 150,
+                label: '150MB'
             }, {
-                value1: '1GB',
-                label: '1GB'
+                value1: 200,
+                label: '200MB'
             }],
             option2: [{
                 value2: '1',
@@ -139,15 +143,36 @@
             }],
         },
         methods: {
-            flexInit() {
+            getId(id) {
+                flex.appId = id;
+                console.log(id);
                 $.ajax({
-                    type:'get',
-                    url:'',
-                    data:{
+                    type: 'get',
+                    url: '/tianyu-paas/apps/' + id,
+                    success: function (result) {
+                        flex.appName = result.data.name;
+                        flex.machineId = result.data.machineId;
+                    },
+                    error: function () {
 
+                    }
+                })
+            },
+            flex() {
+                console.log(flex.appId);
+                console.log(flex.select_memoryUsed);
+                console.log(flex.appName);
+                $.ajax({
+                    type:'put',
+                    url:'/tianyu-paas/apps',
+                    data:{
+                        appId: flex.appId,
+                        memoryUsed: flex.select_memoryUsed,
+                        name: flex.appName,
+                        machineId: flex.machineId
                     },
                     success:function (data) {
-
+                        console.log(flex.select_memoryUsed);
                     },
                     error:function (data) {
 
