@@ -21,8 +21,8 @@ public interface ActionMapper extends BaseMapper<Action> {
             "where ac.app_id = a.app_id and a.user_id = #{userId} and a.app_id = #{appId}")
     List<Action> listAppActionByUserId(@Param("userId") long userId, @Param("appId") long appId);
 
-    @Select("select count(*) from app, action" +
-            "where app.user_id = #{userId} and app.app_id = #{appId}" +
+    @Select("select count(*) from app, action " +
+            "where app.user_id = #{userId} and app.app_id = #{appId} " +
             "and action.app_id = app.app_id and action.action_id = #{actionId}")
     int countActionIdByUserIdAndAppIdAndActionId(@Param("userId") long userId, @Param("appId") long appId,
                                                  @Param("actionId") long actionId);

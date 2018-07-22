@@ -239,7 +239,7 @@ public class YmSocket {
         @Override
         public void run() {
             try {
-                byte[] bytes = new byte[1024];
+                byte[] bytes = new byte[10240];
                 while (true) {
                     try {
                         int n = inputStream.read(bytes);
@@ -250,8 +250,9 @@ public class YmSocket {
                                 m = new Date() + " " + m;
                             }
                             //TWebSocket.sendMessageToUser(new Date() + " " + msg.replace("%", " "),userId);
-                            // System.out.print(new Date() + " " + m.replace("%", ""));
+
                             m = m.replace("%", "");
+                            System.out.print(m);
                             ActionDetail actionDetail = new ActionDetail();
                             actionDetail.setActionId(actionId);
                             actionDetail.setGmtCreate(new Date());
@@ -266,7 +267,7 @@ public class YmSocket {
                         if (msg.contains("success:run")) {
                             break;
                         }
-                        bytes = new byte[1024];
+                        bytes = new byte[10240];
                     } catch (Exception e) {
                         e.printStackTrace();
                         break;
