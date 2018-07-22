@@ -10,24 +10,108 @@
     <script src="../lib/element/index.js"></script>
     <script src="../lib/jquery/jquery-3.2.1.js"></script>
     <script src="../lib/layui/layui.js"></script>
+    <script src="../lib/echarts/echarts.js"></script>
+    <script src="../js/js"></script>
 </head>
 
 <body>
 <div id="appGroup">
-    <div>
+    <div style="padding: 20px">
         <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/index.html' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item><a href="#">我的应用</a></el-breadcrumb-item>
             <el-breadcrumb-item>应用组</el-breadcrumb-item>
         </el-breadcrumb>
-
+        <div style="padding-left: 20px; padding-right: 20px; margin-top:25px;display: flex">
+            <p style="font-size: 20px; color: black; width: 30%">test</p>
+            <div style="text-align: right; display: inline-block; width: 70%">
+                <div style="display: inline-block">
+                    <el-button-group>
+                        <el-button @click="open()">开启</el-button>
+                        <el-button @click="close()">关闭</el-button>
+                        <el-button @click="restart()">重启</el-button>
+                        <el-button @click="open_ssh()">命令行</el-button>
+                    </el-button-group>
+                </div>
+                <div style="margin-left: 20px; display: inline-block;">
+                    <el-button-group>
+                        <el-button :type="typeTopo" @click="typeList=''; typeTopo='primary'; selectTopo=true">拓扑图
+                        </el-button>
+                        <el-button :type="typeList" @click="typeTopo=''; typeList='primary'; selectTopo=false">列表
+                        </el-button>
+                    </el-button-group>
+                </div>
+            </div>
+        </div>
+        <div v-if="selectTopo" id="groupCharts" style="background: white; margin: 30px; height: 500px;">
+        </div>
+        <div v-else style="background: white; margin: 30px; height: 500px;">
+            <div style="margin-top: 20px">
+                <el-button :disabled="selectApps.length === 0">批量重启</el-button>
+                <el-button :disabled="selectApps.length === 0">批量关闭</el-button>
+                <el-button :disabled="selectApps.length === 0">批量启动</el-button>
+            </div>
+            <el-table
+                    stripe
+                    :data="groupApps"
+                    style="width: 100%">
+                <el-table-column
+                        type="selection"
+                        width="55">
+                </el-table-column>
+                <el-table-column
+                        prop="date"
+                        label="应用名称">
+                </el-table-column>
+                <el-table-column
+                        prop="date"
+                        label="应用类型">
+                </el-table-column>
+                <el-table-column
+                        prop="date"
+                        label="内存">
+                </el-table-column>
+                <el-table-column
+                        prop="date"
+                        label="状态">
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.tag === '家' ? 'primary' : 'success'"
+                                disable-transitions>{{scope.row.tag}}
+                        </el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="date"
+                        label="更新时间">
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                @click="handleEdit(scope.$index, scope.row)">编辑
+                        </el-button>
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleDelete(scope.$index, scope.row)">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
     </div>
 </div>
+</div>
 <script>
-
     var appGroup = new Vue({
         el: '#appGroup',
-        data: {},
+        data: {
+            typeTopo: 'primary',
+            typeList: '',
+            selectTopo: true,
+            groupApps: [],
+            selectApps: []
+        },
         methods: {
             getId(groupId) {
                 console.log(groupId);
