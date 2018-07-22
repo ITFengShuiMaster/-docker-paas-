@@ -380,13 +380,19 @@ public class AppController {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
         }
 
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (machine == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
         if (app.getStatus() == 1) {
             return TResult.failure("容器已经启动");
         }
 
-        Machine machine = machineService.selectById(app.getMachineId());
-        if (machine == null) {
-            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        if (DockerClientUtil.isRunning(machine.getMachineIp(), app.getContainerId())) {
+            app.setStatus(1);
+            appService.updateById(app);
+            return TResult.failure("容器已开启");
         }
 
         Action action = new Action();
@@ -420,13 +426,19 @@ public class AppController {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
         }
 
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (machine == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
         if (app.getStatus() == 0) {
             return TResult.failure("容器已经关闭");
         }
 
-        Machine machine = machineService.selectById(app.getMachineId());
-        if (machine == null) {
-            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        if (!DockerClientUtil.isRunning(machine.getMachineIp(), app.getContainerId())) {
+            app.setStatus(0);
+            appService.updateById(app);
+            return TResult.failure("容器已关闭");
         }
 
         if (!DockerClientUtil.stopContainer(machine.getMachineIp(), app.getContainerId())) {

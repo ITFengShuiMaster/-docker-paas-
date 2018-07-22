@@ -2,11 +2,13 @@ package cn.edu.jit.tianyu_paas.web.controller;
 
 import cn.edu.jit.tianyu_paas.shared.entity.App;
 import cn.edu.jit.tianyu_paas.shared.entity.AppGroup;
+import cn.edu.jit.tianyu_paas.shared.util.DockerClientUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.AppGroupService;
 import cn.edu.jit.tianyu_paas.web.service.AppService;
+import cn.edu.jit.tianyu_paas.web.service.MachineService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +29,14 @@ public class AppGroupController {
 
     private AppGroupService appGroupService;
     private AppService appService;
+    private final MachineService machineService;
     private HttpSession session;
 
     @Autowired
-    public AppGroupController(AppGroupService appGroupService, AppService appService, HttpSession session) {
+    public AppGroupController(AppGroupService appGroupService, AppService appService, MachineService machineService, HttpSession session) {
         this.appGroupService = appGroupService;
         this.appService = appService;
+        this.machineService = machineService;
         this.session = session;
     }
 
@@ -135,9 +139,23 @@ public class AppGroupController {
     @DeleteMapping("/{appGroupId}")
     public TResult deleteGroup(@PathVariable Long appGroupId) {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+
+        List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_id", appGroupId));
+        for (int i = 0; i < apps.size(); i++) {
+            apps.get(i).setAppGroupId(Long.parseLong("0"));
+            String ip = machineService.selectById(apps.get(i).getMachineId()).getMachineIp();
+            if (DockerClientUtil.isRunning(ip, apps.get(i).getContainerId())) {
+                DockerClientUtil.stopContainer(ip, apps.get(i).getContainerId());
+            }
+        }
+        if (!appService.updateBatchById(apps)) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
         if (!appGroupService.delete(new EntityWrapper<AppGroup>().eq("app_group_id", appGroupId).eq("user_id", userId))) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
+
         return TResult.success();
     }
 }
