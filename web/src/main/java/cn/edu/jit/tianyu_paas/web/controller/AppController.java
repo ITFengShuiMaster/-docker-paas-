@@ -115,7 +115,8 @@ public class AppController {
     public TResult getAppInfo(@PathVariable Long appId) {
         App app = appService.selectById(appId);
         //获取容器的信息
-        app.setInspectContainerResponse(appService.getDockerClient().inspectContainerCmd(app.getContainerId()).exec());
+        DockerClient dockerClient = DockerJavaUtil.getDockerClient(machineService.selectById(app.getMachineId()).getMachineIp());
+        app.setInspectContainerResponse(dockerClient.inspectContainerCmd(app.getContainerId()).exec());
 
         return TResult.success(app);
     }
