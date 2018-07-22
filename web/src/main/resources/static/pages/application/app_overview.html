@@ -75,7 +75,7 @@
                     <div class="second a">
                         <span>平均响应时间(ms)</span>
                         <div class="timeSecond">
-                            <span>{{runningState}}</span>
+                            <span>未知</span>
                         </div>
                     </div>
                 </el-col>
@@ -259,9 +259,9 @@
 //                        console.log(result);
                         //获取运行状态
                         if (result.data.status === 0) {
-                            overview.runningState = "正在运行";
-                        } else if (result.data.status === 1) {
                             overview.runningState = "停止运行";
+                        } else if (result.data.status === 1) {
+                            overview.runningState = "正在运行";
                         } else {
                             overview.runningState = "异常";
                         }
