@@ -4,7 +4,6 @@ package cn.edu.jit.tianyu_paas.web.controller;
 import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.enums.AppCreateMethodEnum;
 import cn.edu.jit.tianyu_paas.shared.enums.AppStatusEnum;
-import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
@@ -485,7 +484,7 @@ public class AppController {
         List<String> mounts = DockerClientUtil.getContainerMounts(mountSettings);
 
         //获得新镜相id
-        String newImageName = DockerClientUtil.getNewImage(app.getContainerId());
+        String newImageName = DockerClientUtil.getNewImage(machine.getMachineIp(), app.getContainerId());
 
         Action action = new Action();
         initAction(action, app);
@@ -498,7 +497,7 @@ public class AppController {
         }
 
         //创建新容器
-        String newContainerId = DockerClientUtil.createNewContainer(app.getContainerId(), newImageName, portBinds, exposePorts, envs, mounts, marketApps);
+        String newContainerId = DockerClientUtil.createNewContainer(machine.getMachineIp(), app.getContainerId(), newImageName, portBinds, exposePorts, envs, mounts, marketApps);
 
         if (StringUtil.isEmpty(newContainerId)) {
             action.setStatus(1);
@@ -528,5 +527,35 @@ public class AppController {
         actionService.insert(action);
 
         return TResult.success();
+    }
+
+    @PostMapping("/batch-start")
+    public TResult BatchStartApps(@RequestParam(required = true) Long[] appIds) {
+        List<App> apps = appService.isDataRight(appIds);
+        if (apps == null) {
+            return TResult.failure(TResultCode.DATA_IS_WRONG);
+        }
+
+        return appService.batchStartContainer(apps);
+    }
+
+    @PostMapping("/batch-stop")
+    public TResult BatchStopApps(@RequestParam(required = true) Long[] appIds) {
+        List<App> apps = appService.isDataRight(appIds);
+        if (apps == null) {
+            return TResult.failure(TResultCode.DATA_IS_WRONG);
+        }
+
+        return appService.batchStopContainer(apps);
+    }
+
+    @PostMapping("/batch-restart")
+    public TResult BatchReStartApps(@RequestParam(required = true) Long[] appIds) {
+        List<App> apps = appService.isDataRight(appIds);
+        if (apps == null) {
+            return TResult.failure(TResultCode.DATA_IS_WRONG);
+        }
+
+        return appService.batchReStartContainer(apps);
     }
 }

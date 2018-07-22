@@ -13,4 +13,6 @@ public class DockerSSHConstants {
 
     public static final String HEIGHT = "height";
 
+    public static final String MACHINE_ID = "machineId";
+
 }
