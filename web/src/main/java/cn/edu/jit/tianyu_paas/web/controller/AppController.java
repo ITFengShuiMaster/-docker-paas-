@@ -606,6 +606,13 @@ public class AppController {
         return appService.batchReStartContainer(apps);
     }
 
+    /**
+     * 导出挂载卷地址
+     *
+     * @param appId
+     * @param containerMount
+     * @return
+     */
     @PostMapping("/mount-export")
     public TResult getMountExportUrl(Long appId, String containerMount) {
         App app = appService.selectById(appId);
@@ -620,6 +627,11 @@ public class AppController {
         return TResult.success(String.format(DockerConstants.mountUrl, machine.getMachineIp(), app.getContainerId(), containerMount));
     }
 
+    /**
+     * 导出容器地址
+     * @param appId
+     * @return
+     */
     @PostMapping("/container-export")
     public TResult getContainerExportUrl(Long appId) {
         App app = appService.selectById(appId);

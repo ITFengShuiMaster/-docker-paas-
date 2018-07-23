@@ -165,16 +165,15 @@ public class UserController {
     /**
      * 返回用户个人信息
      *
-     * @param userId
      * @return
      * @author 卢越
      * @since 2018-06-29
      */
     @ApiOperation("返回用户个人信息")
-    @GetMapping("/info/{userId}")
-    public TResult info(@PathVariable String userId) {
+    @GetMapping("/info")
+    public TResult info() {
         EntityWrapper<User> entityWrapper = new EntityWrapper<>();
-        entityWrapper.setSqlSelect("user_id,name,phone,email,head_img").eq("user_id", userId);
+        entityWrapper.setSqlSelect("user_id,name,phone,email,head_img").eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID));
         User user = userService.selectOne(entityWrapper);
         if (user == null) {
             return TResult.failure(TResultCode.USER_NOT_EXIST);
@@ -192,9 +191,9 @@ public class UserController {
      * @since 2018-06-29
      */
     @ApiOperation("返回用户个人的动态：如余额，内存使用情况等")
-    @GetMapping("/dynamic/{userId}")
+    @GetMapping("/dynamic")
     public TResult dynamic(@PathVariable String userId) {
-        UserDynamic userDynamic = userDynamicService.selectOne(new EntityWrapper<UserDynamic>().eq("user_id", userId));
+        UserDynamic userDynamic = userDynamicService.selectOne(new EntityWrapper<UserDynamic>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)));
         if (userDynamic == null) {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
         }

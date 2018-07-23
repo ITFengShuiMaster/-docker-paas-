@@ -152,6 +152,13 @@ public class DockerClientUtil {
         return mountSettingsList;
     }
 
+    /**
+     * 是否在数据库中
+     *
+     * @param marketApps
+     * @param image
+     * @return
+     */
     public static boolean isInMarketApp(List<MarketApp> marketApps, String image) {
         for (MarketApp app : marketApps) {
             if (image.equals(app.getName())) {
@@ -308,6 +315,12 @@ public class DockerClientUtil {
         }
     }
 
+    /**
+     * 容器是否运行
+     * @param ip
+     * @param containerId
+     * @return
+     */
     public static boolean isRunning(String ip, String containerId) {
         try {
             return DockerHelperUtil.query(ip, docker -> {
@@ -321,6 +334,13 @@ public class DockerClientUtil {
         }
     }
 
+    /**
+     * 拉取镜相
+     * @param ip
+     * @param image
+     * @param tag
+     * @return
+     */
     public static boolean pullImage(String ip, String image, String tag) {
         try {
             DockerHelperUtil.execute(ip, docker -> {
