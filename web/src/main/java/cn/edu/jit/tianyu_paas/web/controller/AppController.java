@@ -421,6 +421,12 @@ public class AppController {
         return TResult.success();
     }
 
+    /**
+     * 关闭容器
+     *
+     * @param appId
+     * @return
+     */
     @GetMapping("/stop/{appId}")
     public TResult stopContainer(@PathVariable Long appId) {
         App app = appService.selectById(appId);
@@ -530,6 +536,39 @@ public class AppController {
         return TResult.success();
     }
 
+    /**
+     * 删除应用
+     *
+     * @param appId
+     * @return
+     */
+    @DeleteMapping("{appId}")
+    public TResult deleteApp(@PathVariable(required = true) Long appId) {
+        App app = appService.selectById(appId);
+        if (app == null) {
+            return TResult.failure(TResultCode.RESULE_DATA_NONE);
+        }
+
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (machine == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
+        if (!DockerClientUtil.removeContainer(machine.getMachineIp(), app.getContainerId())) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+        if (!appService.deleteById(app.getAppId())) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
+        return TResult.success();
+    }
+
+    /**
+     * 批量开启
+     * @param appIds
+     * @return
+     */
     @PostMapping("/batch-start")
     public TResult BatchStartApps(@RequestParam(required = true) Long[] appIds) {
         List<App> apps = appService.isDataRight(appIds);
@@ -540,6 +579,11 @@ public class AppController {
         return appService.batchStartContainer(apps);
     }
 
+    /**
+     * 批量关闭
+     * @param appIds
+     * @return
+     */
     @PostMapping("/batch-stop")
     public TResult BatchStopApps(@RequestParam(required = true) Long[] appIds) {
         List<App> apps = appService.isDataRight(appIds);
@@ -550,6 +594,11 @@ public class AppController {
         return appService.batchStopContainer(apps);
     }
 
+    /**
+     * 批量重启
+     * @param appIds
+     * @return
+     */
     @PostMapping("/batch-restart")
     public TResult BatchReStartApps(@RequestParam(required = true) Long[] appIds) {
         List<App> apps = appService.isDataRight(appIds);
