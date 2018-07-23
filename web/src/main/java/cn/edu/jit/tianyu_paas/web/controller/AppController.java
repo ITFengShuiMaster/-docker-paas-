@@ -1,9 +1,9 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
-
 import cn.edu.jit.tianyu_paas.shared.entity.*;
 import cn.edu.jit.tianyu_paas.shared.enums.AppCreateMethodEnum;
 import cn.edu.jit.tianyu_paas.shared.enums.AppStatusEnum;
+import cn.edu.jit.tianyu_paas.shared.global.DockerConstants;
 import cn.edu.jit.tianyu_paas.shared.util.*;
 import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.*;
@@ -59,7 +59,6 @@ public class AppController {
     private String userName;
     @Value("${docker_run.host.pwd}")
     private String pwd;
-
 
     @Autowired
     public AppController(AppService appService, AppInfoByCustomService appInfoByCustomService, HttpSession session, AppInfoByDemoService appInfoByDemoService, DemoService demoService, AppInfoByDockerImageService appInfoByDockerImageService, AppInfoByDockerRunService appInfoByDockerRunService, AppInfoByMarketService appInfoByMarketService, AppGroupService appGroupService, MarketAppService marketAppService, AppVarService appVarService, AppPortService appPortService, MachinePortService machinePortService, MachineService machineService, MarketAppPortService marketAppPortService, MarketAppVarService marketAppVarService, UserService userService, ActionService actionService, MountSettingsService mountSettingsService) {
@@ -166,7 +165,6 @@ public class AppController {
         }
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
-
 
     /**
      * 从官方demo创建应用
@@ -463,11 +461,10 @@ public class AppController {
      *
      * @param appId
      * @return
-     * @throws Exception
      */
     @ApiOperation("容器重启")
     @GetMapping("/restart-container/{appId}")
-    public TResult restartContainer(@PathVariable(required = true) Long appId) throws Exception {
+    public TResult restartContainer(@PathVariable Long appId) {
         App app = appService.selectById(appId);
         Machine machine = machineService.selectById(app.getMachineId());
         List<MarketApp> marketApps = marketAppService.selectList(new EntityWrapper<MarketApp>());
@@ -570,7 +567,7 @@ public class AppController {
      * @return
      */
     @PostMapping("/batch-start")
-    public TResult BatchStartApps(@RequestParam(required = true) Long[] appIds) {
+    public TResult batchStartApps(Long[] appIds) {
         List<App> apps = appService.isDataRight(appIds);
         if (apps == null) {
             return TResult.failure(TResultCode.DATA_IS_WRONG);
@@ -585,7 +582,7 @@ public class AppController {
      * @return
      */
     @PostMapping("/batch-stop")
-    public TResult BatchStopApps(@RequestParam(required = true) Long[] appIds) {
+    public TResult batchStopApps(Long[] appIds) {
         List<App> apps = appService.isDataRight(appIds);
         if (apps == null) {
             return TResult.failure(TResultCode.DATA_IS_WRONG);
@@ -600,12 +597,40 @@ public class AppController {
      * @return
      */
     @PostMapping("/batch-restart")
-    public TResult BatchReStartApps(@RequestParam(required = true) Long[] appIds) {
+    public TResult batchReStartApps(Long[] appIds) {
         List<App> apps = appService.isDataRight(appIds);
         if (apps == null) {
             return TResult.failure(TResultCode.DATA_IS_WRONG);
         }
 
         return appService.batchReStartContainer(apps);
+    }
+
+    @PostMapping("/mount-export")
+    public TResult getMountExportUrl(Long appId, String containerMount) {
+        App app = appService.selectById(appId);
+        if (app == null) {
+            return TResult.failure(TResultCode.DATA_IS_WRONG);
+        }
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (machine == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
+        return TResult.success(String.format(DockerConstants.mountUrl, machine.getMachineIp(), app.getContainerId(), containerMount));
+    }
+
+    @PostMapping("/container-export")
+    public TResult getContainerExportUrl(Long appId) {
+        App app = appService.selectById(appId);
+        if (app == null) {
+            return TResult.failure(TResultCode.DATA_IS_WRONG);
+        }
+        Machine machine = machineService.selectById(app.getMachineId());
+        if (machine == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
+
+        return TResult.success(String.format(DockerConstants.containerUrl, machine.getMachineIp(), app.getContainerId()));
     }
 }

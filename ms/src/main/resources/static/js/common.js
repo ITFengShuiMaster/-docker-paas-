@@ -25,7 +25,7 @@ ms.ajax = function (options, vm) {
         /*json:charset=utf-8*/
         dataType: 'json',
         complete: function (XMLHttpRequest, textStatus) {
-            vm.$Modal.remove();
+            // vm.$Modal.remove();
             vm.$Spin.hide();
         },
         error: function (xhr, status, error) {

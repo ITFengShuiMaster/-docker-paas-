@@ -116,13 +116,13 @@
                                             <el-col :span="8">对外服务:</el-col>
                                             <el-col :span="16">
                                                 <el-switch
+                                                        change="switch_change(scope.row)"
                                                         style="display: block"
-                                                        v-model="switch_value"
+                                                        v-model="scope.row.isOutsideOpen"
                                                         active-color="#13ce66"
                                                         active-value="1"
                                                         inactive-color="#ff4949"
-                                                        inactive-value="0"
-                                                        :change="switch_change(scope.row)">
+                                                        inactive-value="0">
                                                 </el-switch>
                                             </el-col>
                                         </el-row>
@@ -131,14 +131,14 @@
                                                 访问地址:
                                             </el-col>
                                             <el-col :span="16">
-                                                aaaaa
+                                                {{scope.row.outsideAccessUrl}}
                                             </el-col>
                                         </el-row>
                                     </template>
                                 </el-table-column>
                                 <el-table-column
-                                        prop="outsideAccessUrl"
-                                        label="绑定域名"
+                                        prop="gmtCreate"
+                                        label="创建时间"
                                         width="180">
                                 </el-table-column>
                                 <el-table-column
@@ -162,6 +162,7 @@
     var port = new Vue({
         el: '#port',
         data: {
+            appId: '',
             portInfo: [
                 {
                     num: null,
@@ -170,7 +171,7 @@
                     domain: ""
                 }
             ],
-            switch_value: '',
+            switch_value: null,
             tableData: [],
             ruleForm: {
                 port: '',
@@ -193,31 +194,13 @@
             value: ''
         },
         methods: {
-            switch_change(row) {
-                console.log(port.switch_value);
-                console.log(row);
-
-                $.ajax({
-                    type: 'put',
-                    url: '/tianyu-paas/app-ports',
-                    data: {
-                        appId: row.appId,
-                        hostPort: row.hostPort,
-                        containerPort: row.containerPort,
-                        isOutsideOpen: port.switch_value,
-                    },
-                    success: function (result) {
-                        console.log(result);
-                    }
-                });
-            },
-            portInit() {
+            getId(id) {
+                console.log(id);
                 $.ajax({
                     type: 'get',
-                    url: '/tianyu-paas/app-ports/' + appinfo.app_id,
+                    url: '/tianyu-paas/app-ports/' + id,
                     data: {},
                     success: function (data) {
-                        console.log(data);
                         if (data.code === 1) {
                             port.tableData = data.data;
                             for (let i = 0; i < port.tableData.length; i++) {
@@ -233,10 +216,9 @@
                                 if (port.tableData[i].protocol === 3) {
                                     port.tableData[i].protocol = "udp";
                                 }
-                                port.switch_value = port.tableData[i].isOutsideOpen;
 
                             }
-//                            console.log(port.tableData);
+                            console.log(port.tableData);
                         }
                     },
                     error: function () {
@@ -245,13 +227,23 @@
 
                 })
             },
-            setOutSideOpen() {
+            switch_change(row) {
+                console.log(row);
                 $.ajax({
                     type: 'put',
-                    url: '/tianyu-paas/app-ports/' + appinfo.app_id,
-                    data: {},
+                    url: '/tianyu-paas/app-ports',
+                    data: {
+                        appId: row.appId,
+                        hostPort: row.hostPort,
+                        containerPort: row.containerPort,
+                        isOutsideOpen: row.isOutsideOpen,
+                    },
+                    success: function (result) {
+                        console.log(result);
+                    }
                 });
             },
+
             setOutSideClose() {
 
             },
@@ -261,7 +253,7 @@
                     type: 'post',
                     url: '/tianyu-paas/app-ports',
                     data: {
-                        appId: appinfo.app_id,
+                        appId: port.appId,
                         port: this.ruleForm.port,
                         protocol: this.ruleForm.protocol
                     },
@@ -277,7 +269,6 @@
         },
 
         mounted() {
-            this.portInit()
         }
 
     });
