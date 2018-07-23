@@ -116,7 +116,7 @@
                                             <el-col :span="8">对外服务:</el-col>
                                             <el-col :span="16">
                                                 <el-switch
-                                                        change="switch_change(scope.row)"
+                                                        @change="switch_change"
                                                         style="display: block"
                                                         v-model="scope.row.isOutsideOpen"
                                                         active-color="#13ce66"
@@ -143,6 +143,9 @@
                                 </el-table-column>
                                 <el-table-column
                                         label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button type="danger" size="small" @click='delete_port(scope.row)' >删除</el-button>
+                                    </template>
                                 </el-table-column>
                             </el-table>
                         </div>
@@ -194,12 +197,28 @@
             value: ''
         },
         methods: {
+            delete_port(row) {
+                console.log(row);
+                this.$message({
+                    message: '恭喜你，这是一条成功消息',
+                    type: 'success'
+                });
+                /*$.ajax({
+                    type: 'delete',
+                    url: '/tianyu-paas/app-ports/' + port.appId,
+                    data: {
+                        hostPort: row.hostPort
+                    },
+                    success: function (result) {
+                        console.log("删除成功")
+                    }
+                })*/
+            },
             getId(id) {
                 console.log(id);
                 $.ajax({
                         type: 'get',
                         url: '/tianyu-paas/app-ports/' + id,
-                        data: {},
                         success: function (data) {
                             if (data.code === 1) {
                                 port.tableData = data.data;
@@ -229,7 +248,7 @@
             },
             switch_change(row) {
                 console.log(row);
-                $.ajax({
+                /*$.ajax({
                     type: 'put',
                     url: '/tianyu-paas/app-ports',
                     data: {
@@ -241,7 +260,7 @@
                     success: function (result) {
                         console.log(result);
                     }
-                });
+                });*/
             },
 
             setOutSideClose() {
