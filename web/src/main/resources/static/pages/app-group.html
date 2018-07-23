@@ -143,6 +143,7 @@
                 this.typeList = '';
                 this.typeTopo = 'primary';
                 this.selectTopo = true;
+                initEcharts();
             },
             clickList() {
                 this.typeTopo = '';
@@ -272,10 +273,73 @@
                 }, this);
             }
         },
-        created() {
-
+        mounted() {
+            initEcharts(this.appGroupId);
         }
     });
+
+    function initEcharts(groupId) {
+        var myChart = echarts.init(document.getElementById('groupCharts'));
+        myChart.showLoading();
+        var appsName = [];
+        var relations = [];
+        web.ajax({
+                url: web.url.getAppRealtions + groupId,
+                type: 'get',
+                success: function (res) {
+                    if (res.code === web.result.success) {
+                        for (let i in res.data.appName) {
+                            appsName[i].name = res.data.appName[i];
+                        }
+                        for (let i in res.data.data) {
+                            for (let j = 0; j <= res.data.data.length - i; j++) {
+                                relations.source = res.data.appName[i];
+                                relations.target = res.data.appName[j];
+                            }
+                        }
+                    }
+                },
+                complete: function () {
+                    myChart.hideLoading();
+                }
+            }
+
+            ,
+            appGroup
+        )
+        ;
+        var option = {
+            title: {
+                text: '应用组拓扑图'
+            },
+            tooltip: {},
+            animationDurationUpdate: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series: [
+                {
+                    type: 'graph',
+                    hoverAnimation: true,
+                    layout: 'force',
+                    roam: true,
+                    draggable: true,
+                    // 可设置图片链接和base64编码
+                    symbol: ['circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'],
+                    edgeSymbol: ['circle', 'arrow'],
+                    focusNodeAdjacency: true,
+                    force: {
+                        repulsion: 100,
+                    },
+                    itemStyle: {
+                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                        shadowBlur: 10
+                    },
+                    data: appsName,
+                    links: relations,
+                }
+            ]
+        };
+        myChart.setOption(option);
+    }
 </script>
 </body>
 </html>

@@ -14,6 +14,7 @@ web.url = {
     batchStartApp: web.baseUrl + 'apps/batch-start',
     batchStopApp: web.baseUrl + 'apps/batch-stop',
     batchRestartApp: web.baseUrl + 'apps/batch-restart',
+    getAppRealtions: web.baseUrl + 'app-relys/rely/',
 
     websocket: "ws://123.207.169.68:8080/web/websocket"
 };
