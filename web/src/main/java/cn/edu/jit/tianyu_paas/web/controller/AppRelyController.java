@@ -73,6 +73,7 @@ public class AppRelyController {
         }
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
+
     @ApiOperation("返回零阶矩阵")
     @GetMapping("/rely/{groupId}")
     public TResult getAdjacencyMatrix(@PathVariable Long groupId) {

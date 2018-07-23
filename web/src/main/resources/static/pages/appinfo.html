@@ -130,11 +130,13 @@
         <div class="appButton">
             <div class="buttonGroup">
                 <el-tooltip class="item" effect="dark" content="跳转到应用对外访问端口对应的域名地址" placement="top">
-                    <el-button >访问</el-button>
+					<el-button>访问</el-button>
                 </el-tooltip>
                 <el-button @click="open()">开启</el-button>
                 <el-button @click="close()">关闭</el-button>
                 <el-button @click="restart()">重启</el-button>
+				<el-button @click="exported_container()">导出</el-button>
+				<el-button @click="delete_container()" type="danger">删除</el-button>
                 <el-button @click="open_ssh()">命令行</el-button>
             </div>
             <el-button type="primary" style="margin-left: 25px">重新部署</el-button>
@@ -168,6 +170,7 @@
         el: '#appinfo',
         data: {
             app_id: '',
+            machineId: '',
             appName: 'MySQL',
             containerId: '',
             dialogTableVisible: false,
@@ -265,13 +268,26 @@
             pageArr: ['pages/application/app_overview.html', 'pages/application/app_monitor.html', 'pages/application/app_log.html', 'pages/application/app_flex.html', 'pages/application/app_storage.html', 'pages/application/app_port.html', 'pages/application/app_rely.html', 'pages/application/app_setting.html'],
         },
         methods: {
-            selectPage1(index, indexPath) {
-                console.log(index);
+            exported_container() {
+                $.ajax({
+                    type: 'post',
+                    url: '/tianyu-paas/apps/container-export',
+                    data: {
+                        appId: appinfo.app_id,
+                    },
+                    success: function (result) {
+                        window.showModelessDialog(result.data);
+                        console.log(result);
+                    },
+                    error: function () {
 
+                    }
+                })
+            },
+            selectPage1(index, indexPath) {
                 // 主要就是通过jquery的load方法，加内容加载到元素上
                 $('#con').load(this.pageArr[index - 1], function (response, status, xhr) {
                     overview.getId(appinfo.app_id);
-                    console.log(index);
 
                     if (index === '3') {
                         log.getId(appinfo.app_id)
@@ -280,7 +296,10 @@
                         flex.getId(appinfo.app_id)
                     }
                     if (index === '5') {
-                        storage.getId(appinfo.appid)
+                        storage.getId(appinfo.app_id)
+                    }
+                    if (index === '6') {
+                        port.getId(appinfo.app_id)
                     }
                 });
             },
@@ -295,9 +314,10 @@
                     url: '/tianyu-paas/apps/' + appinfo.app_id,
                     success: function (result) {
                         if (result.code === 1) {
-                            console.log(result);
+                            console.log(result)
                             that.appName = result.data.name;
                             that.containerId = result.data.containerId;
+                            that.machineId = result.data.machineId;
                         }
                     },
                     error: function () {
@@ -315,7 +335,7 @@
             modify_appName() {
             },
             open_ssh() {
-                window.open('/tianyu-paas/pages/webssh.html/' + appinfo.containerId);
+                window.open("webssh.html?containerId=" + appinfo.containerId + "&height=400&width=400&machine=" + appinfo.machineId)
             },
             open() {
                 $.ajax({

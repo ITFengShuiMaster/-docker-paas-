@@ -126,7 +126,7 @@ public class SSHWebSocket {
                 bytes = new byte[10240];
                 // 连接之后先获取输出，此处为 root@*****
                 if (returnMsg.indexOf("\r\n\r\n") != -1) {
-                    session.getBasicRemote().sendText(returnMsg.substring(returnMsg.indexOf("\r\n\r\n") + 4, returnMsg.length()).toString());
+                    session.getBasicRemote().sendText(returnMsg.substring(returnMsg.indexOf("\r\n\r\n") + 4, returnMsg.length()));
                     break;
                 }
             }

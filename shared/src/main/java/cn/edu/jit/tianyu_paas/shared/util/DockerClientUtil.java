@@ -4,6 +4,7 @@ import cn.edu.jit.tianyu_paas.shared.entity.AppPort;
 import cn.edu.jit.tianyu_paas.shared.entity.AppVar;
 import cn.edu.jit.tianyu_paas.shared.entity.MarketApp;
 import cn.edu.jit.tianyu_paas.shared.entity.MountSettings;
+import cn.edu.jit.tianyu_paas.shared.global.DockerSSHConstants;
 import cn.edu.jit.tianyu_paas.shared.global.MountSettingsConstants;
 import com.alibaba.fastjson.JSONObject;
 import com.spotify.docker.client.DockerClient;
@@ -151,6 +152,13 @@ public class DockerClientUtil {
         return mountSettingsList;
     }
 
+    /**
+     * 是否在数据库中
+     *
+     * @param marketApps
+     * @param image
+     * @return
+     */
     public static boolean isInMarketApp(List<MarketApp> marketApps, String image) {
         for (MarketApp app : marketApps) {
             if (image.equals(app.getName())) {
@@ -249,6 +257,7 @@ public class DockerClientUtil {
 
     /**
      * 关闭应用
+     *
      * @param ip
      * @param containerId
      * @return
@@ -284,6 +293,34 @@ public class DockerClientUtil {
         }
     }
 
+    /**
+     * 删除容器
+     *
+     * @param ip
+     * @param containerId
+     * @return
+     */
+    public static boolean removeContainer(String ip, String containerId) {
+        try {
+            DockerHelperUtil.execute(ip, docker -> {
+                if (isRunning(ip, containerId)) {
+                    docker.stopContainer(containerId, 0);
+                }
+                docker.removeContainer(containerId);
+            });
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 容器是否运行
+     * @param ip
+     * @param containerId
+     * @return
+     */
     public static boolean isRunning(String ip, String containerId) {
         try {
             return DockerHelperUtil.query(ip, docker -> {
@@ -297,6 +334,13 @@ public class DockerClientUtil {
         }
     }
 
+    /**
+     * 拉取镜相
+     * @param ip
+     * @param image
+     * @param tag
+     * @return
+     */
     public static boolean pullImage(String ip, String image, String tag) {
         try {
             DockerHelperUtil.execute(ip, docker -> {
@@ -310,5 +354,6 @@ public class DockerClientUtil {
     }
 
     public static void main(String[] args) {
+        System.out.println(removeContainer(DockerSSHConstants.IP, "253906c6a25d"));
     }
 }
