@@ -130,29 +130,26 @@
         <div class="appButton">
             <div class="buttonGroup">
                 <el-tooltip class="item" effect="dark" content="跳转到应用对外访问端口对应的域名地址" placement="top">
-					<el-button>访问</el-button>
+                    <el-button>访问</el-button>
                 </el-tooltip>
                 <el-button @click="open()">开启</el-button>
                 <el-button @click="close()">关闭</el-button>
-                <el-button @click="restart()">重启</el-button>
-				<el-button @click="exported_container()">导出</el-button>
-				<el-button @click="delete_container()" type="danger">删除</el-button>
+                <el-button style="margin-left: 25px" @click="exported_container()" type="primary">导出</el-button>
+                <el-button @click="delete_container()" type="danger">删除</el-button>
                 <el-button @click="open_ssh()">命令行</el-button>
             </div>
-            <el-button type="primary" style="margin-left: 25px">重新部署</el-button>
+            <el-button type="primary" style="margin-left: 25px" @click="restart()">重新部署</el-button>
         </div>
         <div class="tabs">
             <el-row>
                 <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
                     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="selectPage1">
                         <el-menu-item index="1">总览</el-menu-item>
-                        <el-menu-item index="2">监控</el-menu-item>
-                        <el-menu-item index="3">日志</el-menu-item>
-                        <el-menu-item index="4">伸缩</el-menu-item>
-                        <el-menu-item index="5">存储</el-menu-item>
-                        <el-menu-item index="6">端口</el-menu-item>
-                        <el-menu-item index="7">扩展</el-menu-item>
-                        <el-menu-item index="8">设置</el-menu-item>
+                        <el-menu-item index="2">日志</el-menu-item>
+                        <el-menu-item index="3">伸缩</el-menu-item>
+                        <el-menu-item index="4">存储</el-menu-item>
+                        <el-menu-item index="5">端口</el-menu-item>
+                        <el-menu-item index="6">扩展</el-menu-item>
                     </el-menu>
 
                 </el-col>
@@ -265,9 +262,30 @@
                 label: '2'
             }],
             activeIndex: '1',
-            pageArr: ['pages/application/app_overview.html', 'pages/application/app_monitor.html', 'pages/application/app_log.html', 'pages/application/app_flex.html', 'pages/application/app_storage.html', 'pages/application/app_port.html', 'pages/application/app_rely.html', 'pages/application/app_setting.html'],
+            pageArr: ['pages/application/app_overview.html', 'pages/application/app_log.html', 'pages/application/app_flex.html', 'pages/application/app_storage.html', 'pages/application/app_port.html', 'pages/application/app_rely.html'],
         },
         methods: {
+            delete_container() {
+                this.$confirm('此操作将永久删除该容器, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    $.ajax({
+                        type: 'delete',
+                        url: '/tianyu-paas/apps/' + appinfo.app_id,
+                        success: function (result) {
+                            appinfo.$message({
+                                message: '删除成功!',
+                                type: 'success'
+                            });
+                        },
+                        error: function () {
+
+                        }
+                    })
+                })
+            },
             exported_container() {
                 $.ajax({
                     type: 'post',
@@ -276,37 +294,39 @@
                         appId: appinfo.app_id,
                     },
                     success: function (result) {
-                        window.showModelessDialog(result.data);
-                        console.log(result);
+                        window.open(result.data);
                     },
                     error: function () {
 
                     }
                 })
-            },
+            }
+            ,
             selectPage1(index, indexPath) {
                 // 主要就是通过jquery的load方法，加内容加载到元素上
                 $('#con').load(this.pageArr[index - 1], function (response, status, xhr) {
                     overview.getId(appinfo.app_id);
 
-                    if (index === '3') {
+                    if (index === '2') {
                         log.getId(appinfo.app_id)
                     }
-                    if (index === '4') {
+                    if (index === '3') {
                         flex.getId(appinfo.app_id)
                     }
-                    if (index === '5') {
+                    if (index === '4') {
                         storage.getId(appinfo.app_id)
                     }
-                    if (index === '6') {
+                    if (index === '5') {
                         port.getId(appinfo.app_id)
                     }
                 });
-            },
+            }
+            ,
             getId(id) {
                 appinfo.app_id = id;
                 appinfo.infoInit(id)
-            },
+            }
+            ,
             infoInit() {
                 var that = this;
                 $.ajax({
@@ -326,68 +346,108 @@
                         });
                     }
                 })
-            },
+            }
+            ,
             getUrlParam(name) {
                 var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
                 var r = window.location.search.substr(1).match(reg); //匹配目标参数
                 if (r != null) return unescape(r[2]);
                 return null; //返回参数值
-            },
+            }
+            ,
             //修改用户信息
             modify_appName() {
-            },
+            }
+            ,
             open_ssh() {
                 window.open("webssh.html?containerId=" + appinfo.containerId + "&height=400&width=400&machine=" + appinfo.machineId)
-            },
+            }
+            ,
             open() {
-                $.ajax({
-                    type: "get",
-                    url: "/tianyu-paas/apps/start/" + appinfo.app_id,
-                    success: function (result) {
-                        if (result.code === 1) {
-                            alert("开启成功");
-                        } else if (result.code === 2) {
-                            alert(result.message);
-                        } else {
-                            alert(result.message);
+                this.$confirm('打开容器？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'info'
+                }).then(() => {
+                    $.ajax({
+                        type: "get",
+                        url: "/tianyu-paas/apps/start/" + appinfo.app_id,
+                        success: function (result) {
+                            if (result.code === 1) {
+                                appinfo.$message({
+                                    message: '开启成功!',
+                                    type: 'success'
+                                });
+                            } else if (result.code === 2) {
+                                this.$message({
+                                    message: result.message,
+                                    type: 'success'
+                                });
+                            } else {
+                                this.$message({
+                                    message: result.message,
+                                    type: 'success'
+                                });
+                            }
                         }
-                    }
+                    })
                 })
-            },
+
+            }
+            ,
             close() {
-                $.ajax({
-                    type: "get",
-                    url: "/tianyu-paas/apps/stop/" + appinfo.app_id,
-                    success: function (result) {
-                        if (result.code === 1) {
-                            alert("关闭成功");
-                        } else if (result.code === 2) {
-                            alert(result.message);
-                        } else {
-                            alert(result.message);
+                this.$confirm('关闭容器？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'info'
+                }).then(() => {
+                    $.ajax({
+                        type: "get",
+                        url: "/tianyu-paas/apps/stop/" + appinfo.app_id,
+                        success: function (result) {
+                            if (result.code === 1) {
+                                appinfo.$message({
+                                    message: '关闭成功!',
+                                    type: 'success'
+                                });
+                            } else if (result.code === 2) {
+                                alert(result.message);
+                            } else {
+                                alert(result.message);
+                            }
                         }
-                    }
+                    })
                 })
-            },
+            }
+            ,
             restart() {
-                $.ajax({
-                    type: "get",
-                    url: "/tianyu-paas/apps/restart-container/" + appinfo.app_id,
-                    success: function (result) {
-                        if (result.code === 1) {
-                            alert("重启启成功");
-                        } else if (result.code === 2) {
-                            alert(result.message);
-                        } else {
-                            alert(result.message);
+                this.$confirm('重启容器？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'info'
+                }).then(() => {
+                    $.ajax({
+                        type: "get",
+                        url: "/tianyu-paas/apps/restart-container/" + appinfo.app_id,
+                        success: function (result) {
+                            if (result.code === 1) {
+                                appinfo.$message({
+                                    message: '重启成功!',
+                                    type: 'success'
+                                });
+                            } else if (result.code === 2) {
+                                alert(result.message);
+                            } else {
+                                alert(result.message);
+                            }
                         }
-                    }
+                    })
                 })
+
             }
         },
         mounted() {
             this.selectPage1(1, '');
-//            this.infoInit()
         }
 
     })

@@ -116,13 +116,12 @@
                                             <el-col :span="8">对外服务:</el-col>
                                             <el-col :span="16">
                                                 <el-switch
-                                                        @change="switch_change"
-                                                        style="display: block"
-                                                        v-model="scope.row.isOutsideOpen"
+                                                        @change="switch_change(scope.row)"
+                                                        v-model="a"
                                                         active-color="#13ce66"
-                                                        active-value="1"
-                                                        inactive-color="#ff4949"
-                                                        inactive-value="0">
+                                                        active-value='1'
+                                                        inactive-color="#DCDFE6"
+                                                        inactive-value='0'>
                                                 </el-switch>
                                             </el-col>
                                         </el-row>
@@ -165,6 +164,7 @@
     var port = new Vue({
         el: '#port',
         data: {
+            a: 1,
             appId: '',
             portInfo: [
                 {
@@ -213,12 +213,13 @@
                 })
             },
             getId(id) {
-                console.log(id);
+                console.log(port.a)
                 $.ajax({
                         type: 'get',
                         url: '/tianyu-paas/app-ports/' + id,
                         success: function (data) {
                             if (data.code === 1) {
+                                console.log(data)
                                 port.tableData = data.data;
                                 for (let i = 0; i < port.tableData.length; i++) {
                                     if (port.tableData[i].protocol === 0) {
@@ -245,6 +246,7 @@
                 })
             },
             switch_change(row) {
+                console.log("swicth")
                 console.log(row);
                 $.ajax({
                     type: 'put',
