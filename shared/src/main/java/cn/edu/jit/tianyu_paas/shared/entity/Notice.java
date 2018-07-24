@@ -40,6 +40,8 @@ public class Notice implements Serializable {
      */
     @TableField(exist = false)
     private Integer status;
+    @TableField(exist = false)
+    private String adminName;
 
     public Integer getStatus() {
         return status;
@@ -87,6 +89,14 @@ public class Notice implements Serializable {
 
     public void setGmtCreate(Date gmtCreate) {
         this.gmtCreate = gmtCreate;
+    }
+
+    public String getAdminName() {
+        return adminName;
+    }
+
+    public void setAdminName(String adminName) {
+        this.adminName = adminName;
     }
 
     @Override

@@ -8,8 +8,8 @@ import cn.edu.jit.tianyu_paas.shared.util.StringUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import io.swagger.annotations.ApiOperation;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,13 +41,20 @@ public class AppController {
      */
     @ApiOperation("获取所有用户以及应用")
     @GetMapping
-    public TResult getApps() {
-       List<App> appList = appService.selectList(new EntityWrapper<App>());
-       for (App app:appList){
-           User user = userService.selectOne(new EntityWrapper<User>().eq("user_id",app.getUserId()));
-           app.setUsername(user.getName());
-       }
-           return TResult.success(appList);
+    public TResult getApps(@RequestParam(defaultValue = "1") Integer current, @RequestParam(defaultValue = "7") Integer size) {
+        Page<App> apps = appService.selectPage(new Page<>(current, size));
+        List<App> appList = apps.getRecords();
+
+        for (int i = 0; i < appList.size(); i++) {
+            User user = userService.selectOne(new EntityWrapper<User>().eq("user_id", appList.get(i).getUserId()));
+            if (user == null) {
+                appList.remove(i);
+            } else {
+                appList.get(i).setUsername(user.getName());
+            }
+        }
+
+        return TResult.success(apps.setRecords(appList));
     }
 
     /**
