@@ -5,7 +5,7 @@
             padding: 16px 32px 0;
             border: 1px solid #e8e8e8;
             margin-bottom: 15px;
-            min-height: 100px;
+            min-height: 150px;
             min-width: 100px;
         }
 
@@ -48,14 +48,16 @@
         }
 
         .appNum, .memberNum, .balanceNum, .memoryNum, .diskNum {
-            text-align: center;
+            text-align: left;
+            font-size: 18px;
         }
 
         .appNumNum, .memberNumNum, .balanceNumNum, .memoryNumNum, .diskNumNum {
+            text-align: left;
             color: rgba(0, 0, 0, .85);
             font-size: 28px;
             line-height: 30px;
-            margin: 0px;
+            margin: 10px;
         }
         .page{
             float: right;
@@ -75,12 +77,9 @@
                 <el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <el-row>
-
-        </el-row>
         <div class="userInfo">
-            <div class="img">
-                <img src="img/team.png" style="height: 50px;width: 50px;display: block;"/>
+            <div class="img" style="margin-top: 30px">
+                <img style="width: 70px" src="img/team.png" />
             </div>
             <div class="imginfo">
                 <div class="name">
@@ -221,6 +220,15 @@
 
         },
         methods: {
+            dynamicInit() {
+                $.ajax({
+                    type: 'get',
+                    url: '/tianyu-paas/apps/users/dynamic/',
+                    success: function (result) {
+                        console.log(result);
+                    }
+                })
+            },
             homeInit() {
                 var that = this;
                 $.ajax({
@@ -302,6 +310,7 @@
             }
         },
         created() {
+            this.dynamicInit();
             this.homeInit()
         }
 

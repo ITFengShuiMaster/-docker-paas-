@@ -170,6 +170,7 @@
         el: '#appinfo',
         data: {
             app_id: '',
+            machineId: '',
             appName: 'MySQL',
             containerId: '',
             dialogTableVisible: false,
@@ -275,7 +276,7 @@
                         appId: appinfo.app_id,
                     },
                     success: function (result) {
-                        window.open(result.data);
+                        window.showModelessDialog(result.data);
                         console.log(result);
                     },
                     error: function () {
@@ -313,8 +314,10 @@
                     url: '/tianyu-paas/apps/' + appinfo.app_id,
                     success: function (result) {
                         if (result.code === 1) {
+                            console.log(result)
                             that.appName = result.data.name;
                             that.containerId = result.data.containerId;
+                            that.machineId = result.data.machineId;
                         }
                     },
                     error: function () {
@@ -332,7 +335,7 @@
             modify_appName() {
             },
             open_ssh() {
-
+                window.open("webssh.html?containerId=" + appinfo.containerId + "&height=400&width=400&machine=" + appinfo.machineId)
             },
             open() {
                 $.ajax({
