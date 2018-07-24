@@ -1,21 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>首页</title>
-    <link rel="stylesheet" href="lib/layui/css/layui.css">
-    <script src="lib/layui/layui.js"></script>
-    <script src="js/websocket.js"></script>
+	<meta charset="UTF-8">
+	<title>首页</title>
+	<link rel="stylesheet" href="lib/layui/css/layui.css">
+	<script src="lib/layui/layui.js"></script>
+	<!--<script src="js/websocket.js"></script>-->
 </head>
 <body>
 <script>
-    var mine = {
-        "username": "访客" //我的昵称
-        , "id": "100000123" //我的ID
-        , "status": "online" //在线状态 online：在线、hide：隐身
-        , "remark": "在深邃的编码世界，做一枚轻盈的纸飞机" //我的签名
-        , "avatar": "//res.layui.com/images/fly/avatar/00.jpg" //我的头像
-    };
+    var mine = {};
     var chats = {
         name: '在线客服一' //名称
         , type: 'kefu' //聊天类型
@@ -31,8 +25,15 @@
 
     //初始化我的信息（我是客服人员）
     function initMyInfo() {
-
+        var user = JSON.parse(sessionStorage.user);
+        console.log(user);
+        mine.username = user.name;
+        mine.id = user.userId;
+        mine.status = "online";
+        mine.avatar = user.headImg;
     }
+
+    initMyInfo();
     layui.use('layim', function (layim) {
         var layim = layui.layim;
         layim.config({
@@ -46,6 +47,57 @@
         //打开一个客服面板
         layim.chat(chats).chat(chat2);
         // layim.setChatMin(); //收缩聊天面板
+
+        layim.on('sendMessage', function (res) {
+            // 消息内容
+            var content = res.mine.content;
+            // 接收者id
+            var receiver = res.to.id;
+            send({content: content, receiver: receiver});
+        });
+
+        var websocket = null;
+        if ('WebSocket' in window) {
+            websocket = new WebSocket(im.url.websocket);
+        }
+        else {
+            alert('Not support websocket')
+        }
+
+        websocket.onerror = function () {
+            console.log("websocket error");
+        };
+
+        websocket.onopen = function (event) {
+            console.log('open');
+            var user = JSON.parse(sessionStorage.user);
+            var authMessage = {username: user.name, password: user.pwd};
+            send(authMessage);
+        };
+
+        //接收到消息的回调方法   event.data
+        websocket.onmessage = function (event) {
+            console.log(event);
+            var sender = event.data.sender;
+            // TODO 如果是一个新sender ，调用.chat方法，添加一个新聊天面板
+            layim.getMessage(event.data); //res.data即你发送消息传递的数据（阅读：监听发送的消息）
+        };
+
+        websocket.onclose = function () {
+            console.log('close')
+        };
+
+        window.onbeforeunload = function () {
+            websocket.close();
+        };
+
+        function closeWebSocket() {
+            websocket.close();
+        }
+
+        function send(msg) {
+            websocket.send(msg);
+        }
     });
 </script>
 </body>

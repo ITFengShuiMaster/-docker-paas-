@@ -1,4 +1,6 @@
-package cn.edu.jit.tianyu_paas.shared.mina_message;
+package cn.edu.jit.tianyu_paas.im.message;
+
+import cn.edu.jit.tianyu_paas.im.entity.User;
 
 /**
  * @author 天宇小凡
@@ -6,9 +8,9 @@ package cn.edu.jit.tianyu_paas.shared.mina_message;
 public class CommonMessage extends MinaMessage {
     private String content;
     private Long receiver;
-    private Long sender;
+    private User sender;
 
-    public CommonMessage(String content, Long receiver, Long sender) {
+    public CommonMessage(String content, Long receiver, User sender) {
         this();
         this.content = content;
         this.receiver = receiver;
@@ -19,11 +21,11 @@ public class CommonMessage extends MinaMessage {
         super.setMessageType(MinaMessageType.COMMON);
     }
 
-    public Long getSender() {
+    public User getSender() {
         return sender;
     }
 
-    public void setSender(Long sender) {
+    public void setSender(User sender) {
         this.sender = sender;
     }
 

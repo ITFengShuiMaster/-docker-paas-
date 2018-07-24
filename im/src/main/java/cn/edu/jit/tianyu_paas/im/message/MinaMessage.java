@@ -1,4 +1,4 @@
-package cn.edu.jit.tianyu_paas.shared.mina_message;
+package cn.edu.jit.tianyu_paas.im.message;
 
 public class MinaMessage {
     private MinaMessageType messageType;

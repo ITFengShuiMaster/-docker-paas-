@@ -12,6 +12,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/templatemo-style.css" rel="stylesheet">
     <script src="lib/layui/layui.js"></script>
+	<script src="js/common.js"></script>
 </head>
 <body class="light-gray-bg">
 <div class="templatemo-content-widget templatemo-login-widget white-bg tp-8">
@@ -70,7 +71,7 @@
             $.ajax({
                 type: "POST",
                 url: im.url.login,
-                data: {name: name, pwd: pwd},
+                data: {username: name, pwd: pwd},
                 beforeSend: function () {
                     layer.load(0, {shade: 0.1});
                 },
@@ -78,7 +79,9 @@
                     layer.closeAll('loading');
                     if (res.code === im.result.success) {
                         layer.msg(res.info, {icon: 1});
-                        setTimeout(window.location.href = 'index.html', 2000);
+                        res.data.pwd = pwd;
+                        sessionStorage.user = JSON.stringify(res.data);
+                        setTimeout(window.location.href = 'index.html', 3000);
                     } else {
                         layer.alert(res.info, {icon: 2});
                     }

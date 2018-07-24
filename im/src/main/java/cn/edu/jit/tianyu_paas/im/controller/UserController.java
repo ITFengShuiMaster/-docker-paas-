@@ -1,6 +1,5 @@
 package cn.edu.jit.tianyu_paas.im.controller;
 
-
 import cn.edu.jit.tianyu_paas.im.entity.Ticket;
 import cn.edu.jit.tianyu_paas.im.entity.User;
 import cn.edu.jit.tianyu_paas.im.service.TicketService;
@@ -54,8 +53,9 @@ public class UserController {
         ticket.setUserId(user.getUserId());
         ticket.setToken(PassUtil.generatorToken(user.getUserId()));
         ticket.setGmtCreate(new Date());
-        if (ticketService.insert(ticket)) {
-            return TResult.success(ticket.getToken());
+        if (ticketService.insertOrUpdate(ticket)) {
+            user.setPwd("");
+            return TResult.success(user);
         }
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }

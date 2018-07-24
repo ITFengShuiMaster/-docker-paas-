@@ -1,6 +1,6 @@
 window.im = {};
 
-im.baseUrl = 'http://localhost:8080/im/';
+im.baseUrl = 'http://localhost:8762/im/';
 
 im.url = {
     login: im.baseUrl + 'users/login',
@@ -29,3 +29,5 @@ im.ajax = function (options) {
     };
     $.ajax($.extend(ajaxDefaults, options));
 };
+
+im.message.type = {};

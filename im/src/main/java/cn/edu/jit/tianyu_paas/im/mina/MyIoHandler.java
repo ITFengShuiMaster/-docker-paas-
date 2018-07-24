@@ -4,13 +4,13 @@ import cn.edu.jit.tianyu_paas.im.entity.Message;
 import cn.edu.jit.tianyu_paas.im.entity.OfflineMessage;
 import cn.edu.jit.tianyu_paas.im.entity.User;
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
+import cn.edu.jit.tianyu_paas.im.message.AuthenticationMessage;
+import cn.edu.jit.tianyu_paas.im.message.CommonMessage;
+import cn.edu.jit.tianyu_paas.im.message.MinaMessage;
 import cn.edu.jit.tianyu_paas.im.service.MessageService;
 import cn.edu.jit.tianyu_paas.im.service.OfflineMessageService;
 import cn.edu.jit.tianyu_paas.im.service.UserService;
 import cn.edu.jit.tianyu_paas.im.util.SpringBeanFactoryUtil;
-import cn.edu.jit.tianyu_paas.shared.mina_message.AuthenticationMessage;
-import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
-import cn.edu.jit.tianyu_paas.shared.mina_message.MinaMessage;
 import cn.edu.jit.tianyu_paas.shared.util.PassUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -121,7 +121,7 @@ public class MyIoHandler extends IoHandlerAdapter {
             ioSession.closeOnFlush();
             return;
         }
-        commonMessage.setSender(user.getUserId());
+        commonMessage.setSender(user);
         boolean online = false;
         long receiver = MinaConstant.CUSTOMER_SERVICE_ID;
         switch (user.getType()) {

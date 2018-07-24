@@ -1,8 +1,8 @@
 package cn.edu.jit.tianyu_paas.im;
 
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
-import cn.edu.jit.tianyu_paas.shared.mina_message.AuthenticationMessage;
-import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
+import cn.edu.jit.tianyu_paas.im.message.AuthenticationMessage;
+import cn.edu.jit.tianyu_paas.im.message.CommonMessage;
 import com.alibaba.fastjson.JSON;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
