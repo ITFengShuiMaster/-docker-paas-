@@ -1,67 +1,66 @@
+<style>
+    html, body {
+        font-family: sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        background: #f0f2f5 !important;
+        color: rgba(0, 0, 0, .65);
+    }
 
-    <style>
-        html, body {
-            font-family: sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            background: #f0f2f5 !important;
-            color: rgba(0, 0, 0, .65);
-        }
+    .a {
+        /*display: inline-block;*/
+        margin: 10px;
+        min-height: 170px;
+        border: 1px solid #e8e8e8;
+        padding: 16px 32px 0;
+        background-color: #fff;
 
-        .a {
-            /*display: inline-block;*/
-            margin: 10px;
-            min-height: 170px;
-            border: 1px solid #e8e8e8;
-            padding: 16px 32px 0;
-            background-color: #fff;
+    }
 
-        }
+    .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
+        padding: 40px 0 40px 0;
+        margin: 20px;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .statusFirst, .timeSecond, .dpsThird, .resoureFourth {
-            padding: 40px 0 40px 0;
-            margin: 20px;
-            border-bottom: 1px solid #e8e8e8;
-        }
+    .text {
+        text-align: center;
+    }
 
-        .text {
-            text-align: center;
-        }
+    .infos div {
+        float: left;
+        padding: 20px;
+        margin: 10px;
+    }
 
-        .infos div {
-            float: left;
-            padding: 20px;
-            margin: 10px;
-        }
+    .infoinfos {
+        border: 1px solid #e8e8e8;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        min-width: 800px;
+        margin-left: 100px;
+    }
 
-        .infoinfos {
-            border: 1px solid #e8e8e8;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            min-width: 800px;
-            margin-left: 100px;
-        }
+    .bottom {
+        padding: 20px;
+        margin: 10px;
+        background: #fff;
+        min-height: 150px;
+    }
 
-        .bottom {
-            padding: 20px;
-            margin: 10px;
-            background: #fff;
-            min-height: 150px;
-        }
+    .makeInfo {
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-        .makeInfo {
-            padding: 20px;
-            background: #fff;
-            border-bottom: 1px solid #e8e8e8;
-        }
-
-        .button {
-            text-align: right;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-    </style>
+    .button {
+        text-align: right;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+</style>
 
 <div id="rely">
     <div class="yilai">
@@ -95,7 +94,8 @@
                                         prop="opera"
                                         label="操作">
                                     <template slot-scope="scope">
-                                        <el-button type="danger" size="small" @click='delete_var(scope.row)' >删除</el-button>
+                                        <el-button size="small" @click='click_modify(scope.row)'>修改</el-button>
+                                        <el-button type="danger" size="small" @click='delete_var(scope.row)'>删除</el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -110,7 +110,7 @@
         </div>
         <el-dialog title="添加变量" :visible.sync="dialogFormVisible" width="30%">
             <el-form :model="ruleForm" staus-icon ref="ruleForm" class="demo-ruleForm"
-                     label-position="left" label-width="80px" >
+                     label-position="left" label-width="80px">
                 <el-form-item label="变量名" prop="var_name">
                     <el-input placeholder="请输入变量名称 格式/^[A-Z][A-Z0-9_]*$/" v-model="ruleForm.var_name"></el-input>
                 </el-form-item>
@@ -127,6 +127,25 @@
                 </el-button>
             </div>
         </el-dialog>
+        <el-dialog title="修改变量" :visible.sync="dialogFormVisible2" width="30%">
+            <el-form :model="relyForm" staus-icon ref="ruleForm" class="demo-ruleForm"
+                     label-position="left" label-width="80px">
+                <el-form-item label="变量名" prop="var_name">
+                    <el-input :disabled="true" v-model="relyForm.var_name"></el-input>
+                </el-form-item>
+                <el-form-item label="变量值" prop="var_val">
+                    <el-input v-model="relyForm.var_val"></el-input>
+                </el-form-item>
+                <el-form-item label="说明" prop="var_des">
+                    <el-input  v-model="relyForm.var_des"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible2 = false" @click.native="modify_var">确 定
+                </el-button>
+            </div>
+        </el-dialog>
         <div class="homeBottom">
             <el-row :gutter="20">
                 <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
@@ -136,36 +155,50 @@
                         </div>
                         <div>
                             <el-table
-                                    :data="appInfo"
+                                    :data="relyTableData"
                                     style="width: 100%;">
                                 <el-table-column
-                                        prop="name"
+                                        prop="relyName"
                                         label="应用名"
-                                        width="180">
+                                        width="240">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="group"
+                                        prop="relyGroupName"
                                         label="所属组"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="des"
-                                        label="应用说明"
-                                        width="180">
+                                        width="240">
                                 </el-table-column>
                                 <el-table-column
                                         prop="opera"
                                         label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button type="danger" size="small" @click='delete_rely(scope.row)'>删除</el-button>
+                                    </template>
                                 </el-table-column>
                             </el-table>
                         </div>
                         <div class="button">
-                            <el-button><i class="el-icon-plus"></i>添加依赖</el-button>
+                            <el-button><i class="el-icon-plus" @click="dialogFormVisible3 = true"></i>添加依赖</el-button>
                         </div>
                     </div>
                 </el-col>
             </el-row>
         </div>
+        <el-dialog title="添加依赖" :visible.sync="dialogFormVisible3" width="30%">
+            <el-form :model="addrelyForm" staus-icon ref="ruleForm" class="demo-ruleForm"
+                     label-position="left" label-width="80px">
+                <el-form-item label="依赖名" prop="rely_name">
+                    <el-input :disabled="true" v-model="addrelyForm.rely_name"></el-input>
+                </el-form-item>
+                <el-form-item label="所属组" prop="rely_group">
+                    <el-input v-model="addrelyForm.rely_group"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible2 = false" @click.native="add_rely">确 定
+                </el-button>
+            </div>
+        </el-dialog>
     </div>
 
 
@@ -174,18 +207,136 @@
     var rely = new Vue({
         el: '#rely',
         data: {
-            appInfo:[],
             connectInfo: [],
             ruleForm: {
                 var_name: '',
-                var_val:'',
-                var_des:''
+                var_val: '',
+                var_des: ''
             },
+            relyForm: {
+                var_name: '',
+                var_val: '',
+                var_des: ''
+            },
+            addrelyForm: {
+              rely_name: '',
+              rely_grooup: '',
+            },
+            relyTableData: [],
             dialogFormVisible: false,
+            dialogFormVisible2: false,
+            dialogFormVisible3: false,
 
         },
-        methods:{
-            delete_var() {
+        methods: {
+            add_rely() {
+               /* $.ajax({
+                    type: 'post',
+                    url: '/tianyu-paas/app-relys',
+                    data: {
+                        appId: appinfo.app_id,
+                        varName: this.ruleForm.var_name,
+                        varValue: this.ruleForm.var_val,
+                        varExplain: this.ruleForm.var_des
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data.code === 1) {
+                            rely.$message({
+                                message: '添加成功',
+                                type: 'success'
+                            });
+                            that.connectInfo.push(val[0])
+                        } else {
+                            rely.$message({
+                                message: data.message,
+                                type: 'warning'
+                            })
+                        }
+
+                    },
+                    error: function () {
+
+                    }
+                })*/
+            },
+            delete_rely(row) {
+                this.$confirm('此操作将永久删除该依赖, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    $.ajax({
+                        type: 'delete',
+                        url: '/tianyu-paas/app-relys/' + appinfo.app_id,
+                        data: {
+                            relyId: row.relyId,
+                        },
+
+                        success: function (result) {
+                            appinfo.$message({
+                                message: '删除成功!',
+                                type: 'success'
+                            });
+                        },
+                        error: function () {
+
+                        }
+                    })
+                })
+            },
+            click_modify(row){
+                rely.relyForm.var_name = row.varName;
+                rely.relyForm.var_val = row.varValue;
+                rely.relyForm.var_des = row.varExplain;
+                console.log(row);
+                rely.dialogFormVisible2=true;
+            },
+            modify_var() {
+                let that = this;
+
+                console.log("adada")
+                console.log(rely.relyForm);
+                let val = [{
+                    appId: appinfo.app_id,
+                    varName: rely.relyForm.var_name,
+                    varValue: rely.relyForm.var_val,
+                    varExplain: rely.relyForm.var_des,
+                    gmtCreate: ''
+                }];
+
+                $.ajax({
+                    type: 'put',
+                    url: '/tianyu-paas/app-vars/',
+                    data: {
+                        appId: appinfo.app_id,
+                        varName: rely.relyForm.var_name,
+                        varValue: rely.relyForm.var_val,
+                        varExplain: rely.relyForm.var_des
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data.code === 1) {
+                            rely.$message({
+                                message: '修改成功',
+                                type: 'success'
+                            });
+                            that.relyTableData.push(val[0])
+                        } else {
+                            rely.$message({
+                                message: data.message,
+                                type: 'warning'
+                            })
+                        }
+
+                    },
+                    error: function () {
+
+                    }
+                })
+            },
+            delete_var(row) {
+                console.log(row);
                 this.$confirm('此操作将永久删除该变量, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -193,7 +344,10 @@
                 }).then(() => {
                     $.ajax({
                         type: 'delete',
-                        url: '/tianyu-paas/apps/' + appinfo.app_id,
+                        url: '/tianyu-paas/app-vars/' + appinfo.app_id,
+                        data: {
+                            varName: row.varName,
+                        },
 
                         success: function (result) {
                             appinfo.$message({
@@ -211,28 +365,29 @@
                 let that = this;
 
                 $.ajax({
-                    type:'get',
-                    url:'/tianyu-paas/app-vars/'+appinfo.app_id,
-                    success:function (data) {
+                    type: 'get',
+                    url: '/tianyu-paas/app-vars/' + appinfo.app_id,
+                    success: function (data) {
                         let result = data.data;
                         for (let i = 0; i < result.length; i++) {
                             that.connectInfo.push(result[i])
                         }
                     },
-                    error:function () {
+                    error: function () {
 
                     }
                 });
                 $.ajax({
-                    type:'get',
-                    url:'/tianyu-paas/app-relys/'+appinfo.app_id,
-                    success:function (data) {
-                        if(data.code === 1) {
-                        let result = data.data;
+                    type: 'get',
+                    url: '/tianyu-paas/app-relys/' + appinfo.app_id,
+                    success: function (data) {
+                        if (data.code === 1) {
+                            that.relyTableData = data.data;
+                            console.log(that.relyTableData);
+                            let result = data.data;
                         }
-                       console.log(data);
                     },
-                    error:function () {
+                    error: function () {
 
                     }
                 })
@@ -243,26 +398,26 @@
                     appId: appinfo.app_id, varName: this.ruleForm.var_name,
                     varValue: this.ruleForm.var_val,
                     varExplain: this.ruleForm.var_des,
-                    gmtCreate:''
+                    gmtCreate: ''
                 }];
 
                 $.ajax({
-                    type:'post',
-                    url:'/tianyu-paas/app-vars/',
+                    type: 'post',
+                    url: '/tianyu-paas/app-vars/',
                     data: {
-                        appId:appinfo.app_id,
-                        varName:this.ruleForm.var_name,
-                        varValue:this.ruleForm.var_val,
-                        varExplain:this.ruleForm.var_des
+                        appId: appinfo.app_id,
+                        varName: this.ruleForm.var_name,
+                        varValue: this.ruleForm.var_val,
+                        varExplain: this.ruleForm.var_des
                     },
-                    success:function (data) {
+                    success: function (data) {
                         console.log(data);
-                        if (data.code === 1){
-                        rely.$message({
-                            message: '添加成功',
-                            type: 'success'
-                        });
-                        that.connectInfo.push(val[0])
+                        if (data.code === 1) {
+                            rely.$message({
+                                message: '添加成功',
+                                type: 'success'
+                            });
+                            that.connectInfo.push(val[0])
                         } else {
                             rely.$message({
                                 message: data.message,
@@ -271,7 +426,7 @@
                         }
 
                     },
-                    error:function () {
+                    error: function () {
 
                     }
                 })

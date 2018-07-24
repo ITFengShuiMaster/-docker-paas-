@@ -77,7 +77,10 @@
                     success: function (TResultCode) {
                         console.log("the result is " + TResultCode.code);
                         if (TResultCode.code == 1) {
-                            alert("新建组成功");
+                            create_by_demo.$message({
+                                message: '新建组成功',
+                                type: 'success'
+                            });
                             create_by_demo.appList();
                         }
                         else {
