@@ -316,6 +316,10 @@ public class AppController {
     public TResult createAppByMarket(@Validated App app, @Validated AppInfoByMarket market) {
         Action action = new Action();
 
+        if (appService.selectOne(new EntityWrapper<App>().eq("name", app.getName())) != null) {
+            return TResult.failure("容器名已存在");
+        }
+
         MarketApp marketApp = marketAppService.selectById(market.getMarketAppId());
         if (marketApp == null) {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);

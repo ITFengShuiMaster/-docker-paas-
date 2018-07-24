@@ -22,6 +22,9 @@ public class AppRely implements Serializable {
     private Long relyId;
     private Date gmtCreate;
 
+    private String relyName;
+    private String relyGroupName;
+
 
     public Long getAppId() {
         return appId;
@@ -45,6 +48,22 @@ public class AppRely implements Serializable {
 
     public void setGmtCreate(Date gmtCreate) {
         this.gmtCreate = gmtCreate;
+    }
+
+    public String getRelyName() {
+        return relyName;
+    }
+
+    public void setRelyName(String relyName) {
+        this.relyName = relyName;
+    }
+
+    public String getRelyGroupName() {
+        return relyGroupName;
+    }
+
+    public void setRelyGroupName(String relyGroupName) {
+        this.relyGroupName = relyGroupName;
     }
 
     @Override
