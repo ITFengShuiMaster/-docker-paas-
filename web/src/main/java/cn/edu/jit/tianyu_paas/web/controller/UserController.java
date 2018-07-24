@@ -185,14 +185,13 @@ public class UserController {
     /**
      * 返回用户个人的动态：如余额，内存使用情况等
      *
-     * @param userId
      * @return
      * @author 卢越
      * @since 2018-06-29
      */
     @ApiOperation("返回用户个人的动态：如余额，内存使用情况等")
     @GetMapping("/dynamic")
-    public TResult dynamic(@PathVariable String userId) {
+    public TResult dynamic() {
         UserDynamic userDynamic = userDynamicService.selectOne(new EntityWrapper<UserDynamic>().eq("user_id", session.getAttribute(Constants.SESSION_KEY_USER_ID)));
         if (userDynamic == null) {
             return TResult.failure(TResultCode.RESULE_DATA_NONE);

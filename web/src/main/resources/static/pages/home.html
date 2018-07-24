@@ -221,9 +221,10 @@
         },
         methods: {
             dynamicInit() {
+                console.log("aaa")
                 $.ajax({
                     type: 'get',
-                    url: '/tianyu-paas/apps/users/dynamic/',
+                    url: '/tianyu-paas/users/dynamic',
                     success: function (result) {
                         console.log(result);
                     }

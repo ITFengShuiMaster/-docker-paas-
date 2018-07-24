@@ -198,21 +198,19 @@
         },
         methods: {
             delete_port(row) {
-                console.log(row);
-                this.$message({
-                    message: '恭喜你，这是一条成功消息',
-                    type: 'success'
-                });
-                /*$.ajax({
+                $.ajax({
                     type: 'delete',
                     url: '/tianyu-paas/app-ports/' + port.appId,
                     data: {
                         hostPort: row.hostPort
                     },
                     success: function (result) {
-                        console.log("删除成功")
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
                     }
-                })*/
+                })
             },
             getId(id) {
                 console.log(id);

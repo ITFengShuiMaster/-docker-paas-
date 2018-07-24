@@ -221,7 +221,7 @@
             init_usrInf() {
                 $.ajax({
                     type: "get",
-                    url: 'http://localhost:8080/tianyu-paas/users/info/' + this.id,
+                    url: 'http://localhost:8080/tianyu-paas/users/info',
                     data: {},
                     success: function (result) {
                         if (result.code === 1) {

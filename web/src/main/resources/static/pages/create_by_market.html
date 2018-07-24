@@ -178,17 +178,19 @@
             },
             //创建应用
             create_by_market() {
+                console.log(install.select_group);
+                console.log(install.currentapp );
+                console.log(install.currentapp.name);
                 $.ajax({
                     type: "POST",
                     url: "http://localhost:8080/tianyu-paas/apps/market",
                     data: {
                         appGroupId: install.select_group,
-                        market: install.currentapp,
+                        marketAppId: install.currentapp.marketAppId,
                         name: install.currentapp.name,
                     },
                     success: function (result) {
                         if (result.code === 1) {
-                            alert("创建成功")
                         }
                     }
                 })
@@ -203,13 +205,15 @@
                     },
                     success: function (result) {
                         if (result.code == 1) {
-                            alert("新建组成功")
+                            this.$message({
+                                message: '新建组成功',
+                                type: 'success'
+                            });
                         }
                         else {
                         }
                     },
                     error: function () {
-                        console.log("fail")
                     }
                 })
             },
@@ -221,9 +225,7 @@
                     success: function (result) {
                         if (result.code === 1) {
                             install.groupNames = result.data;
-//                            for (i in result.data) {
-//                                install.groupNames.push(result.data[i].groupName)
-//                            }
+
                         } else {
 
                         }
