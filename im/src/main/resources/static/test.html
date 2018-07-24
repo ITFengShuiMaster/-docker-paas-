@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<input id="input"/>
+<button onclick="send()">submit</button>
+
+<script>
+    var websocket = null;
+    if ('WebSocket' in window) {
+        websocket = new WebSocket("ws://localhost:9123");
+    }
+    else {
+        alert('Not support websocket');
+    }
+
+    websocket.onerror = function () {
+        console.log("error");
+    };
+
+    websocket.onopen = function (event) {
+        console.log('open')
+    };
+
+    //接收到消息的回调方法   event.data
+    websocket.onmessage = function (event) {
+        console.log(event)
+    };
+
+    websocket.onclose = function () {
+        console.log('close')
+    };
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function () {
+        websocket.close();
+    };
+
+    //关闭连接
+    function closeWebSocket() {
+        websocket.close();
+    }
+
+    //发送消息
+    function send() {
+        var message = document.getElementById('input').value;
+        websocket.send(message);
+    }
+</script>
+</body>
+</html>
