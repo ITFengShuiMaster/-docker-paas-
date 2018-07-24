@@ -145,13 +145,14 @@
         methods: {
             getId(id) {
                 flex.appId = id;
-                console.log(id);
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/apps/' + id,
                     success: function (result) {
+                        console.log(result);
                         flex.appName = result.data.name;
                         flex.machineId = result.data.machineId;
+                        flex.select_memoryUsed = result.data.memoryUsed;
                     },
                     error: function () {
 
@@ -159,9 +160,6 @@
                 })
             },
             flex() {
-                console.log(flex.appId);
-                console.log(flex.select_memoryUsed);
-                console.log(flex.appName);
                 $.ajax({
                     type:'put',
                     url:'/tianyu-paas/apps',
@@ -172,7 +170,6 @@
                         machineId: flex.machineId
                     },
                     success:function (data) {
-                        console.log(flex.select_memoryUsed);
                     },
                     error:function (data) {
 
