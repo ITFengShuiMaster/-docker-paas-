@@ -5,7 +5,7 @@
             padding: 16px 32px 0;
             border: 1px solid #e8e8e8;
             margin-bottom: 15px;
-            min-height: 150px;
+			min-height: 150px;
             min-width: 100px;
         }
 
@@ -48,16 +48,16 @@
         }
 
         .appNum, .memberNum, .balanceNum, .memoryNum, .diskNum {
-            text-align: left;
-            font-size: 18px;
+			text-align: left;
+			font-size: 18px;
         }
 
         .appNumNum, .memberNumNum, .balanceNumNum, .memoryNumNum, .diskNumNum {
-            text-align: left;
+			text-align: left;
             color: rgba(0, 0, 0, .85);
             font-size: 28px;
             line-height: 30px;
-            margin: 10px;
+			margin: 10px;
         }
         .page{
             float: right;
@@ -78,8 +78,8 @@
             </el-breadcrumb>
         </div>
         <div class="userInfo">
-            <div class="img" style="margin-top: 30px">
-                <img style="width: 70px" src="img/team.png" />
+			<div class="img" style="margin-top: 30px">
+				<img style="width: 70px" src="img/team.png"/>
             </div>
             <div class="imginfo">
                 <div class="name">
@@ -221,7 +221,7 @@
         },
         methods: {
             dynamicInit() {
-                console.log("aaa")
+                console.log("aaa");
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/actions/info',

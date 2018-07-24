@@ -130,26 +130,26 @@
         <div class="appButton">
             <div class="buttonGroup">
                 <el-tooltip class="item" effect="dark" content="跳转到应用对外访问端口对应的域名地址" placement="top">
-                    <el-button>访问</el-button>
+					<el-button>访问</el-button>
                 </el-tooltip>
                 <el-button @click="open()">开启</el-button>
                 <el-button @click="close()">关闭</el-button>
-                <el-button style="margin-left: 25px" @click="exported_container()" type="primary">导出</el-button>
-                <el-button @click="delete_container()" type="danger">删除</el-button>
+				<el-button style="margin-left: 25px" @click="exported_container()" type="primary">导出</el-button>
+				<el-button @click="delete_container()" type="danger">删除</el-button>
                 <el-button @click="open_ssh()">命令行</el-button>
             </div>
-            <el-button type="primary" style="margin-left: 25px" @click="restart()">重新部署</el-button>
+			<el-button type="primary" style="margin-left: 25px" @click="restart()">重新部署</el-button>
         </div>
         <div class="tabs">
             <el-row>
                 <el-col :span="24" :sm="24" :xs="24" :md="24" :lg="24">
                     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="selectPage1">
                         <el-menu-item index="1">总览</el-menu-item>
-                        <el-menu-item index="2">日志</el-menu-item>
-                        <el-menu-item index="3">伸缩</el-menu-item>
-                        <el-menu-item index="4">存储</el-menu-item>
-                        <el-menu-item index="5">端口</el-menu-item>
-                        <el-menu-item index="6">扩展</el-menu-item>
+						<el-menu-item index="2">日志</el-menu-item>
+						<el-menu-item index="3">伸缩</el-menu-item>
+						<el-menu-item index="4">存储</el-menu-item>
+						<el-menu-item index="5">端口</el-menu-item>
+						<el-menu-item index="6">扩展</el-menu-item>
                     </el-menu>
 
                 </el-col>

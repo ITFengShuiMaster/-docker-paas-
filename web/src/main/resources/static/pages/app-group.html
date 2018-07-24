@@ -113,6 +113,7 @@
             getId(groupId) {
                 this.appGroupId = groupId;
                 this.listGroupApps();
+                initEcharts(groupId);
             },
             selectionChange(selection) {
                 console.log(selection);
@@ -256,7 +257,6 @@
             }
         },
         mounted() {
-            initEcharts(this.appGroupId);
         }
     });
 

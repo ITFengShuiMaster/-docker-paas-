@@ -37,11 +37,11 @@
         <i-button type="primary" style:>查询</i-button>
     </div>
     <i-table stripe border :columns="columns1" :data="table_data" style="margin:10px 20px"></i-table>
-    <div style="margin-left: 50%">
-        <Page :total="100">
+	<div style="margin-left: 50%">
+		<Page :total="100">
 
-        </Page>
-    </div>
+		</Page>
+	</div>
 
 </div>
 
@@ -153,7 +153,7 @@
         },
         methods: {
             get_app_inf() {
-                var that = this
+                var that = this;
                 $.ajax({
                     type: 'get',
                     url: 'apps',
@@ -161,18 +161,18 @@
 
                         if (result.code === 1) {
                            for(var i=0;i<result.data.length;i++) {
-                               that.table_data.push(result.data[i])
+                               that.table_data.push(result.data[i]);
                                if(that.table_data[i].status === 0) {
-                                   that.table_data[i].status = false
+                                   that.table_data[i].status = false;
                                    that.table_data[i].statusName="关闭"
                                }
                                else if(that.table_data[i].status === 1){
-                                   that.table_data[i].status = true
+                                   that.table_data[i].status = true;
                                    that.table_data[i].statusName="运行中"
 
                                }
                                else if(that.table_data[i].status === 2){
-                                   that.table_data[i].status = true
+                                   that.table_data[i].status = true;
                                    that.table_data[i].statusName="异常"
                                }
                            }
@@ -194,7 +194,7 @@
                 this.$Modal.confirm({
                     content: '是否确认删除？',
                     onOk: () => {
-                        this.deleteApp(this.table_data[index].appId)
+                        this.deleteApp(this.table_data[index].appId);
                         this.table_data.splice(index, 1);
                         this.$Message.info('已删除');
                     },
@@ -212,7 +212,7 @@
                 else {
                     flag = 1
                 }
-                var that = this
+                var that = this;
                 $.ajax({
                     type:'put',
                     url:'apps',
@@ -222,13 +222,13 @@
                         status:flag
                     },
                     success:function (data) {
-                        console.log(data)
+                        console.log(data);
                         if(flag === 1) {
-                            that.table_data[index].status = true
+                            that.table_data[index].status = true;
                             that.table_data[index].statusName = "运行中"
                         }
                         else {
-                            that.table_data[index].status = false
+                            that.table_data[index].status = false;
                             that.table_data[index].statusName = "关闭"
                         }
 
@@ -239,7 +239,7 @@
                 })
             },
             deleteApp(app_id) {
-                var that = this
+                var that = this;
                 $.ajax({
                     type:'delete',
                     url:'apps/'+ app_id

@@ -36,11 +36,11 @@
         <i-button type="primary" style:>查询</i-button>
     </div>
     <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px"></i-table>
-    <div style="margin-left: 50%">
-        <Page :total="100">
+	<div style="margin-left: 50%">
+		<Page :total="100">
 
-        </Page>
-    </div>
+		</Page>
+	</div>
 
 </div>
 
@@ -171,7 +171,7 @@
                 this.$Modal.confirm({
                     content: '是否确认删除？',
                     onOk: () => {
-                        this.deleteDemo(this.data1[index].demoId)
+                        this.deleteDemo(this.data1[index].demoId);
                         this.data1.splice(index, 1);
                         this.$Message.info('已删除');
                     },
@@ -187,15 +187,15 @@
                 this.$Message.info('Clicked cancel');
             },
             viewDemo() {
-                var that = this
+                var that = this;
                 $.ajax({
                     type:'get',
                     url:'demos',
                     success:function (data) {
-                        var result = data.data
-                        console.log(result)
+                        var result = data.data;
+                        console.log(result);
                         for(var i = 0;i<result.length;i++) {
-                            that.data1.push(result[i])
+                            that.data1.push(result[i]);
                             console.log(that.data1)
                         }
                     },
@@ -223,7 +223,7 @@
 //                })
 //            },
             deleteDemo(demo_id) {
-                var that = this
+                var that = this;
                 $.ajax({
                     type:'delete',
                     url:'demos/'+demo_id,

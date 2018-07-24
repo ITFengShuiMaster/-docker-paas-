@@ -52,11 +52,11 @@
     </div>
 
     <i-table stripe border :columns="columns7" :data="labelArr" style="margin:10px 20px"></i-table>
-    <div style="margin-left: 50%">
-        <Page :total="100">
+	<div style="margin-left: 50%">
+		<Page :total="100">
 
-        </Page>
-    </div>
+		</Page>
+	</div>
 </div>
 
 </body>
@@ -139,7 +139,7 @@
         },
         methods: {
             sort() {
-                var that =this
+                var that = this;
                 $.ajax({
                     type: 'get',
                     url: 'admins/access-users',
@@ -153,10 +153,10 @@
                             if (result.data.records.length == 0) {
                                 alert('nothing!')
                             } else {
-                                var res = result.data.records
-                                console.log(res)
+                                var res = result.data.records;
+                                console.log(res);
                                 for(var i = 0;i<res.length;i++) {
-                                    that.labelArr.push(res[i])
+                                    that.labelArr.push(res[i]);
                                     console.log(that.labelArr)
                                 }
                                 console.log(res)
@@ -178,11 +178,11 @@
                 })
             },
             remove(index) {
-                var that = this
+                var that = this;
                 this.$Modal.confirm({
                     content: '是否确认删除？',
                     onOk: () => {
-                        this.deleteAdmin(this.labelArr[index].userId)
+                        this.deleteAdmin(this.labelArr[index].userId);
                         this.labelArr.splice(index, 1);
                         this.$Message.info('已删除');
                     },
@@ -192,14 +192,14 @@
                 });
             },
             userList() {
-                var that= this
+                var that = this;
                 $.ajax({
                     type: "get",
                     url: 'admins',
                     dataType: "json",
                     success: function (result) {
-                        var res = result.data.records
-                        console.log(res)
+                        var res = result.data.records;
+                        console.log(res);
                         for(var i = 0;i<res.length;i++) {
                             that.labelArr.push(res[i])
                         }
@@ -212,7 +212,7 @@
                 })
             },
             deleteAdmin(user_id) {
-                var that = this
+                var that = this;
                 $.ajax({
                     type:'delete',
                     url:'admins/'+user_id,

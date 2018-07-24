@@ -9,7 +9,6 @@ import cn.edu.jit.tianyu_paas.web.service.ActionService;
 import cn.edu.jit.tianyu_paas.web.service.AppService;
 import cn.edu.jit.tianyu_paas.web.service.UserService;
 
-
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 
@@ -23,10 +22,11 @@ public class InsertActionAndDetail {
 
     /**
      * 插入action
+     *
      * @param appId
      * @return
      */
-    public static Action insertAction(long appId){
+    public static Action insertAction(long appId) {
 
 //        Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         User user = userService.selectById(1);
@@ -45,12 +45,13 @@ public class InsertActionAndDetail {
 
     /**
      * 插入actionDetail
+     *
      * @param actionId
      * @param content
      * @param level
      * @return
      */
-  public static void insertActionDetail(long actionId, String content, Integer level){
+    public static void insertActionDetail(long actionId, String content, Integer level) {
 
         ActionDetail actionDetail = new ActionDetail();
         actionDetail.setActionId(actionId);
@@ -58,5 +59,5 @@ public class InsertActionAndDetail {
         actionDetail.setGmtCreate(new Date());
         actionDetail.setContent(content);
         actionDetailService.insert(actionDetail);
-  }
+    }
 }
