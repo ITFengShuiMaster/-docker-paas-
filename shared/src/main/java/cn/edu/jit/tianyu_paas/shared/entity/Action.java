@@ -34,7 +34,7 @@ public class Action implements Serializable {
      */
     private String userName;
     /**
-     * 行为，0水平升级，1启动，2重启，3部署。
+     * 行为，0水平升级，1启动，2重启，3部署, 4关闭。
      */
     private Integer action;
     /**
