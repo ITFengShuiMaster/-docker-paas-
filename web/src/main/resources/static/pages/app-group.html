@@ -125,6 +125,7 @@
                 this.typeList = '';
                 this.typeTopo = 'primary';
                 this.selectTopo = true;
+                initEcharts();
             },
             clickList() {
                 this.typeTopo = '';
@@ -254,8 +255,85 @@
                 }, this);
             }
         },
-        created() {
-
+        mounted() {
+            initEcharts(this.appGroupId);
         }
     });
+
+    function initEcharts(groupId) {
+        console.log(groupId);
+        var myChart = echarts.init(document.getElementById('groupCharts'));
+        myChart.showLoading();
+        var option = {
+            title: {
+                text: '应用组拓扑图'
+            },
+            series: [
+                {
+                    label: {
+                        show: true,
+                    },
+                    type: 'graph',
+                    hoverAnimation: true,
+                    layout: 'force',
+                    roam: true,
+                    draggable: true,
+                    // 可设置图片链接和base64编码
+                    symbol: 'circle',
+                    symbolSize: 50,
+                    focusNodeAdjacency: true,
+                    force: {
+                        repulsion: 800,
+                        edgeLength: 200
+                    },
+                    itemStyle: {
+                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                        shadowBlur: 10
+                    },
+                    lineStyle: {
+                        normal: {
+                            opacity: 80,
+                            width: 2,
+                            curveness: 0
+                        }
+
+                    }
+                }
+            ]
+        };
+        $.ajax({
+            url: web.url.getAppRealtions + groupId,
+            type: 'get',
+            success: function (res) {
+                // console.log(res);
+                let appsName = [];
+                let relations = [];
+                if (res.code === web.result.success) {
+                    for (let i in res.data.appName) {
+                        appsName[i] = {};
+                        appsName[i].name = res.data.appName[i];
+                        appsName[i].value = res.data.appName[i];
+                    }
+                    let k = 0;
+                    for (let i = 0; i < res.data.data.length; i++) {
+                        for (let j = 0; j < res.data.data.length - i - 1; j++) {
+                            if (res.data.data[i][j] === 0) {
+                                // console.log(i, j);
+                                relations[k] = {};
+                                relations[k].source = res.data.appName[i];
+                                relations[k++].target = res.data.appName[j];
+                            }
+                        }
+                    }
+                    option.series[0].data = appsName;
+                    option.series[0].links = relations;
+                    console.log(option);
+                    myChart.setOption(option);
+                }
+            },
+            complete: function () {
+                myChart.hideLoading();
+            }
+        });
+    }
 </script>

@@ -2,9 +2,11 @@ package cn.edu.jit.tianyu_paas.ms.controller;
 
 
 import cn.edu.jit.tianyu_paas.ms.global.Constants;
+import cn.edu.jit.tianyu_paas.ms.service.AdminService;
 import cn.edu.jit.tianyu_paas.ms.service.NoticeService;
 import cn.edu.jit.tianyu_paas.ms.service.UserNoticeService;
 import cn.edu.jit.tianyu_paas.ms.service.UserService;
+import cn.edu.jit.tianyu_paas.shared.entity.Admin;
 import cn.edu.jit.tianyu_paas.shared.entity.Notice;
 import cn.edu.jit.tianyu_paas.shared.entity.User;
 import cn.edu.jit.tianyu_paas.shared.entity.UserNotice;
@@ -40,14 +42,27 @@ public class NoticeController {
     private final UserNoticeService userNoticeService;
     private final HttpSession session;
     private final RabbitTemplate rabbitTemplate;
+    private final AdminService adminService;
 
     @Autowired
-    public NoticeController(NoticeService noticeService, HttpSession session, UserService userService, UserNoticeService userNoticeService, RabbitTemplate rabbitTemplate) {
+    public NoticeController(NoticeService noticeService, HttpSession session, UserService userService, UserNoticeService userNoticeService, RabbitTemplate rabbitTemplate, AdminService adminService) {
         this.noticeService = noticeService;
         this.session = session;
         this.userService = userService;
         this.userNoticeService = userNoticeService;
         this.rabbitTemplate = rabbitTemplate;
+        this.adminService = adminService;
+    }
+
+    private void insertUserName(List<Notice> noticeList) {
+        for (int i = 0; i < noticeList.size(); i++) {
+            Admin admin = adminService.selectById(noticeList.get(i).getAdminId());
+            if (admin == null) {
+                noticeList.remove(i);
+            } else {
+                noticeList.get(i).setAdminName(admin.getUsername());
+            }
+        }
     }
 
     /**
@@ -99,7 +114,11 @@ public class NoticeController {
     public TResult getNotice(Pagination page) {
         Page<Notice> notices = noticeService.selectPage(new Page<>(page.getCurrent(), page.getSize()),
                 new EntityWrapper<Notice>().orderBy("gmt_create", false));
-        return TResult.success(notices);
+
+        List<Notice> noticeList = notices.getRecords();
+        insertUserName(noticeList);
+
+        return TResult.success(notices.setRecords(noticeList));
     }
 
     /**
@@ -132,6 +151,24 @@ public class NoticeController {
             return TResult.failure(TResultCode.FAILURE);
         }
         return TResult.success();
+    }
+
+    /**
+     * 根据内容查询
+     *
+     * @param content
+     * @param page
+     * @return
+     */
+    @GetMapping("/content")
+    public TResult listNoticesByContent(@RequestParam(defaultValue = "") String content, Pagination page) {
+        Page<Notice> notices = noticeService.selectPage(new Page<>(page.getCurrent(), page.getSize()),
+                new EntityWrapper<Notice>().like("content", content).orderBy("gmt_create", false));
+
+        List<Notice> noticeList = notices.getRecords();
+        insertUserName(noticeList);
+
+        return TResult.success(notices.setRecords(noticeList));
     }
 }
 

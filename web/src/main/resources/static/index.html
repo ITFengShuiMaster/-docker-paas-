@@ -13,7 +13,7 @@
     <script src="js/common.js"></script>
 </head>
 
-<body style="font-family: sans-serif">
+<body style="background-color: #EBEEF5 ;font-family: sans-serif">
 <el-container id="app">
 
     <el-aside style="width: 270px;">
@@ -33,15 +33,18 @@
                 <i class="el-icon-more-outline"></i>
                 <span slot="title">总览</span>
             </el-menu-item>
-            <el-submenu index="10001">
-                <template slot="title">
-                    <i class="el-icon-plus"></i>
-                    <span>创建应用</span>
-                </template>
-                <el-menu-item index="1">从源码创建</el-menu-item>
-                <el-menu-item index="2">从Docker镜像创建</el-menu-item>
-                <el-menu-item index="3">从应用市场安装</el-menu-item>
-            </el-submenu>
+            <el-menu-item index="1">
+                <i class="el-icon-download"></i>
+                从源码创建
+            </el-menu-item>
+            <el-menu-item index="2">
+                <i class="el-icon-download"></i>
+                从Docker镜像创建
+            </el-menu-item>
+            <el-menu-item index="3">
+                <i class="el-icon-download"></i>
+                从应用市场安装
+            </el-menu-item>
             <el-submenu index="10002">
                 <template slot="title">
                     <i class="el-icon-menu"></i>
@@ -63,10 +66,6 @@
                     </el-menu-item>
                 </el-submenu>
             </el-submenu>
-            <el-menu-item index="5">
-                <i class="el-icon-tickets"></i>
-                <span slot="title">财务中心</span>
-            </el-menu-item>
         </el-menu>
     </el-aside>
 
@@ -170,7 +169,7 @@
             imageUrl: '',
             username: '',
             isCollapse: false,
-            pageArr: ['pages/home.html', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/create_by_market.html', 'pages/appinfo.html', 'pages/financialcenter.html'],
+            pageArr: ['pages/home.html', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/create_by_market.html', 'pages/appinfo.html'],
             teamArr: ['团队一', '团队二'],
             dataArr: ['假数据中心', '真数据中心'],
             //通告消息界面展开的默认显示
@@ -222,7 +221,7 @@
             init_usrInf() {
                 $.ajax({
                     type: "get",
-                    url: 'http://localhost:8080/tianyu-paas/users/info/' + this.id,
+                    url: 'http://localhost:8080/tianyu-paas/users/info',
                     data: {},
                     success: function (result) {
                         if (result.code === 1) {

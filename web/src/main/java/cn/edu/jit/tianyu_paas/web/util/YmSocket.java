@@ -268,12 +268,10 @@ public class YmSocket {
                                 m = new Date() + " " + m;
                             }
                             WebSocketMessage webSocketMessage = new WebSocketMessage();
-                            webSocketMessage.setData(new Date() + " " + msg.replace("%", " "));
+                            webSocketMessage.setData(m.replace("%", " "));
                             webSocketMessage.setMessageType(WebSocketMessageType.BUILD_APPLICATION);
                             TWebSocket.sendMessageToUser(JSON.toJSONString(webSocketMessage), userId);
-
-//                            m = m.replace("%", "");
-//                            System.out.print(m);
+                            //System.out.println(m.replace("%"," "));
                             ActionDetail actionDetail = new ActionDetail();
                             actionDetail.setActionId(actionId);
                             actionDetail.setGmtCreate(new Date());

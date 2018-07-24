@@ -193,7 +193,10 @@
                         type: 0
                     },
                     success: function (result) {
-                        alert("删除成功")
+                        storage.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
                     },
                     error: function () {
 
@@ -219,17 +222,22 @@
                     url: '/tianyu-paas/mountSettings',
                     data: {
                         appId: storage.appId,
-                        persistentName: this.ruleForm.persistentName,
-                        containerMountName: this.ruleForm.containerMountName,
-                        serverMountName: this.ruleForm.serverMountName,
+                        persistentName: storage.ruleForm.persistentName,
+                        containerMountName: storage.ruleForm.containerMountName,
+                        serverMountName: storage.ruleForm.serverMountName,
                         type: 0
                     },
                     success: function (data) {
-                        console.log(data);
                         if (data.code === 1) {
-
+                            storage.$message({
+                                message: '添加成功',
+                                type: 'success'
+                            });
                         } else {
-                            alert(data.message);
+                            storage.$message({
+                                message: data.message,
+                                type: 'warning'
+                            });
                         }
                     },
                     error: function () {

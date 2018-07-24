@@ -116,13 +116,12 @@
                                             <el-col :span="8">对外服务:</el-col>
                                             <el-col :span="16">
                                                 <el-switch
-                                                        change="switch_change(scope.row)"
-                                                        style="display: block"
+                                                        @change="switch_change(scope.row)"
                                                         v-model="scope.row.isOutsideOpen"
                                                         active-color="#13ce66"
-                                                        active-value="1"
-                                                        inactive-color="#ff4949"
-                                                        inactive-value="0">
+                                                        active-value='1'
+                                                        inactive-color="#DCDFE6"
+                                                        inactive-value='0'>
                                                 </el-switch>
                                             </el-col>
                                         </el-row>
@@ -143,6 +142,9 @@
                                 </el-table-column>
                                 <el-table-column
                                         label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button type="danger" size="small" @click='delete_port(scope.row)' >删除</el-button>
+                                    </template>
                                 </el-table-column>
                             </el-table>
                         </div>
@@ -194,28 +196,45 @@
             value: ''
         },
         methods: {
-            getId(id) {
-                console.log(id);
+            delete_port(row) {
                 $.ajax({
-                    type: 'get',
-                    url: '/tianyu-paas/app-ports/' + id,
-                    data: {},
-                    success: function (data) {
-                        if (data.code === 1) {
-                            port.tableData = data.data;
-                            for (let i = 0; i < port.tableData.length; i++) {
-                                if (port.tableData[i].protocol === 0) {
-                                    port.tableData[i].protocol = "http";
-                                }
-                                if (port.tableData[i].protocol === 1) {
-                                    port.tableData[i].protocol = "mysql";
-                                }
-                                if (port.tableData[i].protocol === 2) {
-                                    port.tableData[i].protocol = "tcp";
-                                }
-                                if (port.tableData[i].protocol === 3) {
-                                    port.tableData[i].protocol = "udp";
-                                }
+                    type: 'delete',
+                    url: '/tianyu-paas/app-ports/' + port.appId,
+                    data: {
+                        hostPort: row.hostPort
+                    },
+                    success: function (result) {
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }
+                })
+            },
+            getId(id) {
+                console.log(port.a)
+                $.ajax({
+                        type: 'get',
+                        url: '/tianyu-paas/app-ports/' + id,
+                        success: function (data) {
+                            if (data.code === 1) {
+                                console.log(data)
+                                port.tableData = data.data;
+                                for (let i = 0; i < port.tableData.length; i++) {
+                                    if (port.tableData[i].protocol === 0) {
+                                        port.tableData[i].protocol = "http";
+                                    }
+                                    if (port.tableData[i].protocol === 1) {
+                                        port.tableData[i].protocol = "mysql";
+                                    }
+                                    if (port.tableData[i].protocol === 2) {
+                                        port.tableData[i].protocol = "tcp";
+                                    }
+                                    if (port.tableData[i].protocol === 3) {
+                                        port.tableData[i].protocol = "udp";
+                                    }
+
+                                    port.tableData[i].isOutsideOpen = port.tableData[i].isOutsideOpen + '';
 
                             }
                             console.log(port.tableData);
@@ -228,6 +247,7 @@
                 })
             },
             switch_change(row) {
+                console.log("swicth")
                 console.log(row);
                 $.ajax({
                     type: 'put',

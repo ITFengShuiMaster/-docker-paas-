@@ -74,7 +74,7 @@ public class AppRelyController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
-    @ApiOperation("返回零阶矩阵")
+    @ApiOperation("返回应用组内依赖关系图的邻接矩阵和名字")
     @GetMapping("/rely/{groupId}")
     public TResult getAdjacencyMatrix(@PathVariable Long groupId) {
         List<App> apps = appService.selectList(new EntityWrapper<App>().eq("app_group_id", groupId));
