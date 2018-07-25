@@ -188,9 +188,6 @@
         <el-dialog title="添加依赖" :visible.sync="dialogFormVisible3" width="30%">
             <el-form :model="addrelyForm" staus-icon ref="ruleForm" class="demo-ruleForm"
                      label-position="left" label-width="80px">
-                <el-form-item label="依赖名" prop="rely_name">
-                    <el-input v-model="addrelyForm.rely_name"></el-input>
-                </el-form-item>
                 <el-form-item label="依赖于">
                 <el-select v-model="addrelyForm.selectApp" placeholder="请选择要依赖的信息">
                     <el-option
@@ -214,6 +211,7 @@
     var rely = new Vue({
         el: '#rely',
         data: {
+            appId: '',
             groupApps: [],
             appGroupId: null,
             connectInfo: [],
@@ -238,10 +236,16 @@
 
         },
         methods: {
+            getId(id) {
+                this.appId = id;
+                this.relyInit();
+            },
             info_of_restart() {
                 this.$confirm('此操作需重启方能生效,请重启', '提示', {
                     confirmButtonText: '好的',
-                    type: 'info'
+                    type: 'info',
+                    callback: action => {
+                    }
                 })
             },
             get_groupapp() {
@@ -259,18 +263,17 @@
                     type: 'post',
                     url: '/tianyu-paas/app-relys',
                     data: {
-                        appId: appinfo.app_id,
+                        appId: rely.appId,
                         relyId: rely.addrelyForm.selectApp,
                         relyGroupId: rely.appGroupId
                     },
                     success: function (data) {
-                        console.log(data);
                         if (data.code === 1) {
                             rely.$message({
                                 message: '添加成功',
                                 type: 'success'
                             });
-                            that.connectInfo.push(val[0])
+                            rely.relyInit();
                         } else {
                             rely.$message({
                                 message: data.message,
@@ -285,6 +288,8 @@
                 })
             },
             delete_rely(row) {
+                console.log(row);
+                let that = this;
                 rely.$confirm('此操作将永久删除该依赖, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -292,10 +297,7 @@
                 }).then(() => {
                     $.ajax({
                         type: 'delete',
-                        url: '/tianyu-paas/app-relys/' + appinfo.app_id,
-                        data: {
-                            relyId: row.relyId,
-                        },
+                        url: '/tianyu-paas/app-relys/' + row.appId + "?relyId="+ row.relyId,
 
                         success: function (result) {
                             if (result.code === 1) {
@@ -315,7 +317,8 @@
 
                         }
                     })
-                })
+                }).catch(() => {
+                });
             },
             click_modify(row) {
                 rely.relyForm.var_name = row.varName;
@@ -324,10 +327,9 @@
                 rely.dialogFormVisible2 = true;
             },
             modify_var() {
-                let that = this;
                 rely.info_of_restart();
                 let val = [{
-                    appId: appinfo.app_id,
+                    appId: rely.appId,
                     varName: rely.relyForm.var_name,
                     varValue: rely.relyForm.var_val,
                     varExplain: rely.relyForm.var_des,
@@ -338,7 +340,7 @@
                     type: 'put',
                     url: '/tianyu-paas/app-vars/',
                     data: {
-                        appId: appinfo.app_id,
+                        appId: rely.appId,
                         varName: rely.relyForm.var_name,
                         varValue: rely.relyForm.var_val,
                         varExplain: rely.relyForm.var_des
@@ -373,11 +375,7 @@
                 }).then(() => {
                     $.ajax({
                         type: 'delete',
-                        url: '/tianyu-paas/app-vars/' + appinfo.app_id,
-                        data: {
-                            varName: row.varName,
-                        },
-
+                        url: '/tianyu-paas/app-vars/' + rely.appId + '?varName=' + row.varName,
                         success: function (result) {
                             if (result.code === 1) {
                                 appinfo.$message({
@@ -396,16 +394,18 @@
 
                         }
                     })
-                })
+                }).catch(() => {
+                });
             },
             relyInit() {
                 let that = this;
                 //获取变量信息
                 $.ajax({
                     type: 'get',
-                    url: '/tianyu-paas/app-vars/' + appinfo.app_id,
+                    url: '/tianyu-paas/app-vars/' + rely.appId,
                     success: function (data) {
                         let result = data.data;
+                        that.connectInfo = [];
                         for (let i = 0; i < result.length; i++) {
                             that.connectInfo.push(result[i])
                         }
@@ -417,8 +417,9 @@
                 //获取依赖信息
                 $.ajax({
                     type: 'get',
-                    url: '/tianyu-paas/app-relys/' + appinfo.app_id,
+                    url: '/tianyu-paas/app-relys/' + rely.appId,
                     success: function (data) {
+                        that.relyTableData = [];
                         if (data.code === 1) {
                             that.relyTableData = data.data;
                             let result = data.data;
@@ -431,7 +432,7 @@
                 //获取分组信息
                 $.ajax({
                     type: 'get',
-                    url: '/tianyu-paas/apps/' + appinfo.app_id,
+                    url: '/tianyu-paas/apps/' + rely.appId,
                     success: function (result) {
                         if (result.code === 1) {
                             rely.appGroupId = result.data.appGroupId;
@@ -450,7 +451,7 @@
                 rely.info_of_restart();
                 let that = this;
                 let val = [{
-                    appId: appinfo.app_id, varName: this.ruleForm.var_name,
+                    appId: rely.appId, varName: this.ruleForm.var_name,
                     varValue: this.ruleForm.var_val,
                     varExplain: this.ruleForm.var_des,
                     gmtCreate: ''
@@ -460,7 +461,7 @@
                     type: 'post',
                     url: '/tianyu-paas/app-vars/',
                     data: {
-                        appId: appinfo.app_id,
+                        appId: rely.appId,
                         varName: this.ruleForm.var_name,
                         varValue: this.ruleForm.var_val,
                         varExplain: this.ruleForm.var_des
@@ -488,7 +489,6 @@
             }
         },
         mounted() {
-            this.relyInit();
         }
     });
 </script>
