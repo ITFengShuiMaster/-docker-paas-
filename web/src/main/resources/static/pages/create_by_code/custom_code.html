@@ -125,7 +125,8 @@
             },
 
             addApp() {
-                console.log(this.formLabelAlign.group);
+                $('#content').load("pages/examine.html", function (response, message, xhr) {
+                });
                 $.ajax({
                     type: 'post',
                     url: '/tianyu-paas/apps/custom',

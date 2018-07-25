@@ -25,12 +25,11 @@
         <img src="img/appOutline.png" class="myrotate"/>
     </div>
     <div style="margin-left: 50%; font-size: 24px">
-        <span> {{status}} </span>
+        <span> {{info}} </span>
     </div>
     <div style="width: 80%; margin-left: 10%; margin-top: 2%; font-size: 16px; background: #DCDFE6">
         <div style="margin-left: 8%;">
-        {{info}}<br>
-        {{info}}<br>
+            <span v-for="item in data">{{item}}<br></span>
         </div>
     </div>
 </div>
@@ -39,9 +38,8 @@
     var examine = new Vue({
         el: "#examine",
         data: {
+            info: "",
             data: [],
-            status: "正在检测",
-            info: "代码信息"
         },
         method: {},
         created() {

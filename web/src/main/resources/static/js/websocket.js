@@ -14,22 +14,32 @@ websocket.onerror = function () {
 
 //连接成功建立的回调方法
 websocket.onopen = function (event) {
-    console.log('open')
 };
 
 //接收到消息的回调方法   event.data
 websocket.onmessage = function (event) {
     console.log(event)
-    // if(event.data.type === 0) {
-    //     examine.data.push(event.data.content);
-    // }
-    // if(event.data.type === 1) {
-    //     change();
-    // }
-    // if(event.data.type === 2) {
-    //     app.$message.info(event.data.content);
-    //     app.notice.push(event.data.content);
-    // }
+    if (event.data.messageType === 'NOTICE') {
+        vm.$message({
+            message: '你收到了一条公告',
+            type: 'success'
+        });
+        vm.noticerecord.push(event.data.data)
+    }
+    if (event.data.messageType === 'MESSAGE') {
+        vm.$message({
+            message: '你收到了一条消息',
+            type: 'success'
+        });
+        vm.messagerecord.push(event.data.data)
+    }
+    if (event.data.type === 'BUILD_APPLICATION') {
+        examine.data.push(event.data.data);
+    }
+    if (event.data.type === 'BUILD_APPLICATION_RESULT') {
+        $('#content').load("pages/examine_finish.html", function (response, message, xhr) {
+        });
+    }
 
 };
 
