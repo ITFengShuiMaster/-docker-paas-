@@ -113,6 +113,9 @@ public class AppController {
     @GetMapping("/{appId}")
     public TResult getAppInfo(@PathVariable Long appId) {
         App app = appService.selectById(appId);
+        if (app == null) {
+            TResult.failure("该应用不存在");
+        }
         //获取容器的信息
         DockerClient dockerClient = DockerJavaUtil.getDockerClient(machineService.selectById(app.getMachineId()).getMachineIp());
         app.setInspectContainerResponse(dockerClient.inspectContainerCmd(app.getContainerId()).exec());
@@ -407,7 +410,10 @@ public class AppController {
      */
     @GetMapping("/start/{appId}")
     public TResult startContainer(@PathVariable Long appId) {
-        Action action =InsertActionAndDetail.insertAction(appId);
+        Action action = InsertActionAndDetail.insertAction(appId, session);
+        if (action == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
         App app = appService.selectById(appId);
         InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此应用是否存在...",0);
         if (app == null) {
@@ -420,14 +426,7 @@ public class AppController {
             InsertActionAndDetail.insertActionDetail(action.getActionId(),"此机器不存在",2);
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此容器是否已经启动...",0);
-        if (app.getStatus() == 1) {
-            action.setStatus(1);
-            action.setAction(1);
-            action.setActionName("容器已经启动");
-            actionService.updateById(action);
-            return TResult.failure("容器已经启动");
-        }
+
         InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此容器是否已经开启...",0);
         if (DockerClientUtil.isRunning(machine.getMachineIp(), app.getContainerId())) {
             app.setStatus(1);
@@ -474,7 +473,10 @@ public class AppController {
      */
     @GetMapping("/stop/{appId}")
     public TResult stopContainer(@PathVariable Long appId) {
-        Action action =InsertActionAndDetail.insertAction(appId);
+        Action action = InsertActionAndDetail.insertAction(appId, session);
+        if (action == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
         App app = appService.selectById(appId);
         InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此应用是否存在...",0);
         if (app == null) {
@@ -487,15 +489,8 @@ public class AppController {
             InsertActionAndDetail.insertActionDetail(action.getActionId(),"此机器不存在",2);
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此容器是否已经关闭...",0);
-        if (app.getStatus() == 0) {
-            action.setStatus(1);
-            action.setAction(4);
-            action.setActionName("容器已经关闭");
-            actionService.updateById(action);
-            return TResult.failure("容器已经关闭");
-        }
 
+        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此容器是否已经关闭...",0);
         if (!DockerClientUtil.isRunning(machine.getMachineIp(), app.getContainerId())) {
             app.setStatus(0);
             appService.updateById(app);
@@ -528,7 +523,10 @@ public class AppController {
     @ApiOperation("容器重启")
     @GetMapping("/restart-container/{appId}")
     public TResult restartContainer(@PathVariable Long appId) {
-        Action action =InsertActionAndDetail.insertAction(appId);
+        Action action = InsertActionAndDetail.insertAction(appId, session);
+        if (action == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
         App app = appService.selectById(appId);
         InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此机器是否存在...",0);
         Machine machine = machineService.selectById(app.getMachineId());
