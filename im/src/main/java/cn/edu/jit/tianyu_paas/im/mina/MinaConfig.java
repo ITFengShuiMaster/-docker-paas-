@@ -11,7 +11,6 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
@@ -21,7 +20,7 @@ import java.nio.charset.Charset;
  *
  * @author 天宇小凡
  */
-@Configuration
+//@Configuration
 public class MinaConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MinaConfig.class);
