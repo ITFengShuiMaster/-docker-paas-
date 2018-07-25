@@ -4,6 +4,7 @@ import cn.edu.jit.tianyu_paas.shared.entity.Action;
 import cn.edu.jit.tianyu_paas.shared.entity.ActionDetail;
 import cn.edu.jit.tianyu_paas.shared.entity.App;
 import cn.edu.jit.tianyu_paas.shared.entity.User;
+import cn.edu.jit.tianyu_paas.web.global.Constants;
 import cn.edu.jit.tianyu_paas.web.service.ActionDetailService;
 import cn.edu.jit.tianyu_paas.web.service.ActionService;
 import cn.edu.jit.tianyu_paas.web.service.AppService;
@@ -28,8 +29,8 @@ public class InsertActionAndDetail {
      */
     public static Action insertAction(long appId){
 
-//        Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        User user = userService.selectById(1);
+        Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
+        User user = userService.selectById(userId);
         App app = appService.selectById(appId);
         Action action = new Action();
         action.setUserName(user.getName());
