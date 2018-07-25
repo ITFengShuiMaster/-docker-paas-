@@ -46,7 +46,12 @@ public class AppRelyController {
     @ApiOperation("根据appId获取依赖列表")
     @GetMapping("{appId}")
     public TResult listRelys(@PathVariable Long appId) {
-        return TResult.success(appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", appId)));
+        List<AppRely> relies = appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", appId));
+        for (int i = 0; i < relies.size(); i++) {
+            relies.get(i).setRelyName(appService.selectById(relies.get(i).getRelyId()).getName());
+            relies.get(i).setRelyGroupName(appGroupService.selectById(relies.get(i).getRelyGroupId()).getGroupName());
+        }
+        return TResult.success(relies);
     }
 
     @ApiOperation("添加依赖")
@@ -92,7 +97,7 @@ public class AppRelyController {
 
         int[][] martix = new int[apps.size()][apps.size()];
         for (int i = 0; i < apps.size(); i++) {
-            List<AppRely> appRelies = appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", apps.get(i).getAppId()).and().eq("rely_group_name", appGroupService.selectById(groupId).getGroupName()));
+            List<AppRely> appRelies = appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", apps.get(i).getAppId()).and().eq("rely_group_id", groupId));
             for (AppRely ar : appRelies) {
                 int relyIndex = appMap.get(ar.getRelyId());
                 int appIndex = appMap.get(apps.get(i).getAppId());
