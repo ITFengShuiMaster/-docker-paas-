@@ -132,6 +132,9 @@ public class AppController {
     @ApiOperation("从自定义源码创建应用（git仓库）")
     @PostMapping("/custom")
     public TResult createAppByCustom(@Validated App app, @Validated AppInfoByCustom custom) {
+        if (appService.selectOne(new EntityWrapper<App>().eq("name", app.getName())) != null) {
+            return TResult.failure("容器名已存在");
+        }
         initApp(app, AppCreateMethodEnum.CUSTOM);
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         app.setGmtCreate(new Date());
@@ -179,6 +182,9 @@ public class AppController {
     @ApiOperation("从官方demo创建应用")
     @PostMapping("/demo")
     public TResult createAppByDemo(@Validated App app, @Validated AppInfoByDemo infoByDemo) {
+        if (appService.selectOne(new EntityWrapper<App>().eq("name", app.getName())) != null) {
+            return TResult.failure("容器名已存在");
+        }
         Demo demo = demoService.selectById(infoByDemo.getDemoId());
         // 没有找到demo应用
         if (demo == null) {
