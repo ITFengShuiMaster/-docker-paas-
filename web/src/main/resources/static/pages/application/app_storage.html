@@ -164,7 +164,9 @@
             info_of_restart() {
                 storage.$confirm('此操作需重启方能生效,请重启', '提示', {
                     confirmButtonText: '好的',
-                    type: 'info'
+                    type: 'info',
+                    callback: action => {
+                    }
                 })
             },
             exported(row) {

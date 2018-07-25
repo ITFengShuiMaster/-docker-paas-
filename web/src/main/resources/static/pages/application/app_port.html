@@ -148,9 +148,9 @@
                                 </el-table-column>
                             </el-table>
                         </div>
-                        <div class="button">
-                            <el-button><i class="el-icon-plus"></i>设置成员应用权限</el-button>
-                        </div>
+                        <!--<div class="button">-->
+                            <!--<el-button><i class="el-icon-plus"></i>设置成员应用权限</el-button>-->
+                        <!--</div>-->
                     </div>
                 </el-col>
             </el-row>
@@ -199,7 +199,9 @@
             info_of_restart() {
                 port.$confirm('此操作需重启方能生效,请重启', '提示', {
                     confirmButtonText: '好的',
-                    type: 'info'
+                    type: 'info',
+                    callback: action => {
+                    }
                 })
             },
             delete_port(row) {
