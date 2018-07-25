@@ -1,7 +1,7 @@
 var websocket = null;
 //判断当前浏览器是否支持WebSocket
 if ('WebSocket' in window) {
-    websocket = new WebSocket("wss://39.106.54.222:8080/api/devices/004a770066003304/frames");
+    websocket = new WebSocket("ws://localhost:8080/tianyu-paas/websocket");
 }
 else {
     alert('Not support websocket')
@@ -20,6 +20,17 @@ websocket.onopen = function (event) {
 //接收到消息的回调方法   event.data
 websocket.onmessage = function (event) {
     console.log(event)
+    // if(event.data.type === 0) {
+    //     examine.data.push(event.data.content);
+    // }
+    // if(event.data.type === 1) {
+    //     change();
+    // }
+    // if(event.data.type === 2) {
+    //     app.$message.info(event.data.content);
+    //     app.notice.push(event.data.content);
+    // }
+
 };
 
 //连接关闭的回调方法

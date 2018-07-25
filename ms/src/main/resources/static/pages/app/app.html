@@ -37,8 +37,8 @@
         <i-button type="primary" style:>查询</i-button>
     </div>
     <i-table stripe border :columns="columns1" :data="table_data" style="margin:10px 20px"></i-table>
-    <div style="margin-left: 50%">
-        <Page :total="100">
+    <div style="margin-left: 40%">
+        <Page :total="Total" @on-change="get_app_inf">
 
         </Page>
     </div>
@@ -50,6 +50,7 @@
     var app_management = new Vue({
         el: '#app_management',
         data: {
+            Total: '100',
             value: '',
             table_data: [],
             columns1: [
@@ -152,16 +153,20 @@
             ]
         },
         methods: {
-            get_app_inf() {
+            get_app_inf(row) {
                 var that = this
                 $.ajax({
                     type: 'get',
                     url: 'apps',
+                    data: {
+                        current: row,
+                    },
                     success: function (result) {
-
+                        //😀
+                        app_management.Total = result.data.records.Total;
                         if (result.code === 1) {
-                           for(var i=0;i<result.data.length;i++) {
-                               that.table_data.push(result.data[i])
+                           for(var i=0;i<result.data.records.length;i++) {
+                               that.table_data.push(result.data.records[i])
                                if(that.table_data[i].status === 0) {
                                    that.table_data[i].status = false
                                    that.table_data[i].statusName="关闭"

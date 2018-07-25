@@ -44,11 +44,12 @@
                         <i-option v-for="item in data2" :value="item.name">{{item.name}}</i-option>
                     </i-select>
                 </div>
-
             </Modal>
         </i-col>
     </Row>
-    <i-table stripe border :columns="columns1" :data="data2" style="margin:10px 20px"></i-table>
+    <i-table stripe border @on-selection-change="selected"  :columns="columns1" :data="labelArr" style="margin:10px 20px"></i-table>
+    <Page :total="Total" @on-change="userList">
+    </Page>
 
     </template>
 
@@ -60,23 +61,21 @@
         el: '#push_message',
         data() {
             return {
+                Total: '100',
+                selecteduserId: [],
+                labelArr:[],
                 modelselect:[],
                 modal1: false,
                 value: '',
                 columns1: [
                     {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center',
+                    },
+                    {
                         title: '姓名',
                         key: 'name',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Icon', {
-                                    props: {
-                                        type: 'person'
-                                    }
-                                }),
-                                h('strong', params.row.name)
-                            ]);
-                        }
                     },
                     {
                         title: '邮箱',
@@ -88,7 +87,7 @@
                     },
                     {
                         title: '注册时间',
-                        key: 'time'
+                        key: 'gmtCreate'
                     },
                 ],
 
@@ -96,11 +95,18 @@
             }
         },
         methods:{
+            selected(selection) {
+                ;
+            },
             messagePush() {
-                var that = this
+                var that = this;
                 $.ajax({
-                    type:'get',
-                    url:'admins/register-recent-days/',
+                    type:'post',
+                    url:'messages',
+                    data: {
+                        content: "",
+                        userIds: "",
+                    },
                     success:function (data) {
                         if(data.data) {
                             console.log("nothing")
@@ -120,10 +126,36 @@
                         console.log(err)
                     }
                 })
-            }
+            },
+            userList(row) {
+                var that= this;
+                console.log(row);
+                $.ajax({
+                    type: "get",
+                    url: 'admins',
+                    data: {
+                        current: row,
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        user_info.Totle = result.data.total;
+                        var res = result.data.records;
+                        that.labelArr = [];
+                        for(var i = 0;i<res.length;i++) {
+                            that.labelArr.push(res[i])
+                        }
+                        console.log(res);
+                    },
+                    error: function () {
+                        console.log('fail')
+                    }
+                })
+            },
         },
+
         mounted() {
-            this.messagePush()
+//            this.messagePush()
+            this.userList();
         }
 
     })
