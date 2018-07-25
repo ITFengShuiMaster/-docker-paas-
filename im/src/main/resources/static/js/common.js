@@ -5,7 +5,7 @@ im.baseUrl = 'http://localhost:8762/im/';
 im.url = {
     login: im.baseUrl + 'users/login',
 
-    websocket: "ws://localhost:9123/"
+    websocket: "ws://localhost:8762/im/im-server"
 };
 
 im.result = {

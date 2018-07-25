@@ -2,7 +2,7 @@ package cn.edu.jit.tianyu_paas.im.message;
 
 public class AuthenticationMessage extends MinaMessage {
     private String username;
-    private String paasword;
+    private String password;
 
     public AuthenticationMessage() {
         super.setMessageType(MinaMessageType.AUTHENTICATION);
@@ -16,11 +16,11 @@ public class AuthenticationMessage extends MinaMessage {
         this.username = username;
     }
 
-    public String getPaasword() {
-        return paasword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPaasword(String paasword) {
-        this.paasword = paasword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

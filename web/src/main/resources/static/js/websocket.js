@@ -1,7 +1,7 @@
 var websocket = null;
 //判断当前浏览器是否支持WebSocket
 if ('WebSocket' in window) {
-    websocket = new WebSocket("ws://localhost:8080/tianyu-paas/websocket");
+    websocket = new WebSocket("ws://localhost:8762/im/im-server");
 }
 else {
     alert('Not support websocket')
@@ -14,12 +14,18 @@ websocket.onerror = function () {
 
 //连接成功建立的回调方法
 websocket.onopen = function (event) {
-    console.log('open')
+    //TODO 获取登录信息
+    console.log('open');
+    // var user = JSON.parse(sessionStorage.user);
+    var authMessage = {};
+    authMessage.username = 'test1';
+    authMessage.password = 'test';
+    websocket.send(JSON.stringify(authMessage));
 };
 
 //接收到消息的回调方法   event.data
 websocket.onmessage = function (event) {
-    console.log(event)
+    console.log('onmessage', event.data);
 };
 
 //连接关闭的回调方法

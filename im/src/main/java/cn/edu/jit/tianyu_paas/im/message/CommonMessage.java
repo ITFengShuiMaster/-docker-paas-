@@ -8,14 +8,14 @@ import cn.edu.jit.tianyu_paas.im.entity.User;
 public class CommonMessage extends MinaMessage {
     private String content;
     private Long receiver;
-    private User sender;
+    private User senderUser;
     private Long gmtCreate;
 
-    public CommonMessage(String content, Long receiver, User sender) {
+    public CommonMessage(String content, Long receiver, User senderUser) {
         this();
         this.content = content;
         this.receiver = receiver;
-        this.sender = sender;
+        this.senderUser = senderUser;
     }
 
     public Long getGmtCreate() {
@@ -30,12 +30,12 @@ public class CommonMessage extends MinaMessage {
         super.setMessageType(MinaMessageType.COMMON);
     }
 
-    public User getSender() {
-        return sender;
+    public User getSenderUser() {
+        return senderUser;
     }
 
-    public void setSender(User sender) {
-        this.sender = sender;
+    public void setSenderUser(User senderUser) {
+        this.senderUser = senderUser;
     }
 
     public String getContent() {

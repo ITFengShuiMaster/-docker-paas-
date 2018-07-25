@@ -43,7 +43,7 @@ public class TestCustomer1 {
             public void sessionOpened(IoSession session) {
                 AuthenticationMessage authenticationMessage = new AuthenticationMessage();
                 authenticationMessage.setUsername("cus1");
-                authenticationMessage.setPaasword("test");
+                authenticationMessage.setPassword("test");
                 session.write(JSON.toJSONString(authenticationMessage));
                 /*CommonMessage commonMessage = new CommonMessage();
                 commonMessage.setContent("test");

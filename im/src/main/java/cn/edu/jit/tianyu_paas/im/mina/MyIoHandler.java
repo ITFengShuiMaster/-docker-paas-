@@ -97,7 +97,7 @@ public class MyIoHandler extends IoHandlerAdapter {
     private void handleAuthenticationMessage(IoSession ioSession, AuthenticationMessage authenticationMessage) {
         User user = userService.selectOne(new EntityWrapper<User>().eq("phone", authenticationMessage.getUsername())
                 .or().eq("email", authenticationMessage.getUsername()));
-        if (user == null || !user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPaasword()))) {
+        if (user == null || !user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPassword()))) {
             ioSession.write("user not exsit or password incorrect");
             ioSession.closeOnFlush();
             return;
@@ -123,7 +123,7 @@ public class MyIoHandler extends IoHandlerAdapter {
             ioSession.closeOnFlush();
             return;
         }
-        commonMessage.setSender(user);
+        commonMessage.setSenderUser(user);
         boolean online = false;
         long receiver = MinaConstant.CUSTOMER_SERVICE_ID;
         switch (user.getType()) {

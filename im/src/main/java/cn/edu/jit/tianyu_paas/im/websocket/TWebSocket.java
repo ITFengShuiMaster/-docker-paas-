@@ -6,13 +6,13 @@ import cn.edu.jit.tianyu_paas.im.entity.User;
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
 import cn.edu.jit.tianyu_paas.im.message.AuthenticationMessage;
 import cn.edu.jit.tianyu_paas.im.message.CommonMessage;
-import cn.edu.jit.tianyu_paas.im.message.MinaMessage;
 import cn.edu.jit.tianyu_paas.im.service.MessageService;
 import cn.edu.jit.tianyu_paas.im.service.OfflineMessageService;
 import cn.edu.jit.tianyu_paas.im.service.UserService;
 import cn.edu.jit.tianyu_paas.im.util.SpringBeanFactoryUtil;
 import cn.edu.jit.tianyu_paas.shared.util.PassUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +22,7 @@ import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -68,23 +69,18 @@ public class TWebSocket {
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         logger.info("来自客户端的消息:" + message);
-        MinaMessage minaMessage = JSON.parseObject(message, MinaMessage.class);
-        switch (minaMessage.getMessageType()) {
-            case COMMON:
-                CommonMessage commonMessage = JSON.parseObject(message, CommonMessage.class);
-                commonMessage.setGmtCreate(System.currentTimeMillis());
-                handleCommonMessage(session, commonMessage);
-                break;
-            case AUTHENTICATION:
-                handleAuthenticationMessage(session, JSON.parseObject(message, AuthenticationMessage.class));
-                break;
-            default:
-                break;
+        JSONObject jsonObject = JSON.parseObject(message);
+        if (jsonObject.containsKey("username")) {
+            handleAuthenticationMessage(session, JSON.parseObject(message, AuthenticationMessage.class));
+        } else {
+            CommonMessage commonMessage = JSON.parseObject(message, CommonMessage.class);
+            commonMessage.setGmtCreate(System.currentTimeMillis());
+            handleCommonMessage(session, commonMessage);
         }
     }
 
     private void handleCommonMessage(Session session, CommonMessage commonMessage) throws IOException {
-        commonMessage.setSender(this.user);
+        commonMessage.setSenderUser(this.user);
         boolean online = false;
         if (commonMessage.getReceiver().equals(MinaConstant.CUSTOMER_SERVICE_ID)) {
             if (customerServiceSession != null) {
@@ -108,7 +104,7 @@ public class TWebSocket {
     private void handleAuthenticationMessage(Session session, AuthenticationMessage authenticationMessage) throws IOException {
         User user = userService.selectOne(new EntityWrapper<User>().eq("phone", authenticationMessage.getUsername())
                 .or().eq("email", authenticationMessage.getUsername()));
-        if (user == null || !user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPaasword()))) {
+        if (user == null || !user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPassword()))) {
             session.getBasicRemote().sendText("user not exsit or password incorrect");
             session.close();
             return;
@@ -117,9 +113,11 @@ public class TWebSocket {
         switch (user.getType()) {
             case User.TYPE_COMMON:
                 userMap.put(user.getUserId(), session);
+                pushOfflineMessageToUser(user.getUserId());
                 break;
             case User.TYPE_CUSTOMER_SERVICE:
                 customerServiceSession = session;
+                pushOfflineMessageToUser(MinaConstant.CUSTOMER_SERVICE_ID);
                 break;
             default:
                 break;
@@ -155,5 +153,23 @@ public class TWebSocket {
         offlineMessage.setReceiver(receiver);
         offlineMessage.setGmtCreate(new Date());
         offlineMessageService.insert(offlineMessage);
+    }
+
+    private void pushOfflineMessageToUser(long userId) throws IOException {
+        List<OfflineMessage> offlineMessages = offlineMessageService.selectList(new EntityWrapper<OfflineMessage>().eq("receiver", userId));
+        if (offlineMessages.size() <= 0) {
+            return;
+        }
+        offlineMessages.forEach(offlineMessage -> {
+            User user = userService.selectById(offlineMessage.getSender());
+            offlineMessage.setSenderUser(user);
+        });
+        if (userId == MinaConstant.CUSTOMER_SERVICE_ID) {
+            customerServiceSession.getBasicRemote().sendText(JSON.toJSONString(offlineMessages));
+        } else {
+            userMap.get(userId).getBasicRemote().sendText(JSON.toJSONString(offlineMessages));
+        }
+        // 将离线 消息删掉
+        offlineMessageService.delete(new EntityWrapper<OfflineMessage>().eq("receiver", MinaConstant.CUSTOMER_SERVICE_ID));
     }
 }

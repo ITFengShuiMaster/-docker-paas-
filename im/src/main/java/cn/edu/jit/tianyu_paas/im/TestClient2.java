@@ -56,7 +56,7 @@ public class TestClient2 {
             public void sessionOpened(IoSession session) {
                 AuthenticationMessage authenticationMessage = new AuthenticationMessage();
                 authenticationMessage.setUsername("test2");
-                authenticationMessage.setPaasword("test");
+                authenticationMessage.setPassword("test");
                 CommonMessage commonMessage = new CommonMessage();
                 commonMessage.setContent("test2 message");
                 session.write(JSON.toJSONString(authenticationMessage));
