@@ -5,6 +5,7 @@ import cn.edu.jit.tianyu_paas.shared.entity.App;
 import cn.edu.jit.tianyu_paas.shared.entity.AppRely;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
+import cn.edu.jit.tianyu_paas.web.service.AppGroupService;
 import cn.edu.jit.tianyu_paas.web.service.AppRelyService;
 import cn.edu.jit.tianyu_paas.web.service.AppService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -31,13 +32,15 @@ import java.util.Map;
 public class AppRelyController {
     private final AppRelyService appRelyService;
     private final AppService appService;
+    private final AppGroupService appGroupService;
     private HttpSession session;
 
     @Autowired
-    public AppRelyController(HttpSession session, AppRelyService appRelyService, AppService appService) {
+    public AppRelyController(HttpSession session, AppRelyService appRelyService, AppService appService, AppGroupService appGroupService) {
         this.session = session;
         this.appRelyService = appRelyService;
         this.appService = appService;
+        this.appGroupService = appGroupService;
     }
 
     @ApiOperation("根据appId获取依赖列表")
@@ -89,7 +92,7 @@ public class AppRelyController {
 
         int[][] martix = new int[apps.size()][apps.size()];
         for (int i = 0; i < apps.size(); i++) {
-            List<AppRely> appRelies = appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", apps.get(i).getAppId()));
+            List<AppRely> appRelies = appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", apps.get(i).getAppId()).and().eq("rely_group_name", appGroupService.selectById(groupId).getGroupName()));
             for (AppRely ar : appRelies) {
                 int relyIndex = appMap.get(ar.getRelyId());
                 int appIndex = appMap.get(apps.get(i).getAppId());
