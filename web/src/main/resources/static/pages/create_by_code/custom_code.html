@@ -137,11 +137,11 @@
                         branch: this.formLabelAlign.branch,
                     },
                     success: function (result) {
-                        if (result.code == 1) {
-                            alert("新建应用成功");
+                        if (result.code === 1) {
+
                         }
                         else {
-                            alert(result.message)
+                            alert(result.message);
                         }
                     },
                     error: function () {
@@ -153,6 +153,8 @@
         },
         mounted() {
             this.appList();
+            $('#content').load("pages/examine_finish.html", function (response, message, xhr) {
+            });
         }
     });
     $("#branch-input").val("master");

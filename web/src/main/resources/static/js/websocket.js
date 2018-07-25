@@ -18,27 +18,33 @@ websocket.onopen = function (event) {
 
 //接收到消息的回调方法   event.data
 websocket.onmessage = function (event) {
-    console.log(event)
-    if (event.data.messageType === 'NOTICE') {
+    let res = JSON.parse(event.data);
+    console.log(res);
+    if (res.messageType === 'NOTICE') {
         vm.$message({
             message: '你收到了一条公告',
             type: 'success'
         });
-        vm.noticerecord.push(event.data.data)
+        vm.noticerecord.push(res.data)
     }
-    if (event.data.messageType === 'MESSAGE') {
+    if (res.messageType === 'MESSAGE') {
         vm.$message({
             message: '你收到了一条消息',
             type: 'success'
         });
-        vm.messagerecord.push(event.data.data)
+        vm.messagerecord.push(res.data)
     }
-    if (event.data.type === 'BUILD_APPLICATION') {
-        examine.data.push(event.data.data);
+    if (res.messageType === 'BUILD_APPLICATION') {
+        examine.data.push(res.data);
     }
-    if (event.data.type === 'BUILD_APPLICATION_RESULT') {
-        $('#content').load("pages/examine_finish.html", function (response, message, xhr) {
-        });
+    if (res.messageType === 'BUILD_APPLICATION_RESULT') {
+        if (res.data === 1) {
+            $('#content').load("pages/examine_finish.html", function (response, message, xhr) {
+            });
+        } else {
+
+        }
+
     }
 
 };
