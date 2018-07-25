@@ -439,9 +439,6 @@ public class AppController {
             return TResult.failure("容器已开启");
         }
 
-//        Action action1 = new Action();
-//        initAction(action, app);
-//        action.setAction(1);
         InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此容器是否启动成功...",0);
         if (!DockerClientUtil.startContainer(machine.getMachineIp(), app.getContainerId())) {
             action.setStatus(1);
@@ -563,8 +560,6 @@ public class AppController {
         //获得新镜相id
         String newImageName = DockerClientUtil.getNewImage(machine.getMachineIp(), app.getContainerId());
 
-//        Action action = new Action();
-//        initAction(action, app);
         action.setAction(2);
 
         if (StringUtil.isEmpty(newImageName)) {
