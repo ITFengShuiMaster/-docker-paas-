@@ -117,7 +117,7 @@
                                             <el-col :span="16">
                                                 <el-switch
                                                         @change="switch_change(scope.row)"
-                                                        v-model="a"
+                                                        v-model="scope.row.isOutsideOpen"
                                                         active-color="#13ce66"
                                                         active-value='1'
                                                         inactive-color="#DCDFE6"
@@ -164,7 +164,6 @@
     var port = new Vue({
         el: '#port',
         data: {
-            a: 1,
             appId: '',
             portInfo: [
                 {
@@ -234,6 +233,8 @@
                                     if (port.tableData[i].protocol === 3) {
                                         port.tableData[i].protocol = "udp";
                                     }
+
+                                    port.tableData[i].isOutsideOpen = port.tableData[i].isOutsideOpen + '';
 
                             }
                             console.log(port.tableData);
