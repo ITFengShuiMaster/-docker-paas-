@@ -72,11 +72,13 @@ public class MyIoHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) {
-        LOGGER.info(message.toString());
+        LOGGER.info("recv: " + message.toString());
         MinaMessage minaMessage = JSON.parseObject(message.toString(), MinaMessage.class);
         switch (minaMessage.getMessageType()) {
             case COMMON:
-                handleCommonMessage(session, JSON.parseObject(message.toString(), CommonMessage.class));
+                CommonMessage commonMessage = JSON.parseObject(message.toString(), CommonMessage.class);
+                commonMessage.setGmtCreate(System.currentTimeMillis());
+                handleCommonMessage(session, commonMessage);
                 break;
             case AUTHENTICATION:
                 handleAuthenticationMessage(session, JSON.parseObject(message.toString(), AuthenticationMessage.class));

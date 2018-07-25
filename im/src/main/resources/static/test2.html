@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<input id="input"/>
+<button onclick="send()">submit</button>
+
+<script>
+    var websocket = null;
+    if ('WebSocket' in window) {
+        websocket = new WebSocket("ws://localhost:9123");
+    }
+    else {
+        alert('Not support websocket');
+    }
+
+    websocket.onerror = function () {
+        console.log("error");
+    };
+
+    websocket.onopen = function (event) {
+        console.log('open')
+    };
+
+    //接收到消息的回调方法   event.data
+    websocket.onmessage = function (event) {
+        console.log(event)
+    };
+
+    websocket.onclose = function () {
+        console.log('close')
+    };
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function () {
+        websocket.close();
+    };
+
+    //关闭连接
+    function closeWebSocket() {
+        websocket.close();
+    }
+
+    //发送消息
+    function send() {
+        var message = document.getElementById('input').value;
+        websocket.send(str2UTF8(message));
+    }
+
+    function str2UTF8(str) {
+        var bytes = [];
+        var len, c;
+        len = str.length;
+        for (var i = 0; i < len; i++) {
+            c = str.charCodeAt(i);
+            if (c >= 0x010000 && c <= 0x10FFFF) {
+                bytes.push(((c >> 18) & 0x07) | 0xF0);
+                bytes.push(((c >> 12) & 0x3F) | 0x80);
+                bytes.push(((c >> 6) & 0x3F) | 0x80);
+                bytes.push((c & 0x3F) | 0x80);
+            } else if (c >= 0x000800 && c <= 0x00FFFF) {
+                bytes.push(((c >> 12) & 0x0F) | 0xE0);
+                bytes.push(((c >> 6) & 0x3F) | 0x80);
+                bytes.push((c & 0x3F) | 0x80);
+            } else if (c >= 0x000080 && c <= 0x0007FF) {
+                bytes.push(((c >> 6) & 0x1F) | 0xC0);
+                bytes.push((c & 0x3F) | 0x80);
+            } else {
+                bytes.push(c & 0xFF);
+            }
+        }
+        return bytes;
+    }
+</script>
+</body>
+</html>

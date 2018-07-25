@@ -5,6 +5,7 @@
 	<title>首页</title>
 	<link rel="stylesheet" href="lib/layui/css/layui.css">
 	<script src="lib/layui/layui.js"></script>
+	<script src="js/common.js"></script>
 	<!--<script src="js/websocket.js"></script>-->
 </head>
 <body>
@@ -71,16 +72,26 @@
         websocket.onopen = function (event) {
             console.log('open');
             var user = JSON.parse(sessionStorage.user);
-            var authMessage = {username: user.name, password: user.pwd};
+            var authMessage = {};
+            authMessage.username = user.name;
+            authMessage.password = user.pwd;
             send(authMessage);
         };
 
         //接收到消息的回调方法   event.data
         websocket.onmessage = function (event) {
             console.log(event);
-            var sender = event.data.sender;
+            var message = {};
+            message.username = event.data.sender.name;
+            message.id = event.data.sender.userId;
+            message.avatar = event.data.sender.headImg;
+            message.type = "friend";
+            message.content = event.data.content;
+            message.mine = "false";
+            message.fromid = event.data.sender.userId;
+            message.timestamp = event.data.gmtCreate;
             // TODO 如果是一个新sender ，调用.chat方法，添加一个新聊天面板
-            layim.getMessage(event.data); //res.data即你发送消息传递的数据（阅读：监听发送的消息）
+            layim.getMessage(message);
         };
 
         websocket.onclose = function () {

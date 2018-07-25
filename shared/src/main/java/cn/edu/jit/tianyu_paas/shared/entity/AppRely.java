@@ -1,5 +1,7 @@
 package cn.edu.jit.tianyu_paas.shared.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -22,9 +24,10 @@ public class AppRely implements Serializable {
     private Long relyId;
     private Date gmtCreate;
 
+    @TableField(exist = false)
     private String relyName;
+    @TableField(exist = false)
     private String relyGroupName;
-
 
     public Long getAppId() {
         return appId;

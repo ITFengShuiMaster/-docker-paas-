@@ -155,17 +155,17 @@
             },
 
             getMessageCode() {
-                var that = this
-                this.flag = false
-                var codeTime = 60
-                sessionStorage.setItem("codeTime",codeTime)
+                var that = this;
+                this.flag = false;
+                var codeTime = 60;
+                sessionStorage.setItem("codeTime", codeTime);
                 var code_timer = setInterval(() => {
-                    codeTime--
-                    sessionStorage.setItem("codeTime",codeTime)
-                    that.code_time = sessionStorage.getItem("codeTime")
-                    console.log(that.code_time)
+                    codeTime--;
+                    sessionStorage.setItem("codeTime", codeTime);
+                    that.code_time = sessionStorage.getItem("codeTime");
+                    console.log(that.code_time);
                     if(codeTime<=0) {
-                        that.flag = true
+                        that.flag = true;
                         clearInterval(code_timer)
                     }
                 },1000);
@@ -181,17 +181,17 @@
                 })
             },
             getSessionCode() {
-                var that = this
+                var that = this;
                 if(sessionStorage.getItem('codeTime') >=0 )
-                    this.flag = false
-                    var codeTime = sessionStorage.getItem('codeTime')
+                    this.flag = false;
+                var codeTime = sessionStorage.getItem('codeTime');
                     var code_timer = setInterval(() => {
-                        codeTime--
-                        sessionStorage.setItem("codeTime",codeTime)
-                        that.code_time = sessionStorage.getItem("codeTime")
-                        console.log(that.code_time)
+                        codeTime--;
+                        sessionStorage.setItem("codeTime", codeTime);
+                        that.code_time = sessionStorage.getItem("codeTime");
+                        console.log(that.code_time);
                         if(codeTime<=0) {
-                            that.flag = true
+                            that.flag = true;
                             clearInterval(code_timer)
                         }
                     },1000);

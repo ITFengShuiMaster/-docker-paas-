@@ -9,12 +9,21 @@ public class CommonMessage extends MinaMessage {
     private String content;
     private Long receiver;
     private User sender;
+    private Long gmtCreate;
 
     public CommonMessage(String content, Long receiver, User sender) {
         this();
         this.content = content;
         this.receiver = receiver;
         this.sender = sender;
+    }
+
+    public Long getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
     public CommonMessage() {

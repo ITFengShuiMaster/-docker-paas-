@@ -1,7 +1,7 @@
 var websocket = null;
 //判断当前浏览器是否支持WebSocket
 if ('WebSocket' in window) {
-    websocket = new WebSocket("wss://39.106.54.222:8080/api/devices/004a770066003304/frames");
+    websocket = new WebSocket("ws://localhost:8080/tianyu-paas/websocket");
 }
 else {
     alert('Not support websocket')

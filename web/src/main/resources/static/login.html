@@ -21,8 +21,8 @@
         .demo-login {
             background-color: white;
             margin: 0 auto;
-            width: 350px;
-            height: 400px;
+            width: 400px;
+            height: 330px;
             position: relative;
             top: 30%;
             transform: translateY(-30%);
@@ -48,6 +48,7 @@
         <div class="demo-login">
             <div class="login-form">
                 <el-form ref="User" status-icon :rules="Rules" :model="User" class="login-container">
+                    <p style="font-size: 20px">TIANYU PAAS 平台</p>
                     <p style="font-size: 17px">登 录</p>
                     <el-form-item prop="name">
                         <el-input id="name" type="text" v-model="User.name" auto-complete="off" placeholder="请输入账号"

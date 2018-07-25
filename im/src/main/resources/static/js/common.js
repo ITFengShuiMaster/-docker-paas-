@@ -5,7 +5,7 @@ im.baseUrl = 'http://localhost:8762/im/';
 im.url = {
     login: im.baseUrl + 'users/login',
 
-    websocket: "ws://123.207.169.68:8080/im/websocket"
+    websocket: "ws://localhost:9123/"
 };
 
 im.result = {
@@ -30,4 +30,4 @@ im.ajax = function (options) {
     $.ajax($.extend(ajaxDefaults, options));
 };
 
-im.message.type = {};
+im.messageType = {};
