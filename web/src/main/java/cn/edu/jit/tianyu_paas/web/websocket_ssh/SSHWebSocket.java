@@ -130,7 +130,6 @@ public class SSHWebSocket {
                     break;
                 }
             }
-            // TODO 线程池
             SocketRunable socketRunable = new SocketRunable(inputStream, socket, session);
             socketPoolExecutor.execute(socketRunable);
             this.socket = socket;

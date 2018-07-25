@@ -14,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -133,6 +136,12 @@ public class UserController {
         }
     }
 
+    /**
+     * @param email
+     * @return
+     * @author 卢越
+     * @date 2018/7/20 16:30
+     */
     @ApiOperation("重新发送email")
     @GetMapping("/re-email")
     public TResult reSendEmailCode(@Validated @Email String email) {
@@ -202,14 +211,15 @@ public class UserController {
 
     /**
      * 账号激活
-     *
+     *@author 卢越
+     * @date 2018/7/16 16:30
      * @param userId
      * @param code
      * @return
      */
     @ApiOperation("账号激活接口")
     @GetMapping("/active")
-    public TResult accountActive(@RequestParam(required = true) String userId, @RequestParam(required = true) String code) {
+    public TResult accountActive(HttpServletRequest request, HttpServletResponse response, @RequestParam(required = true) String userId, @RequestParam(required = true) String code) throws IOException {
         User user = userService.selectOne(new EntityWrapper<User>().eq("user_id", userId));
         if (user == null) {
             return TResult.failure("该用户未注册!");
@@ -218,12 +228,18 @@ public class UserController {
         if (userActiveService.selectCount(new EntityWrapper<UserActive>().eq("user_email", user.getEmail()).and().eq("email_code", code).and().ge("email_code_gtm_create", new Date(System.currentTimeMillis() - 600000))) != 0) {
             user.setActive(1);
             userService.updateById(user);
-            // TODO 应该跳转到登录页
-            return TResult.success("账号激活成功");
+            //跳转到登录页
+            response.sendRedirect(request.getContextPath() + "/login.html");
         }
         return TResult.failure("链接无效或已过期");
     }
 
+    /**
+     * @param phone
+     * @return
+     * @author 卢越
+     * @date 2018/7/16 16:30
+     */
     @ApiOperation("发送验证码")
     @GetMapping("phone-code/{phone}")
     public TResult sendPhoneCode(@PathVariable(required = true) String phone) {
@@ -258,7 +274,8 @@ public class UserController {
 
     /**
      * 修改用户信息
-     *
+     *@author 卢越
+     * @date 2018/7/16 16:30
      * @param userId
      * @param name
      * @param headImg

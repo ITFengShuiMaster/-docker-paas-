@@ -24,7 +24,7 @@ import java.util.Map;
  * 前端控制器
  * </p>
  *
- * @author 汪继友
+ * @author 卢越
  * @since 2018-07-21
  */
 @RestController
@@ -43,6 +43,12 @@ public class AppRelyController {
         this.appGroupService = appGroupService;
     }
 
+    /**
+     * @param appId
+     * @return
+     * @author 卢越
+     * @date 2018/7/20 16:30
+     */
     @ApiOperation("根据appId获取依赖列表")
     @GetMapping("{appId}")
     public TResult listRelys(@PathVariable Long appId) {
@@ -54,6 +60,12 @@ public class AppRelyController {
         return TResult.success(relies);
     }
 
+    /**
+     * @param appRely
+     * @return
+     * @author 卢越
+     * @date 2018/7/20 16:30
+     */
     @ApiOperation("添加依赖")
     @PostMapping
     public TResult insertRelys(AppRely appRely) {
@@ -64,6 +76,12 @@ public class AppRelyController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    /**
+     * @param appRely
+     * @return
+     * @author 卢越
+     * @date 2018/7/22 16:30
+     */
     @ApiOperation("更新依赖")
     @PutMapping
     public TResult updateRelys(AppRely appRely) {
@@ -73,6 +91,13 @@ public class AppRelyController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    /**
+     * @param appId
+     * @param relyId
+     * @return
+     * @author 卢越
+     * @date 2018/7/20 16:30
+     */
     @ApiOperation("删除依赖")
     @DeleteMapping("{appId}")
     public TResult deleteRelys(@PathVariable Long appId, @RequestParam(required = true) Long relyId) {
@@ -82,6 +107,12 @@ public class AppRelyController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    /**
+     * @param groupId
+     * @return
+     * @author 卢越
+     * @date 2018/7/20 16:30
+     */
     @ApiOperation("返回应用组内依赖关系图的邻接矩阵和名字")
     @GetMapping("/rely/{groupId}")
     public TResult getAdjacencyMatrix(@PathVariable Long groupId) {

@@ -32,8 +32,6 @@ public class AppController {
         this.userService = userService;
     }
 
-    //TODO 创建应用等普通用户那里一起补充
-
     /**
      * 获取所有用户以及应用
      *

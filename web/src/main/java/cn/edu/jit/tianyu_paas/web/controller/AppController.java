@@ -90,6 +90,8 @@ public class AppController {
         app.setGmtCreate(new Date());
         app.setStatus(AppStatusEnum.SHUTDOWN.getCode());
         app.setCreateMethod(createMethodEnum.getCode());
+        //设置memory
+        app.setMemoryUsed(100);
         // TODO 检测仓库，并给应用设置memory, disk等
     }
 
@@ -126,7 +128,7 @@ public class AppController {
     /**
      * 从自定义源码创建应用（git仓库）
      *
-     * @author 汪继友
+     * @author 倪龙康
      * @date 2018/6/29 11:11
      */
     @ApiOperation("从自定义源码创建应用（git仓库）")
@@ -173,7 +175,7 @@ public class AppController {
     /**
      * 从官方demo创建应用
      *
-     * @author 汪继友
+     * @author 倪龙康
      * @date 2018/6/29 11:11
      */
     @ApiOperation("从官方demo创建应用")
@@ -224,7 +226,7 @@ public class AppController {
     /**
      * 从docker image创建应用
      *
-     * @author 汪继友
+     * @author 卢越
      * @date 2018/6/29 11:11
      */
     @ApiOperation("从docker image创建应用")
@@ -262,7 +264,7 @@ public class AppController {
     /**
      * 用docker run命令创建应用
      *
-     * @author 汪继友
+     * @author 卢越
      * @date 2018/6/29 14:41
      */
     @ApiOperation("用docker run命令创建应用")
@@ -270,6 +272,10 @@ public class AppController {
     public TResult createAppByDockerRun(@Validated App app, @Validated AppInfoByDockerRun dockerRun) {
         Action action = new Action();
         initApp(app, AppCreateMethodEnum.DOCKER_RUN);
+
+        if (appService.selectOne(new EntityWrapper<App>().eq("name", app.getName())) != null) {
+            return TResult.failure("容器名已存在");
+        }
 
         if (!dockerRun.getCmd().contains("-d")) {
             return TResult.failure("请添加-d参数以保证容器后台正常运行");
@@ -342,6 +348,13 @@ public class AppController {
         return TResult.success(appPages);
     }
 
+    /**
+     * @param app
+     * @param market
+     * @return
+     * @author 卢越
+     * @date 2018/7/18 16:30
+     */
     @ApiOperation("从应用市场创建应用")
     @PostMapping("/market")
     public TResult createAppByMarket(@Validated App app, @Validated AppInfoByMarket market) {
@@ -404,7 +417,8 @@ public class AppController {
 
     /**
      * 启动容器
-     *
+     * @author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */
@@ -467,7 +481,8 @@ public class AppController {
 
     /**
      * 关闭容器
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */
@@ -516,7 +531,8 @@ public class AppController {
 
     /**
      * 容器重启
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */
@@ -606,7 +622,8 @@ public class AppController {
 
     /**
      * 删除应用
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */
@@ -634,6 +651,8 @@ public class AppController {
 
     /**
      * 批量开启
+     * @author 卢越
+     * @date 2018/7/20 16:30
      * @param appIds
      * @return
      */
@@ -649,6 +668,8 @@ public class AppController {
 
     /**
      * 批量关闭
+     * @author 卢越
+     * @date 2018/7/20 16:30
      * @param appIds
      * @return
      */
@@ -664,6 +685,8 @@ public class AppController {
 
     /**
      * 批量重启
+     * @author 卢越
+     * @date 2018/7/20 16:30
      * @param appIds
      * @return
      */
@@ -679,7 +702,8 @@ public class AppController {
 
     /**
      * 导出挂载卷地址
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @param containerMount
      * @return
@@ -700,6 +724,8 @@ public class AppController {
 
     /**
      * 导出容器地址
+     * @author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */
