@@ -196,7 +196,14 @@
             value: ''
         },
         methods: {
+            info_of_restart() {
+                port.$confirm('此操作需重启方能生效,请重启', '提示', {
+                    confirmButtonText: '好的',
+                    type: 'info'
+                })
+            },
             delete_port(row) {
+                port.info_of_restart();
                 $.ajax({
                     type: 'delete',
                     url: '/tianyu-paas/app-ports/' + port.appId,
@@ -204,15 +211,22 @@
                         hostPort: row.hostPort
                     },
                     success: function (result) {
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
+                        if (result.code === 1) {
+                            port.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            port.getId(port.appId);
+                        } else {
+                            rely.$message({
+                                message: data.message,
+                                type: 'warning'
+                            })
+                        }
                     }
                 })
             },
             getId(id) {
-                console.log(port.a)
                 $.ajax({
                         type: 'get',
                         url: '/tianyu-paas/app-ports/' + id,
@@ -247,8 +261,7 @@
                 })
             },
             switch_change(row) {
-                console.log("swicth")
-                console.log(row);
+                port.info_of_restart();
                 $.ajax({
                     type: 'put',
                     url: '/tianyu-paas/app-ports',
@@ -269,17 +282,23 @@
             },
 
             addPort() {
+                port.info_of_restart();
                 $.ajax({
                     type: 'post',
                     url: '/tianyu-paas/app-ports',
                     data: {
                         appId: port.appId,
-                        port: this.ruleForm.port,
-                        protocol: this.ruleForm.protocol
+                        port: port.ruleForm.port,
+                        protocol: port.ruleForm.protocol
                     },
                     success: function (data) {
-                        console.log(data);
-
+                        if (data.code === 1) {
+                            port.$message({
+                                message: '添加成功',
+                                type: 'success'
+                            });
+                            port.getId(port.appId);
+                        }
                     },
                     error: function () {
 

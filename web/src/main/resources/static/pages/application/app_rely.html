@@ -95,7 +95,8 @@
                                         label="操作">
                                     <template slot-scope="scope">
                                         <el-button size="small" @click='click_modify(scope.row)'>修改</el-button>
-                                        <el-button type="danger" size="small" @click='delete_var(scope.row)'>删除</el-button>
+                                        <el-button type="danger" size="small" @click='delete_var(scope.row)'>删除
+                                        </el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -137,7 +138,7 @@
                     <el-input v-model="relyForm.var_val"></el-input>
                 </el-form-item>
                 <el-form-item label="说明" prop="var_des">
-                    <el-input  v-model="relyForm.var_des"></el-input>
+                    <el-input v-model="relyForm.var_des"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -171,13 +172,14 @@
                                         prop="opera"
                                         label="操作">
                                     <template slot-scope="scope">
-                                        <el-button type="danger" size="small" @click='delete_rely(scope.row)'>删除</el-button>
+                                        <el-button type="danger" size="small" @click='delete_rely(scope.row)'>删除
+                                        </el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
                         </div>
                         <div class="button">
-                            <el-button><i class="el-icon-plus" @click="dialogFormVisible3 = true"></i>添加依赖</el-button>
+                            <el-button @click="dialogFormVisible3 = true"><i class="el-icon-plus"></i>添加依赖</el-button>
                         </div>
                     </div>
                 </el-col>
@@ -187,26 +189,33 @@
             <el-form :model="addrelyForm" staus-icon ref="ruleForm" class="demo-ruleForm"
                      label-position="left" label-width="80px">
                 <el-form-item label="依赖名" prop="rely_name">
-                    <el-input :disabled="true" v-model="addrelyForm.rely_name"></el-input>
+                    <el-input v-model="addrelyForm.rely_name"></el-input>
                 </el-form-item>
-                <el-form-item label="所属组" prop="rely_group">
-                    <el-input v-model="addrelyForm.rely_group"></el-input>
+                <el-form-item label="依赖于">
+                <el-select v-model="addrelyForm.selectApp" placeholder="请选择要依赖的信息">
+                    <el-option
+                            v-for="item in groupApps"
+                            :key="item.appId"
+                            :label="item.name"
+                            :value="item.appId">
+                    </el-option>
+                </el-select>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible2 = false" @click.native="add_rely">确 定
+                <el-button @click="dialogFormVisible3 = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible3 = false" @click.native="add_rely">确 定
                 </el-button>
             </div>
         </el-dialog>
     </div>
-
-
 </div>
 <script>
     var rely = new Vue({
         el: '#rely',
         data: {
+            groupApps: [],
+            appGroupId: null,
             connectInfo: [],
             ruleForm: {
                 var_name: '',
@@ -219,8 +228,8 @@
                 var_des: ''
             },
             addrelyForm: {
-              rely_name: '',
-              rely_grooup: '',
+                rely_name: '',
+                selectApp: '',
             },
             relyTableData: [],
             dialogFormVisible: false,
@@ -229,15 +238,30 @@
 
         },
         methods: {
+            info_of_restart() {
+                this.$confirm('此操作需重启方能生效,请重启', '提示', {
+                    confirmButtonText: '好的',
+                    type: 'info'
+                })
+            },
+            get_groupapp() {
+                $.ajax({
+                    type: 'get',
+                    url: "/tianyu-paas/app-groups/" + rely.appGroupId,
+                    success: function (result) {
+                        console.log(result.data);
+                        rely.groupApps = result.data;
+                    }
+                })
+            },
             add_rely() {
-               /* $.ajax({
+                $.ajax({
                     type: 'post',
                     url: '/tianyu-paas/app-relys',
                     data: {
                         appId: appinfo.app_id,
-                        varName: this.ruleForm.var_name,
-                        varValue: this.ruleForm.var_val,
-                        varExplain: this.ruleForm.var_des
+                        relyId: rely.addrelyForm.selectApp,
+                        relyGroupId: rely.appGroupId
                     },
                     success: function (data) {
                         console.log(data);
@@ -258,10 +282,10 @@
                     error: function () {
 
                     }
-                })*/
+                })
             },
             delete_rely(row) {
-                this.$confirm('此操作将永久删除该依赖, 是否继续?', '提示', {
+                rely.$confirm('此操作将永久删除该依赖, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -274,10 +298,18 @@
                         },
 
                         success: function (result) {
-                            appinfo.$message({
-                                message: '删除成功!',
-                                type: 'success'
-                            });
+                            if (result.code === 1) {
+                                appinfo.$message({
+                                    message: '删除依赖成功!',
+                                    type: 'success'
+                                });
+                                rely.relyInit();
+                            } else {
+                                rely.$message({
+                                    message: data.message,
+                                    type: 'warning'
+                                })
+                            }
                         },
                         error: function () {
 
@@ -285,18 +317,15 @@
                     })
                 })
             },
-            click_modify(row){
+            click_modify(row) {
                 rely.relyForm.var_name = row.varName;
                 rely.relyForm.var_val = row.varValue;
                 rely.relyForm.var_des = row.varExplain;
-                console.log(row);
-                rely.dialogFormVisible2=true;
+                rely.dialogFormVisible2 = true;
             },
             modify_var() {
                 let that = this;
-
-                console.log("adada")
-                console.log(rely.relyForm);
+                rely.info_of_restart();
                 let val = [{
                     appId: appinfo.app_id,
                     varName: rely.relyForm.var_name,
@@ -315,12 +344,12 @@
                         varExplain: rely.relyForm.var_des
                     },
                     success: function (data) {
-                        console.log(data);
                         if (data.code === 1) {
                             rely.$message({
                                 message: '修改成功',
                                 type: 'success'
                             });
+                            rely.relyInit();
                             that.relyTableData.push(val[0])
                         } else {
                             rely.$message({
@@ -336,8 +365,8 @@
                 })
             },
             delete_var(row) {
-                console.log(row);
-                this.$confirm('此操作将永久删除该变量, 是否继续?', '提示', {
+                rely.info_of_restart();
+                rely.$confirm('此操作将永久删除该变量, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -350,10 +379,18 @@
                         },
 
                         success: function (result) {
-                            appinfo.$message({
-                                message: '删除成功!',
-                                type: 'success'
-                            });
+                            if (result.code === 1) {
+                                appinfo.$message({
+                                    message: '删除成功!',
+                                    type: 'success'
+                                });
+                                rely.relyInit();
+                            } else {
+                                rely.$message({
+                                    message: data.message,
+                                    type: 'warning'
+                                })
+                            }
                         },
                         error: function () {
 
@@ -363,7 +400,7 @@
             },
             relyInit() {
                 let that = this;
-
+                //获取变量信息
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/app-vars/' + appinfo.app_id,
@@ -377,22 +414,40 @@
 
                     }
                 });
+                //获取依赖信息
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/app-relys/' + appinfo.app_id,
                     success: function (data) {
                         if (data.code === 1) {
                             that.relyTableData = data.data;
-                            console.log(that.relyTableData);
                             let result = data.data;
                         }
                     },
                     error: function () {
 
                     }
+                });
+                //获取分组信息
+                $.ajax({
+                    type: 'get',
+                    url: '/tianyu-paas/apps/' + appinfo.app_id,
+                    success: function (result) {
+                        if (result.code === 1) {
+                            rely.appGroupId = result.data.appGroupId;
+                            rely.get_groupapp();
+                        }
+                    },
+                    error: function () {
+                        rely.$message({
+                            message: '容器已经关闭',
+                            type: 'warning'
+                        });
+                    }
                 })
             },
             addVar() {
+                rely.info_of_restart();
                 let that = this;
                 let val = [{
                     appId: appinfo.app_id, varName: this.ruleForm.var_name,
@@ -433,7 +488,7 @@
             }
         },
         mounted() {
-            this.relyInit()
+            this.relyInit();
         }
     });
 </script>
