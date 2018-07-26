@@ -5,10 +5,8 @@
         </el-form-item>
         <el-form-item label="应用组:">
             <el-select class="select-group" v-model="formLabelAlign.group" placeholder="选择应用组">
-
-                <el-option v-for="(item, index) in labelArr" :value="item"
-                           :label="item">
-
+                <el-option v-for="item in labelArr" :value="item.appGroupId"
+                           :label="item.groupName">
                 </el-option>
             </el-select>
             <el-button @click="dialogFormVisible = true" class="add-group-button">新建</el-button>
@@ -46,8 +44,7 @@
                     group: '',
                     order: '',
                 },
-                labelArr: [
-                ],
+                labelArr: [],
                 dialogFormVisible: false,
                 ruleForm: {
                     gruop_name: '',
@@ -93,10 +90,7 @@
                     url: 'app-groups',
                     dataType: "json",
                     success: function (result) {
-
-                        for (var i = 0; i < result.data.length; i++) {
-                            that.labelArr.push(result.data[i].groupName);
-                        }
+                        that.labelArr = result.data;
                     },
                     error: function () {
                         console.log('fail')
@@ -120,17 +114,16 @@
                                 type: 'success'
                             })
                         }
-                        else
-                            {
-                                alert(result.message)
-                            }
+                        else {
+                            alert(result.message)
                         }
+                    }
                     ,
-                        error: function () {
-                            console.log('fail')
-                        }
+                    error: function () {
+                        console.log('fail')
+                    }
 
-                    }, form_4)
+                }, form_4)
             }
         },
         mounted() {

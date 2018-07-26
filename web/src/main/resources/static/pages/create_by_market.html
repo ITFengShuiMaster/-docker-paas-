@@ -51,7 +51,7 @@
             <el-row :gutter="60">
                 <el-col :span="8" :xs="24" :sm="11" :md="9" :lg="8" v-for="item in apps" :key="item.marketAppId"
                         style="height: 100px;margin: 20px 0px;">
-                    <el-card :body-style="{ padding: '0px' }" style="width: 300px">
+                    <el-card :body-style="{ padding: '0px' }" style="width: 380px">
                         <img :src="item.imageBase64" style="width: 28%; float: left;">
                         <div style="padding: 20px;">
                             <span style="font-size: 22px;margin-left: 50px">
@@ -70,18 +70,18 @@
                 </el-col>
             </el-row>
         </div>
-        <div class="block">
-            <el-pagination
-                    style="margin-top: 10px"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :current-page="currentPage"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="10"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="pagenum">
-            </el-pagination>
-        </div>
+        <!--<div class="block">-->
+            <!--<el-pagination-->
+                    <!--style="margin-top: 10px"-->
+                    <!--@size-change="handleSizeChange"-->
+                    <!--@current-change="handleCurrentChange"-->
+                    <!--:current-page="currentPage"-->
+                    <!--:page-sizes="[10, 20, 30, 40]"-->
+                    <!--:page-size="10"-->
+                    <!--layout="total, sizes, prev, pager, next, jumper"-->
+                    <!--:total="pagenum">-->
+            <!--</el-pagination>-->
+        <!--</div>-->
 
     </div>
     <el-dialog :visible.sync="outerVisible">
