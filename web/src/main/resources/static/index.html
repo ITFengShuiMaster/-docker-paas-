@@ -128,7 +128,7 @@
                     </el-popover>
                 </el-col>
                 <el-col :span="2" align="right">
-                    <img src="img/logo.png">
+                    <img src="headImg">
                     <el-dropdown @command="handleCommand">
                         <span style="font-size: 18px; color: #409EFF;">{{username}}</span>
                         <el-dropdown-menu slot="dropdown">
@@ -167,7 +167,7 @@
             // 左侧导航栏的应用组和组里的app
             groups_apps: [],
             id: 1,
-            imageUrl: '',
+            headImg: '',
             username: '',
             isCollapse: false,
             pageArr: ['pages/home.html', 'pages/create_by_code.html', 'pages/create_by_docker.html', 'pages/create_by_market.html', 'pages/appinfo.html'],
@@ -227,6 +227,7 @@
                     success: function (result) {
                         if (result.code === 1) {
                             vm.username = result.data.name;
+                            vm.headImg = result.data.headImg;
                             vm.getCookie("name");
                             vm.delCookie("name")
                         } else {

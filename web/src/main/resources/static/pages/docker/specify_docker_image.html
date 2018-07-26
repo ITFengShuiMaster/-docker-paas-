@@ -90,7 +90,7 @@
                     url: 'app-groups',
                     dataType: "json",
                     success: function (result) {
-                        that.labelArr == result.data;
+                        that.labelArr = result.data;
                     },
                     error: function () {
                         console.log('fail')
