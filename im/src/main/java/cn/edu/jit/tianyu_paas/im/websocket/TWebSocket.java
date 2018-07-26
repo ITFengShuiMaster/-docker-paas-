@@ -170,6 +170,6 @@ public class TWebSocket {
             userMap.get(userId).getBasicRemote().sendText(JSON.toJSONString(offlineMessages));
         }
         // 将离线 消息删掉
-        offlineMessageService.delete(new EntityWrapper<OfflineMessage>().eq("receiver", MinaConstant.CUSTOMER_SERVICE_ID));
+        offlineMessageService.delete(new EntityWrapper<OfflineMessage>().eq("receiver", userId));
     }
 }

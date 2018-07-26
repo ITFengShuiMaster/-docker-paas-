@@ -129,6 +129,8 @@
                 })
             },
             addApp() {
+                $('#content').load("pages/examine.html", function (response, message, xhr) {
+                });
                 console.log(this.formLabelAlign.group);
                 $.ajax({
                     type: 'post',
@@ -139,7 +141,8 @@
                         demoId: this.formLabelAlign.demo,
                     },
                     success: function (result) {
-                        if (result.code == 1) {
+                        console.log(result);
+                        if (result.code === 1) {
                             create_by_demo.$message({
                                 message: '新建应用成功',
                                 type: 'success'
