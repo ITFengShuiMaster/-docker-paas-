@@ -155,43 +155,46 @@
             },
 
             getMessageCode() {
-                var that = this
-                this.flag = false
-                var codeTime = 60
-                sessionStorage.setItem("codeTime",codeTime)
+                var that = this;
+                this.flag = false;
+                var codeTime = 60;
+                sessionStorage.setItem("codeTime", codeTime);
                 var code_timer = setInterval(() => {
-                    codeTime--
-                    sessionStorage.setItem("codeTime",codeTime)
-                    that.code_time = sessionStorage.getItem("codeTime")
-                    console.log(that.code_time)
+                    codeTime--;
+                    sessionStorage.setItem("codeTime", codeTime);
+                    that.code_time = sessionStorage.getItem("codeTime");
+                    console.log(that.code_time);
                     if(codeTime<=0) {
-                        that.flag = true
+                        that.flag = true;
                         clearInterval(code_timer)
                     }
                 },1000);
                 $.ajax({
                     type:'get',
-                    url:'',
-                    success:function (data) {
-                        console.log(data)
-                    },
-                    error:function () {
-                        console.log(error)
+                    url: '/users/phone-code/' + this.User.phone,
+                    success: function (TResultCode) {
+                        console.log("the reult is " + TResultCode.code);
+                        if (TResultCode.code == 1) {
+                            alert("获取成功")
+                        }
+                        else {
+                            alert(TResultCode.message)
+                        }
                     }
                 })
             },
             getSessionCode() {
-                var that = this
+                var that = this;
                 if(sessionStorage.getItem('codeTime') >=0 )
-                    this.flag = false
-                    var codeTime = sessionStorage.getItem('codeTime')
+                    this.flag = false;
+                var codeTime = sessionStorage.getItem('codeTime');
                     var code_timer = setInterval(() => {
-                        codeTime--
-                        sessionStorage.setItem("codeTime",codeTime)
-                        that.code_time = sessionStorage.getItem("codeTime")
-                        console.log(that.code_time)
+                        codeTime--;
+                        sessionStorage.setItem("codeTime", codeTime);
+                        that.code_time = sessionStorage.getItem("codeTime");
+                        console.log(that.code_time);
                         if(codeTime<=0) {
-                            that.flag = true
+                            that.flag = true;
                             clearInterval(code_timer)
                         }
                     },1000);
@@ -228,4 +231,4 @@
     })
 </script>
 </body>
-</html>-
+</html>
