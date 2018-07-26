@@ -110,7 +110,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     public TResult registerAndActiveUserByPhone(User user, String phoneVerifyCode) {
         PhoneVerificationCode phoneVerificationCode = phoneVerificationCodeService.selectOne(new EntityWrapper<PhoneVerificationCode>()
                 .eq("phone", user.getPhone()).and().eq("phone_code", phoneVerifyCode));
-        if(StringUtil.isEmpty(phoneVerifyCode)) {
+        if (StringUtil.isEmpty(phoneVerifyCode)) {
             return TResult.failure("请填写验证码");
         }
         if (System.currentTimeMillis() - phoneVerificationCode.getGmtCreate().getTime() > Constants.PHONE_VERIFY_CODE_MAX_VALID) {
@@ -133,11 +133,13 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     @Override
     public boolean insert(User entity) {
         // 先通过微服务向im中进行注册
-        TResult tResult = feignTianyuIm.createImUser(entity.getName(), entity.getPhone(), entity.getEmail(), entity.getPwd(), User.TYPE_COMMON_USER, "");
+        TResult tResult = feignTianyuIm.createImUser(entity.getName(), entity.getPhone(), entity.getEmail(), entity.getPwd(), User.TYPE_COMMON_USER, null);
         if (!tResult.getCode().equals(TResultCode.SUCCESS.getCode())) {
             LOGGER.error("在im中注册用户失败！");
             return false;
         }
+        long userId = (int) tResult.getData();
+        entity.setUserId(userId);
         if (super.insert(entity)) {
             // 同时生成dynamic表信息
             UserDynamic userDynamic = new UserDynamic();
