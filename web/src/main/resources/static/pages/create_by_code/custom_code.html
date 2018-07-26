@@ -103,6 +103,8 @@
 
             },
             addGroup() {
+                var that = this;
+
                 $.ajax({
                     type: "post",
                     url: 'app-groups',
@@ -112,6 +114,7 @@
                     success: function (TResultCode) {
                         if (TResultCode.code == 1) {
                             alert("新建组成功");
+                            that.labelArr = [];
                             custom_source_code.appList();
                         }
                         else {
