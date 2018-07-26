@@ -1,6 +1,5 @@
 package cn.edu.jit.tianyu_paas.web.controller;
 
-
 import cn.edu.jit.tianyu_paas.shared.entity.Notice;
 import cn.edu.jit.tianyu_paas.shared.entity.UserNotice;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
@@ -59,7 +58,9 @@ public class UserNoticeController {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         for (Notice notice : notices) {
             UserNotice userNotice = userNoticeService.selectOne(new EntityWrapper<UserNotice>().eq("user_id", userId).eq("notice_id", notice.getNoticeId()));
-            notice.setStatus(userNotice.getStatus());
+            if (userNotice != null) {
+                notice.setStatus(userNotice.getStatus());
+            }
         }
         return TResult.success(notices);
     }

@@ -122,7 +122,7 @@
                                     <el-button label="Error日志" size="small" @click="getErrorLog(item.actionId,index)">
                                         Error日志
                                     </el-button>
-                                    <p v-for="(detail) in actionList[index].details">{{detail.content}}</p>
+                                    <p v-for="(detail) in item.details">{{detail.content}}</p>
                                 </el-collapse-item>
                             </el-collapse>
                         </el-col>
@@ -169,6 +169,7 @@
             },
             //获取单个操作日志的Info日志
             getInfoLog(action_id, index) {
+                overview.actionList[index].details = ['正在加载'];
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/actions/detail',
@@ -180,7 +181,6 @@
                     success: function (data) {
                         console.log(data);
                         overview.actionList[index].details = data.data;
-                        console.log(index);
                         console.log(overview.actionList[index].details);
                     },
                     error: function () {
@@ -190,6 +190,7 @@
             },
             //获取单个操作日志的Debug日志
             getDebugLog(action_id, index) {
+                overview.actionList[index].details = [];
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/actions/detail',
@@ -208,6 +209,7 @@
             },
             //获取单个操作日志的Error日志
             getErrorLog(action_id, index) {
+                overview.actionList[index].details = [];
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/actions/detail',

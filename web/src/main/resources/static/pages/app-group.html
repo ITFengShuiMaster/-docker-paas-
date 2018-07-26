@@ -154,7 +154,7 @@
                 web.ajax({
                     url: web.url.batchStartApp,
                     data: {
-                        appIds: appGroup.selectAppsId
+                        appIds: appGroup.selectAppsId.join()
                     },
                     type: 'post',
                     success: function (res) {
@@ -171,7 +171,7 @@
                 web.ajax({
                     url: web.url.batchStopApp,
                     data: {
-                        appIds: appGroup.selectAppsId
+                        appIds: appGroup.selectAppsId.join()
                     },
                     type: 'post',
                     success: function (res) {
@@ -188,7 +188,7 @@
                 web.ajax({
                     url: web.url.batchRestartApp,
                     data: {
-                        appIds: appGroup.selectAppsId
+                        appIds: appGroup.selectAppsId.join()
                     },
                     type: 'post',
                     success: function (res) {

@@ -140,6 +140,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
         long userId = (int) tResult.getData();
         entity.setUserId(userId);
+        entity.setPwd(PassUtil.getMD5(entity.getPwd()));
         if (super.insert(entity)) {
             // 同时生成dynamic表信息
             UserDynamic userDynamic = new UserDynamic();
