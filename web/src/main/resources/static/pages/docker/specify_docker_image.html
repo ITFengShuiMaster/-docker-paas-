@@ -6,8 +6,8 @@
         <el-form-item label="应用组:">
             <el-select class="select-group" v-model="formLabelAlign.group" placeholder="选择应用组">
 
-                <el-option v-for="(item, index) in labelArr" :key="item.index" :value="item.id"
-                           :label="item.label">
+                <el-option v-for="(item, index) in labelArr" :value="item"
+                           :label="item">
 
                 </el-option>
             </el-select>
@@ -46,7 +46,6 @@
                     address: ''
                 },
                 labelArr: [
-                    {label: '', id: ''}
                 ],
                 dialogFormVisible: false,
                 ruleForm: {
@@ -62,6 +61,8 @@
         },
         methods: {
             addGroup() {
+                var that = this;
+                that.labelArr = [];
                 $.ajax({
                     type: "post",
                     url: 'app-groups',
@@ -94,16 +95,7 @@
                     success: function (result) {
 
                         for (var i = 0; i < result.data.length; i++) {
-                            // console.log(result.data[i].appGroupId);
-                            var obj = that.labelArr[0];
-                            var testObj = {label: "", id: ""};
-                            obj.label = result.data[i].groupName;
-                            obj.id = result.data[i].appGroupId;
-
-                            testObj.label = obj.label;
-                            testObj.id = obj.id;
-
-                            that.labelArr.push(testObj);
+                            that.labelArr.push(result.data[i].groupName);
                         }
                     },
                     error: function () {
