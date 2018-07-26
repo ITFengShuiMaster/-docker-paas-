@@ -42,9 +42,8 @@
             , avatar: '' //头像
             , id: 111 //定义唯一的id方便你处理信息
         };
-        // layim.chat(newChat);
-        // layim.chat(chats);
-        // layim.setChatMin(); //收缩聊天面板
+        layim.chat(newChat);
+        layim.setChatMin(); //收缩聊天面板
 
         var websocket = null;
         if ('WebSocket' in window) {
