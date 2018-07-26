@@ -98,6 +98,7 @@ public class AppController {
     private void initAction(Action action, App app) {
         User user = userService.selectById((Long) session.getAttribute(Constants.SESSION_KEY_USER_ID));
         action.setUserId(user.getUserId());
+        action.setUserId(user.getUserId());
         action.setUserName(user.getName());
         action.setAppId(app.getAppId());
         action.setAppName(app.getName());

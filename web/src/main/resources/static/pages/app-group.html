@@ -82,13 +82,13 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="primary"
+                        <el-button size="mini" type="primary" :disabled="scope.row.status !== 0"
                                    @click="startApp(scope.row.appId)">启动
                         </el-button>
                         <el-button size="mini" type="success"
                                    @click="restartApp(scope.row.appId)">重启
                         </el-button>
-                        <el-button size="mini" type="warning"
+                        <el-button size="mini" type="warning" :disabled="scope.row.status === 0"
                                    @click="stopApp(scope.row.appId)">关闭
                         </el-button>
                         <el-button size="mini" type="danger"

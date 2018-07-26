@@ -373,14 +373,14 @@
                         console.log('open');
                         // var user = JSON.parse(sessionStorage.user);
                         var authMessage = {};
-                        authMessage.username = 'test1';
-                        authMessage.password = 'test';
+                        authMessage.username = sessionStorage.username;
+                        authMessage.password = sessionStorage.password;
                         websocket.send(JSON.stringify(authMessage));
                     };
 
                     websocket.onmessage = function (res) {
                         console.log(res.data);
-                        var jsonObject = JSON.parse(event.data);
+                        var jsonObject = JSON.parse(res.data);
                         if (jsonObject.messageType === 'COMMON') {
                             var message = {};
                             var senderUser = jsonObject.senderUser;
@@ -425,6 +425,21 @@
                     // TODO 获取用户信息
                     // let user = JSON.parse(sessionStorage.user);
                     let mine = {};
+                    $.ajax({
+                        type: "get",
+                        url: 'http://localhost:8080/tianyu-paas/users/info',
+                        data: {},
+                        success: function (result) {
+                            if (result.code === 1) {
+                                mine.username=result.data.name;
+                                mine.id=result.
+                            } else {
+                            }
+                        },
+                        error: function () {
+                            console.log("失败")
+                        }
+                    })
                     mine.username = '用户1';
                     mine.id = 11;
                     mine.status = "online";

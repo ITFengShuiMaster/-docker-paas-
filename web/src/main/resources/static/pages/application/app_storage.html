@@ -170,6 +170,7 @@
                 })
             },
             exported(row) {
+                console.log('export', row);
                 $.ajax({
                     type: 'post',
                     url: '/tianyu-paas/apps/mount-export',
@@ -178,6 +179,7 @@
                         containerMount: row.containerMountName
                     },
                     success: function (result) {
+                        console.log(result);
                         window.open(result.data);
                     },
                     error: function () {

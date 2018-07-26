@@ -119,6 +119,8 @@
                     success: function (TResultCode) {
                         if (TResultCode.code === 1) {
                             login.setCookie("name", login.User.name);
+                            sessionStorage.username = login.User.name;
+                            sessionStorage.password = login.User.pass;
                             location.href = 'index.html'
                         }
                         else {

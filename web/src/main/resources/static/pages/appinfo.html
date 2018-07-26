@@ -131,9 +131,9 @@
             <div class="buttonGroup">
                 <el-button @click="open()">开启</el-button>
                 <el-button @click="close()">关闭</el-button>
-                <el-button style="margin-left: 25px" @click="exported_container()" type="primary">导出</el-button>
+                <el-button style="margin-left: 25px" @click="exported_container()" type="success">导出</el-button>
                 <el-button @click="delete_container()" type="danger">删除</el-button>
-                <el-button @click="open_ssh()">命令行</el-button>
+                <el-button @click="open_ssh()" type="info">命令行</el-button>
             </div>
             <el-button type="primary" style="margin-left: 25px" @click="restart()">重新部署</el-button>
         </div>
