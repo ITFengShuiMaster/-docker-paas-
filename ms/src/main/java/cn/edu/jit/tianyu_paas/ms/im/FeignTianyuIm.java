@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient("tianyu-paas-im")
+@FeignClient(name = "tianyu-paas-im", url = "http://localhost:8762/im")
 @Service
 public interface FeignTianyuIm {
 

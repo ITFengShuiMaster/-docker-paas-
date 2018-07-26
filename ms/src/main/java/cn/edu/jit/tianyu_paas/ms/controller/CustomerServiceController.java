@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 /**
  * @author 汪继友
@@ -39,6 +40,8 @@ public class CustomerServiceController {
         TResult tResult = feignTianyuIm.createCustomerService(customerServiceStaff.getNick(), customerServiceStaff.getPhone(), customerServiceStaff.getEmail(),
                 customerServiceStaff.getPwd(), User.TYPE_CUSTOMER_SERVICE, "");
         if (tResult.getCode().equals(TResultCode.SUCCESS.getCode())) {
+            customerServiceStaff.setGmtCreate(new Date());
+            customerServiceStaff.setGmtModified(new Date());
             if (customerServiceStaffService.insert(customerServiceStaff)) {
                 return TResult.success();
             }
@@ -78,6 +81,7 @@ public class CustomerServiceController {
         TResult tResult = feignTianyuIm.updateCustomerService(customerServiceStaff.getCustomerServiceStaffId(), customerServiceStaff.getNick(), customerServiceStaff.getPhone(),
                 customerServiceStaff.getEmail(), customerServiceStaff.getPwd(), User.TYPE_CUSTOMER_SERVICE, "");
         if (tResult.getCode().equals(TResultCode.SUCCESS.getCode())) {
+            customerServiceStaff.setGmtModified(new Date());
             if (customerServiceStaffService.updateById(customerServiceStaff)) {
                 return TResult.success();
             }

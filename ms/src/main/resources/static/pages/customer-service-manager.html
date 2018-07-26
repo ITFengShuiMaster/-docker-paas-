@@ -8,7 +8,7 @@
         <p>查询所有用户信息，根据搜索条件进行排序</p>
     </div>
     <i-button type="success" style="margin-left: 20px" @click="addFlag=true" size="large">添加客服</i-button>
-    <i-table stripe border show-header highlight-row height="200" style="margin-top: 20px"
+    <i-table stripe border show-header highlight-row style="margin-top: 20px"
              :columns="column_customer" :data="customer_services_data"></i-table>
     <div style="margin: 10px;overflow: hidden">
         <div style="float: right;">
@@ -16,7 +16,7 @@
                   @on-change="changePage"></Page>
         </div>
     </div>
-    <Modal v-model="show_customer_service" :loading="updating" @on-ok="updateCustomerService()">
+    <Modal v-model="show_customer_service" @on-ok="updateCustomerService()">
         <p slot="header" style="text-align:center; color: #2D8CF0">
             <Icon type="information-circled"></Icon>
             <span>编辑客服信息</span>
@@ -49,7 +49,7 @@
             </div>
         </div>
     </Modal>
-    <Modal v-model="addFlag" :loading="updating" @on-ok="addCustomerService()">
+    <Modal v-model="addFlag" @on-ok="addCustomerService()">
         <p slot="header" style="text-align:center; color: #2D8CF0">
             <Icon type="information-circled"></Icon>
             <span>添加客服信息</span>
@@ -102,7 +102,6 @@
             // 当前要查看的客服信息，因为render的代码太长，所以用v-model
             current_customer_service: {},
             show_customer_service: false,
-            updating: false,
             // 列名（表头）
             column_customer: [
                 {
@@ -171,7 +170,6 @@
                                         customer_service.$Modal.confirm({
                                             title: 'Title',
                                             content: '是否确认删除客服信息？<p>删除后无法恢复!</p>',
-                                            loading: true,
                                             onOk: () => {
                                                 customer_service.deleteCustomerService(params.row.customerServiceStaffId);
                                             },
@@ -205,9 +203,7 @@
                         pwd: customer_service.current_customer_service.pwd,
                     },
                     success: function (res) {
-                        if (res.code === ms.result.success) {
-                            customer_service.customer_services_data = res.data.records;
-                        }
+                        customer_service.initCustomerServicesList();
                     },
                 }, this);
             },
