@@ -114,7 +114,7 @@
             },
             addApp() {
                 console.log("docker_run");
-                $.ajax({
+                web.ajax({
                     type: 'post',
                     url: '/tianyu-paas/apps/docker-run',
                     data: {
@@ -134,7 +134,7 @@
                         console.log('fail')
                     }
 
-                })
+                }, form_4)
             }
         },
         mounted() {
