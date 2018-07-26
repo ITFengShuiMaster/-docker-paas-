@@ -96,8 +96,8 @@
                         key: 'content'
                     },
                     {
-                        title: '创建者id',
-                        key: 'adminId'
+                        title: '创建者',
+                        key: 'adminName'
                     },
                     {
                         title: '操作',
@@ -221,14 +221,14 @@
 
             show(index) {
                 this.$Modal.info({
-                    content: `<p class="m">公告标题：${this.data1[index].title}</p><br><p class="m">公告内容：${this.data1[index].content}</p><br><p class="m">创建者：${this.data1[index].adminId}</p><br>`
+                    content: `<p class="m">公告标题：${this.data1[index].title}</p><br><p class="m">公告内容：${this.data1[index].content}</p><br><p class="m">创建者：${this.data1[index].adminName}</p><br>`
                 })
             },
             remove(index) {
                 this.$Modal.confirm({
                     content: '是否确认删除？',
                     onOk: () => {
-                        this.deleteNotice(this.data1[index].noticeId)
+                        this.deleteNotice(this.data1[index].noticeId);
                         this.data1.splice(index, 1);
                         this.$Message.info('已删除');
 
@@ -247,7 +247,7 @@
             createNotice() {
                 var that = this;
                 var t = [{
-                    adminId:1,
+                    adminName: 1,
                     content:this.input_content,
                     gmtCreate:new Date(),
                     noticeId:'',

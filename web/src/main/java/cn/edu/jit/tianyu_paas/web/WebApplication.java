@@ -24,6 +24,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class WebApplication implements WebMvcConfigurer {
 
     public static void main(String[] args) {
+
         SpringApplication.run(WebApplication.class, args);
     }
 
