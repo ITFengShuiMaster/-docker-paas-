@@ -1,8 +1,11 @@
 package cn.edu.jit.tianyu_paas.ms;
 
 import cn.edu.jit.tianyu_paas.ms.global.GlobalInterceptor;
+import cn.edu.jit.tianyu_paas.shared.global.PublicConstants;
 import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
+import com.rabbitmq.client.AMQP;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.amqp.core.Queue;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -38,7 +41,7 @@ public class MsApplication implements WebMvcConfigurer {
         registry.addInterceptor(globalInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login.html")
-                .excludePathPatterns("/admin/login")
+                .excludePathPatterns("/admins/login")
                 .excludePathPatterns("/js/**", "/lib/**", "/img/**")
                 .excludePathPatterns("/error");
     }
@@ -55,5 +58,10 @@ public class MsApplication implements WebMvcConfigurer {
     @LoadBalanced
     RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public Queue queue() {
+        return new Queue(PublicConstants.RABBITMQ_QUEUE_NAME);
     }
 }

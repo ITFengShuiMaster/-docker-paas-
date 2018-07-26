@@ -105,7 +105,7 @@ public class UserController {
      * @since 2018-07-07
      */
     @ApiOperation("删除用户")
-    @DeleteMapping("/{userId}")
+    @PostMapping("/{userId}")
     public TResult userDelete(@PathVariable("userId") long userId) {
         if (!userService.deleteById(userId)) {
             return TResult.failure(TResultCode.FAILURE);

@@ -78,9 +78,9 @@ public class MessageController {
         }
         if (!userMessageService.insertBatch(userMessages)) {
             // 发送消息到消息队列
-            rabbitTemplate.convertAndSend(PublicConstants.RABBITMQ_QUEUE_NAME, JSON.toJSONString(MQMessage.message(message, Arrays.asList(userIds))));
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
+        rabbitTemplate.convertAndSend(PublicConstants.RABBITMQ_QUEUE_NAME, JSON.toJSONString(MQMessage.message(message, Arrays.asList(userIds))));
         return TResult.success();
     }
 

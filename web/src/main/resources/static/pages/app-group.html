@@ -246,7 +246,7 @@
             deleteApp(id) {
                 web.ajax({
                     url: web.url.deleteApp + id,
-                    type: 'post',
+                    type: 'delete',
                     success: function (res) {
                         if (res.code === web.result.success) {
                             appGroup.$message.success(res.message);
@@ -307,7 +307,8 @@
             url: web.url.getAppRealtions + groupId,
             type: 'get',
             success: function (res) {
-                // console.log(res);
+                console.log('echarts');
+                console.log(res);
                 let appsName = [];
                 let relations = [];
                 if (res.code === web.result.success) {
@@ -318,8 +319,8 @@
                     }
                     let k = 0;
                     for (let i = 0; i < res.data.data.length; i++) {
-                        for (let j = 0; j < res.data.data.length - i - 1; j++) {
-                            if (res.data.data[i][j] === 0) {
+                        for (let j = 0; j <= res.data.data.length - i - 1; j++) {
+                            if (res.data.data[i][j] === 1 && i !== j) {
                                 // console.log(i, j);
                                 relations[k] = {};
                                 relations[k].source = res.data.appName[i];

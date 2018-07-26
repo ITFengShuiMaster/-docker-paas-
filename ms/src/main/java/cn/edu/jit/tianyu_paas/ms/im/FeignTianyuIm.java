@@ -20,6 +20,6 @@ public interface FeignTianyuIm {
     TResult updateCustomerService(@RequestParam("userId") long userId, @RequestParam("name") String name, @RequestParam("phone") String phone, @RequestParam("email") String email,
                                   @RequestParam("pwd") String pwd, @RequestParam("type") Integer type, @RequestParam("headImg") String headImg);
 
-    @DeleteMapping("/users/{userId}")
+    @PostMapping("/users/{userId}")
     TResult deleteUser(@PathVariable("userId") long userId);
 }

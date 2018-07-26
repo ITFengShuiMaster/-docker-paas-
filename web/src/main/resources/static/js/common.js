@@ -11,7 +11,7 @@ web.url = {
     startApp: web.baseUrl + 'apps/start/',
     stopApp: web.baseUrl + 'apps/stop/',
     restartApp: web.baseUrl + 'apps/restart-container/',
-    deleteApp: web.baseUrl + 'apps/delete/',
+    deleteApp: web.baseUrl + 'apps/',
     batchStartApp: web.baseUrl + 'apps/batch-start',
     batchStopApp: web.baseUrl + 'apps/batch-stop',
     batchRestartApp: web.baseUrl + 'apps/batch-restart',

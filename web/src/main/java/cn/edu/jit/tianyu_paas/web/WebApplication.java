@@ -1,9 +1,11 @@
 package cn.edu.jit.tianyu_paas.web;
 
+import cn.edu.jit.tianyu_paas.shared.global.PublicConstants;
 import cn.edu.jit.tianyu_paas.web.global.AppInterceptor;
 import cn.edu.jit.tianyu_paas.web.global.GlobalInterceptor;
 import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.amqp.core.Queue;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -67,5 +69,10 @@ public class WebApplication implements WebMvcConfigurer {
     @Bean
     public AppInterceptor appInterceptor() {
         return new AppInterceptor();
+    }
+
+    @Bean
+    public Queue queue() {
+        return new Queue(PublicConstants.RABBITMQ_QUEUE_NAME);
     }
 }
