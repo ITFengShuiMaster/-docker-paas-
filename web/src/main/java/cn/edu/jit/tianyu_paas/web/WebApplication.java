@@ -30,13 +30,13 @@ public class WebApplication implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(globalInterceptor())
-                .addPathPatterns("/**")
-                .excludePathPatterns("swagger**")
-                .excludePathPatterns("/login.html", "/register.html")
-                .excludePathPatterns("/js/**", "/lib/**", "/img/**")
-                .excludePathPatterns("/users/login", "/users/register")
-                .excludePathPatterns("/error");
+//        registry.addInterceptor(globalInterceptor())
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("swagger**")
+//                .excludePathPatterns("/login.html", "/register.html")
+//                .excludePathPatterns("/js/**", "/lib/**", "/img/**")
+//                .excludePathPatterns("/users/login", "/users/register")
+//                .excludePathPatterns("/error");
 
 //        registry.addInterceptor(appInterceptor())
 //                .addPathPatterns("/apps/**");
