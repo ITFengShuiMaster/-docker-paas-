@@ -153,7 +153,7 @@
         },
         methods: {
             get_app_inf(row) {
-                var that = this
+                var that = this;
                 $.ajax({
                     type: 'get',
                     url: 'apps',
@@ -166,18 +166,18 @@
                         app_management.Total = result.data.records.Total;
                         if (result.code === 1) {
                            for(var i=0;i<result.data.records.length;i++) {
-                               that.table_data.push(result.data.records[i])
+                               that.table_data.push(result.data.records[i]);
                                if(that.table_data[i].status === 0) {
-                                   that.table_data[i].status = false
+                                   that.table_data[i].status = false;
                                    that.table_data[i].statusName="关闭"
                                }
                                else if(that.table_data[i].status === 1){
-                                   that.table_data[i].status = true
+                                   that.table_data[i].status = true;
                                    that.table_data[i].statusName="运行中"
 
                                }
                                else if(that.table_data[i].status === 2){
-                                   that.table_data[i].status = true
+                                   that.table_data[i].status = true;
                                    that.table_data[i].statusName="异常"
                                }
                            }

@@ -2,21 +2,40 @@
 <head>
     <meta charset="UTF-8">
     <title>容器cmd</title>
-	<link rel="stylesheet" href="lib/xterm/xterm.css"/>
-	<script type="application/javascript" src="lib/xterm/xterm.js"></script>
-	<script type="application/javascript" src="lib/xterm/attach.js"></script>
+    <link rel="stylesheet" href="lib/xterm/xterm.css"/>
+    <script type="application/javascript" src="lib/xterm/xterm.js"></script>
+    <script type="application/javascript" src="lib/xterm/attach.js"></script>
+    <script src="js/common.js"></script>
 </head>
 <body>
 <div style="width:100%;" id="xterm"></div>
 <script>
-    var url = window.location.href;
-    var containerId = url.substring(url.indexOf("containerId=") + 1);
-    var machineId = url.substring(url.indexOf("machineId=") + 1);
+    function getRequestParam() {
+        var url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for (var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        return theRequest;
+    }
+
+    var params = getRequestParam();
+    var containerId = params['containerId'];
+    var machineId = params['machine'];
     console.log("containerId= " + containerId);
+    console.log("machineId= " + machineId);
+    // console.log(web.url.websocketSSH + '?containerId=' + containerId + "&machineId=" + machineId);
 
     var term = new Terminal();
     term.open(document.getElementById('xterm'));
-    var socket = new WebSocket(web.websocketSSH + '?containerId=' + containerId + "&machineId=" + machineId);
+    // var width = document.body.clientWidth;
+    var width = document.body.clientWidth;
+    var height = document.body.clientHeight;
+    var socket = new WebSocket(web.url.websocketSSH + '?width=' + width + '&height=' + height + '&containerId=' + containerId + "&machineId=" + machineId);
     term.attach(socket);
     term.focus();
 </script>

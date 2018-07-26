@@ -5,7 +5,7 @@
     }
 
     .block {
-        margin: 5px;
+        margin: 10px;
         text-align: center;
     }
 
@@ -50,14 +50,14 @@
         <div>
             <el-row :gutter="60">
                 <el-col :span="8" :xs="24" :sm="11" :md="9" :lg="8" v-for="item in apps" :key="item.marketAppId"
-                        style="height: 160px;margin: 30px 0;">
-                    <el-card :body-style="{ padding: '0px' }">
+                        style="height: 100px;margin: 20px 0px;">
+                    <el-card :body-style="{ padding: '0px' }" style="width: 300px">
                         <img :src="item.imageBase64" style="width: 28%; float: left;">
                         <div style="padding: 20px;">
                             <span style="font-size: 22px;margin-left: 50px">
                                 {{item.name}}
                             </span><br>
-                            <span style="font-size: 16px;margin-left: 100px">
+                            <span style="font-size: 16px;margin-left: 100px; margin-bottom: 10px">
                                 version{{item.version}}
                             </span>
                             <div class="bottom clearfix">
@@ -72,6 +72,7 @@
         </div>
         <div class="block">
             <el-pagination
+                    style="margin-top: 10px"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="currentPage"
@@ -85,10 +86,10 @@
     </div>
     <el-dialog :visible.sync="outerVisible">
         <el-dialog
-				width="50%"
-				title="新建组"
-				:visible.sync="innerVisible"
-				append-to-body>
+                width="50%"
+                title="新建组"
+                :visible.sync="innerVisible"
+                append-to-body>
             <el-row>
                 <el-col :span="20">
                     <el-input v-model="inputname" placeholder="请输入组名"></el-input>
@@ -102,18 +103,18 @@
 
             <el-col :span="17">
                 <el-form>
-					<el-form-item label="应用名称" :label-width="formLabelWidth">
-						<el-input v-model="inputGroupName"></el-input>
-					</el-form-item>
+                    <el-form-item label="应用名称" :label-width="formLabelWidth">
+                        <el-input v-model="inputGroupName"></el-input>
+                    </el-form-item>
                     <el-form-item label="选择分组" :label-width="formLabelWidth">
                         <el-select v-model="select_group" placeholder="请选择分组">
                             <el-option :label="item.groupName" :value="item.appGroupId" v-for="item in groupNames"
                                        :key="item.appGroupId"></el-option>
                         </el-select>
-					</el-form-item>
-					<el-form-item :label-width="formLabelWidth">
-						<el-button @click="innerVisible = true;outerVisible = false">新建组</el-button>
-					</el-form-item>
+                    </el-form-item>
+                    <el-form-item :label-width="formLabelWidth">
+                        <el-button @click="innerVisible = true;outerVisible = false">新建组</el-button>
+                    </el-form-item>
                 </el-form>
             </el-col>
             <el-col :span="7">

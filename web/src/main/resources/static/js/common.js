@@ -17,7 +17,7 @@ web.url = {
     batchRestartApp: web.baseUrl + 'apps/batch-restart',
     getAppRealtions: web.baseUrl + 'app-relys/rely/',
 
-    websocketSSH: "ws://localhost:8080/tianyu-paas/websocket-ssh"
+    websocketSSH: "ws://localhost:8080/tianyu-paas/websocketssh"
 };
 
 web.result = {

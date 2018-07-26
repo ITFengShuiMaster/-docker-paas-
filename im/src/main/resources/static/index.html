@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>首页</title>
-	<link rel="stylesheet" href="lib/layui/css/layui.css">
-	<script src="lib/layui/layui.js"></script>
-	<script src="js/common.js"></script>
-	<!--<script src="js/websocket.js"></script>-->
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="lib/layui/css/layui.css">
+    <script src="lib/layui/layui.js"></script>
+    <script src="js/common.js"></script>
+    <!--<script src="js/websocket.js"></script>-->
 </head>
 <body>
 <script>
@@ -42,9 +42,8 @@
             , avatar: '' //头像
             , id: 111 //定义唯一的id方便你处理信息
         };
-        // layim.chat(newChat);
-        // layim.chat(chats);
-        // layim.setChatMin(); //收缩聊天面板
+        layim.chat(newChat);
+        layim.setChatMin(); //收缩聊天面板
 
         var websocket = null;
         if ('WebSocket' in window) {

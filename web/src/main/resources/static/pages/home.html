@@ -71,6 +71,11 @@
         font-size: 15px;
     }
 
+    .clear {
+        width: 100%;
+        height: 1px;
+        background: #909399;
+    }
 </style>
 
 
@@ -124,7 +129,7 @@
                     <span>已使用内存</span>
                 </div>
                 <div class="memoryNumNum ">
-                    <span>{{userAction.memoryUsed}}MB</span>
+                    <span>{{usedMemory}}MB</span>
                 </div>
             </div>
             <div class="diskNum titleInfo">
@@ -137,82 +142,80 @@
             </div>
         </div>
     </div>
+<el-row>
+    <el-col :span="18">
+    <div class="homeLeft">
+        <el-form :model="form" :inline="true">
+            <el-form-item label="应用名称:">
+                <el-input v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item label="应用状态:">
+                <el-select v-model="form.region" placeholder="应用状态">
+                    <el-option label="全部" value="all"></el-option>
+                    <el-option label="运行中" value="being"></el-option>
+                    <el-option label="已关闭" value="closed"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="search">查询</el-button>
+                <el-button>重置</el-button>
+            </el-form-item>
+        </el-form>
 
-    <el-row>
-        <el-col :span="16">
-        <div class="homeLeft">
-            <el-form :model="form" :inline="true">
-                <el-form-item label="应用名称:">
-                    <el-input v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item label="应用状态:">
-                    <el-select v-model="form.region" placeholder="应用状态">
-                        <el-option label="全部" value="all"></el-option>
-                        <el-option label="运行中" value="being"></el-option>
-                        <el-option label="已关闭" value="closed"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="search">查询</el-button>
-                    <el-button>重置</el-button>
-                </el-form-item>
-            </el-form>
-
-            <el-table
-                    :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
-                    style="width: 100%">
-                <el-table-column
-                        prop="name"
-                        label="应用名称"
-                        align="center"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="groupName"
-                        label="应用组"
-                        align="center"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="memoryUsed"
-                        label="内存"
-                        align="center"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="status"
-                        align="center"
-                        label="状态">
-                </el-table-column>
-            </el-table>
-            <div class="page">
-                <el-pagination
-                        @current-change="handleCurrentChange"
-                        background
-                        layout="prev, pager, next"
-                        :total="tableData.length">
-                </el-pagination>
+        <el-table
+                :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+                style="width: 100%">
+            <el-table-column
+                    prop="name"
+                    label="应用名称"
+                    align="center"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="groupName"
+                    label="应用组"
+                    align="center"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="memoryUsed"
+                    label="内存"
+                    align="center"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="status"
+                    align="center"
+                    label="状态">
+            </el-table-column>
+        </el-table>
+        <div class="page">
+            <el-pagination
+                    @current-change="handleCurrentChange"
+                    background
+                    layout="prev, pager, next"
+                    :total="tableData.length">
+            </el-pagination>
+        </div>
+    </div>
+    </el-col>
+    <el-col :span="6">
+    <div class="homeRight">
+        <div class="dynamicInfo">
+            <div class="dynamicTitle">
+                <span>动态</span>
+            </div>
+            <div>
+            <span style="text-align: center; display: block; height: 40px;" v-for="item in userAction">
+                <p style="padding-bottom: 5px">{{item.userName}} 在 {{item.gmtCreate}} {{item.actionName}} 容器<br></p>
+                <div class="clear"></div>
+            </span>
             </div>
         </div>
-        </el-col>
-        <el-col :span="2">
-
-        </el-col>
-        <el-col :span="6">
-        <div class="homeRight">
-            <div class="dynamicInfo">
-                <div class="dynamicTitle">
-                    <span>动态</span>
-                </div>
-                <div v-for="item in userAction">
-                    <span style="text-align: center" >{{item.userName}}在{{item.gmtCreate}}{{item.actionName}}容器<br></span>
-                </div>
-            </div>
-        </div>
-        </el-col>
-    </el-row>
+    </div>
+    </el-col>
+</el-row>
 </div>
-
 <script>
     var home = new Vue({
         el: '#home',
