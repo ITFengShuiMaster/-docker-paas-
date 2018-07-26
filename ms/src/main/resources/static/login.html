@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="lib/element/index.css">
+    <link rel="stylesheet" href="lib/fonts/font-awesome.css">
+    <script src="lib/vue/vue.min.js"></script>
+    <script src="lib/element/index.js"></script>
+    <script src="lib/jquery/jquery_3.3.1.js"></script>
+    <style>
+        .login-page-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: url("img/ms_background.jpg");
+        }
+
+        .demo-login {
+            background-color: #DCDFE6;
+            margin: 0 auto;
+            width: 350px;
+            height: 400px;
+            position: relative;
+            top: 35%;
+            right: 20%;
+            transform: translateY(-30%);
+            border-radius: 5px;
+        }
+
+        .login-form {
+            position: relative;
+            top: 25%;
+            transform: translateY(-25%);
+        }
+
+        .login-container {
+            width: 70%;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="login">
+    <div class="login-page-container">
+        <div class="demo-login">
+            <div class="login-form">
+                <el-form ref="User" status-icon :rules="Rules" :model="User" class="login-container">
+                    <p style="font-size: 17px;">登 录</p>
+                    <el-form-item prop="name">
+                        <el-input id="name" type="text" v-model="User.name" auto-complete="off" placeholder="请输入账号"
+                                  prefix-icon="fa fa-user fa-lg"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="pass">
+                        <el-input id="password" type="password" v-model="User.pass" auto-complete="off"
+                                  placeholder="请输入密码" prefix-icon="fa fa-lock fa-lg"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" style="width:100%" :loading="loading" @click="login">登录</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var validateUser = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('账号不能为空'));
+        } else {
+            callback();
+        }
+    };
+    var validatePass = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('密码不能为空'));
+        } else if (login.test) {
+            callback(new Error('密码错误'));
+        } else {
+            callback();
+        }
+    };
+    const login = new Vue({
+        el: '#login',
+        data: {
+            User: {
+                name: '',
+                pass: '',
+            },
+            Rules: {
+                name: [
+                    {validator: validateUser, trigger: 'blur'}
+                ],
+                pass: [
+                    {validator: validatePass, trigger: 'blur'}
+                ]
+            },
+            loading: false,
+            test: false
+        },
+        methods: {
+            setCookie(name, value) {
+                var exp = new Date();
+                exp.setTime(exp.getTime() + 60 * 60 * 1000);
+                document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";path=/";
+            },
+
+            login() {
+                $.ajax({
+                    type: "post",
+                    url: 'admins/login',
+                    data: {
+                        username: this.User.name,
+                        pwd: this.User.pass
+                    },
+                    success: function (TResultCode) {
+                        if (TResultCode.code === 1) {
+                            login.setCookie("name", login.User.name);
+                            location.href = 'index.html'
+                        }
+                        else {
+                            alert(TResultCode.message)
+                        }
+                    },
+                    error: function () {
+                        console.log("fail")
+                    }
+                })
+            },
+        },
+
+    })
+</script>
+</body>
+</html>
