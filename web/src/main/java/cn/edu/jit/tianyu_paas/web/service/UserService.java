@@ -133,7 +133,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     @Override
     public boolean insert(User entity) {
         // 先通过微服务向im中进行注册
-        TResult tResult = feignTianyuIm.createImUser(entity.getName(), entity.getPhone(), entity.getEmail(), entity.getPwd(), User.TYPE_COMMON_USER, entity.getHeadImg());
+        TResult tResult = feignTianyuIm.createImUser(entity.getName(), entity.getPhone(), entity.getEmail(), entity.getPwd(), User.TYPE_COMMON_USER, "");
         if (!tResult.getCode().equals(TResultCode.SUCCESS.getCode())) {
             LOGGER.error("在im中注册用户失败！");
             return false;

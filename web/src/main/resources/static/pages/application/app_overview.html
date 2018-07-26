@@ -159,7 +159,6 @@
                     success: function (data) {
                         var result = data.data;
                         if (data.code === 1) {
-                            result[0].details = [{content:'aa'}, {content:'aaa'}];
                             that.actionList = result;
                             that.appId = result.appId;
                             that.actionId = result.actionId
@@ -170,7 +169,6 @@
             },
             //获取单个操作日志的Info日志
             getInfoLog(action_id, index) {
-                overview.actionList[0].details = [{content:'aa'}, {content:'aaa'}];
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/actions/detail',
