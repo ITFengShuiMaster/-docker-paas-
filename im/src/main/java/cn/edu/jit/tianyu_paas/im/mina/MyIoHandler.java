@@ -4,13 +4,13 @@ import cn.edu.jit.tianyu_paas.im.entity.Message;
 import cn.edu.jit.tianyu_paas.im.entity.OfflineMessage;
 import cn.edu.jit.tianyu_paas.im.entity.User;
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
+import cn.edu.jit.tianyu_paas.im.message.AuthenticationMessage;
+import cn.edu.jit.tianyu_paas.im.message.CommonMessage;
+import cn.edu.jit.tianyu_paas.im.message.MinaMessage;
 import cn.edu.jit.tianyu_paas.im.service.MessageService;
 import cn.edu.jit.tianyu_paas.im.service.OfflineMessageService;
 import cn.edu.jit.tianyu_paas.im.service.UserService;
 import cn.edu.jit.tianyu_paas.im.util.SpringBeanFactoryUtil;
-import cn.edu.jit.tianyu_paas.shared.mina_message.AuthenticationMessage;
-import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
-import cn.edu.jit.tianyu_paas.shared.mina_message.MinaMessage;
 import cn.edu.jit.tianyu_paas.shared.util.PassUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -72,11 +72,13 @@ public class MyIoHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) {
-        LOGGER.info(message.toString());
+        LOGGER.info("recv: " + message.toString());
         MinaMessage minaMessage = JSON.parseObject(message.toString(), MinaMessage.class);
         switch (minaMessage.getMessageType()) {
             case COMMON:
-                handleCommonMessage(session, JSON.parseObject(message.toString(), CommonMessage.class));
+                CommonMessage commonMessage = JSON.parseObject(message.toString(), CommonMessage.class);
+                commonMessage.setGmtCreate(System.currentTimeMillis());
+                handleCommonMessage(session, commonMessage);
                 break;
             case AUTHENTICATION:
                 handleAuthenticationMessage(session, JSON.parseObject(message.toString(), AuthenticationMessage.class));
@@ -95,7 +97,7 @@ public class MyIoHandler extends IoHandlerAdapter {
     private void handleAuthenticationMessage(IoSession ioSession, AuthenticationMessage authenticationMessage) {
         User user = userService.selectOne(new EntityWrapper<User>().eq("phone", authenticationMessage.getUsername())
                 .or().eq("email", authenticationMessage.getUsername()));
-        if (user == null || !user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPaasword()))) {
+        if (user == null || !user.getPwd().equals(PassUtil.getMD5(authenticationMessage.getPassword()))) {
             ioSession.write("user not exsit or password incorrect");
             ioSession.closeOnFlush();
             return;
@@ -121,7 +123,7 @@ public class MyIoHandler extends IoHandlerAdapter {
             ioSession.closeOnFlush();
             return;
         }
-        commonMessage.setSender(user.getUserId());
+        commonMessage.setSenderUser(user);
         boolean online = false;
         long receiver = MinaConstant.CUSTOMER_SERVICE_ID;
         switch (user.getType()) {

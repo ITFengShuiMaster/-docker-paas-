@@ -1,7 +1,7 @@
 package cn.edu.jit.tianyu_paas.im;
 
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
-import cn.edu.jit.tianyu_paas.shared.mina_message.AuthenticationMessage;
+import cn.edu.jit.tianyu_paas.im.message.AuthenticationMessage;
 import com.alibaba.fastjson.JSON;
 import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -43,7 +43,7 @@ public class TestCustomer1 {
             public void sessionOpened(IoSession session) {
                 AuthenticationMessage authenticationMessage = new AuthenticationMessage();
                 authenticationMessage.setUsername("cus1");
-                authenticationMessage.setPaasword("test");
+                authenticationMessage.setPassword("test");
                 session.write(JSON.toJSONString(authenticationMessage));
                 /*CommonMessage commonMessage = new CommonMessage();
                 commonMessage.setContent("test");

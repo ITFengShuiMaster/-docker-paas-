@@ -172,7 +172,7 @@
                 this.$Modal.confirm({
                     content: '是否确认删除？',
                     onOk: () => {
-                        this.deleteDemo(this.data1[index].demoId)
+                        this.deleteDemo(this.data1[index].demoId);
                         this.data1.splice(index, 1);
                         this.$Message.info('已删除');
                     },
@@ -196,6 +196,7 @@
                         current: row,
                     },
                     success:function (data) {
+                        console.log(result);
                         var result = data.data.records;
                         app_demo.Total = data.data.records.total;
                         that.data1 = [];
@@ -228,7 +229,7 @@
 //                })
 //            },
             deleteDemo(demo_id) {
-                var that = this
+                var that = this;
                 $.ajax({
                     type:'delete',
                     url:'demos/'+demo_id,

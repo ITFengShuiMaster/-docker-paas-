@@ -37,6 +37,7 @@ public class MsApplication implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(globalInterceptor())
                 .addPathPatterns("/**")
+                .excludePathPatterns("/login.html")
                 .excludePathPatterns("/admin/login")
                 .excludePathPatterns("/error");
     }

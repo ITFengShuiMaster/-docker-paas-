@@ -1,5 +1,6 @@
 package cn.edu.jit.tianyu_paas.im.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 
@@ -18,6 +19,16 @@ public class OfflineMessage implements Serializable {
     private Long receiver;
     private String content;
     private Date gmtCreate;
+    @TableField(exist = false)
+    private User senderUser;
+
+    public User getSenderUser() {
+        return senderUser;
+    }
+
+    public void setSenderUser(User senderUser) {
+        this.senderUser = senderUser;
+    }
 
     public Long getOfflineMessageId() {
         return offlineMessageId;

@@ -3,7 +3,8 @@ window.web = {};
 web.baseUrl = 'http://localhost:8080/tianyu-paas/';
 
 web.url = {
-    login: web.baseUrl + 'user/login',
+    login: web.baseUrl + 'users/login',
+    logout: web.baseUrl + 'users/logout',
 
     // 获取组下面所有的app
     listGroupApps: web.baseUrl + 'app-groups/',

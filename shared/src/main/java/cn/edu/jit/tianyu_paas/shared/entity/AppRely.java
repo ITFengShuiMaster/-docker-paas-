@@ -30,7 +30,6 @@ public class AppRely implements Serializable {
     @TableField(exist = false)
     private String relyGroupName;
 
-
     public Long getAppId() {
         return appId;
     }

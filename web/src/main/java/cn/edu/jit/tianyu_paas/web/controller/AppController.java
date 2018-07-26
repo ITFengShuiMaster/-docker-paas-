@@ -213,7 +213,7 @@ public class AppController {
             if (!actionService.insert(action)) {
                 return TResult.failure(TResultCode.BUSINESS_ERROR);
             }
-            YmSocket.createByYm(demo.getRepositoryUrl(),"master", userId, action.getActionId(), app);
+            YmSocket.createByYm(demo.getRepositoryUrl(), "master", userId, action.getActionId(), app);
             Action action1 = new Action();
             action1.setUserId(userId);
             action1.setActionName("部署完成");
@@ -435,15 +435,15 @@ public class AppController {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
         App app = appService.selectById(appId);
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此应用是否存在...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此应用是否存在...", 0);
         if (app == null) {
-            InsertActionAndDetail.insertActionDetail(action.getActionId(),"此应用不存在",2);
+            InsertActionAndDetail.insertActionDetail(action.getActionId(), "此应用不存在", 2);
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
         }
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此机器是否存在...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此机器是否存在...", 0);
         Machine machine = machineService.selectById(app.getMachineId());
         if (machine == null) {
-            InsertActionAndDetail.insertActionDetail(action.getActionId(),"此机器不存在",2);
+            InsertActionAndDetail.insertActionDetail(action.getActionId(), "此机器不存在", 2);
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
 
@@ -458,7 +458,7 @@ public class AppController {
             return TResult.failure("容器已开启");
         }
 
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此容器是否启动成功...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此容器是否启动成功...", 0);
         if (!DockerClientUtil.startContainer(machine.getMachineIp(), app.getContainerId())) {
             action.setStatus(1);
             action.setAction(1);
@@ -499,19 +499,19 @@ public class AppController {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
         App app = appService.selectById(appId);
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此应用是否存在...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此应用是否存在...", 0);
         if (app == null) {
-            InsertActionAndDetail.insertActionDetail(action.getActionId(),"此应用不存在",2);
+            InsertActionAndDetail.insertActionDetail(action.getActionId(), "此应用不存在", 2);
             return TResult.failure(TResultCode.RESULE_DATA_NONE);
         }
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此机器是否存在...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此机器是否存在...", 0);
         Machine machine = machineService.selectById(app.getMachineId());
         if (machine == null) {
-            InsertActionAndDetail.insertActionDetail(action.getActionId(),"此机器不存在",2);
+            InsertActionAndDetail.insertActionDetail(action.getActionId(), "此机器不存在", 2);
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
 
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此容器是否已经关闭...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此容器是否已经关闭...", 0);
         if (!DockerClientUtil.isRunning(machine.getMachineIp(), app.getContainerId())) {
             app.setStatus(0);
             appService.updateById(app);
@@ -521,7 +521,7 @@ public class AppController {
             actionService.updateById(action);
             return TResult.failure("容器已关闭");
         }
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此容器是否关闭成功...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此容器是否关闭成功...", 0);
         if (!DockerClientUtil.stopContainer(machine.getMachineIp(), app.getContainerId())) {
             return TResult.failure("关闭失败");
         }
@@ -550,12 +550,12 @@ public class AppController {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
         App app = appService.selectById(appId);
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此机器是否存在...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此机器是否存在...", 0);
         Machine machine = machineService.selectById(app.getMachineId());
         List<MarketApp> marketApps = marketAppService.selectList(new EntityWrapper<MarketApp>());
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询该容器是否存在...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询该容器是否存在...", 0);
         if (app == null) {
-            InsertActionAndDetail.insertActionDetail(action.getActionId(),"该容器不存在",2);
+            InsertActionAndDetail.insertActionDetail(action.getActionId(), "该容器不存在", 2);
             return TResult.failure("没有该容器");
         }
 
@@ -563,20 +563,20 @@ public class AppController {
         List<AppPort> appPorts = appPortService.selectList(new EntityWrapper<AppPort>().eq("app_id", appId));
         List<MountSettings> mountSettings = mountSettingsService.selectList(new EntityWrapper<MountSettings>().eq("app_id", appId));
 
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"获得绑定端口和对外暴露的端口...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "获得绑定端口和对外暴露的端口...", 0);
         //获得绑定端口和对外暴露的端口
         Set<String> exposePorts = new HashSet<>();
         Map<String, List<PortBinding>> portBinds = DockerClientUtil.getContainerPortBinds(appPorts, exposePorts);
 
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"获得容器变量...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "获得容器变量...", 0);
         //获得容器变量
         List<String> envs = DockerClientUtil.getContainerEnvs(appVars);
 
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"获得挂载...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "获得挂载...", 0);
         //获得挂载
         List<String> mounts = DockerClientUtil.getContainerMounts(mountSettings);
 
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"获得新镜相id...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "获得新镜相id...", 0);
         //获得新镜相id
         String newImageName = DockerClientUtil.getNewImage(machine.getMachineIp(), app.getContainerId());
 
@@ -589,11 +589,11 @@ public class AppController {
             return TResult.failure("重启失败");
         }
 
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"创建新容器...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "创建新容器...", 0);
         //创建新容器
         String newContainerId = DockerClientUtil.createNewContainer(machine.getMachineIp(), app.getContainerId(), newImageName, portBinds, exposePorts, envs, mounts, marketApps);
 
-        InsertActionAndDetail.insertActionDetail(action.getActionId(),"新容器启动中...",0);
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "新容器启动中...", 0);
         if (StringUtil.isEmpty(newContainerId)) {
             action.setStatus(1);
             action.setActionName("容器重启失败");

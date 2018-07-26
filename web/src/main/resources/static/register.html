@@ -260,26 +260,15 @@
                     sessionStorage.setItem("codeTime", codeTime);
                     that.code_time = sessionStorage.getItem("codeTime");
                     console.log(that.code_time);
-<<<<<<< HEAD
                     if (codeTime <= 0) {
-=======
-                    if(codeTime<=0) {
->>>>>>> ltl
+                        that.flag = true
                         that.flag = true;
                         clearInterval(code_timer)
                     }
                 }, 1000);
                 $.ajax({
-<<<<<<< HEAD
-                    type: 'get',
                     url: 'users/phone-code/' + vm.User.phone,
-                    success: function (data) {
-                        console.log(data)
-                    },
-                    error: function () {
-=======
                     type:'get',
-                    url: '/users/phone-code/' + this.User.phone,
                     success: function (TResultCode) {
                         console.log("the reult is " + TResultCode.code);
                         if (TResultCode.code == 1) {
@@ -288,26 +277,11 @@
                         else {
                             alert(TResultCode.message)
                         }
->>>>>>> ltl
                     }
                 })
             },
             getSessionCode() {
                 var that = this;
-<<<<<<< HEAD
-                if (sessionStorage.getItem('codeTime') >= 0)
-                    this.flag = false;
-                var codeTime = sessionStorage.getItem('codeTime');
-                var code_timer = setInterval(() => {
-                    codeTime--;
-                    sessionStorage.setItem("codeTime", codeTime);
-                    that.code_time = sessionStorage.getItem("codeTime");
-                    if (codeTime <= 0) {
-                        that.flag = true;
-                        clearInterval(code_timer)
-                    }
-                }, 1000);
-=======
                 if(sessionStorage.getItem('codeTime') >=0 )
                     this.flag = false;
                 var codeTime = sessionStorage.getItem('codeTime');
@@ -321,7 +295,6 @@
                             clearInterval(code_timer)
                         }
                     },1000);
->>>>>>> ltl
             },
             register() {
                 if (vm.User.vertify_code === null) {

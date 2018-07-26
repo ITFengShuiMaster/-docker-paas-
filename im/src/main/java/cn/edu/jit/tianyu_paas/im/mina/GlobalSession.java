@@ -2,10 +2,10 @@ package cn.edu.jit.tianyu_paas.im.mina;
 
 import cn.edu.jit.tianyu_paas.im.entity.OfflineMessage;
 import cn.edu.jit.tianyu_paas.im.global.MinaConstant;
+import cn.edu.jit.tianyu_paas.im.message.CommonMessage;
 import cn.edu.jit.tianyu_paas.im.service.MessageService;
 import cn.edu.jit.tianyu_paas.im.service.OfflineMessageService;
 import cn.edu.jit.tianyu_paas.im.util.SpringBeanFactoryUtil;
-import cn.edu.jit.tianyu_paas.shared.mina_message.CommonMessage;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.mina.core.session.IoSession;

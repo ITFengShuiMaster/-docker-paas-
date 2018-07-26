@@ -296,4 +296,16 @@ public class UserController {
         }
         return TResult.success();
     }
+
+    /**
+     * 登出
+     *
+     * @author 汪继友
+     * @date 2018/7/25 10:32
+     */
+    @RequestMapping("logout")
+    public void logout() {
+        session.removeAttribute(Constants.SESSION_KEY_USER_ID);
+        session.invalidate();
+    }
 }

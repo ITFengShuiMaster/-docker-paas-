@@ -22,6 +22,7 @@ public class InsertActionAndDetail {
 
     /**
      * 插入action
+     *
      * @param appId
      * @return
      */
@@ -47,12 +48,13 @@ public class InsertActionAndDetail {
 
     /**
      * 插入actionDetail
+     *
      * @param actionId
      * @param content
      * @param level
      * @return
      */
-  public static void insertActionDetail(long actionId, String content, Integer level){
+    public static void insertActionDetail(long actionId, String content, Integer level) {
 
         ActionDetail actionDetail = new ActionDetail();
         actionDetail.setActionId(actionId);
@@ -60,5 +62,5 @@ public class InsertActionAndDetail {
         actionDetail.setGmtCreate(new Date());
         actionDetail.setContent(content);
         actionDetailService.insert(actionDetail);
-  }
+    }
 }

@@ -78,8 +78,8 @@
             </el-breadcrumb>
         </div>
         <div class="userInfo">
-            <div class="img" style="margin-top: 30px">
-                <img style="width: 70px" src="img/team.png" />
+			<div class="img" style="margin-top: 30px">
+				<img style="width: 70px" src="img/team.png"/>
             </div>
             <div class="imginfo">
                 <div class="name">
@@ -224,6 +224,7 @@
         },
         methods: {
             dynamicInit() {
+                console.log("aaa");
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/actions/info',

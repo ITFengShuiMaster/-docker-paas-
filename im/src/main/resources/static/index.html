@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>首页</title>
+	<link rel="stylesheet" href="lib/layui/css/layui.css">
+	<script src="lib/layui/layui.js"></script>
+	<script src="js/common.js"></script>
+	<!--<script src="js/websocket.js"></script>-->
+</head>
+<body>
+<script>
+    var mine = {};
+    var chatUsersId = [];
+
+    //初始化我的信息（我是客服人员）
+    function initMyInfo() {
+        var user = JSON.parse(sessionStorage.user);
+        // console.log(user);
+        mine.username = user.name;
+        mine.id = user.userId;
+        mine.status = "online";
+        // mine.avatar = user.headImg;
+        mine.avatar = "http://tp1.sinaimg.cn/1571889140/180/40030060651/1";
+    }
+
+    initMyInfo();
+
+    layui.use('layim', function (layim) {
+        var layim = layui.layim;
+        layim.config({
+            init: {
+                //配置客户信息
+                mine: mine
+            }
+            //开启客服模式
+            , brief: true
+        });
+        let newChat = {
+            name: 'test' //名称
+            , type: 'kefu' //聊天类型
+            , avatar: '' //头像
+            , id: 111 //定义唯一的id方便你处理信息
+        };
+        // layim.chat(newChat);
+        // layim.chat(chats);
+        // layim.setChatMin(); //收缩聊天面板
+
+        var websocket = null;
+        if ('WebSocket' in window) {
+            websocket = new WebSocket(im.url.websocket);
+        }
+        else {
+            alert('Not support websocket')
+        }
+
+        function send(msg) {
+            websocket.send(msg);
+        }
+
+        layim.on('sendMessage', function (res) {
+            // 消息内容
+            var content = res.mine.content;
+            // 接收者id
+            var receiver = res.to.id;
+            send(JSON.stringify({content: content, receiver: receiver}));
+        });
+
+        websocket.onerror = function () {
+            console.log("websocket error");
+        };
+
+        websocket.onopen = function (event) {
+            console.log('open');
+            var user = JSON.parse(sessionStorage.user);
+            var authMessage = {};
+            authMessage.username = user.name;
+            authMessage.password = user.pwd;
+            send(JSON.stringify(authMessage));
+        };
+
+        //接收到消息的回调方法   event.data
+        websocket.onmessage = function (event) {
+            console.log('onmessage', event.data);
+            var messages = JSON.parse(event.data);
+            for (let i in messages) {
+                var message = {};
+                var senderUser = messages[i].senderUser;
+                message.username = senderUser.name;
+                message.id = senderUser.userId;
+                // message.avatar = messages[i].senderUser.headImg;
+                message.avatar = "http://tp1.sinaimg.cn/1571889140/180/40030060651/1";
+                message.type = "friend";
+                message.content = messages[i].content;
+                message.mine = false;
+                // message.fromid = senderUser.userId;
+                message.timestamp = messages[i].gmtCreate;
+                /*if(chatUsersId.indexOf(message.id) < 0) {
+					let newChat = {
+						name: message.username //名称
+						, type: 'kefu' //聊天类型
+						, avatar: message.avatar //头像
+						, id: message.id //定义唯一的id方便你处理信息
+					};
+					layim.chat(newChat);
+					chatUsersId.push(message.id);
+				}*/
+                layim.getMessage(message);
+            }
+        };
+
+        websocket.onclose = function () {
+            console.log('close')
+        };
+
+        window.onbeforeunload = function () {
+            websocket.close();
+        };
+
+    });
+</script>
+</body>
+</html>
