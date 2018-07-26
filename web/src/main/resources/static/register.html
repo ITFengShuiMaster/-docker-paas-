@@ -266,12 +266,13 @@
                         clearInterval(code_timer)
                     }
                 }, 1000);
+                console.log(vm.User.phone)
                 $.ajax({
                     url: 'users/phone-code/' + vm.User.phone,
                     type:'get',
                     success: function (TResultCode) {
-                        console.log("the reult is " + TResultCode.code);
-                        if (TResultCode.code == 1) {
+                        console.log(TResultCode);
+                        if (TResultCode.code === 1) {
                             alert("获取成功")
                         }
                         else {
@@ -319,7 +320,7 @@
                             phoneVerifyCode: this.User.vertify_code
                         },
                         success: function (TResultCode) {
-                            console.log("the reult is " + TResultCode.code);
+                            console.log(TResultCode);
                             if (TResultCode.code === 1) {
                                 vm.$message({
                                     message: '注册成功',

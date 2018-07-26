@@ -189,7 +189,7 @@
                 console.log(install.select_group);
                 console.log(install.currentapp);
                 console.log(install.currentapp.name);
-                $.ajax({
+                web.ajax({
                     type: "POST",
                     url: "http://localhost:8080/tianyu-paas/apps/market",
                     data: {
@@ -199,9 +199,13 @@
                     },
                     success: function (result) {
                         if (result.code === 1) {
+                            install.$message({
+                                message: '新建应用成功',
+                                type: 'success'
+                            });
                         }
                     }
-                })
+                }, install)
             },
             add_group() {
                 $.ajax({

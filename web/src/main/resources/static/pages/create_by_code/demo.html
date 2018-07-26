@@ -132,7 +132,7 @@
                 $('#content').load("pages/examine.html", function (response, message, xhr) {
                 });
                 console.log(this.formLabelAlign.group);
-                $.ajax({
+                web.ajax({
                     type: 'post',
                     url: '/tianyu-paas/apps/demo',
                     data: {
@@ -159,7 +159,7 @@
                         console.log('fail')
                     }
 
-                })
+                }, create_by_demo)
             }
         },
         mounted() {
