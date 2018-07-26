@@ -94,12 +94,12 @@ public class AppGroupController {
     public TResult listGroupsInfo() {
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         List<AppGroup> appGroups = appGroupService.selectList(new EntityWrapper<AppGroup>().eq("user_id", userId));
-        AppGroup appGroup = new AppGroup();
+        /*AppGroup appGroup = new AppGroup();
         appGroup.setAppGroupId((long) 0);
         appGroup.setGroupName("未分组");
         appGroup.setGmtCreate(new Date());
         appGroup.setUserId(userId);
-        appGroups.add(appGroup);
+        appGroups.add(appGroup);*/
         return TResult.success(appGroups);
     }
 
