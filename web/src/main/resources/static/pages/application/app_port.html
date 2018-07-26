@@ -211,13 +211,10 @@
                 })
             },
             delete_port(row) {
-                port.info_of_restart();
+                console.log(row);
                 $.ajax({
                     type: 'delete',
-                    url: '/tianyu-paas/app-ports/' + port.appId,
-                    data: {
-                        hostPort: row.hostPort
-                    },
+                    url: '/tianyu-paas/app-ports/' + port.appId + "?hostPort=" + row.hostPort,
                     success: function (result) {
                         if (result.code === 1) {
                             port.$message({
@@ -297,7 +294,7 @@
                     url: '/tianyu-paas/app-ports',
                     data: {
                         appId: port.appId,
-                        hostPort: port.ruleForm.port,
+                        containerPort: port.ruleForm.port,
                         protocol: port.ruleForm.protocol
                     },
                     success: function (data) {
