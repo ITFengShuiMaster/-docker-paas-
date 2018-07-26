@@ -417,7 +417,7 @@
                     cancelButtonText: '取消',
                     type: 'info'
                 }).then(() => {
-                    $.ajax({
+                    web.ajax({
                         type: "get",
                         url: "/tianyu-paas/apps/restart-container/" + appinfo.app_id,
                         success: function (result) {
@@ -432,7 +432,7 @@
                                 alert(result.message);
                             }
                         }
-                    })
+                    },appinfo)
                 })
 
             }
