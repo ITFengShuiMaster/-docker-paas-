@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient("tianyu-paas-im")
+@FeignClient(name = "tianyu-paas-im", url = "http://localhost:8762/im")
 @Service
 public interface FeignTianyuIm {
 

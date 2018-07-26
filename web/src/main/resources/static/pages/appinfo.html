@@ -336,10 +336,10 @@
                             that.machineId = result.data.machineId;
                         }
                     },
-                    error: function () {
+                    error: function (result) {
                         appinfo.$message({
-                            message: '容器已经关闭',
-                            type: 'success'
+                            message: 'error',
+                            type: 'error'
                         });
                     }
                 })
