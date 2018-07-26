@@ -64,16 +64,20 @@ public class AppPortController {
     public TResult addPort(AppPort appPort) {
         List<Machine> machines = machineService.selectList(new EntityWrapper<Machine>());
         for(Machine machine: machines) {
-            Integer port = machinePortService.selectList(new EntityWrapper<MachinePort>().eq("machine_id", machine.getMachineId()).and().eq("status", 1).last("limit 50")).get(0).getMachinePort();
-            if (port != null) {
-                appPort.setHostPort(port);
+            MachinePort machinePort = machinePortService.selectList(new EntityWrapper<MachinePort>().eq("machine_id", machine.getMachineId()).and().eq("status", 1).last("limit 50")).get(0);
+//            Integer port = machinePort.getMachinePort();
+            if (machinePort != null) {
+                appPort.setHostPort(machinePort.getMachinePort());
                 appPort.setMachineId(machine.getMachineId());
+
+                machinePort.setStatus(2);
+                machinePortService.update(machinePort, new EntityWrapper<MachinePort>().eq("machine_id", machinePort.getMachineId()).and().eq("machine_port", machinePort.getMachinePort()));
+
+                appPort.setOutsideAccessUrl(machine.getMachineIp() + ":" + machinePort.getMachinePort());
                 break;
             }
         }
-        if (appPortService.selectCount(new EntityWrapper<AppPort>().eq("host_port", appPort.getHostPort())) != 0) {
-            return TResult.failure(TResultCode.DATA_ALREADY_EXISTED);
-        }
+
         appPort.setGmtModified(new Date());
         appPort.setGmtCreate(new Date());
         appPort.setInsideAccessUrl("127.0.0.1:"+appPort.getHostPort());

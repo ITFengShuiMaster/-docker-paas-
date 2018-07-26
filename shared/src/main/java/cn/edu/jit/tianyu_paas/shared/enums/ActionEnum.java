@@ -9,10 +9,8 @@ public enum ActionEnum {
     REBOOT(2, "重启"),
     /*部署*/
     DEPLOY(3, "部署"),
-    /**
-     * 关闭
-     */
-    SHUTDOWN(4, "关闭");
+    /*关闭*/
+    STOPDOWN(4, "关闭");
 
     int code;
     String message;
