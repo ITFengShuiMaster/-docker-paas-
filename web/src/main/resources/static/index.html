@@ -356,29 +356,29 @@
             },
             contact_customer_service() {
                 layui.use('layim', function (layim) {
-                    var websocket = null;
+                    var imWebsocket = null;
                     if ('WebSocket' in window) {
-                        websocket = new WebSocket("ws://localhost:8762/im/im-server");
+                        imWebsocket = new WebSocket("ws://localhost:8762/im/im-server");
                     }
                     else {
                         alert('Not support websocket')
                     }
 
-                    websocket.onerror = function () {
+                    imWebsocket.onerror = function () {
                         console.log("error");
                     };
 
-                    websocket.onopen = function (event) {
+                    imWebsocket.onopen = function (event) {
                         //TODO 获取登录信息
                         console.log('open');
                         // var user = JSON.parse(sessionStorage.user);
                         var authMessage = {};
                         authMessage.username = sessionStorage.username;
                         authMessage.password = sessionStorage.password;
-                        websocket.send(JSON.stringify(authMessage));
+                        imWebsocket.send(JSON.stringify(authMessage));
                     };
 
-                    websocket.onmessage = function (res) {
+                    imWebsocket.onmessage = function (res) {
                         console.log(res.data);
                         var jsonObject = JSON.parse(res.data);
                         if (jsonObject.messageType === 'COMMON') {
@@ -413,13 +413,13 @@
                         }
                     };
 
-                    websocket.onclose = function () {
+                    imWebsocket.onclose = function () {
                         console.log('close')
                     };
 
                     //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
                     window.onbeforeunload = function () {
-                        websocket.close();
+                        imWebsocket.close();
                     };
                     var $ = layui.$; //由于layer弹层依赖jQuery，所以可以直接得到
                     // TODO 获取用户信息
@@ -461,7 +461,7 @@
                         var content = res.mine.content;
                         // 接收者id，接收者只是客服
                         var receiver = 0;
-                        send(JSON.stringify({content: content, receiver: receiver}));
+                        imWebsocket.send(JSON.stringify({content: content, receiver: receiver}));
                         //获取收到的消息
 
                     }).setChatMin();

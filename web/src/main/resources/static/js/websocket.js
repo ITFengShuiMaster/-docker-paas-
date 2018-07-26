@@ -65,7 +65,8 @@ function closeWebSocket() {
 }
 
 //发送消息
+/*
 function send() {
     var message = document.getElementById('text').value;
     websocket.send(message);
-}
+}*/

@@ -73,7 +73,7 @@
             console.log('open');
             var user = JSON.parse(sessionStorage.user);
             var authMessage = {};
-            authMessage.username = user.name;
+            authMessage.username = user.email;
             authMessage.password = user.pwd;
             send(JSON.stringify(authMessage));
         };
