@@ -199,6 +199,10 @@
                     },
                     success: function (result) {
                         if (result.code === 1) {
+                            install.$message({
+                                message: '新建应用成功',
+                                type: 'success'
+                            });
                         }
                     }
                 })

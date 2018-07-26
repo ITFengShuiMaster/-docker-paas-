@@ -206,9 +206,9 @@ public class DockerClientUtil {
 
                 ContainerInfo containerInfo = docker.inspectContainer(oldContainerId);
                 //移除旧镜相
-                if (!isInMarketApp(marketApps, containerInfo.config().image())) {
-                    docker.removeImage(containerInfo.config().image(), true, true);
-                }
+//                if (!isInMarketApp(marketApps, containerInfo.config().image())) {
+//                    docker.removeImage(containerInfo.config().image(), true, true);
+//                }
                 //移除旧容器
                 docker.removeContainer(oldContainerId);
 
