@@ -170,7 +170,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
      *
      * @return
      */
-    private List<MachinePort> getUsablePort() {
+    public List<MachinePort> getUsablePort() {
         return machinePortService.selectList(new EntityWrapper<MachinePort>().eq("status", 1).last("limit 50"));
     }
 

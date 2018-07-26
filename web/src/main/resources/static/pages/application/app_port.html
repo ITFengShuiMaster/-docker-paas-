@@ -235,12 +235,12 @@
                 })
             },
             getId(id) {
+                port.appId = id;
                 $.ajax({
                     type: 'get',
                     url: '/tianyu-paas/app-ports/' + id,
                     success: function (data) {
                         if (data.code === 1) {
-                            console.log(data);
                             port.tableData = data.data;
                             for (let i = 0; i < port.tableData.length; i++) {
                                 if (port.tableData[i].protocol === 0) {
@@ -290,13 +290,14 @@
             },
 
             addPort() {
+                console.log(port.appId);
                 port.info_of_restart();
                 $.ajax({
                     type: 'post',
                     url: '/tianyu-paas/app-ports',
                     data: {
                         appId: port.appId,
-                        port: port.ruleForm.port,
+                        hostPort: port.ruleForm.port,
                         protocol: port.ruleForm.protocol
                     },
                     success: function (data) {
@@ -306,6 +307,11 @@
                                 type: 'success'
                             });
                             port.getId(port.appId);
+                        } else {
+                            port.$message({
+                                message: data.message,
+                                type: 'warning'
+                            })
                         }
                     },
                     error: function () {

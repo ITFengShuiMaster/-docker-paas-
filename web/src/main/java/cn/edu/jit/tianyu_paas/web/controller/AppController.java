@@ -142,6 +142,7 @@ public class AppController {
         app.setGmtCreate(new Date());
         app.setStatus(1);
         app.setCreateMethod(0);
+        app.setAppGroupId(app.getAppGroupId());
         if (appService.insert(app)) {
             custom.setAppId(app.getAppId());
             // 插入创建方式
@@ -197,6 +198,7 @@ public class AppController {
         app.setGmtCreate(new Date());
         app.setStatus(1);
         app.setCreateMethod(1);
+        app.setAppGroupId(app.getAppGroupId());
         if (appService.insert(app)) {
             infoByDemo.setAppId(app.getAppId());
             appInfoByDemoService.insert(infoByDemo);

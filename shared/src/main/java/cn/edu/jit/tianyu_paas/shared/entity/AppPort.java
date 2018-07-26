@@ -30,7 +30,6 @@ public class AppPort implements Serializable {
     /**
      * 主机端口
      */
-    @NotNull
     private Integer hostPort;
     /**
      * 容器端口
