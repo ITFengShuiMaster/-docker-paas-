@@ -119,7 +119,7 @@
             addApp() {
                 $('#content').load("pages/examine.html", function (response, message, xhr) {
                 });
-                $.ajax({
+                web.ajax({
                     type: 'post',
                     url: '/tianyu-paas/apps/custom',
                     data: {
@@ -140,7 +140,7 @@
                         console.log('fail')
                     }
 
-                })
+                }, custom_source_code)
             }
         },
         mounted() {

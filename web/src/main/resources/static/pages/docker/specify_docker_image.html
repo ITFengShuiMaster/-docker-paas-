@@ -112,7 +112,7 @@
                 })
             },
             addApp() {
-                $.ajax({
+                web.ajax({
                     type: 'post',
                     url: '/tianyu-paas/apps/docker-image',
                     data: {
@@ -132,7 +132,7 @@
                         console.log('fail')
                     }
 
-                })
+                },form_3)
             },
         },
         mounted() {

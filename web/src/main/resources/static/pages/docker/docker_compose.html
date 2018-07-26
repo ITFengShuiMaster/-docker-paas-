@@ -32,7 +32,7 @@
         },
         methods: {
             addApp() {
-                $.ajax({
+                web.ajax({
                     type: 'post',
                     url: '/tianyu-paas/apps/docker-compose',
                     data: {
@@ -51,7 +51,7 @@
                         console.log('fail')
                     }
 
-                })
+                }, form_5)
             }
         }
     });
