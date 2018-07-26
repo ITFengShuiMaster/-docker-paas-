@@ -16,7 +16,7 @@ public class RegexUtil {
      * @return
      */
     public static boolean isPhoneNumber(String num) {
-        String regEx = "^1(3[0-9]|5[189]|8[6789])[0-9]{8}$";
+        String regEx = "^1(3[0-9]|5[0-9]|8[0-9])[0-9]{8}$";
         Pattern pattern = Pattern.compile(regEx);
         Matcher matcher = pattern.matcher(num);
         return matcher.matches();

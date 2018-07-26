@@ -32,8 +32,8 @@ public class MinaConfig {
         /*TextLineCodecFactory textLineCodecFactory = new TextLineCodecFactory(Charset.forName("UTF-8"));
         textLineCodecFactory.setDecoderMaxLineLength(1024 * 1024);
         textLineCodecFactory.setEncoderMaxLineLength(1024 * 1024);
-        acceptor.setHandler(new MyIoHandler());
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(textLineCodecFactory));*/
+        acceptor.setHandler(new MyIoHandler());
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new WebSocketCodecFactory()));
 
         acceptor.getSessionConfig().setReadBufferSize(2048);

@@ -110,6 +110,9 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     public TResult registerAndActiveUserByPhone(User user, String phoneVerifyCode) {
         PhoneVerificationCode phoneVerificationCode = phoneVerificationCodeService.selectOne(new EntityWrapper<PhoneVerificationCode>()
                 .eq("phone", user.getPhone()).and().eq("phone_code", phoneVerifyCode));
+        if(StringUtil.isEmpty(phoneVerifyCode)) {
+            return TResult.failure("请填写验证码");
+        }
         if (System.currentTimeMillis() - phoneVerificationCode.getGmtCreate().getTime() > Constants.PHONE_VERIFY_CODE_MAX_VALID) {
             return TResult.failure("验证码已过期");
         }
