@@ -6,8 +6,8 @@
         <el-form-item label="应用组:">
             <el-select class="select-group" v-model="formLabelAlign.group" placeholder="选择应用组">
 
-                <el-option v-for="(item, index) in labelArr" :value="item"
-                           :label="item">
+                <el-option v-for="item in labelArr" :value="item.appGroupId"
+                           :label="item.groupName">
 
                 </el-option>
             </el-select>
@@ -55,8 +55,7 @@
                     select: 'git',
                 },
                 select: '',
-                labelArr: [
-                ],
+                labelArr: [],
                 dialogFormVisible: false,
                 ruleForm: {
                     group_name: '',
@@ -81,10 +80,8 @@
                     url: 'app-groups',
                     dataType: "json",
                     success: function (result) {
+                        that.labelArr = result.data
 
-                        for (var i = 0; i < result.data.length; i++) {
-                            that.labelArr.push(result.data[i].groupName);
-                        }
                     },
                     error: function () {
                         console.log('fail')
@@ -103,7 +100,10 @@
                     },
                     success: function (TResultCode) {
                         if (TResultCode.code == 1) {
-                            alert("新建组成功");
+                            custom_source_code.$message({
+                                message: '新建组成功',
+                                type: 'success'
+                            });
                             custom_source_code.appList();
                         }
                         else {
@@ -159,7 +159,6 @@
         height: 35px;
 
     }
-
 
     .select-group {
         width: 80%;
