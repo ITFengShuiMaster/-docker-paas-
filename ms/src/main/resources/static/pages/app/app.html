@@ -105,11 +105,10 @@
                             }),
                         ]);
                     }
-
                 },
                 {
                     title: '属于应用组',
-                    key: 'appGroupId'
+                    key: 'groupName'
                 },
                 {
                     title: '创建时间',
@@ -163,6 +162,7 @@
                     },
                     success: function (result) {
                         //😀
+                        console.log(result);
                         app_management.Total = result.data.records.Total;
                         if (result.code === 1) {
                            for(var i=0;i<result.data.records.length;i++) {

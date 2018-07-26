@@ -1,8 +1,10 @@
 package cn.edu.jit.tianyu_paas.ms.controller;
 
+import cn.edu.jit.tianyu_paas.ms.service.AppGroupService;
 import cn.edu.jit.tianyu_paas.ms.service.AppService;
 import cn.edu.jit.tianyu_paas.ms.service.UserService;
 import cn.edu.jit.tianyu_paas.shared.entity.App;
+import cn.edu.jit.tianyu_paas.shared.entity.AppGroup;
 import cn.edu.jit.tianyu_paas.shared.entity.User;
 import cn.edu.jit.tianyu_paas.shared.util.StringUtil;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
@@ -25,11 +27,13 @@ public class AppController {
 
     private final AppService appService;
     private final UserService userService;
+    private final AppGroupService appGroupService;
 
     @Autowired
-    public AppController(AppService appService, UserService userService) {
+    public AppController(AppService appService, UserService userService, AppGroupService appGroupService) {
         this.appService = appService;
         this.userService = userService;
+        this.appGroupService = appGroupService;
     }
 
     /**
@@ -45,10 +49,12 @@ public class AppController {
 
         for (int i = 0; i < appList.size(); i++) {
             User user = userService.selectOne(new EntityWrapper<User>().eq("user_id", appList.get(i).getUserId()));
+            AppGroup appGroup = appGroupService.selectById(appList.get(i).getAppGroupId());
             if (user == null) {
                 appList.remove(i);
             } else {
                 appList.get(i).setUsername(user.getName());
+                appList.get(i).setGroupName(appGroup.getGroupName());
             }
         }
 
