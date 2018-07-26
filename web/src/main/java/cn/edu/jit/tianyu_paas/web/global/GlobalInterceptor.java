@@ -36,11 +36,15 @@ public class GlobalInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        if (session != null && session.getAttribute(Constants.SESSION_KEY_USER_ID) != null) {
+            return true;
+        }
+
         String token = httpServletRequest.getHeader(Constants.HEAD_TOKENE);
         Ticket ticket = ticketService.getTicketByToken(token);
 
         // token过期
-        if (System.currentTimeMillis() - ticket.getGmtModified().getTime() > Constants.TOKEN_MAX_VALID) {
+        if (ticket == null || System.currentTimeMillis() - ticket.getGmtModified().getTime() > Constants.TOKEN_MAX_VALID) {
             return false;
         }
 

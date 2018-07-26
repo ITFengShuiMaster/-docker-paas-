@@ -85,10 +85,10 @@
     </div>
     <el-dialog :visible.sync="outerVisible">
         <el-dialog
-				width="50%"
-				title="新建组"
-				:visible.sync="innerVisible"
-				append-to-body>
+                width="50%"
+                title="新建组"
+                :visible.sync="innerVisible"
+                append-to-body>
             <el-row>
                 <el-col :span="20">
                     <el-input v-model="inputname" placeholder="请输入组名"></el-input>
@@ -102,18 +102,18 @@
 
             <el-col :span="17">
                 <el-form>
-					<el-form-item label="应用名称" :label-width="formLabelWidth">
-						<el-input v-model="inputGroupName"></el-input>
-					</el-form-item>
+                    <el-form-item label="应用名称" :label-width="formLabelWidth">
+                        <el-input v-model="inputGroupName"></el-input>
+                    </el-form-item>
                     <el-form-item label="选择分组" :label-width="formLabelWidth">
                         <el-select v-model="select_group" placeholder="请选择分组">
                             <el-option :label="item.groupName" :value="item.appGroupId" v-for="item in groupNames"
                                        :key="item.appGroupId"></el-option>
                         </el-select>
-					</el-form-item>
-					<el-form-item :label-width="formLabelWidth">
-						<el-button @click="innerVisible = true;outerVisible = false">新建组</el-button>
-					</el-form-item>
+                    </el-form-item>
+                    <el-form-item :label-width="formLabelWidth">
+                        <el-button @click="innerVisible = true;outerVisible = false">新建组</el-button>
+                    </el-form-item>
                 </el-form>
             </el-col>
             <el-col :span="7">
