@@ -5,6 +5,7 @@ import cn.edu.jit.tianyu_paas.shared.entity.App;
 import cn.edu.jit.tianyu_paas.shared.entity.AppRely;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
+import cn.edu.jit.tianyu_paas.web.service.AppGroupService;
 import cn.edu.jit.tianyu_paas.web.service.AppRelyService;
 import cn.edu.jit.tianyu_paas.web.service.AppService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -23,7 +24,7 @@ import java.util.Map;
  * 前端控制器
  * </p>
  *
- * @author 汪继友
+ * @author 卢越
  * @since 2018-07-21
  */
 @RestController
@@ -31,21 +32,40 @@ import java.util.Map;
 public class AppRelyController {
     private final AppRelyService appRelyService;
     private final AppService appService;
+    private final AppGroupService appGroupService;
     private HttpSession session;
 
     @Autowired
-    public AppRelyController(HttpSession session, AppRelyService appRelyService, AppService appService) {
+    public AppRelyController(HttpSession session, AppRelyService appRelyService, AppService appService, AppGroupService appGroupService) {
         this.session = session;
         this.appRelyService = appRelyService;
         this.appService = appService;
+        this.appGroupService = appGroupService;
     }
 
+    /**
+     * @param appId
+     * @return
+     * @author 卢越
+     * @date 2018/7/20 16:30
+     */
     @ApiOperation("根据appId获取依赖列表")
     @GetMapping("{appId}")
     public TResult listRelys(@PathVariable Long appId) {
-        return TResult.success(appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", appId)));
+        List<AppRely> relies = appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", appId));
+        for (int i = 0; i < relies.size(); i++) {
+            relies.get(i).setRelyName(appService.selectById(relies.get(i).getRelyId()).getName());
+            relies.get(i).setRelyGroupName(appGroupService.selectById(relies.get(i).getRelyGroupId()).getGroupName());
+        }
+        return TResult.success(relies);
     }
 
+    /**
+     * @param appRely
+     * @return
+     * @author 卢越
+     * @date 2018/7/20 16:30
+     */
     @ApiOperation("添加依赖")
     @PostMapping
     public TResult insertRelys(AppRely appRely) {
@@ -56,6 +76,12 @@ public class AppRelyController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    /**
+     * @param appRely
+     * @return
+     * @author 卢越
+     * @date 2018/7/22 16:30
+     */
     @ApiOperation("更新依赖")
     @PutMapping
     public TResult updateRelys(AppRely appRely) {
@@ -65,6 +91,13 @@ public class AppRelyController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    /**
+     * @param appId
+     * @param relyId
+     * @return
+     * @author 卢越
+     * @date 2018/7/20 16:30
+     */
     @ApiOperation("删除依赖")
     @DeleteMapping("{appId}")
     public TResult deleteRelys(@PathVariable Long appId, @RequestParam(required = true) Long relyId) {
@@ -74,6 +107,12 @@ public class AppRelyController {
         return TResult.failure(TResultCode.BUSINESS_ERROR);
     }
 
+    /**
+     * @param groupId
+     * @return
+     * @author 卢越
+     * @date 2018/7/20 16:30
+     */
     @ApiOperation("返回应用组内依赖关系图的邻接矩阵和名字")
     @GetMapping("/rely/{groupId}")
     public TResult getAdjacencyMatrix(@PathVariable Long groupId) {
@@ -89,7 +128,7 @@ public class AppRelyController {
 
         int[][] martix = new int[apps.size()][apps.size()];
         for (int i = 0; i < apps.size(); i++) {
-            List<AppRely> appRelies = appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", apps.get(i).getAppId()));
+            List<AppRely> appRelies = appRelyService.selectList(new EntityWrapper<AppRely>().eq("app_id", apps.get(i).getAppId()).and().eq("rely_group_id", groupId));
             for (AppRely ar : appRelies) {
                 int relyIndex = appMap.get(ar.getRelyId());
                 int appIndex = appMap.get(apps.get(i).getAppId());

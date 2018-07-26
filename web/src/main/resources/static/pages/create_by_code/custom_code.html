@@ -125,7 +125,8 @@
             },
 
             addApp() {
-                console.log(this.formLabelAlign.group);
+                $('#content').load("pages/examine.html", function (response, message, xhr) {
+                });
                 $.ajax({
                     type: 'post',
                     url: '/tianyu-paas/apps/custom',
@@ -136,11 +137,11 @@
                         branch: this.formLabelAlign.branch,
                     },
                     success: function (result) {
-                        if (result.code == 1) {
-                            alert("新建应用成功");
+                        if (result.code === 1) {
+
                         }
                         else {
-                            alert(result.message)
+                            alert(result.message);
                         }
                     },
                     error: function () {

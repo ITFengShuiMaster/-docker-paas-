@@ -24,6 +24,7 @@ public class AppRely implements Serializable {
     private Long relyId;
     private Date gmtCreate;
 
+    private Long relyGroupId;
     @TableField(exist = false)
     private String relyName;
     @TableField(exist = false)
@@ -59,6 +60,14 @@ public class AppRely implements Serializable {
 
     public void setRelyName(String relyName) {
         this.relyName = relyName;
+    }
+
+    public Long getRelyGroupId() {
+        return relyGroupId;
+    }
+
+    public void setRelyGroupId(Long relyGroupId) {
+        this.relyGroupId = relyGroupId;
     }
 
     public String getRelyGroupName() {

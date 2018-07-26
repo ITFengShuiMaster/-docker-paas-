@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
+/**
+ * @author 卢越
+ * @date 2018/7/15 16:30
+ */
 @RestController
 @RequestMapping("/marketApps")
 public class MarketAppController {

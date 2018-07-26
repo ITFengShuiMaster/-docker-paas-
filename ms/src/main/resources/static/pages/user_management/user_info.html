@@ -52,11 +52,10 @@
     </div>
 
     <i-table stripe border :columns="columns7" :data="labelArr" style="margin:10px 20px"></i-table>
-	<div style="margin-left: 50%">
-		<Page :total="100">
-
-		</Page>
-	</div>
+    <div style="margin-left: 40%">
+        <Page :total="Totle" @on-change="userList">
+        </Page>
+    </div>
 </div>
 
 </body>
@@ -65,6 +64,7 @@
         el: '#user_info',
         data() {
             return {
+                Totle : '100',
                 model1: '',
                 model2: '',
                 model3: "8",
@@ -191,20 +191,24 @@
                     }
                 });
             },
-            userList() {
-                var that = this;
+            userList(row) {
+                var that= this;
+                console.log(row);
                 $.ajax({
                     type: "get",
                     url: 'admins',
-                    dataType: "json",
+                    data: {
+                        current: row,
+                    },
                     success: function (result) {
+                        console.log(result);
+                        user_info.Totle = result.data.total;
                         var res = result.data.records;
-                        console.log(res);
+                        that.labelArr = [];
                         for(var i = 0;i<res.length;i++) {
                             that.labelArr.push(res[i])
                         }
-                        console.log(that.labelArr[2].userId)
-
+                        console.log(res);
                     },
                     error: function () {
                         console.log('fail')

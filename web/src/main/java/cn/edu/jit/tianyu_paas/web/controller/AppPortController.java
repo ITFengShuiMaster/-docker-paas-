@@ -64,7 +64,6 @@ public class AppPortController {
         }
         return TResult.success();
     }
-    //TODO 端口暂时只有这四个数据可以插入，其余的等docker再放
 
     /**
      * 更新端口相关信息

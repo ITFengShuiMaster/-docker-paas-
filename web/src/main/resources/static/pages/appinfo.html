@@ -129,9 +129,6 @@
         </div>
         <div class="appButton">
             <div class="buttonGroup">
-                <el-tooltip class="item" effect="dark" content="跳转到应用对外访问端口对应的域名地址" placement="top">
-					<el-button>访问</el-button>
-                </el-tooltip>
                 <el-button @click="open()">开启</el-button>
                 <el-button @click="close()">关闭</el-button>
 				<el-button style="margin-left: 25px" @click="exported_container()" type="primary">导出</el-button>
@@ -266,7 +263,7 @@
         },
         methods: {
             delete_container() {
-                this.$confirm('此操作将永久删除该容器, 是否继续?', '提示', {
+                appinfo.$confirm('此操作将永久删除该容器, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -319,6 +316,9 @@
                     if (index === '5') {
                         port.getId(appinfo.app_id)
                     }
+                    if (index === '6') {
+                        rely.getId(appinfo.app_id);
+                    }
                 });
             }
             ,
@@ -340,7 +340,7 @@
                         }
                     },
                     error: function () {
-                        this.$message({
+                        appinfo.$message({
                             message: '容器已经关闭',
                             type: 'success'
                         });
@@ -364,7 +364,7 @@
             }
             ,
             open() {
-                this.$confirm('打开容器？', '提示', {
+                appinfo.$confirm('打开容器？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'info'
@@ -379,12 +379,12 @@
                                     type: 'success'
                                 });
                             } else if (result.code === 2) {
-                                this.$message({
+                                appinfo.$message({
                                     message: result.message,
                                     type: 'success'
                                 });
                             } else {
-                                this.$message({
+                                appinfo.$message({
                                     message: result.message,
                                     type: 'success'
                                 });
@@ -396,7 +396,7 @@
             }
             ,
             close() {
-                this.$confirm('关闭容器？', '提示', {
+                appinfo.$confirm('关闭容器？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'info'
@@ -421,7 +421,7 @@
             }
             ,
             restart() {
-                this.$confirm('重启容器？', '提示', {
+                appinfo.$confirm('重启容器？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'info'
@@ -447,7 +447,7 @@
             }
         },
         mounted() {
-            this.selectPage1(1, '');
+            appinfo.selectPage1(1, '');
         }
 
     })

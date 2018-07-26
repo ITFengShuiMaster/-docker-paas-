@@ -17,8 +17,6 @@ import java.util.concurrent.CountDownLatch;
 
 
 @Configuration
-//@ConditionalOnClass(RedisOperations.class)
-//@EnableConfigurationProperties(RedisProperties.class)
 @EnableCaching
 public class RedisConfig {
 
@@ -30,25 +28,12 @@ public class RedisConfig {
 
         //使用fastjson序列化
         FastJsonRedisSerializer fastJsonRedisSerializer = new FastJsonRedisSerializer(Object.class);
-        // value值的序列化采用fastJsonRedisSerializer
-//        template.setValueSerializer(fastJsonRedisSerializer);
-//        template.setHashValueSerializer(fastJsonRedisSerializer);
-        // key的序列化采用StringRedisSerializer
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
 
         template.setConnectionFactory(redisConnectionFactory);
         return template;
     }
-//
-//    @Bean
-//    @ConditionalOnMissingBean(StringRedisTemplate.class)
-//    public StringRedisTemplate stringRedisTemplate(
-//            RedisConnectionFactory redisConnectionFactory) {
-//        StringRedisTemplate template = new StringRedisTemplate();
-//        template.setConnectionFactory(redisConnectionFactory);
-//        return template;
-//    }
 
     @Bean
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,

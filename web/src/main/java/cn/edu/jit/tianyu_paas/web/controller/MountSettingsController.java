@@ -60,7 +60,8 @@ public class MountSettingsController {
 
     /**
      * 插入挂载
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param mountSettings
      * @return
      * @throws Exception
@@ -104,7 +105,8 @@ public class MountSettingsController {
 
     /**
      * 获得容器挂载信息
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */
@@ -116,7 +118,8 @@ public class MountSettingsController {
 
     /**
      * 删除挂载
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @param persistentName
      * @return

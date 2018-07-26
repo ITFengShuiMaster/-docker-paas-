@@ -90,6 +90,8 @@ public class AppController {
         app.setGmtCreate(new Date());
         app.setStatus(AppStatusEnum.SHUTDOWN.getCode());
         app.setCreateMethod(createMethodEnum.getCode());
+        //设置memory
+        app.setMemoryUsed(100);
         // TODO 检测仓库，并给应用设置memory, disk等
     }
 
@@ -113,6 +115,9 @@ public class AppController {
     @GetMapping("/{appId}")
     public TResult getAppInfo(@PathVariable Long appId) {
         App app = appService.selectById(appId);
+        if (app == null) {
+            TResult.failure("该应用不存在");
+        }
         //获取容器的信息
         DockerClient dockerClient = DockerJavaUtil.getDockerClient(machineService.selectById(app.getMachineId()).getMachineIp());
         app.setInspectContainerResponse(dockerClient.inspectContainerCmd(app.getContainerId()).exec());
@@ -123,12 +128,15 @@ public class AppController {
     /**
      * 从自定义源码创建应用（git仓库）
      *
-     * @author 汪继友
+     * @author 倪龙康
      * @date 2018/6/29 11:11
      */
     @ApiOperation("从自定义源码创建应用（git仓库）")
     @PostMapping("/custom")
     public TResult createAppByCustom(@Validated App app, @Validated AppInfoByCustom custom) {
+        if (appService.selectOne(new EntityWrapper<App>().eq("name", app.getName())) != null) {
+            return TResult.failure("容器名已存在");
+        }
         initApp(app, AppCreateMethodEnum.CUSTOM);
         Long userId = (Long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
         app.setGmtCreate(new Date());
@@ -170,12 +178,15 @@ public class AppController {
     /**
      * 从官方demo创建应用
      *
-     * @author 汪继友
+     * @author 倪龙康
      * @date 2018/6/29 11:11
      */
     @ApiOperation("从官方demo创建应用")
     @PostMapping("/demo")
     public TResult createAppByDemo(@Validated App app, @Validated AppInfoByDemo infoByDemo) {
+        if (appService.selectOne(new EntityWrapper<App>().eq("name", app.getName())) != null) {
+            return TResult.failure("容器名已存在");
+        }
         Demo demo = demoService.selectById(infoByDemo.getDemoId());
         // 没有找到demo应用
         if (demo == null) {
@@ -221,7 +232,7 @@ public class AppController {
     /**
      * 从docker image创建应用
      *
-     * @author 汪继友
+     * @author 卢越
      * @date 2018/6/29 11:11
      */
     @ApiOperation("从docker image创建应用")
@@ -259,7 +270,7 @@ public class AppController {
     /**
      * 用docker run命令创建应用
      *
-     * @author 汪继友
+     * @author 卢越
      * @date 2018/6/29 14:41
      */
     @ApiOperation("用docker run命令创建应用")
@@ -267,6 +278,10 @@ public class AppController {
     public TResult createAppByDockerRun(@Validated App app, @Validated AppInfoByDockerRun dockerRun) {
         Action action = new Action();
         initApp(app, AppCreateMethodEnum.DOCKER_RUN);
+
+        if (appService.selectOne(new EntityWrapper<App>().eq("name", app.getName())) != null) {
+            return TResult.failure("容器名已存在");
+        }
 
         if (!dockerRun.getCmd().contains("-d")) {
             return TResult.failure("请添加-d参数以保证容器后台正常运行");
@@ -339,6 +354,13 @@ public class AppController {
         return TResult.success(appPages);
     }
 
+    /**
+     * @param app
+     * @param market
+     * @return
+     * @author 卢越
+     * @date 2018/7/18 16:30
+     */
     @ApiOperation("从应用市场创建应用")
     @PostMapping("/market")
     public TResult createAppByMarket(@Validated App app, @Validated AppInfoByMarket market) {
@@ -401,13 +423,17 @@ public class AppController {
 
     /**
      * 启动容器
-     *
+     * @author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */
     @GetMapping("/start/{appId}")
     public TResult startContainer(@PathVariable Long appId) {
-        Action action = InsertActionAndDetail.insertAction(appId);
+        Action action = InsertActionAndDetail.insertAction(appId, session);
+        if (action == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
         App app = appService.selectById(appId);
         InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此应用是否存在...", 0);
         if (app == null) {
@@ -420,15 +446,8 @@ public class AppController {
             InsertActionAndDetail.insertActionDetail(action.getActionId(), "此机器不存在", 2);
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
-        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此容器是否已经启动...", 0);
-        if (app.getStatus() == 1) {
-            action.setStatus(1);
-            action.setAction(1);
-            action.setActionName("容器已经启动");
-            actionService.updateById(action);
-            return TResult.failure("容器已经启动");
-        }
-        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此容器是否已经开启...", 0);
+
+        InsertActionAndDetail.insertActionDetail(action.getActionId(),"查询此容器是否已经开启...",0);
         if (DockerClientUtil.isRunning(machine.getMachineIp(), app.getContainerId())) {
             app.setStatus(1);
             appService.updateById(app);
@@ -439,9 +458,6 @@ public class AppController {
             return TResult.failure("容器已开启");
         }
 
-//        Action action1 = new Action();
-//        initAction(action, app);
-//        action.setAction(1);
         InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此容器是否启动成功...", 0);
         if (!DockerClientUtil.startContainer(machine.getMachineIp(), app.getContainerId())) {
             action.setStatus(1);
@@ -471,13 +487,17 @@ public class AppController {
 
     /**
      * 关闭容器
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */
     @GetMapping("/stop/{appId}")
     public TResult stopContainer(@PathVariable Long appId) {
-        Action action = InsertActionAndDetail.insertAction(appId);
+        Action action = InsertActionAndDetail.insertAction(appId, session);
+        if (action == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
         App app = appService.selectById(appId);
         InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此应用是否存在...", 0);
         if (app == null) {
@@ -490,15 +510,8 @@ public class AppController {
             InsertActionAndDetail.insertActionDetail(action.getActionId(), "此机器不存在", 2);
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
-        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此容器是否已经关闭...", 0);
-        if (app.getStatus() == 0) {
-            action.setStatus(1);
-            action.setAction(4);
-            action.setActionName("容器已经关闭");
-            actionService.updateById(action);
-            return TResult.failure("容器已经关闭");
-        }
 
+        InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此容器是否已经关闭...", 0);
         if (!DockerClientUtil.isRunning(machine.getMachineIp(), app.getContainerId())) {
             app.setStatus(0);
             appService.updateById(app);
@@ -524,14 +537,18 @@ public class AppController {
 
     /**
      * 容器重启
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */
     @ApiOperation("容器重启")
     @GetMapping("/restart-container/{appId}")
     public TResult restartContainer(@PathVariable Long appId) {
-        Action action = InsertActionAndDetail.insertAction(appId);
+        Action action = InsertActionAndDetail.insertAction(appId, session);
+        if (action == null) {
+            return TResult.failure(TResultCode.BUSINESS_ERROR);
+        }
         App app = appService.selectById(appId);
         InsertActionAndDetail.insertActionDetail(action.getActionId(), "查询此机器是否存在...", 0);
         Machine machine = machineService.selectById(app.getMachineId());
@@ -563,8 +580,6 @@ public class AppController {
         //获得新镜相id
         String newImageName = DockerClientUtil.getNewImage(machine.getMachineIp(), app.getContainerId());
 
-//        Action action = new Action();
-//        initAction(action, app);
         action.setAction(2);
 
         if (StringUtil.isEmpty(newImageName)) {
@@ -613,7 +628,8 @@ public class AppController {
 
     /**
      * 删除应用
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */
@@ -641,7 +657,8 @@ public class AppController {
 
     /**
      * 批量开启
-     *
+     * @author 卢越
+     * @date 2018/7/20 16:30
      * @param appIds
      * @return
      */
@@ -657,6 +674,8 @@ public class AppController {
 
     /**
      * 批量关闭
+     * @author 卢越
+     * @date 2018/7/20 16:30
      * @param appIds
      * @return
      */
@@ -672,6 +691,8 @@ public class AppController {
 
     /**
      * 批量重启
+     * @author 卢越
+     * @date 2018/7/20 16:30
      * @param appIds
      * @return
      */
@@ -687,7 +708,8 @@ public class AppController {
 
     /**
      * 导出挂载卷地址
-     *
+     *@author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @param containerMount
      * @return
@@ -708,6 +730,8 @@ public class AppController {
 
     /**
      * 导出容器地址
+     * @author 卢越
+     * @date 2018/7/20 16:30
      * @param appId
      * @return
      */

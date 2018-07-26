@@ -5,6 +5,8 @@ import cn.edu.jit.tianyu_paas.shared.entity.Demo;
 import cn.edu.jit.tianyu_paas.shared.util.TResult;
 import cn.edu.jit.tianyu_paas.shared.util.TResultCode;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,8 @@ public class DemoController {
 
     @ApiOperation("获取demo列表")
     @GetMapping
-    public TResult listDemos() {
-        return TResult.success(demoService.selectList(new EntityWrapper<Demo>()));
+    public TResult listDemos(Pagination page) {
+        return TResult.success(demoService.selectPage(new Page<Demo>(page.getCurrent(), page.getSize())));
     }
 
     @ApiOperation("根据id获取demo")

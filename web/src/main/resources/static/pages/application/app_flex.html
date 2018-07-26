@@ -124,6 +124,7 @@
             appId: "",
             appName: "",
             machineId :"",
+            containerId: "",
             option1: [{
                 value1: 100,
                 label: '100MB'
@@ -153,6 +154,7 @@
                         flex.appName = result.data.name;
                         flex.machineId = result.data.machineId;
                         flex.select_memoryUsed = result.data.memoryUsed;
+                        flex.containerId = result.data.containerId;
                     },
                     error: function () {
 
@@ -167,7 +169,8 @@
                         appId: flex.appId,
                         memoryUsed: flex.select_memoryUsed,
                         name: flex.appName,
-                        machineId: flex.machineId
+                        machineId: flex.machineId,
+                        containerId: flex.containerId,
                     },
                     success:function (data) {
                     },

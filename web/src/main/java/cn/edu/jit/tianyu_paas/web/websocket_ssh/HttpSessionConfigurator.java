@@ -16,7 +16,6 @@ public class HttpSessionConfigurator extends ServerEndpointConfig.Configurator {
         HttpSession httpSession = (HttpSession) request.getHttpSession();
         sec.getUserProperties().put(HttpSession.class.getName(), httpSession);
 
-        // TODO 有个head头不知道要不要加
         sec.getUserProperties().put(DockerSSHConstants.MACHINE_ID, request.getParameterMap().get(DockerSSHConstants.MACHINE_ID).get(0));
         sec.getUserProperties().put(DockerSSHConstants.CONTAINER_ID, request.getParameterMap().get(DockerSSHConstants.CONTAINER_ID).get(0));
         sec.getUserProperties().put(DockerSSHConstants.WIDTH, request.getParameterMap().get(DockerSSHConstants.WIDTH).get(0));

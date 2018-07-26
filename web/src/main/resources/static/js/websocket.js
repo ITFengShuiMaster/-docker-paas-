@@ -1,7 +1,7 @@
 var websocket = null;
 //判断当前浏览器是否支持WebSocket
 if ('WebSocket' in window) {
-    websocket = new WebSocket("ws://localhost:8762/im/im-server");
+    websocket = new WebSocket("ws://localhost:8080/tianyu-paas/websocket");
 }
 else {
     alert('Not support websocket')
@@ -14,18 +14,39 @@ websocket.onerror = function () {
 
 //连接成功建立的回调方法
 websocket.onopen = function (event) {
-    //TODO 获取登录信息
-    console.log('open');
-    // var user = JSON.parse(sessionStorage.user);
-    var authMessage = {};
-    authMessage.username = 'test1';
-    authMessage.password = 'test';
-    websocket.send(JSON.stringify(authMessage));
 };
 
 //接收到消息的回调方法   event.data
 websocket.onmessage = function (event) {
-    console.log('onmessage', event.data);
+    let res = JSON.parse(event.data);
+    console.log(res);
+    if (res.messageType === 'NOTICE') {
+        vm.$message({
+            message: '你收到了一条公告',
+            type: 'success'
+        });
+        vm.noticerecord.push(res.data)
+    }
+    if (res.messageType === 'MESSAGE') {
+        vm.$message({
+            message: '你收到了一条消息',
+            type: 'success'
+        });
+        vm.messagerecord.push(res.data)
+    }
+    if (res.messageType === 'BUILD_APPLICATION') {
+        examine.data.push(res.data);
+    }
+    if (res.messageType === 'BUILD_APPLICATION_RESULT') {
+        if (res.data === 1) {
+            $('#content').load("pages/examine_finish.html", function (response, message, xhr) {
+            });
+        } else {
+
+        }
+
+    }
+
 };
 
 //连接关闭的回调方法

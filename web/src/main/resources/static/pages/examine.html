@@ -1,9 +1,9 @@
 <style>
     .myrotate {
         margin-top: 5%;
-        margin-left: 47%;
-        width: 200px;
-        height: 200px;
+        margin-left: 43%;
+        width: 100px;
+        height: 100px;
 
         animation: rotate 1.5s 0s linear infinite
     }
@@ -24,13 +24,12 @@
     <div>
         <img src="img/appOutline.png" class="myrotate"/>
     </div>
-    <div style="margin-left: 50%; font-size: 24px">
-        <span> {{status}} </span>
+    <div style="margin-left: 43%; font-size: 24px">
+        <span> {{info}} </span>
     </div>
-    <div style="width: 80%; margin-left: 10%; margin-top: 2%; font-size: 16px; background: #DCDFE6">
-        <div style="margin-left: 8%;">
-        {{info}}<br>
-        {{info}}<br>
+    <div style="width: 80%; margin-left: 10%; margin-top: 2%; font-size: 16px; background: #DCDFE6; height: 500px">
+        <div style="margin-left: 8%;height: 500px; overflow: scroll">
+            <span v-for="item in data">{{item}}<br></span>
         </div>
     </div>
 </div>
@@ -39,8 +38,8 @@
     var examine = new Vue({
         el: "#examine",
         data: {
-            status: "正在检测",
-            info: "代码信息"
+            info: "正在构建",
+            data: [],
         },
         method: {},
         created() {

@@ -36,11 +36,11 @@
         <i-button type="primary" style:>查询</i-button>
     </div>
     <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px"></i-table>
-	<div style="margin-left: 50%">
-		<Page :total="100">
+    <div style="margin-left: 40%">
+        <Page :total="Total" @on-change="viewDemo">
 
-		</Page>
-	</div>
+        </Page>
+    </div>
 
 </div>
 
@@ -49,6 +49,7 @@
     var app_demo = new Vue({
         el: '#app_demo',
         data: {
+            Total: '100',
             name:'',
             branch:'',
             input_title: '',
@@ -59,7 +60,7 @@
             columns1: [
                 {
                     title: '应用名称',
-                    key: 'demoId',
+                    key: 'packingMethod',
                 },
                 {
                     title: '应用所使用的语言',
@@ -186,14 +187,19 @@
             cancel() {
                 this.$Message.info('Clicked cancel');
             },
-            viewDemo() {
+            viewDemo(row) {
                 var that = this;
                 $.ajax({
                     type:'get',
                     url:'demos',
+                    data: {
+                        current: row,
+                    },
                     success:function (data) {
-                        var result = data.data;
                         console.log(result);
+                        var result = data.data.records;
+                        app_demo.Total = data.data.records.total;
+                        that.data1 = [];
                         for(var i = 0;i<result.length;i++) {
                             that.data1.push(result[i]);
                             console.log(that.data1)

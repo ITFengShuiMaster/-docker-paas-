@@ -59,6 +59,12 @@ public class AppLogController {
         this.machineService = machineService;
     }
 
+    /**
+     * @param appId
+     * @return
+     * @author 卢越
+     * @date 2018/7/19 13:30
+     */
     @ApiOperation("根据appId获取applog信息")
     @GetMapping("/{appId}")
     public TResult listAppLog(@PathVariable Long appId) {

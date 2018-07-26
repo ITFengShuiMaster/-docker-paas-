@@ -64,7 +64,6 @@
         </Modal>
     </div>
     <i-table stripe border :columns="columns1" :data="data1" style="margin:10px 20px;width: auto"></i-table>
-
 </div>
 
 </body>
@@ -73,6 +72,7 @@
         el: '#notice',
         data() {
             return {
+                single: '',
                 modelselect:'',
                 title:'',
                 content:'',
@@ -245,14 +245,14 @@
                 this.$Message.info('Clicked cancel');
             },
             createNotice() {
-                var that = this
+                var that = this;
                 var t = [{
                     adminId:1,
                     content:this.input_content,
                     gmtCreate:new Date(),
                     noticeId:'',
                     title:this.input_title
-                }]
+                }];
                 $.ajax({
                     type:'post',
                     url:'notices',
@@ -261,8 +261,8 @@
                         content:that.input_content,
                     },
                     success:function (data) {
-                        console.log(data)
-                        that.data1.push(t[0])
+                        console.log(data);
+                        that.data1.push(t[0]);
                         that.ok()
                     },
                     error:function () {
@@ -271,16 +271,16 @@
                 })
             },
             viewNotice() {
-                var that = this
+                var that = this;
                 $.ajax({
                     type:'get',
                     url:'notices',
                     success:function (data) {
-                        console.log(data)
-                        var result = data.data.records
-                        console.log(result)
+                        console.log(data);
+                        var result = data.data.records;
+                        console.log(result);
                         for(var i = 0;i<result.length;i++) {
-                            that.data1.push(result[i])
+                            that.data1.push(result[i]);
                             console.log(that.data1)
                         }
                     },
@@ -290,7 +290,7 @@
                 })
             },
             modifyNotice(index) {
-                var that = this
+                var that = this;
                 $.ajax({
                     type:'put',
                     url:'notices',
@@ -302,7 +302,7 @@
                     success:function (data) {
                         if(data.code === 1) {
                             that.$Message.info("修改成功");
-                            that.data1[index].title = that.title
+                            that.data1[index].title = that.title;
                             that.data1[index].content= that.content
 //                            that.data1.splice(index, 1);
 //                            that.viewNotice()
