@@ -93,7 +93,7 @@ public class AdminController {
     @ApiOperation("根据手机号查询用户")
     @GetMapping("/phone")
     public TResult getUserByPhone(@RequestParam(required = true) String phone) {
-        User user = userService.selectOne(new EntityWrapper<User>().eq("phone", phone));
+        User user = userService.selectOne(new EntityWrapper<User>().like("phone", phone));
         if (user != null) {
             return TResult.success(user);
         }

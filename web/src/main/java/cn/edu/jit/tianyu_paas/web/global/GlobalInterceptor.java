@@ -27,6 +27,9 @@ public class GlobalInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) {
         logger.debug(httpServletRequest.getRequestURI());
+        if(httpServletRequest.getRequestURI().contains("phone-code")) {
+            return true;
+        }
         HttpSession session = httpServletRequest.getSession();
 
         // 调试模式

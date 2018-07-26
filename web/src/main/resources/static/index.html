@@ -432,7 +432,8 @@
                         success: function (result) {
                             if (result.code === 1) {
                                 mine.username=result.data.name;
-                                mine.id=result.
+                                mine.id=result.data.userId;
+                                mine.avatar = result.data.headImg;
                             } else {
                             }
                         },
@@ -440,10 +441,7 @@
                             console.log("失败")
                         }
                     })
-                    mine.username = '用户1';
-                    mine.id = 11;
                     mine.status = "online";
-                    mine.avatar = '';
                     //基础配置
                     layim.config({
                         brief: true, //是否简约模式（如果true则不显示主面板）

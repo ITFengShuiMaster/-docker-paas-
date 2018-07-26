@@ -39,6 +39,7 @@ public class MsApplication implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login.html")
                 .excludePathPatterns("/admin/login")
+                .excludePathPatterns("/js/**", "/lib/**", "/img/**")
                 .excludePathPatterns("/error");
     }
 
