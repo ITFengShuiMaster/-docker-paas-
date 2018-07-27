@@ -130,7 +130,7 @@
                 <el-col :span="2" align="right">
                     <img src="headImg">
                     <el-dropdown @command="handleCommand">
-                        <span style="font-size: 18px; color: #409EFF;">{{username}}</span>
+                        <span style="font-size: 16px; color: #409EFF;">{{username}}</span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item command="1">退出登录</el-dropdown-item>
                         </el-dropdown-menu>
@@ -457,7 +457,7 @@
                         name: '客服',
                         type: 'friend',
                         avatar: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=393925002,2901993679&fm=27&gp=0.jpg',
-                        id: 999
+                        id: 41
                     }).on('sendMessage', function (res) {
                         // 消息内容
                         var content = res.mine.content;

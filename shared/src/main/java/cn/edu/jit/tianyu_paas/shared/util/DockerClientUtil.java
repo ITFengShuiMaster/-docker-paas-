@@ -114,10 +114,10 @@ public class DockerClientUtil {
         final Map<String, List<PortBinding>> portBindings = new HashMap<>(16);
 
         for (AppPort port : appPorts) {
-            List<PortBinding> hostPorts = new ArrayList<>();
-            hostPorts.add(PortBinding.of("0.0.0.0", port.getHostPort()));
-            portBindings.put(port.getContainerPort().toString(), hostPorts);
             if (port.getIsOutsideOpen() == 1) {
+                List<PortBinding> hostPorts = new ArrayList<>();
+                hostPorts.add(PortBinding.of("0.0.0.0", port.getHostPort()));
+                portBindings.put(port.getContainerPort().toString(), hostPorts);
                 exposePorts.add(port.getContainerPort().toString());
             }
         }
@@ -337,6 +337,7 @@ public class DockerClientUtil {
 
     /**
      * 拉取镜相
+     *
      * @param ip
      * @param image
      * @param tag
