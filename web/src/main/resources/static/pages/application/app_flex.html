@@ -150,14 +150,12 @@
                     type: 'get',
                     url: '/tianyu-paas/apps/' + id,
                     success: function (result) {
-                        console.log(result);
                         flex.appName = result.data.name;
                         flex.machineId = result.data.machineId;
                         flex.select_memoryUsed = result.data.memoryUsed;
                         flex.containerId = result.data.containerId;
                     },
                     error: function () {
-
                     }
                 })
             },
@@ -173,6 +171,10 @@
                         containerId: flex.containerId,
                     },
                     success:function (data) {
+                        flex.$message({
+                            message: '内存使用更改成功',
+                            type: 'success'
+                        });
                     },
                     error:function (data) {
 
