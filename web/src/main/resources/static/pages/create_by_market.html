@@ -9,7 +9,7 @@
         text-align: center;
     }
 
-    .bottom {
+    .clearfix {
         margin-bottom: -21px;
     }
 
@@ -49,19 +49,19 @@
 
         <div>
             <el-row :gutter="60">
-                <el-col :span="8" :xs="24" :sm="11" :md="9" :lg="8" v-for="item in apps" :key="item.marketAppId"
-                        style="height: 100px;margin: 20px 0px;">
-                    <el-card :body-style="{ padding: '0px' }" style="width: 380px">
-                        <img :src="item.imageBase64" style="width: 28%; float: left;">
+                <el-col :span="6" :xs="24" :sm="11" :md="9" :lg="6" v-for="item in apps" :key="item.marketAppId"
+                        style="height: 150px;margin: 20px 0px;">
+                    <el-card :body-style="{ padding: '0px' }" style="width: 400px">
+                        <img :src="item.imageBase64" style="width: 28%; float: left; height: 90px">
                         <div style="padding: 20px;">
                             <span style="font-size: 22px;margin-left: 50px">
                                 {{item.name}}
                             </span><br>
-                            <span style="font-size: 16px;margin-left: 100px; margin-bottom: 10px">
+                            <span style="font-size: 16px;margin-left: 100px; margin-bottom: 20px; margin-top: 10px">
                                 version{{item.version}}
                             </span>
-                            <div class="bottom clearfix">
-                                <el-button class="button" type="text" @click="outerVisible = true;getapp(item)"
+                            <div class="clearfix">
+                                <el-button type="text" @click="outerVisible = true;getapp(item)"
                                            style="margin-left: -10%; width: 120%; background: #d3dce6">安装
                                 </el-button>
                             </div>
