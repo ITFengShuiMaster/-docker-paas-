@@ -11,7 +11,7 @@ public class GitClone {
     public static String cloneRepository(String gitUrl) {
         String[] array = gitUrl.split("/");
         String[] split = array[array.length - 1].split("\\.");
-        String localPath = "D:\\" + split[0];
+        String localPath = "D:\\" + split[0]+System.currentTimeMillis();
         try {
             CloneCommand cc = Git.cloneRepository().setURI(gitUrl);
             cc.setDirectory(new File(localPath)).call();

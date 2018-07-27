@@ -73,7 +73,7 @@ public class AppPortController {
                 machinePort.setStatus(2);
                 machinePortService.update(machinePort, new EntityWrapper<MachinePort>().eq("machine_id", machinePort.getMachineId()).and().eq("machine_port", machinePort.getMachinePort()));
 
-                appPort.setOutsideAccessUrl(machine.getMachineIp() + ":" + machinePort.getMachinePort());
+                appPort.setOutsideAccessUrl(machine.getMachineIp());
                 break;
             }
         }

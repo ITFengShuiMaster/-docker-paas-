@@ -132,7 +132,7 @@ public class AppService extends ServiceImpl<AppMapper, App> {
             appPort.setInsideAlias("xxx");
             appPort.setIsInsideOpen(AppPort.INOPEN);
             appPort.setIsOutsideOpen(AppPort.OUTOPEN);
-            appPort.setOutsideAccessUrl(machineService.selectOne(new EntityWrapper<Machine>().eq("machine_id", hostPort.getMachineId())).getMachineIp() + ":" + hostPort.getMachinePort());
+            appPort.setOutsideAccessUrl(machineService.selectOne(new EntityWrapper<Machine>().eq("machine_id", hostPort.getMachineId())).getMachineIp());
             appPort.setHostPort(hostPort.getMachinePort());
             appPort.setContainerPort(machinePorts.get(hostPort));
             appPort.setProtocol(AppPort.MYSQL);
