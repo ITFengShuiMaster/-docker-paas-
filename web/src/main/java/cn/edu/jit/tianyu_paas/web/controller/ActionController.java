@@ -65,7 +65,11 @@ public class ActionController {
     @GetMapping("/{appId}")
     public TResult listAppAction(@PathVariable long appId) {
         long userId = (long) session.getAttribute(Constants.SESSION_KEY_USER_ID);
-        return TResult.success(actionService.listAppActionByUserId(userId, appId));
+        List<Action> actions = actionService.listAppActionByUserId(userId, appId);
+        for(int i = 0 ; i < actions.size() ; i++) {
+            actions.get(i).setActionName(ActionEnum.getMessageBycode(actions.get(i).getAction()));
+        }
+        return TResult.success(actions);
     }
 
     /**

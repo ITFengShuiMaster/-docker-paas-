@@ -111,7 +111,7 @@
                         </el-col>
                         <el-col :span="21">
                             <el-collapse>
-                                <el-collapse-item :title="item.userName+' @ '+item.actionName" :key="index">
+                                <el-collapse-item :title="item.userName+' @ '+item.actionName + item.appName" :key="index">
 
                                     <el-button label="Info日志" size="small" @click="getInfoLog(item.actionId,index)">
                                         Info日志
