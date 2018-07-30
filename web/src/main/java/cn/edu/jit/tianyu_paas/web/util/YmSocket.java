@@ -70,8 +70,8 @@ public class YmSocket {
                 CreateContainerResponse createContainerResponse = dockerClient.createContainerCmd(SourceCodeConstants.JAVA_CONTAINER_NAME)
                         .withExposedPorts(tcp8080)
                         .withPortBindings(portBindings)
-                        .withMemory((long) 104857600)
-                        .withMemorySwap((long) -1)
+//                        .withMemory((long) 104857600)
+//                        .withMemorySwap((long) -1)
                         .exec();
                 dockerClient.startContainerCmd(createContainerResponse.getId()).exec();
                 unUsedPorts.setStatus(2);

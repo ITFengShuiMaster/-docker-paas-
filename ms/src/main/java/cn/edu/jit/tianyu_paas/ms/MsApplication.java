@@ -3,7 +3,6 @@ package cn.edu.jit.tianyu_paas.ms;
 import cn.edu.jit.tianyu_paas.ms.global.GlobalInterceptor;
 import cn.edu.jit.tianyu_paas.shared.global.PublicConstants;
 import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
-import com.rabbitmq.client.AMQP;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.amqp.core.Queue;
 import org.springframework.boot.SpringApplication;
@@ -40,7 +39,8 @@ public class MsApplication implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(globalInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login.html")
+                .excludePathPatterns("swagger**", "/webjars/**", "/swagger-resources/**", "/v2/**")
+                .excludePathPatterns("/login.html", "/swagger-ui.html")
                 .excludePathPatterns("/admins/login")
                 .excludePathPatterns("/js/**", "/lib/**", "/img/**")
                 .excludePathPatterns("/error");

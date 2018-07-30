@@ -180,6 +180,12 @@
                         level: '0'
                     },
                     success: function (data) {
+                        var infos = '';
+                        for (let i in data.data) {
+                            infos += data.data[i].content + '\n';
+                        }
+                        alert(infos);
+                        overview.actionList[index].details = ['正在加载'];
                         console.log(data);
                         overview.actionList[index].details = data.data;
                         console.log(overview.actionList[index].details);

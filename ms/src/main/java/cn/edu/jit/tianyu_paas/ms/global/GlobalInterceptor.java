@@ -21,7 +21,7 @@ public class GlobalInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) {
-        logger.debug(httpServletRequest.getRequestURI());
+        logger.warn(httpServletRequest.getRequestURI());
         HttpSession session = httpServletRequest.getSession();
         if (!runtime) {
             logger.debug("debug mode test user: " + testUserId);

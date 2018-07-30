@@ -34,6 +34,8 @@ import java.util.*;
 @RequestMapping("/apps")
 public class AppController {
 
+    @Autowired
+    private AppRelyService appRelyService;
     private final ActionService actionService;
     private final UserService userService;
     private final AppService appService;
@@ -654,6 +656,8 @@ public class AppController {
         if (!appService.deleteById(app.getAppId())) {
             return TResult.failure(TResultCode.BUSINESS_ERROR);
         }
+        appRelyService.delete(new EntityWrapper<AppRely>().eq("app_id", appId));
+        appRelyService.delete(new EntityWrapper<AppRely>().eq("rely_id", appId));
 
         return TResult.success();
     }

@@ -35,7 +35,7 @@ public class WebApplication implements WebMvcConfigurer {
         registry.addInterceptor(globalInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("swagger**")
-                .excludePathPatterns("/login.html", "/register.html")
+                .excludePathPatterns("/login.html", "/register.html", "/swagger-ui.html")
                 .excludePathPatterns("/js/**", "/lib/**", "/img/**")
                 .excludePathPatterns("/users/login", "/users/register", "/users/active", "users/re-email", "users/phone-code")
                 .excludePathPatterns("/error");

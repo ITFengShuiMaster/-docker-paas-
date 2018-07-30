@@ -129,6 +129,9 @@ public class UserController {
         }
 
         if (activeMethod == Constants.ACTIVE_PHONE) {
+            if (StringUtil.isEmpty(phoneVerifyCode)) {
+                return TResult.failure("验证码不能为空");
+            }
             return userService.registerAndActiveUserByPhone(user, phoneVerifyCode);
         } else {
             return userService.registerUserByEmailAndSendMail(user);
